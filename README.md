@@ -1,18 +1,8 @@
-# Next.js Enterprise Boilerplate
+# Pay Access Business
 
 ![Project intro image](./project-logo.png)
 
-Welcome to the _Next.js Enterprise Boilerplate_, an open-source template for enterprise projects! It's loaded with features that'll help you build a high-performance, maintainable, and enjoyable app. We've done all the heavy lifting for you, so sit back, relax, and get ready to conquer the world with your incredible app! 🌍
-
-<br />
-<a href="https://discord.gg/fyWtyNKmfX" style="width: 100%; display: flex; justify-content: center;">
-  <img src="https://discordapp.com/api/guilds/1111676875782234175/widget.png?style=banner2" alt="Blazity Discord Banner"/>
-</a>
-<br />
-
 ## 📚 Features
-
-With this template, you get all the awesomeness you need:
 
 - 🏎️ **[Next.js](https://nextjs.org/)** - Fast by default, with config optimized for performance
 - 💅 **[Tailwind CSS](https://tailwindcss.com/)** - A utility-first CSS framework for rapid UI development
@@ -40,7 +30,7 @@ With this template, you get all the awesomeness you need:
 
 ## Table of Contents
 
-- [Next.js Enterprise Boilerplate](#nextjs-enterprise-boilerplate)
+- [Pay Access Business](#pay-access-business)
   - [📚 Features](#-features)
   - [Table of Contents](#table-of-contents)
   - [🎯 Getting Started](#-getting-started)
@@ -59,8 +49,6 @@ With this template, you get all the awesomeness you need:
     - [Recoil](#recoil)
   - [🤖 ChatGPT Code Review](#-chatgpt-code-review)
   - [💻 Environment Variables handling](#-environment-variables-handling)
-  - [🤝 Contribution](#-contribution)
-  - [💌 Support](#support)
   - [📜 License](#-license)
   - [Contributors](#contributors)
 
@@ -256,20 +244,6 @@ If the required environment variables are not set, you'll get an error message:
   ❌ Invalid environment variables: { SECRET_KEY: [ 'Required' ] }
 ```
 
-## 🤝 Contribution
-
-Contributions are always welcome! To contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch with a descriptive name.
-3. Make your changes, and commit them using the [Conventional Commits](https://www.conventionalcommits.org/) format.
-4. Push your changes to the forked repository.
-5. Create a pull request, and we'll review your changes.
-
-## Support
-
-If you're looking for help or simply want to share your thoughts about the project, we encourage you to join our Discord community. Here's the link: [https://blazity.com/discord](https://blazity.com/discord). It's a space where we exchange ideas and help one another. Everyone's input is appreciated, and we look forward to welcoming you.
-
 ## 📜 License
 
 This project is licensed under the MIT License. For more information, see the [LICENSE](./LICENSE) file.
@@ -279,7 +253,7 @@ This project is licensed under the MIT License. For more information, see the [L
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<table>
+<!-- <table>
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://bstefanski.com/"><img src="https://avatars.githubusercontent.com/u/28964599?v=4?s=100" width="100px;" alt="Bart Stefanski"/><br /><sub><b>Bart Stefanski</b></sub></a><br /><a href="https://github.com/Blazity/next-enterprise/commits?author=bmstefanski" title="Code">💻</a></td>
@@ -295,7 +269,7 @@ This project is licensed under the MIT License. For more information, see the [L
       </td>
     </tr>
   </tfoot>
-</table>
+</table> -->
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
