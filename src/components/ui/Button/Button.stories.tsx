@@ -8,7 +8,7 @@ const meta: Meta<typeof Button> = {
     intent: "primary",
     underline: false,
     children: "Button",
-    size: "lg",
+    size: "normal",
   },
   argTypes: {
     intent: {
@@ -16,7 +16,7 @@ const meta: Meta<typeof Button> = {
       control: { type: "select" },
     },
     size: {
-      options: ["sm", "lg"],
+      options: ["small", "normal", "large"],
       control: { type: "select" },
     },
   },

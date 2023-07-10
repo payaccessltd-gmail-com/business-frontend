@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 import * as RadixTooltip from "@radix-ui/react-tooltip"
 import { cva, VariantProps } from "class-variance-authority"
 import React from "react"
