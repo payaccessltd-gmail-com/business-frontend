@@ -23,21 +23,6 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          10: "#FDE6D2",
-          20: "#FBD5B5",
-          30: "#F9BF8F",
-          40: "#F7AA6A",
-          50: "#F59545",
-          60: "#DD6B20",
-          70: "#CA6B1B",
-          80: "#A25515",
-          90: "#7A4010",
-          100: "#512B0B",
-          110: "#311A06",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
           10: "#D3EEF9",
           20: "#B6E3F5",
           30: "#91D4F0",
@@ -49,6 +34,21 @@ module.exports = {
           90: "#115570",
           100: "#0C394B",
           110: "#07222D",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+          10: "#FDE6D2",
+          20: "#FBD5B5",
+          30: "#F9BF8F",
+          40: "#F7AA6A",
+          50: "#F59545",
+          60: "#DD6B20",
+          70: "#CA6B1B",
+          80: "#A25515",
+          90: "#7A4010",
+          100: "#512B0B",
+          110: "#311A06",
         },
 
         gray: {
@@ -103,28 +103,34 @@ module.exports = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
+
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
       },
+
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
@@ -135,6 +141,7 @@ module.exports = {
           to: { height: 0 },
         },
       },
+
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
@@ -147,6 +154,11 @@ module.exports = {
 
       fontSize: {
         xs: ["14px", { lineHeight: "24px", letterSpacing: "-0.03em" }],
+      },
+
+      fontFamily: {
+        raleway: "var(--font-raleway)",
+        sfpro: "var(--font-sfpro)",
       },
 
       backgroundImage: {

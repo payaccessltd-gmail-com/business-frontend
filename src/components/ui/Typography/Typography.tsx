@@ -4,13 +4,13 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { twMerge } from "tailwind-merge"
 
 const typographyVarients = cva(
-  "text-secondary-70",
+  "text-primary-70",
 
   {
     variants: {
       intent: {},
       level: {
-        h1: "font-bold text-4xl",
+        h1: "font-bold text-2xl",
         h2: "",
         h3: "",
         h4: "",
@@ -19,9 +19,9 @@ const typographyVarients = cva(
         p: "text-",
       },
       shade: {
-        70: "bg-secondary-70",
-        60: "bg-secondary-60",
-        100: "bg-secondary-100",
+        70: "bg-primary-70",
+        60: "bg-primary-60",
+        100: "bg-primary-100",
         none: "",
       },
       size: {

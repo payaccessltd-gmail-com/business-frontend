@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { Raleway } from "next/font/google"
 import localFont from "next/font/local"
-import "@styles/global.css"
+import "@styles/globals.css"
 
 export const metadata: Metadata = {
   title: "Business",
@@ -15,7 +15,7 @@ const raleway = Raleway({
   variable: "--font-raleway",
 })
 
-const sfProDisplay = localFont({
+const sfpro = localFont({
   display: "swap",
   variable: "--font-sf-pro-display",
   src: [
@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${raleway.variable} ${sfProDisplay.variable}`}>
+    <html lang="en" className={`${raleway.variable} ${sfpro.variable}`}>
       <body className="font-raleway">{children}</body>
     </html>
   )
