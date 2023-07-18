@@ -16,8 +16,25 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "src"
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["/components/*"],
+      "@ui/*": ["/components/ui/*"],
+      "@styles/*": ["/styles/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mjs"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mjs",
+    ".next/types/**/*.ts",
+    "src/app/(authentication)/login/index.tsx"
+  ],
   "exclude": ["node_modules"]
 }
