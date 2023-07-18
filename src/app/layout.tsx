@@ -3,6 +3,8 @@ import { Raleway } from "next/font/google"
 import localFont from "next/font/local"
 import "@styles/globals.css"
 
+import Provider from "utils/provider"
+
 export const metadata: Metadata = {
   title: "Business",
   description: "Business page as it should be",
@@ -38,7 +40,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${raleway.variable} ${sfpro.variable}`}>
-      <body className="font-raleway">{children}</body>
+      <body className="font-raleway">
+        <Provider>{children}</Provider>
+      </body>
     </html>
   )
 }
