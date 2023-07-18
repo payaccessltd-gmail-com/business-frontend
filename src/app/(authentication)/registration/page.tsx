@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -8,12 +9,14 @@ import { useForm } from "react-hook-form"
 import * as zod from "zod"
 
 // import { Button } from "components/ui/Button/Button"
+import { createMerchant } from "api/registration"
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 import { Typography } from "components/ui/Typography"
+
 import { logoPath } from "lib/constants"
 
 export const metadata: Metadata = {
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
   description: "Business page as it should be",
 }
 
-const registrationFormSchema = zod.object({
+const merchantRegFormSchema = zod.object({
   country: zod.string(),
   firstName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -41,20 +44,29 @@ const registrationFormSchema = zod.object({
 })
 
 export default function RegistrationPage() {
-  const registrationForm = useForm<zod.infer<typeof registrationFormSchema>>({
-    resolver: zodResolver(registrationFormSchema),
+  const merchantRegForm = useForm<zod.infer<typeof merchantRegFormSchema>>({
     defaultValues: {},
+    resolver: zodResolver(merchantRegFormSchema),
   })
 
-  function onSubmit(values: zod.infer<typeof registrationFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  const merchantRegMutation = useMutation({
+    mutationFn: createMerchant,
+    onSuccess: () => {
+      return null
+    },
+    onMutate: () => {
+      return null
+    },
+  })
+
+  function onSubmit(values: zod.infer<typeof merchantRegFormSchema>) {
+    merchantRegMutation.mutate(values)
     console.log(values)
   }
 
   return (
     <main className="flex flex-col items-center justify-center bg-transparent">
-      <div className="flex w-[550px] flex-col items-center justify-center bg-transparent py-8">
+      <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent py-8">
         <Image className="mb-8" src={logoPath.src} width={130} height={60} alt={logoPath.alt} />
         <Typography className="mb-4  inline-block bg-transparent" level="h1">
           Create your Pay Access account
@@ -63,11 +75,14 @@ export default function RegistrationPage() {
           Create an account with pay access for all your payment trasactions
         </Typography>
 
-        <Form {...registrationForm}>
-          <form onSubmit={registrationForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8 shadow-form">
+        <Form {...merchantRegForm}>
+          <form
+            onSubmit={merchantRegForm.handleSubmit(onSubmit)}
+            className="space-y-8 rounded-[10px] border-gray-10 bg-white p-8 shadow-form"
+          >
             <FormField
               name="country"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Business category</FormLabel>
@@ -77,10 +92,12 @@ export default function RegistrationPage() {
                         <SelectValue placeholder="Select Country" />
                       </SelectTrigger>
                     </FormControl>
+
                     <SelectContent>
-                      <SelectItem value="Nigeria">Nigeria</SelectItem>
-                      <SelectItem value="Togo">Togo</SelectItem>
-                      <SelectItem value="Lebanon">Lebanon</SelectItem>
+                      <SelectItem value="AFGHANISTAN">Afghanistan</SelectItem>
+                      <SelectItem value="BELARUS">Belarus</SelectItem>
+                      <SelectItem value="SPAIN">Spain</SelectItem>
+                      <SelectItem value="NIGERIA">Nigeria</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -90,7 +107,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="firstName"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First name</FormLabel>
@@ -104,7 +121,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="lastName"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last name</FormLabel>
@@ -118,7 +135,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="emailAddress"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email address</FormLabel>
@@ -132,7 +149,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="password"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
@@ -146,7 +163,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="businessName"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Business name</FormLabel>
@@ -160,7 +177,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="businessCategory"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Business category</FormLabel>
@@ -171,7 +188,7 @@ export default function RegistrationPage() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Transportation">Transportation</SelectItem>
+                      <SelectItem value="TRANSPORTATION">Transportation</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -181,7 +198,7 @@ export default function RegistrationPage() {
 
             <FormField
               name="businessType"
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               render={({ field }) => (
                 <FormItem className="space-y-3">
                   <FormLabel className="font-semibold text-gray-50">What kind of business do you own</FormLabel>
@@ -222,7 +239,7 @@ export default function RegistrationPage() {
             />
 
             <FormField
-              control={registrationForm.control}
+              control={merchantRegForm.control}
               name="isSoftwareDeveloper"
               render={({ field }) => (
                 <FormItem className="space-y-3">

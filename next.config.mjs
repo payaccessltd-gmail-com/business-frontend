@@ -7,9 +7,14 @@ import { env } from "./env.mjs"
  */
 const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
   reactStrictMode: true,
-  experimental: { instrumentationHook: true },
+  experimental: { instrumentationHook: true, serverActions: true },
+
   rewrites() {
     return [
+      {
+        source: "/payaccess/api/v1",
+        destination: "http://137.184.47.182:8081/payaccess/api/v1",
+      },
       { source: "/healthz", destination: "/api/health" },
       { source: "/api/healthz", destination: "/api/health" },
       { source: "/health", destination: "/api/health" },
