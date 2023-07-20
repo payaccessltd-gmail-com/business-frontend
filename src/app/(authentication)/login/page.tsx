@@ -96,7 +96,9 @@ export default function AuthenticationPage() {
               </form>
             </Form>
             <Link href="/" className="mt-[32px] text-sm font-semibold text-primary-70">
+
               Forget Password
+
             </Link>
             <div className="mt-4 flex flex-row items-center gap-2">
               {" "}
