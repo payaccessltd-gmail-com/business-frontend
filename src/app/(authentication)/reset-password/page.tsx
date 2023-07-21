@@ -1,6 +1,6 @@
 "use client"
 
-import { Metadata } from "next"
+// import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { cn } from "lib/utils"
