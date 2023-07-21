@@ -3,16 +3,19 @@
 import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { cn } from "lib/utils"
-import { buttonVariants } from "components/ui/button"
-import { logoPath, login, loginBackground } from "lib/constants"
-import { Typography } from "components/ui/Typography"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { cn } from "lib/utils"
+import { loginApi } from "api/login"
+import { buttonVariants } from "components/ui/button"
 import { Button } from "components/ui/button"
+import { Typography } from "components/ui/Typography"
+import { logoPath, login, loginBackground } from "lib/constants"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
-import { useForm } from "react-hook-form"
+import { useQuery } from "@tanstack/react-query"
 
 export const metadata: Metadata = {
   title: "Authentication",
@@ -34,6 +37,11 @@ export default function AuthenticationPage() {
     defaultValues: {
       username: "",
     },
+  })
+
+  const login = useQuery({
+    queryFn: loginApi,
+    queryKey: ["login"],
   })
 
   function onSubmit(values: z.infer<typeof loginFormSchema>) {
@@ -96,9 +104,7 @@ export default function AuthenticationPage() {
               </form>
             </Form>
             <Link href="/" className="mt-[32px] text-sm font-semibold text-primary-70">
-
               Forget Password
-
             </Link>
             <div className="mt-4 flex flex-row items-center gap-2">
               {" "}
