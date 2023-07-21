@@ -11,7 +11,7 @@ import { loginApi } from "api/login"
 import { buttonVariants } from "components/ui/button"
 import { Button } from "components/ui/button"
 import { Typography } from "components/ui/Typography"
-import { logoPath, login, loginBackground } from "lib/constants"
+import { logoPath, loginHero, loginBackground } from "lib/constants"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 import { useQuery } from "@tanstack/react-query"
@@ -38,10 +38,10 @@ export default function AuthenticationPage() {
     },
   })
 
-  const login = useQuery({
-    queryFn: loginApi,
-    queryKey: ["login"],
-  })
+  // const login = useQuery({
+  //   queryFn: loginApi,
+  //   queryKey: ["login"],
+  // })
 
   function onSubmit(values: z.infer<typeof loginFormSchema>) {
     console.log(values)
@@ -49,7 +49,7 @@ export default function AuthenticationPage() {
   return (
     <div className="flex h-full w-full flex-row ">
       <div className="hidden h-full w-1/2 lg:flex ">
-        <Image className="h-full w-full" src={login.src} alt={login.alt} />
+        <Image className="h-full w-full" src={loginHero.src} alt={loginHero.alt} />
       </div>
       <div className="relative h-full w-full lg:w-1/2">
         <Image

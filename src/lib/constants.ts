@@ -6,7 +6,7 @@ export const logoPath = {
   src: logo,
   alt: "pay access logo",
 }
-export const login = {
+export const loginHero = {
   src: loginImage,
   alt: "pay access login",
 }
