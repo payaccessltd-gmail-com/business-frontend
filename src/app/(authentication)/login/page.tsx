@@ -103,7 +103,7 @@ export default function AuthenticationPage() {
               <Typography className=" inline-block  bg-transparent text-[#0C394B]" level="h4">
                 New to pay access?
               </Typography>
-              <Link href="/" className=" text-sm font-semibold text-primary-70">
+              <Link href="/registration" className=" text-sm font-semibold text-primary-70">
                 Signup
               </Link>
             </div>

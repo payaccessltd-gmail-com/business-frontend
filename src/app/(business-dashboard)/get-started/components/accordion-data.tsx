@@ -1,5 +1,6 @@
 import PersonalInformationForm from "./personal-information-form"
 import BusinessInformationForm from "./business-information-form"
+import AccountInformationForm from "./account-information-form"
 
 export const accordianData = [
   {
@@ -50,7 +51,7 @@ export const accordianData = [
     value: "3",
     label: "Account Information",
     description: "Bank details",
-    Form: PersonalInformationForm,
+    Form: AccountInformationForm,
     Icon: () => (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path

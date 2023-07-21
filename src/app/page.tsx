@@ -6,10 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function RootPage() {
-  return (
-    <main>
-      <h1>Hello world</h1>
-      <Button href={"/"}>Welcome</Button>
-    </main>
-  )
+  return <main>Market page coming soon</main>
 }

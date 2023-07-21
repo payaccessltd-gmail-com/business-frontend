@@ -1,22 +1,22 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
 import * as zod from "zod"
 import { useForm } from "react-hook-form"
 import { format } from "date-fns"
 
 import { cn } from "lib/utils"
-import { createMerchant } from "api/registration"
+import { updateMerchantBioData } from "api/registration"
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
-import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { Typography } from "components/ui/Typography"
 import { Calendar } from "components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
 
-const accInfoFormSchema = zod.object({
+const personalInfoFormSchema = zod.object({
   country: zod.string(),
   firstName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -29,7 +29,7 @@ const accInfoFormSchema = zod.object({
     message: "Last name must be at least 2 characters.",
   }),
 
-  dob: zod.date({
+  dateOfBirth: zod.date({
     required_error: "A date of birth is required.",
   }),
 
@@ -40,26 +40,38 @@ const accInfoFormSchema = zod.object({
   identificationDocument: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
+
+  identificationDocumentPath: zod.string(),
 })
 
 export default function PersonalInformationForm() {
-  const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
+  const personalInfoForm = useForm<zod.infer<typeof personalInfoFormSchema>>({
     defaultValues: {},
-    resolver: zodResolver(accInfoFormSchema),
+    resolver: zodResolver(personalInfoFormSchema),
   })
 
-  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
+  const updateMerchantBioDataMutation = useMutation({
+    mutationFn: updateMerchantBioData,
+    onSuccess: () => {
+      return null
+    },
+    onMutate: () => {
+      return null
+    },
+  })
+
+  const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
     // merchantRegMutation.mutate(values)
     console.log(values)
   }
 
   return (
-    <Form {...acctInfoForm}>
-      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
+    <Form {...personalInfoForm}>
+      <form onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
         <div className="flex flex-row gap-4">
           <FormField
             name="firstName"
-            control={acctInfoForm.control}
+            control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>First name</FormLabel>
@@ -73,7 +85,7 @@ export default function PersonalInformationForm() {
 
           <FormField
             name="lastName"
-            control={acctInfoForm.control}
+            control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Last name</FormLabel>
@@ -89,7 +101,7 @@ export default function PersonalInformationForm() {
         <div className="flex flex-row items-center gap-4">
           <FormField
             name="gender"
-            control={acctInfoForm.control}
+            control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Gender</FormLabel>
@@ -110,8 +122,8 @@ export default function PersonalInformationForm() {
           />
 
           <FormField
-            control={acctInfoForm.control}
-            name="dob"
+            control={personalInfoForm.control}
+            name="dateOfBirth"
             render={({ field }) => (
               <FormItem className="item flex w-full flex-col">
                 <FormLabel className="w-full">Date of birth</FormLabel>
@@ -157,7 +169,7 @@ export default function PersonalInformationForm() {
                     <Calendar
                       mode="single"
                       selected={field.value}
-                      onSelect={field.onChange}
+                      onSelect={field.onChange as any}
                       disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                       initialFocus
                     />
@@ -172,7 +184,7 @@ export default function PersonalInformationForm() {
 
         <FormField
           name="identificationDocument"
-          control={acctInfoForm.control}
+          control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Identification Document</FormLabel>
@@ -184,9 +196,9 @@ export default function PersonalInformationForm() {
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="driversLicenses">Drivers lincenses</SelectItem>
-                  <SelectItem value="nationalID">National ID</SelectItem>
-                  <SelectItem value="intlPassport">International passport</SelectItem>
-                  <SelectItem value="votersCard">Voter's card</SelectItem>
+                  <SelectItem value="NATIONAL_ID">National ID</SelectItem>
+                  <SelectItem value="INTL_PASSPORT">International passport</SelectItem>
+                  <SelectItem value="VOTERS_CARD">Voter's card</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -196,10 +208,10 @@ export default function PersonalInformationForm() {
 
         <FormField
           name="identificationNumber"
-          control={acctInfoForm.control}
+          control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Identification Document</FormLabel>
+              <FormLabel>Identification Number</FormLabel>
               <FormControl>
                 <Input placeholder="Enter identification number" {...field} />
               </FormControl>
@@ -209,8 +221,8 @@ export default function PersonalInformationForm() {
         />
 
         <FormField
-          name="identificationDocumentFile"
-          control={acctInfoForm.control}
+          name="identificationDocumentPath"
+          control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
               <FormDescription>Please upload identification document.</FormDescription>
@@ -222,8 +234,8 @@ export default function PersonalInformationForm() {
           )}
         />
 
-        <Button className="w-full" type="submit" size="default">
-          Submit
+        <Button className="w-[380]" type="submit" size="default">
+          Save
         </Button>
       </form>
     </Form>
