@@ -17,10 +17,10 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "components/ui/input"
 import { useQuery } from "@tanstack/react-query"
 
-export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
-}
+// export const metadata: Metadata = {
+//   title: "Authentication",
+//   description: "Authentication forms built using the components.",
+// }
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
