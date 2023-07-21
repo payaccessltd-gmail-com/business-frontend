@@ -19,10 +19,10 @@ import { Typography } from "components/ui/Typography"
 
 import { logoPath } from "lib/constants"
 
-export const metadata: Metadata = {
-  title: "Business",
-  description: "Business page as it should be",
-}
+// export const metadata: Metadata = {
+//   title: "Business",
+//   description: "Business page as it should be",
+// }
 
 const merchantRegFormSchema = zod.object({
   country: zod.string(),

@@ -1,25 +1,24 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
 import * as zod from "zod"
 import { useForm } from "react-hook-form"
-import { format } from "date-fns"
 
-import { createMerchant } from "api/registration"
+import { updateMerchantBusinessData } from "api/registration"
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 import { Textarea } from "components/ui/textarea"
 
-const accInfoFormSchema = zod.object({
+const businessInfoFormSchema = zod.object({
+  merchantId: zod.number(),
   businessName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
   }),
-
   primaryMobile: zod.string(),
   supportContact: zod.string(),
-
   businessState: zod.string(),
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
@@ -32,22 +31,32 @@ const accInfoFormSchema = zod.object({
 })
 
 export default function BusinessInformationForm() {
-  const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
+  const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {},
-    resolver: zodResolver(accInfoFormSchema),
+    resolver: zodResolver(businessInfoFormSchema),
   })
 
-  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-    // merchantRegMutation.mutate(values)
+  const updateMerchantBusinessDataMutation = useMutation({
+    mutationFn: updateMerchantBusinessData,
+    onSuccess: () => {
+      return null
+    },
+    onMutate: () => {
+      return null
+    },
+  })
+
+  const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
+    updateMerchantBusinessDataMutation.mutate(values)
     console.log(values)
   }
 
   return (
-    <Form {...acctInfoForm}>
-      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
+    <Form {...businessInfoForm}>
+      <form onSubmit={businessInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
         <FormField
           name="businessName"
-          control={acctInfoForm.control}
+          control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Business name</FormLabel>
@@ -60,7 +69,7 @@ export default function BusinessInformationForm() {
         />
 
         <FormField
-          control={acctInfoForm.control}
+          control={businessInfoForm.control}
           name="businessDescription"
           render={({ field }) => (
             <FormItem>
@@ -76,7 +85,7 @@ export default function BusinessInformationForm() {
 
         <FormField
           name="businessEmail"
-          control={acctInfoForm.control}
+          control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Business email</FormLabel>
@@ -91,7 +100,7 @@ export default function BusinessInformationForm() {
         <div className="flex flex-row items-center gap-4">
           <FormField
             name="primaryMobile"
-            control={acctInfoForm.control}
+            control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Business mobile number</FormLabel>
@@ -105,7 +114,7 @@ export default function BusinessInformationForm() {
 
           <FormField
             name="supportContact"
-            control={acctInfoForm.control}
+            control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Support</FormLabel>
@@ -121,7 +130,7 @@ export default function BusinessInformationForm() {
         <div className="flex flex-row items-center gap-4">
           <FormField
             name="businessCity"
-            control={acctInfoForm.control}
+            control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>City</FormLabel>
@@ -135,7 +144,7 @@ export default function BusinessInformationForm() {
 
           <FormField
             name="businessState"
-            control={acctInfoForm.control}
+            control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
@@ -158,7 +167,7 @@ export default function BusinessInformationForm() {
 
         <FormField
           name="businessWebsite"
-          control={acctInfoForm.control}
+          control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Business website</FormLabel>
@@ -172,7 +181,7 @@ export default function BusinessInformationForm() {
 
         <FormField
           name="businessLogo"
-          control={acctInfoForm.control}
+          control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
               <FormDescription>Business logo (optional)</FormDescription>
@@ -186,7 +195,7 @@ export default function BusinessInformationForm() {
 
         <FormField
           name="businessCertificate"
-          control={acctInfoForm.control}
+          control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
               <FormDescription>Business Certificate</FormDescription>

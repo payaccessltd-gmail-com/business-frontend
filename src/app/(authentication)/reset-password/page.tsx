@@ -14,10 +14,10 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "components/ui/input"
 import { useForm } from "react-hook-form"
 
-export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
-}
+// export const metadata: Metadata = {
+//   title: "Authentication",
+//   description: "Authentication forms built using the components.",
+// }
 
 const resetPasswordFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
