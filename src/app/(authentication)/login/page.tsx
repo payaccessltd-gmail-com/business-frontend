@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 import { cn } from "lib/utils"
 import { loginApi } from "api/login"
+import { useLazyQuery } from "hooks/useLazyQuery"
 import { buttonVariants } from "components/ui/button"
 import { Button } from "components/ui/button"
 import { Typography } from "components/ui/Typography"
@@ -38,14 +39,16 @@ export default function AuthenticationPage() {
     },
   })
 
-  const login = useQuery({
-    queryFn: loginApi,
-    queryKey: ["login"],
-  })
+  // const loginAuth = useQuery({
+  //   queryKey: ["login"],
+  //   queryFn: (body) => loginApi(body),
+  //   enabled: false,
+  // })
 
-  function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    console.log(values)
-  }
+  // const [loginAuthLazy, queryAuth] = useLazyQuery(["login"],(body) => loginApi(body))
+
+  function onSubmit(values: z.infer<typeof loginFormSchema>) {}
+
   return (
     <div className="flex h-full w-full flex-row ">
       <div className="hidden h-full w-1/2 lg:flex ">
