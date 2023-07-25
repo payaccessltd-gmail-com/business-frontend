@@ -39,11 +39,11 @@ export default function AuthenticationPage() {
     },
   })
 
-  const loginAuth = useQuery({
-    queryKey: ["login"],
-    queryFn: (body) => loginApi(body),
-    enabled: false,
-  })
+  // const loginAuth = useQuery({
+  //   queryKey: ["login"],
+  //   queryFn: (body) => loginApi(body),
+  //   enabled: false,
+  // })
 
   // const [loginAuthLazy, queryAuth] = useLazyQuery(["login"],(body) => loginApi(body))
 
