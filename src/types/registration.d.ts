@@ -1,4 +1,10 @@
 declare namespace API {
+  type StatusReponse = {
+    statusCode: string
+    message: string
+    responseObject: string
+  }
+
   type MerchantRegistrationDTO = {
     country: string
     firstName: string
