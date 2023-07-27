@@ -4,6 +4,7 @@ import localFont from "next/font/local"
 import "@styles/globals.css"
 
 import Provider from "utils/provider"
+import { Toaster } from "components/ui/toaster"
 
 export const metadata: Metadata = {
   title: "Business",
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="en" className={`${raleway.variable} ${sfpro.variable}`}>
       <body className="font-raleway">
         <Provider>{children}</Provider>
+        <Toaster />
       </body>
     </html>
   )

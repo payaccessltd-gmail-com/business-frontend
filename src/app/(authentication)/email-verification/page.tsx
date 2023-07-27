@@ -1,15 +1,32 @@
+"use client"
+
 import * as React from "react"
 
+import { useQuery } from "@tanstack/react-query"
 import { buttonVariants } from "components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "components/ui/card"
 import { Typography } from "components/ui/Typography"
+import { Button } from "components/ui/button"
 import { logoPath } from "lib/constants"
 
 import { cn } from "lib/utils"
+import { activateNewMerchant } from "api/verification"
 
 export default function CardWithForm() {
+  const searchParams = useSearchParams()
+  const { refetch, isLoading: activationIsLoading } = useQuery(
+    ["activation"],
+    (params) => {
+      console.log(params)
+      activateNewMerchant({ activationToken: "", email: "" })
+    },
+    { enabled: false }
+  )
+
   return (
     <main className="flex flex-col items-center justify-center overflow-hidden bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent py-8">
@@ -68,18 +85,13 @@ export default function CardWithForm() {
                 </svg>
               </span>
             </CardTitle>
-            <Link
-              href={"/"}
-              className={cn(buttonVariants({ variant: "link" }), "px-0 text-sm font-semibold text-primary-80")}
-            >
-              Verify your email address
-            </Link>
+            <Button className="px-0 text-sm font-semibold text-primary-80">Verify your email address</Button>
           </CardHeader>
           <CardContent className="w-[386px]">
             <Typography level="p" className="text-center text-sm leading-6 text-gray-60">
               A link has been sent to your email address{" "}
-              <span className="font-semibold text-gray-70"> “goodness12@gmail.com”</span> please click on the link to
-              verify your email.
+              <span className="font-semibold text-gray-70"> “{searchParams.get("email")}”</span> please click on the
+              link to verify your email.
             </Typography>
           </CardContent>
           <CardFooter className="flex justify-center">

@@ -33,9 +33,9 @@ export default function RegistrationLayout({
             width="1745"
             height="1401"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_1583_87050" />
           </filter>
@@ -47,10 +47,10 @@ export default function RegistrationLayout({
             y2="355.133"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#BFEFFF" stop-opacity="0.2" />
-            <stop offset="0.192708" stop-color="#CDF2FF" stop-opacity="0.381595" />
-            <stop offset="0.848958" stop-color="white" />
-            <stop offset="1" stop-color="#2682A1" />
+            <stop stopColor="#BFEFFF" stopOpacity="0.2" />
+            <stop offset="0.192708" stopColor="#CDF2FF" stopOpacity="0.381595" />
+            <stop offset="0.848958" stopColor="white" />
+            <stop offset="1" stopColor="#2682A1" />
           </linearGradient>
         </defs>
       </svg>
@@ -71,7 +71,7 @@ export default function RegistrationLayout({
             ry="366"
             transform="rotate(-19.6745 683.625 532.716)"
             fill="#FDE5D1"
-            fill-opacity="0.27"
+            fillOpacity="0.27"
           />
         </g>
         <defs>
@@ -82,9 +82,9 @@ export default function RegistrationLayout({
             width="1675.77"
             height="1063.56"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_1583_88213" />
           </filter>

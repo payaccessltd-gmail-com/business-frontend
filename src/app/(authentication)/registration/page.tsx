@@ -5,11 +5,13 @@ import { useMutation } from "@tanstack/react-query"
 // import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import * as zod from "zod"
 
 // import { Button } from "components/ui/Button/Button"
 import { createMerchant } from "api/registration"
+import { useToast } from "components/ui/use-toast"
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
@@ -44,6 +46,8 @@ const merchantRegFormSchema = zod.object({
 })
 
 export default function RegistrationPage() {
+  const { toast } = useToast()
+  const router = useRouter()
   const merchantRegForm = useForm<zod.infer<typeof merchantRegFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(merchantRegFormSchema),
@@ -51,17 +55,35 @@ export default function RegistrationPage() {
 
   const merchantRegMutation = useMutation({
     mutationFn: createMerchant,
-    onSuccess: () => {
-      return null
+    onSuccess: async (data, variables, context) => {
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+
+      if (responseData?.statusCode === "1") {
+        toast({ variant: "destructive", title: "", description: responseData?.message })
+      }
+
+      if (responseData?.statusCode === "0") {
+        toast({ variant: "default", title: "", description: responseData?.message })
+        if (typeof window) {
+          router.push(
+            `/email-verification?email=${merchantRegForm.getValues("emailAddress")}&activationCode=${
+              responseData?.responseObject
+            }`
+          )
+        }
+
+        merchantRegForm.reset()
+      }
     },
-    onMutate: () => {
+    onMutate: () => {},
+
+    onError: () => {
       return null
     },
   })
 
   function onSubmit(values: zod.infer<typeof merchantRegFormSchema>) {
     merchantRegMutation.mutate(values)
-    console.log(values)
   }
 
   return (
@@ -269,7 +291,7 @@ export default function RegistrationPage() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" size="default">
+            <Button disabled={merchantRegMutation.isLoading} className="w-full" type="submit" size="default">
               Submit
             </Button>
 
