@@ -1,30 +1,54 @@
 "use client"
 
-import * as React from "react"
+import { useState } from "react"
 
 import { useQuery } from "@tanstack/react-query"
 import { buttonVariants } from "components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "components/ui/card"
 import { Typography } from "components/ui/Typography"
 import { Button } from "components/ui/button"
 import { logoPath } from "lib/constants"
+import { useToast } from "components/ui/use-toast"
 
 import { cn } from "lib/utils"
 import { activateNewMerchant } from "api/verification"
 
 export default function CardWithForm() {
+  const router = useRouter()
+  const { toast } = useToast()
   const searchParams = useSearchParams()
   const { refetch, isLoading: activationIsLoading } = useQuery(
     ["activation"],
-    (params) => {
-      console.log(params)
-      activateNewMerchant({ activationToken: "", email: "" })
-    },
-    { enabled: false }
+    () =>
+      activateNewMerchant({
+        activationToken: searchParams?.get("activationToken") as string,
+        email: searchParams?.get("email") as string,
+      }),
+
+    {
+      enabled: false,
+      onError: (error) => {
+        console.log({ error })
+      },
+
+      onSuccess: (data) => {
+        if (data?.status === 500) {
+          toast({
+            variant: "destructive",
+            title: data.status.toString(),
+            description: "activation unsuccessful please confirm from administator",
+          })
+        }
+
+        if (data?.status === 200) {
+          router.push("login")
+        }
+      },
+    }
   )
 
   return (
@@ -85,7 +109,15 @@ export default function CardWithForm() {
                 </svg>
               </span>
             </CardTitle>
-            <Button className="px-0 text-sm font-semibold text-primary-80">Verify your email address</Button>
+            <Button
+              variant="link"
+              className="px-0 text-sm font-semibold text-primary-80"
+              onClick={() => {
+                refetch()
+              }}
+            >
+              Verify your email address
+            </Button>
           </CardHeader>
           <CardContent className="w-[386px]">
             <Typography level="p" className="text-center text-sm leading-6 text-gray-60">
@@ -97,12 +129,15 @@ export default function CardWithForm() {
           <CardFooter className="flex justify-center">
             <Typography level="p" className="text-xs text-gray-90">
               Didn’t get the mail?{" "}
-              <Link
-                href={"/"}
-                className={cn(buttonVariants({ variant: "link" }), "px-0 text-sm font-semibold text-primary-70")}
+              <Button
+                variant="link"
+                className="px-0 text-sm font-semibold text-primary-70"
+                onClick={() => {
+                  refetch()
+                }}
               >
-                click here
-              </Link>{" "}
+                click
+              </Button>{" "}
               to resend.
             </Typography>
           </CardFooter>
