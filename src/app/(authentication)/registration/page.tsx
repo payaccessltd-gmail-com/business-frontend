@@ -66,7 +66,7 @@ export default function RegistrationPage() {
         toast({ variant: "default", title: "", description: responseData?.message })
         if (typeof window) {
           router.push(
-            `/email-verification?email=${merchantRegForm.getValues("emailAddress")}&activationCode=${
+            `/email-verification?email=${merchantRegForm.getValues("emailAddress")}&activationToken=${
               responseData?.responseObject
             }`
           )
