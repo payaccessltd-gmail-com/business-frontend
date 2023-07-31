@@ -1,4 +1,8 @@
-import { Metadata } from "next"
+"use client"
+
+import { Metadata} from "next"
+import {useEffect} from "react"
+import {useRouter} from "next/navigation"
 import { Button } from "components/ui/Button/Button"
 export const metadata: Metadata = {
   title: "Business",
@@ -6,5 +10,12 @@ export const metadata: Metadata = {
 }
 
 export default function RootPage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    router.push("/login")
+  }, [])
+
+
   return <main>Market page coming soon</main>
 }
