@@ -1,15 +1,56 @@
-import * as React from "react"
+"use client"
 
+import { useState } from "react"
+
+import { useQuery } from "@tanstack/react-query"
 import { buttonVariants } from "components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
+import { useSearchParams, useRouter } from "next/navigation"
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "components/ui/card"
 import { Typography } from "components/ui/Typography"
+import { Button } from "components/ui/button"
 import { logoPath } from "lib/constants"
+import { useToast } from "components/ui/use-toast"
 
 import { cn } from "lib/utils"
+import { activateNewMerchant } from "api/verification"
 
 export default function CardWithForm() {
+  const router = useRouter()
+  const { toast } = useToast()
+  const searchParams = useSearchParams()
+  const { refetch, isLoading: activationIsLoading } = useQuery(
+    ["activation"],
+    () =>
+      activateNewMerchant({
+        activationToken: searchParams?.get("activationToken") as string,
+        email: searchParams?.get("email") as string,
+      }),
+
+    {
+      enabled: false,
+      onError: (error) => {
+        console.log({ error })
+      },
+
+      onSuccess: (data) => {
+        if (data?.status === 500) {
+          toast({
+            variant: "destructive",
+            title: data.status.toString(),
+            description: "activation unsuccessful please confirm from administator",
+          })
+        }
+
+        if (data?.status === 200) {
+          router.push("login")
+        }
+      },
+    }
+  )
+
   return (
     <main className="flex flex-col items-center justify-center overflow-hidden bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent py-8">
@@ -68,29 +109,35 @@ export default function CardWithForm() {
                 </svg>
               </span>
             </CardTitle>
-            <Link
-              href={"/"}
-              className={cn(buttonVariants({ variant: "link" }), "px-0 text-sm font-semibold text-primary-80")}
+            <Button
+              variant="link"
+              className="px-0 text-sm font-semibold text-primary-80"
+              onClick={() => {
+                refetch()
+              }}
             >
               Verify your email address
-            </Link>
+            </Button>
           </CardHeader>
           <CardContent className="w-[386px]">
             <Typography level="p" className="text-center text-sm leading-6 text-gray-60">
               A link has been sent to your email address{" "}
-              <span className="font-semibold text-gray-70"> “goodness12@gmail.com”</span> please click on the link to
-              verify your email.
+              <span className="font-semibold text-gray-70"> “{searchParams.get("email")}”</span> please click on the
+              link to verify your email.
             </Typography>
           </CardContent>
           <CardFooter className="flex justify-center">
             <Typography level="p" className="text-xs text-gray-90">
               Didn’t get the mail?{" "}
-              <Link
-                href={"/"}
-                className={cn(buttonVariants({ variant: "link" }), "px-0 text-sm font-semibold text-primary-70")}
+              <Button
+                variant="link"
+                className="px-0 text-sm font-semibold text-primary-70"
+                onClick={() => {
+                  refetch()
+                }}
               >
-                click here
-              </Link>{" "}
+                click
+              </Button>{" "}
               to resend.
             </Typography>
           </CardFooter>

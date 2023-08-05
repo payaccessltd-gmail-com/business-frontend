@@ -3,9 +3,6 @@ export const createMerchant = async (merchantRegBody: API.MerchantRegistrationDT
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
     body: JSON.stringify(merchantRegBody),
   })
@@ -24,9 +21,6 @@ export const updateMerchantBusinessData = async (merchantRegBody: API.MerchantBu
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
     body: JSON.stringify(merchantRegBody),
   })
@@ -39,9 +33,6 @@ export const updateBusinessBankData = async (merchantRegBody: API.MerchantAccoun
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
       },
       body: JSON.stringify(merchantRegBody),
     }

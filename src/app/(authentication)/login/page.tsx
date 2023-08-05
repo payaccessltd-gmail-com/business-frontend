@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { cn } from "lib/utils"
 import { loginApi } from "api/login"
+import { useLazyQuery } from "hooks/useLazyQuery"
 import { buttonVariants } from "components/ui/button"
 import { Button } from "components/ui/button"
 import { Typography } from "components/ui/Typography"
@@ -43,6 +44,7 @@ export default function AuthenticationPage() {
   //   queryFn: loginApi,
   //   queryKey: ["login"],
   // })
+  // const [loginAuthLazy, queryAuth] = useLazyQuery(["login"], (body) => loginApi(body))
   const authenticationMutation = useMutation({
     mutationFn: loginApi,
     onSuccess: () => {
