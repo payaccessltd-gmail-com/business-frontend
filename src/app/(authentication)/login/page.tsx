@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-
+import { useMutation } from "@tanstack/react-query"
 import { cn } from "lib/utils"
 import { loginApi } from "api/login"
 import { buttonVariants } from "components/ui/button"
@@ -35,6 +35,7 @@ export default function AuthenticationPage() {
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
       username: "",
+      password: "",
     },
   })
 
@@ -42,8 +43,18 @@ export default function AuthenticationPage() {
   //   queryFn: loginApi,
   //   queryKey: ["login"],
   // })
+  const authenticationMutation = useMutation({
+    mutationFn: loginApi,
+    onSuccess: () => {
+      return null
+    },
+    onMutate: () => {
+      return null
+    },
+  })
 
   function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    authenticationMutation.mutate(values)
     console.log(values)
   }
   return (
