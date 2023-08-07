@@ -33,7 +33,7 @@ module.exports = {
         ignoreDeclarationSort: true,
       },
     ],
-    "tailwindcss/classnames-order": "on",
+    "tailwindcss/classnames-order": 1,
     "import/order": [
       1,
       {

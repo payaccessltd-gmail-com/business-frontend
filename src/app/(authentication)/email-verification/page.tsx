@@ -1,21 +1,16 @@
 "use client"
 
-import { useState } from "react"
-
 import { useQuery } from "@tanstack/react-query"
-import { buttonVariants } from "components/ui/button"
 import Image from "next/image"
-import Link from "next/link"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "components/ui/card"
-import { Typography } from "components/ui/Typography"
-import { Button } from "components/ui/button"
-import { logoPath } from "lib/constants"
-import { useToast } from "components/ui/use-toast"
-
-import { cn } from "lib/utils"
 import { activateNewMerchant } from "api/verification"
+
+import { Button } from "components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "components/ui/card"
+import { Typography } from "components/ui/Typography"
+import { useToast } from "components/ui/use-toast"
+import { logoPath } from "lib/constants"
 
 export default function CardWithForm() {
   const router = useRouter()

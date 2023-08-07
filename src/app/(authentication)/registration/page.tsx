@@ -11,13 +11,13 @@ import * as zod from "zod"
 
 // import { Button } from "components/ui/Button/Button"
 import { createMerchant } from "api/registration"
-import { useToast } from "components/ui/use-toast"
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 import { Typography } from "components/ui/Typography"
+import { useToast } from "components/ui/use-toast"
 
 import { logoPath } from "lib/constants"
 
@@ -75,7 +75,6 @@ export default function RegistrationPage() {
         merchantRegForm.reset()
       }
     },
-    onMutate: () => {},
 
     onError: () => {
       return null

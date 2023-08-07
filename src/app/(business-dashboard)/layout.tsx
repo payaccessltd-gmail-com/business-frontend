@@ -1,16 +1,15 @@
 "use client"
-import { ScrollArea } from "components/ui/scroll-area"
 
-import { Sidebar } from "./_components/sidebar"
-import { sidebarData } from "./_components/sidebar-data"
-import { Typography } from "components/ui/Typography"
-import { Switch } from "components/ui/switch"
 import { Avatar, AvatarFallback } from "components/ui/avatar"
 import { Label } from "components/ui/label"
-import { usePathname } from "next/navigation"
+import { ScrollArea } from "components/ui/scroll-area"
+
+import { Switch } from "components/ui/switch"
+import { Typography } from "components/ui/Typography"
+import { Sidebar } from "./_components/sidebar"
+import { sidebarData } from "./_components/sidebar-data"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
   return (
     <div className="grid overflow-hidden lg:h-screen lg:grid-cols-24">
       <aside className=" col-span-4 h-full overflow-hidden bg-primary-110">

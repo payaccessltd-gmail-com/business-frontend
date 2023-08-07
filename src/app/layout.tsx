@@ -1,10 +1,12 @@
 import { Metadata } from "next"
 import { Raleway } from "next/font/google"
 import localFont from "next/font/local"
+
 import "@styles/globals.css"
 
-import Provider from "utils/provider"
 import { Toaster } from "components/ui/toaster"
+import Provider from "utils/provider"
+import AppSessionProvider from "./_components/SessionProvider"
 
 export const metadata: Metadata = {
   title: "Business",
@@ -40,9 +42,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${raleway.variable} ${sfpro.variable}`}>
+    <html lang="en" className={`${raleway.variable} ${sfpro.variable} h-full scroll-smooth antialiased`}>
       <body className="font-raleway">
-        <Provider>{children}</Provider>
+        <AppSessionProvider>
+          <Provider>{children}</Provider>
+        </AppSessionProvider>
         <Toaster />
       </body>
     </html>
