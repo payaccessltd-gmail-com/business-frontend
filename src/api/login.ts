@@ -3,8 +3,6 @@ export const loginApi = async (loginBody: API.LoginDTO) => {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
     body: JSON.stringify(loginBody),
   })
