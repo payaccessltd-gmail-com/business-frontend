@@ -1,6 +1,4 @@
 "use client"
-
-import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "components/ui/accordion"
@@ -9,11 +7,6 @@ import { Label } from "components/ui/label"
 import { Typography } from "components/ui/Typography"
 
 import { accordianData } from "./components/accordion-data"
-
-export const metadata: Metadata = {
-  title: "Get Started",
-  description: "Business page as it should be",
-}
 
 export default function GetStarted() {
   const { data: session } = useSession({
