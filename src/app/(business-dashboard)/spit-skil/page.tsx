@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function SpitSkil() {
-  return <main>Spit/Skil</main>
+  return <main>coming soon</main>
 }

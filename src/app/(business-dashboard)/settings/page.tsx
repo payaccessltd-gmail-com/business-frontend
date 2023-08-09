@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function Setttings() {
-  return <main>settings</main>
+  return <main>coming soon</main>
 }

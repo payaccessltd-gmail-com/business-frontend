@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function GetStarted() {
-  return <main>transaction</main>
+  return <main>coming soon</main>
 }

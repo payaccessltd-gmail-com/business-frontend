@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function AuditLog() {
-  return <main>Audit Log</main>
+  return <main>Coming soon</main>
 }

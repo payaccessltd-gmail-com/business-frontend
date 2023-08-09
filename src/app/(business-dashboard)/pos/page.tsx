@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 }
 
 export default function POS() {
-  return <main>POS</main>
+  return <main>coming soon</main>
 }
