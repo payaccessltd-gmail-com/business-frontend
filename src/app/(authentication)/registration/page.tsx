@@ -55,7 +55,7 @@ export default function RegistrationPage() {
 
   const merchantRegMutation = useMutation({
     mutationFn: createMerchant,
-    onSuccess: async (data, variables, context) => {
+    onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
       if (responseData?.statusCode === "1") {

@@ -15,6 +15,11 @@ export default function GetStarted() {
       redirect("/login")
     },
   })
+
+  // eslint-disable-next-line no-lone-blocks
+  {
+    console.log(session)
+  }
   return (
     <div className="flex flex-col items-center space-y-8 pt-8">
       <div className="w-full max-w-[700px] space-y-2">
