@@ -104,7 +104,11 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="mt-[42px] min-h-[48px] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]" type="submit">
+        <Button
+          disabled={loading}
+          className="mt-[42px] min-h-[48px] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          type="submit"
+        >
           Login
         </Button>
       </form>
