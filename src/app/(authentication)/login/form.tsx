@@ -62,6 +62,7 @@ export default function LoginForm() {
           description: "Please confirm if user is registered",
         })
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false)
       toast({
