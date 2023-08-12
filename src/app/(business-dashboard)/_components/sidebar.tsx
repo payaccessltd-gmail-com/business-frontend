@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ScrollArea } from "components/ui/scroll-area"
 import { Button } from "components/ui/button"
-
+import { LuChevronDown } from "react-icons/lu"
 import { sidebarData } from "./sidebar-data"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,8 +16,11 @@ export function Sidebar({ className, navArr }: SidebarProps) {
 
   return (
     <nav className={cn("col-span-4 h-full bg-primary-110", className)}>
-      <div className="h-full space-y-4 pt-4">
-        <div>Goodness Daniel's oil & gas</div>
+      <div className="flex h-full flex-col space-y-4 pt-[80px]">
+        <div className="flex w-[194px] flex-row items-center gap-[14px] self-center text-center text-[16px] font-normal leading-[24px] text-white">
+          Goodness Daniel's oil & gas
+          <LuChevronDown className="text-[24px] text-[#555555]" />
+        </div>
         <ScrollArea className="h-[90%]">
           {sidebarData.map(({ list, section }) => {
             return (
