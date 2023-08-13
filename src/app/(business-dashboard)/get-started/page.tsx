@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 }
 
 export default function GetStarted() {
-  const { data: session } = useSession({
+  const { data: _session } = useSession({
     required: true,
     onUnauthenticated: () => {
       redirect("/login")

@@ -12,11 +12,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "components/ui/input"
 import { useToast } from "components/ui/use-toast"
 
-// export const metadata: Metadata = {
-//   title: "Authentication",
-//   description: "Authentication forms built using the components.",
-// }
-
 const loginFormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -62,6 +57,7 @@ export default function LoginForm() {
           description: "Please confirm if user is registered",
         })
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false)
       toast({
@@ -83,9 +79,9 @@ export default function LoginForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[#777777]">Username</FormLabel>
+              <FormLabel className="text-[#777777]">Email</FormLabel>
               <FormControl>
-                <Input className="min-h-[48px]" placeholder="Enter your user name" {...field} />
+                <Input className="min-h-[48px]" placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,7 +100,11 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="mt-[42px] min-h-[48px] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]" type="submit">
+        <Button
+          disabled={loading}
+          className="mt-[42px] min-h-[48px] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          type="submit"
+        >
           Login
         </Button>
       </form>

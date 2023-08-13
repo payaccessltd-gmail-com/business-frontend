@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "password",
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         const payload = {
           username: credentials?.username as string,
           password: credentials?.password as string,
@@ -41,13 +41,15 @@ export const authOptions: NextAuthOptions = {
 
         const res = await loginApi(payload)
 
-        const user = await res.json()
+        console.log({ res, req })
+
+        const user: { username: string; token: string } = (await res.json()) as never
 
         if (!res.ok) {
           throw new Error("api could not be reached")
         }
-        // If no error and we have user data, return it
-        if (res.ok && user) {
+        // If no error and we have user data token, return it
+        if (res.ok && (user.token as string)) {
           return user
         }
 
@@ -61,6 +63,10 @@ export const authOptions: NextAuthOptions = {
       // },
 
       callbacks: {
+        async signIn(value) {
+          console.log("sign in call back", value)
+          return true
+        },
         // async jwt({ token, user, account }) {
         async jwt(value) {
           console.log(value)
