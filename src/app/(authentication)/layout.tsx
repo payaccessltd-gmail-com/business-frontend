@@ -2,7 +2,7 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Registration",
-  description: "Registration where all the business are being registereed",
+  description: "Registration where all the business are being registered",
 }
 
 export default function RegistrationLayout({

@@ -1,6 +1,4 @@
 "use client"
-
-import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "components/ui/accordion"
@@ -10,11 +8,6 @@ import { Typography } from "components/ui/Typography"
 
 import { accordianData } from "./components/accordion-data"
 
-export const metadata: Metadata = {
-  title: "Get Started",
-  description: "Business page as it should be",
-}
-
 export default function GetStarted() {
   const { data: _session } = useSession({
     required: true,
@@ -22,6 +15,11 @@ export default function GetStarted() {
       redirect("/login")
     },
   })
+
+  // eslint-disable-next-line no-lone-blocks
+  {
+    console.log(session)
+  }
   return (
     <div className="flex flex-col items-center space-y-8 pt-8">
       <div className="w-full max-w-[700px] space-y-2">

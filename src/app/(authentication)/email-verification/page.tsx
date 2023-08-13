@@ -16,7 +16,7 @@ export default function CardWithForm() {
   const router = useRouter()
   const { toast } = useToast()
   const searchParams = useSearchParams()
-  const { refetch, isLoading: activationIsLoading } = useQuery(
+  const { refetch } = useQuery(
     ["activation"],
     () =>
       activateNewMerchant({

@@ -10,7 +10,7 @@ const typographyVarients = cva(
     variants: {
       intent: {},
       level: {
-        h1: "font-bold text-2xl",
+        h1: "text-2xl font-bold",
         h2: "",
         h3: "",
         h4: "",
