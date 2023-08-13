@@ -1,18 +1,25 @@
-import { Metadata } from "next"
-import { Button } from "components/ui/Button/Button"
-import { Typography } from "components/ui/Typography"
-
+"use client"
+import { redirect } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "components/ui/accordion"
+
 import { Label } from "components/ui/label"
+import { Typography } from "components/ui/Typography"
 
 import { accordianData } from "./components/accordion-data"
 
-export const metadata: Metadata = {
-  title: "Get Started",
-  description: "Business page as it should be",
-}
-
 export default function GetStarted() {
+  // const { data: session } = useSession({
+  //   required: true,
+  //   onUnauthenticated: () => {
+  //     redirect("/login")
+  //   },
+  // })
+
+  // // eslint-disable-next-line no-lone-blocks
+  // {
+  //   console.log(session)
+  // }
   return (
     <div className="flex flex-col items-center space-y-8 pt-8">
       <div className="w-full max-w-[700px] space-y-2">
@@ -23,21 +30,21 @@ export default function GetStarted() {
         </Typography>
       </div>
 
-      <div className="accordian-section w-full max-w-[700px]">
+      <div className=" w-full max-w-[700px]">
         <Accordion type="single" collapsible className="w-full space-y-6">
           {accordianData.map(({ value, Form, Icon, description, label }) => {
             return (
-              <AccordionItem value={value} className="space-y-4 border-none">
+              <AccordionItem key={value} value={value} className="space-y-4 border-none">
                 <AccordionTrigger className="rounded-xl border-none bg-white px-4 py-3 shadow-form">
-                  <div className="row roun flex h-full w-full space-x-3 rounded-xl bg-white py-2">
+                  <div className=" flex h-full w-full space-x-3 rounded-xl bg-white py-2">
                     <Icon />
-                    <div className="spacing-y-1 flex flex-col items-start">
+                    <div className="flex flex-col items-start">
                       <Label className="text-xs font-normal">{label}</Label>
                       <Typography level="p">{description} </Typography>
                     </div>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="rounded-xl border border-none border-gray-10 bg-white px-2 py-2 shadow-form">
+                <AccordionContent className="rounded-xl border border-none border-gray-10 bg-white p-2 shadow-form">
                   <Form />
                 </AccordionContent>
               </AccordionItem>

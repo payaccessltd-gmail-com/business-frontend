@@ -1,17 +1,19 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client"
 
-import { cn } from "lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ScrollArea } from "components/ui/scroll-area"
+import { signOut } from "next-auth/react"
 import { Button } from "components/ui/button"
 import { LuChevronDown } from "react-icons/lu"
+import { ScrollArea } from "components/ui/scroll-area"
+import { cn } from "lib/utils"
 import { sidebarData } from "./sidebar-data"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   navArr: typeof sidebarData
 }
-export function Sidebar({ className, navArr }: SidebarProps) {
+export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -27,6 +29,28 @@ export function Sidebar({ className, navArr }: SidebarProps) {
               <div className="py-4" key={section}>
                 <div className="space-y-1">
                   {list.map(({ name, svgIcon, path = "/" }) => {
+                    if (name.toLowerCase() === "logout") {
+                      return (
+                        <Button
+                          asChild
+                          variant="ghost"
+                          key={name}
+                          size="lg"
+                          onClick={() => signOut()}
+                          className={cn(
+                            "w-full justify-start space-x-2 rounded-none text-white",
+                            pathname === path
+                              ? "bg-primary font-semibold hover:bg-primary-50"
+                              : "hover:bg-primary-50 hover:text-white active:text-white"
+                          )}
+                        >
+                          <Link key={path} href={path as string}>
+                            {svgIcon}
+                            <span>{name}</span>
+                          </Link>
+                        </Button>
+                      )
+                    }
                     return (
                       <Button
                         asChild

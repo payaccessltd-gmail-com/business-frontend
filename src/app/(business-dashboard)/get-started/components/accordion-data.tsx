@@ -1,6 +1,6 @@
-import PersonalInformationForm from "./personal-information-form"
-import BusinessInformationForm from "./business-information-form"
 import AccountInformationForm from "./account-information-form"
+import BusinessInformationForm from "./business-information-form"
+import PersonalInformationForm from "./personal-information-form"
 
 export const accordianData = [
   {
