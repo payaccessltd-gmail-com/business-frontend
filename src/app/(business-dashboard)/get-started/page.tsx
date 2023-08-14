@@ -9,6 +9,7 @@ import { Typography } from "components/ui/Typography"
 import { accordianData } from "./components/accordion-data"
 
 export default function GetStarted() {
+
   const session = useSession({
     required: true,
     onUnauthenticated: () => {
