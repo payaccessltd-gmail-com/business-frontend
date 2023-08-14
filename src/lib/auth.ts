@@ -36,17 +36,21 @@ export const authOptions: NextAuthOptions = {
           placeholder: "password",
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const payload = {
           username: credentials?.username as string,
           password: credentials?.password as string,
         }
 
+        if (!credentials?.username || !credentials.password) {
+          return null
+        }
+
         const res = await loginApi(payload)
 
-        console.log({ res, req })
-
         const user: { username: string; token: string } = (await res.json()) as never
+
+        console.log({ user })
 
         if (!res.ok) {
           throw new Error("api could not be reached")
@@ -59,11 +63,6 @@ export const authOptions: NextAuthOptions = {
         // Return null if user data could not be retrieved
         return null
       },
-
-      // secret: process.env.JWT_SECRET,
-      // pages: {
-      //   signIn: "/login",
-      // },
 
       callbacks: {
         async signIn(value) {
