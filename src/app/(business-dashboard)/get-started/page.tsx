@@ -9,17 +9,17 @@ import { Typography } from "components/ui/Typography"
 import { accordianData } from "./components/accordion-data"
 
 export default function GetStarted() {
-  // const { data: session } = useSession({
-  //   required: true,
-  //   onUnauthenticated: () => {
-  //     redirect("/login")
-  //   },
-  // })
 
-  // // eslint-disable-next-line no-lone-blocks
-  // {
-  //   console.log(session)
-  // }
+  const session = useSession({
+    required: true,
+    onUnauthenticated: () => {
+      redirect("/login")
+    },
+  })
+
+  // eslint-disable-next-line no-lone-blocks
+  console.log("get-started", session)
+
   return (
     <div className="flex flex-col items-center space-y-8 pt-8">
       <div className="w-full max-w-[700px] space-y-2">
