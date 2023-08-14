@@ -42,15 +42,21 @@ export const authOptions: NextAuthOptions = {
           password: credentials?.password as string,
         }
 
+        if (!credentials?.username || !credentials.password) {
+          return null
+        }
+
         const res = await loginApi(payload)
 
-        const user = await res.json()
+        const user: { username: string; token: string } = (await res.json()) as never
+
+        console.log({ user })
 
         if (!res.ok) {
           throw new Error("api could not be reached")
         }
-        // If no error and we have user data, return it
-        if (res.ok && user) {
+        // If no error and we have user data token, return it
+        if (res.ok && (user.token as string)) {
           return user
         }
 
@@ -58,12 +64,11 @@ export const authOptions: NextAuthOptions = {
         return null
       },
 
-      // secret: process.env.JWT_SECRET,
-      // pages: {
-      //   signIn: "/login",
-      // },
-
       callbacks: {
+        async signIn(value) {
+          console.log("sign in call back", value)
+          return true
+        },
         // async jwt({ token, user, account }) {
         async jwt(value) {
           console.log(value)

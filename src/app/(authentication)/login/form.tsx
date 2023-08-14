@@ -12,11 +12,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "components/ui/input"
 import { useToast } from "components/ui/use-toast"
 
-// export const metadata: Metadata = {
-//   title: "Authentication",
-//   description: "Authentication forms built using the components.",
-// }
-
 const loginFormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -84,9 +79,9 @@ export default function LoginForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[#777777]">Username</FormLabel>
+              <FormLabel className="text-[#777777]">Email</FormLabel>
               <FormControl>
-                <Input className="min-h-[48px]" placeholder="Enter your user name" {...field} />
+                <Input className="min-h-[48px]" placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
