@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import * as zod from "zod"
 import { useForm } from "react-hook-form"
+import * as zod from "zod"
 
 import { updateBusinessBankData } from "api/registration"
 import { Button } from "components/ui/button"
@@ -13,7 +13,7 @@ import { Input } from "components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 
 const accInfoFormSchema = zod.object({
-  merchantId: zod.number(),
+  emailAddress: zod.string().email(),
   businessBvn: zod.string(),
   businessBankName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -35,8 +35,12 @@ export default function AccountInformationForm() {
 
   const updateBusinessBankDataMutation = useMutation({
     mutationFn: updateBusinessBankData,
-    onSuccess: () => {
-      return null
+    onSuccess: (data, variables, context) => {
+      console.log({ data, variables, context })
+    },
+
+    onError: (error, variables, context) => {
+      console.log({ error, variables, context })
     },
     onMutate: () => {
       return null

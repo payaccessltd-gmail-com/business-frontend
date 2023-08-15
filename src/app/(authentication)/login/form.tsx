@@ -22,8 +22,8 @@ const loginFormSchema = z.object({
 })
 
 export default function LoginForm() {
-  const { toast } = useToast()
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
@@ -38,7 +38,6 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     try {
       setLoading(true)
-
       const res = await signIn("credentials", {
         redirect: false,
         username: values.username,
@@ -49,8 +48,16 @@ export default function LoginForm() {
       setLoading(false)
 
       if (!res?.error) {
+        localStorage.setItem("email", values.username)
         router.push(callbackUrl)
+      } else if (res.error === "fetch failed") {
+        toast({
+          variant: "destructive",
+          title: "Service Unreachable",
+          description: "Request failed to reach the service resource",
+        })
       } else {
+        console.log(res?.error)
         toast({
           variant: "destructive",
           title: "invalid email or password",

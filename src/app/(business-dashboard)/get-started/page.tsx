@@ -9,7 +9,6 @@ import { Typography } from "components/ui/Typography"
 import { accordianData } from "./components/accordion-data"
 
 export default function GetStarted() {
-
   const session = useSession({
     required: true,
     onUnauthenticated: () => {
@@ -17,8 +16,7 @@ export default function GetStarted() {
     },
   })
 
-  // eslint-disable-next-line no-lone-blocks
-  console.log("get-started", session)
+  console.log({ session })
 
   return (
     <div className="flex flex-col items-center space-y-8 pt-8">

@@ -1,22 +1,25 @@
 "use client"
 
+import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import * as zod from "zod"
-import { useForm } from "react-hook-form"
 import { format } from "date-fns"
+import { useForm } from "react-hook-form"
+import * as zod from "zod"
 
-import { cn } from "lib/utils"
 import { updateMerchantBioData } from "api/registration"
 import { Button } from "components/ui/button"
+import { Calendar } from "components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { Calendar } from "components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { useToast } from "components/ui/use-toast"
+import { cn } from "lib/utils"
 
 const personalInfoFormSchema = zod.object({
+  emailAddress: zod.string().email(),
   country: zod.string(),
   firstName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -45,15 +48,29 @@ const personalInfoFormSchema = zod.object({
 })
 
 export default function PersonalInformationForm() {
+  const { toast } = useToast()
   const personalInfoForm = useForm<zod.infer<typeof personalInfoFormSchema>>({
-    defaultValues: {},
-    resolver: zodResolver(personalInfoFormSchema),
+    // resolver: zodResolver(personalInfoFormSchema),
+    defaultValues: {
+      emailAddress: localStorage.getItem("email") || (localStorage.getItem("email") as string),
+    },
   })
 
   const updateMerchantBioDataMutation = useMutation({
     mutationFn: updateMerchantBioData,
-    onSuccess: () => {
-      return null
+    onSuccess: async (data) => {
+      const res: { statusCode: string; message: string } = (await data.json()) as {
+        statusCode: string
+        message: string
+      }
+
+      if (res.statusCode === "403") {
+        toast({ variant: "destructive", title: res.statusCode, description: res.message })
+      }
+    },
+
+    onError: (error, variables, context) => {
+      console.log({ error, variables, context })
     },
     onMutate: () => {
       return null
@@ -61,13 +78,32 @@ export default function PersonalInformationForm() {
   })
 
   const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
-    // merchantRegMutation.mutate(values)
-    console.log(values)
+    const emailAddress = localStorage.getItem("email") || (localStorage.getItem("email") as string)
+    const updatedData = { ...values, emailAddress: emailAddress }
+    updateMerchantBioDataMutation.mutate(updatedData)
   }
 
   return (
     <Form {...personalInfoForm}>
-      <form onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
+      <form
+        id="personalInformation"
+        onSubmit={personalInfoForm.handleSubmit(onSubmit)}
+        className="space-y-8 border-gray-10 p-8"
+      >
+        <FormField
+          name="emailAddress"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormLabel>Email address</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter email address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="flex flex-row gap-4">
           <FormField
             name="firstName"
@@ -125,7 +161,7 @@ export default function PersonalInformationForm() {
             control={personalInfoForm.control}
             name="dateOfBirth"
             render={({ field }) => (
-              <FormItem className="item flex w-full flex-col">
+              <FormItem className="flex w-full flex-col">
                 <FormLabel className="w-full">Date of birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild className="w-full">
@@ -169,6 +205,7 @@ export default function PersonalInformationForm() {
                     <Calendar
                       mode="single"
                       selected={field.value}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onSelect={field.onChange as any}
                       disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                       initialFocus
@@ -198,7 +235,7 @@ export default function PersonalInformationForm() {
                   <SelectItem value="driversLicenses">Drivers lincenses</SelectItem>
                   <SelectItem value="NATIONAL_ID">National ID</SelectItem>
                   <SelectItem value="INTL_PASSPORT">International passport</SelectItem>
-                  <SelectItem value="VOTERS_CARD">Voter's card</SelectItem>
+                  <SelectItem value="VOTERS_CARD">Voter&apos;`s card</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -234,10 +271,12 @@ export default function PersonalInformationForm() {
           )}
         />
 
-        <Button className="w-[380]" type="submit" size="default">
+        <Button disabled={updateMerchantBioDataMutation.isLoading} className="w-full" type="submit" size="default">
           Save
         </Button>
       </form>
+
+      <DevTool control={personalInfoForm.control} />
     </Form>
   )
 }
