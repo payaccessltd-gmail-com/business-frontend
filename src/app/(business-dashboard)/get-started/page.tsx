@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "co
 import { Progress } from "components/ui/progress"
 import { Label } from "components/ui/label"
 import { Typography } from "components/ui/Typography"
+import { Button } from "components/ui/button"
 import { accordianData } from "./components/accordion-data"
 import { useState } from "react"
 
@@ -81,6 +82,12 @@ export default function GetStarted() {
             })}
           </Accordion>
         </div>
+        <Button className="h-[48px] w-[70%] self-center" type="submit" size="default">
+          Submit for Review
+        </Button>
+        <Typography level="p" className="text-center text-[14px] font-normal leading-normal text-[#333333] ">
+          Change to a registered <span className="font-[600] text-[#23AAE1]">Business Account</span>
+        </Typography>
       </div>
       <div className="mt-[113px] flex w-[30%] flex-col items-center">
         <div className="flex flex-row items-center gap-[10px]">
