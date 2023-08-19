@@ -1,6 +1,7 @@
 import AccountInformationForm from "./account-information-form"
 import BusinessInformationForm from "./business-information-form"
 import PersonalInformationForm from "./personal-information-form"
+import TermsConditionForm from "./terms-condition-form"
 import { LuUser, LuBriefcase, LuCreditCard, LuHelpCircle } from "react-icons/lu"
 
 export const accordianData = [
@@ -88,7 +89,7 @@ export const accordianData = [
     value: "4",
     label: "Teams and Condition",
     description: "Accept our conditions",
-    Form: PersonalInformationForm,
+    Form: TermsConditionForm,
     Icon: (value: boolean | any) => (
       <LuHelpCircle
         className={`text-[24px]  group-hover:text-[#23AAE1] ${value ? "text-[#23AAE1]" : "text-[#777777]"}`}
