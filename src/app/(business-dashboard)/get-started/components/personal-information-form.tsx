@@ -1,13 +1,12 @@
 "use client"
 
 import { DevTool } from "@hookform/devtools"
-import { zodResolver } from "@hookform/resolvers/zod"
+// import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { format } from "date-fns"
-import { LuCalendar } from "react-icons/lu"
-import { HiOutlineCloudUpload } from "react-icons/hi"
-import { cn } from "lib/utils"
 import { useForm } from "react-hook-form"
+import { HiOutlineCloudUpload } from "react-icons/hi"
+import { LuCalendar } from "react-icons/lu"
 import * as zod from "zod"
 
 import { updateMerchantBioData } from "api/registration"
@@ -15,11 +14,9 @@ import { Button } from "components/ui/button"
 import { Calendar } from "components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
-import { Typography } from "components/ui/Typography"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { Calendar } from "components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { Typography } from "components/ui/Typography"
 import { useToast } from "components/ui/use-toast"
 import { cn } from "lib/utils"
 
@@ -166,7 +163,7 @@ export default function PersonalInformationForm() {
             control={personalInfoForm.control}
             name="dateOfBirth"
             render={({ field }) => (
-              <FormItem className="item flex w-full flex-col">
+              <FormItem className="flex w-full flex-col">
                 <FormLabel className="w-full text-[#555555]">Date of birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild className="w-full">
@@ -259,7 +256,12 @@ export default function PersonalInformationForm() {
             </FormItem>
           )}
         />
-        <Button disabled={updateMerchantBioDataMutation.isLoading} className="h-[48px] w-[70%] self-center" type="submit" size="default">
+        <Button
+          disabled={updateMerchantBioDataMutation.isLoading}
+          className="h-[48px] w-[70%] self-center"
+          type="submit"
+          size="default"
+        >
           Save
         </Button>
       </form>

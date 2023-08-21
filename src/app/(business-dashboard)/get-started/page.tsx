@@ -1,13 +1,13 @@
 "use client"
 import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "components/ui/accordion"
-import { Progress } from "components/ui/progress"
-import { Label } from "components/ui/label"
-import { Typography } from "components/ui/Typography"
-import { Button } from "components/ui/button"
-import { accordianData } from "./components/accordion-data"
 import { useState } from "react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "components/ui/accordion"
+import { Button } from "components/ui/button"
+import { Label } from "components/ui/label"
+import { Progress } from "components/ui/progress"
+import { Typography } from "components/ui/Typography"
+import { accordianData } from "./components/accordion-data"
 
 export default function GetStarted() {
   const session = useSession({
@@ -27,6 +27,7 @@ export default function GetStarted() {
     }
   }
 
+  console.log({ session })
 
   return (
     <div className="flex w-full flex-row">
@@ -53,6 +54,7 @@ export default function GetStarted() {
                       {Icon(trigger === value ? true : false)}
                       <div className="flex flex-col items-start gap-2">
                         <Label
+                          // eslint-disable-next-line tailwindcss/no-contradicting-classname
                           className={`font-[inter] text-[14px] font-[600] leading-4 group-hover:text-[#1D8EBB] ${
                             trigger === value ? "text-[#1D8EBB]" : "text-[#353F50]"
                           }`}
