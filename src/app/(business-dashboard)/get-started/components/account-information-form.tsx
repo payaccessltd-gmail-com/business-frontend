@@ -53,7 +53,7 @@ export default function AccountInformationForm() {
 
   return (
     <Form {...acctInfoForm}>
-      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8 shadow-form">
+      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8 p-8">
         <FormField
           name="businessBvn"
           control={acctInfoForm.control}
@@ -70,12 +70,12 @@ export default function AccountInformationForm() {
           )}
         />
 
-        <div className="flex flex-row">
+        <div className="flex w-full flex-row gap-[44px]">
           <FormField
             name="businessBankName"
             control={acctInfoForm.control}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Bank name</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
@@ -97,7 +97,7 @@ export default function AccountInformationForm() {
             name="businessAccountNumber"
             control={acctInfoForm.control}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter account number" {...field} />
@@ -122,7 +122,7 @@ export default function AccountInformationForm() {
           )}
         />
 
-        <Button className="w-[380]" type="submit" size="default">
+        <Button className="h-[48px] w-[70%] self-center" type="submit" size="default">
           Save
         </Button>
       </form>
