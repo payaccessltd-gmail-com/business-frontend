@@ -10,17 +10,12 @@ import { accordianData } from "./components/accordion-data"
 import { useState } from "react"
 
 export default function GetStarted() {
-  // const { data: session } = useSession({
-  //   required: true,
-  //   onUnauthenticated: () => {
-  //     redirect("/login")
-  //   },
-  // })
-
-  // // eslint-disable-next-line no-lone-blocks
-  // {
-  //   console.log(session)
-  // }
+  const session = useSession({
+    required: true,
+    onUnauthenticated: () => {
+      redirect("/login")
+    },
+  })
 
   const [trigger, setTrigger] = useState<string | null>(null)
 
@@ -31,6 +26,7 @@ export default function GetStarted() {
       setTrigger(value)
     }
   }
+
 
   return (
     <div className="flex w-full flex-row">

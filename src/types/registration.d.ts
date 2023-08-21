@@ -21,15 +21,15 @@ declare namespace API {
     emailAddress: string
     firstName: string
     lastName: string
-    gender: "MALE" | "FEMALE" | "OTHERS"
-    dateOfBirth: string
+    gender: "MALE" | "FEMALE" | "OTHERS" | string
+    dateOfBirth: string | unknown
     identificationDocument: string
     identificationNumber: string
     identificationDocumentPath: string
   }
 
   type MerchantAccountDataDTO = {
-    merchantId: number
+    emailAddress: string
     businessBvn: string
     businessBankName: string
     businessAccountNumber: string
@@ -37,7 +37,7 @@ declare namespace API {
   }
 
   type MerchantBusinessDataDTO = {
-    merchantId: number
+    emailAddress: string
     businessDescription: string
     businessEmail: string
     primaryMobile: string

@@ -10,6 +10,10 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 
+  jwt: {
+    signingKey: process.env.NEXTAUTH_SECRET,
+  },
+
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
@@ -28,12 +32,10 @@ export const authOptions: NextAuthOptions = {
         username: {
           label: "Email",
           type: "email",
-          placeholder: "jsmith@example.com",
         },
         password: {
           label: "Password",
           type: "password",
-          placeholder: "password",
         },
       },
       async authorize(credentials) {
@@ -42,49 +44,43 @@ export const authOptions: NextAuthOptions = {
           password: credentials?.password as string,
         }
 
+        if (!credentials?.username || !credentials.password) {
+          return null
+        }
+
         const res = await loginApi(payload)
 
-        const user = await res.json()
+        const user: { username: string; token: string } = (await res.json()) as never
 
         if (!res.ok) {
           throw new Error("api could not be reached")
         }
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user
+        // If no error and we have user data token, return it
+        if (res.ok && (user.token as string)) {
+          console.log(user)
+          delete user.token
+          return { ...user, email: user.username, id: user.username }
         }
 
         // Return null if user data could not be retrieved
         return null
       },
 
-      // secret: process.env.JWT_SECRET,
-      // pages: {
-      //   signIn: "/login",
-      // },
-
       callbacks: {
-        // async jwt({ token, user, account }) {
-        async jwt(value) {
-          console.log(value)
-          // if (account && user) {
-          //   return {
-          //     ...token,
-          //     accessToken: user.token,
-          //     refreshToken: user.refreshToken,
-          //   }
-          // }
-
-          return token
+        async signIn({ user, account, profile, username, credentials }) {
+          console.log({ user, account, profile, username, credentials })
+          return true
         },
-
+        async redirect({ url, baseUrl }) {
+          console.log({ url })
+          return baseUrl
+        },
         async session({ session, token }) {
-          console.log({ session, token })
-          session.user.accessToken = token.accessToken
-          session.user.refreshToken = token.refreshToken
-          session.user.accessTokenExpires = token.accessTokenExpires
-
+          console.log({ session, token }, "---------------------------")
           return session
+        },
+        async jwt({ token }) {
+          return token
         },
       },
     }),
