@@ -1,22 +1,27 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
+import { DevTool } from "@hookform/devtools"
+// import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import * as zod from "zod"
-import { useForm } from "react-hook-form"
 import { format } from "date-fns"
+import { useForm } from "react-hook-form"
+import { HiOutlineCloudUpload } from "react-icons/hi"
+import { LuCalendar } from "react-icons/lu"
+import * as zod from "zod"
 
-import { cn } from "lib/utils"
 import { updateMerchantBioData } from "api/registration"
 import { Button } from "components/ui/button"
+import { Calendar } from "components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { Calendar } from "components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { Typography } from "components/ui/Typography"
+import { useToast } from "components/ui/use-toast"
+import { cn } from "lib/utils"
 
 const personalInfoFormSchema = zod.object({
+  emailAddress: zod.string().email(),
   country: zod.string(),
   firstName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -45,15 +50,29 @@ const personalInfoFormSchema = zod.object({
 })
 
 export default function PersonalInformationForm() {
+  const { toast } = useToast()
   const personalInfoForm = useForm<zod.infer<typeof personalInfoFormSchema>>({
-    defaultValues: {},
-    resolver: zodResolver(personalInfoFormSchema),
+    // resolver: zodResolver(personalInfoFormSchema),
+    defaultValues: {
+      emailAddress: localStorage.getItem("email") || (localStorage.getItem("email") as string),
+    },
   })
 
   const updateMerchantBioDataMutation = useMutation({
     mutationFn: updateMerchantBioData,
-    onSuccess: () => {
-      return null
+    onSuccess: async (data) => {
+      const res: { statusCode: string; message: string } = (await data.json()) as {
+        statusCode: string
+        message: string
+      }
+
+      if (res.statusCode === "403") {
+        toast({ variant: "destructive", title: res.statusCode, description: res.message })
+      }
+    },
+
+    onError: (error, variables, context) => {
+      console.log({ error, variables, context })
     },
     onMutate: () => {
       return null
@@ -61,20 +80,39 @@ export default function PersonalInformationForm() {
   })
 
   const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
-    // merchantRegMutation.mutate(values)
-    console.log(values)
+    const emailAddress = localStorage.getItem("email") || (localStorage.getItem("email") as string)
+    const updatedData = { ...values, emailAddress: emailAddress }
+    updateMerchantBioDataMutation.mutate(updatedData)
   }
 
   return (
     <Form {...personalInfoForm}>
-      <form onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
+      <form
+        id="personalInformation"
+        onSubmit={personalInfoForm.handleSubmit(onSubmit)}
+        className="space-y-8 border-gray-10 p-8"
+      >
+        <FormField
+          name="emailAddress"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormLabel>Email address</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter email address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="flex flex-row gap-4">
           <FormField
             name="firstName"
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>First name</FormLabel>
+                <FormLabel className="text-[#555555]">First name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter first name" {...field} />
                 </FormControl>
@@ -88,7 +126,7 @@ export default function PersonalInformationForm() {
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Last name</FormLabel>
+                <FormLabel className="text-[#555555]">Last name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter last name" {...field} />
                 </FormControl>
@@ -104,7 +142,7 @@ export default function PersonalInformationForm() {
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Gender</FormLabel>
+                <FormLabel className="text-[#555555]">Gender</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -125,42 +163,20 @@ export default function PersonalInformationForm() {
             control={personalInfoForm.control}
             name="dateOfBirth"
             render={({ field }) => (
-              <FormItem className="item flex w-full flex-col">
-                <FormLabel className="w-full">Date of birth</FormLabel>
+              <FormItem className="flex w-full flex-col">
+                <FormLabel className="w-full text-[#555555]">Date of birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild className="w-full">
                     <FormControl>
                       <Button
                         variant={"outline"}
-                        className={cn("pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                        className={cn(
+                          "flex flex-row items-center justify-start font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
                       >
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M5 5C4.44772 5 4 5.44772 4 6V20C4 20.5523 4.44772 21 5 21H19C19.5523 21 20 20.5523 20 20V6C20 5.44772 19.5523 5 19 5H5ZM2 6C2 4.34315 3.34315 3 5 3H19C20.6569 3 22 4.34315 22 6V20C22 21.6569 20.6569 23 19 23H5C3.34315 23 2 21.6569 2 20V6Z"
-                            fill="#07222D"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M16 1C16.5523 1 17 1.44772 17 2V6C17 6.55228 16.5523 7 16 7C15.4477 7 15 6.55228 15 6V2C15 1.44772 15.4477 1 16 1Z"
-                            fill="#07222D"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M8 1C8.55228 1 9 1.44772 9 2V6C9 6.55228 8.55228 7 8 7C7.44772 7 7 6.55228 7 6V2C7 1.44772 7.44772 1 8 1Z"
-                            fill="#07222D"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M2 10C2 9.44772 2.44772 9 3 9H21C21.5523 9 22 9.44772 22 10C22 10.5523 21.5523 11 21 11H3C2.44772 11 2 10.5523 2 10Z"
-                            fill="#07222D"
-                          />
-                        </svg>
+                        <LuCalendar className="mr-2" />
+                        {field.value ? format(field.value, "PPP") : <span>DD/MM/YY</span>}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -169,6 +185,7 @@ export default function PersonalInformationForm() {
                     <Calendar
                       mode="single"
                       selected={field.value}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onSelect={field.onChange as any}
                       disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                       initialFocus
@@ -187,7 +204,7 @@ export default function PersonalInformationForm() {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Identification Document</FormLabel>
+              <FormLabel className="text-[#555555]">Identification Document</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -198,7 +215,7 @@ export default function PersonalInformationForm() {
                   <SelectItem value="driversLicenses">Drivers lincenses</SelectItem>
                   <SelectItem value="NATIONAL_ID">National ID</SelectItem>
                   <SelectItem value="INTL_PASSPORT">International passport</SelectItem>
-                  <SelectItem value="VOTERS_CARD">Voter's card</SelectItem>
+                  <SelectItem value="VOTERS_CARD">Voter&apos;`s card</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -211,7 +228,7 @@ export default function PersonalInformationForm() {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Identification Number</FormLabel>
+              <FormLabel className="text-[#555555]">Identification Number</FormLabel>
               <FormControl>
                 <Input placeholder="Enter identification number" {...field} />
               </FormControl>
@@ -226,18 +243,29 @@ export default function PersonalInformationForm() {
           render={({ field }) => (
             <FormItem>
               <FormDescription>Please upload identification document.</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography level="p" className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                </Typography>
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Enter identification number" {...field} type="file" />
+                <Input className="hidden" placeholder="Enter identification number" {...field} type="file" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <Button className="w-[380]" type="submit" size="default">
+        <Button
+          disabled={updateMerchantBioDataMutation.isLoading}
+          className="h-[48px] w-[70%] self-center"
+          type="submit"
+          size="default"
+        >
           Save
         </Button>
       </form>
+      <DevTool control={personalInfoForm.control} />
     </Form>
   )
 }
