@@ -41,16 +41,15 @@ export const authOptions: NextAuthOptions = {
 
         const res = await loginApi(payload)
 
-        const user: { username: string; token: string } = (await res.json()) as never
+        const user: { subject: string; token: string } = (await res.json()) as never
 
         if (!res.ok) {
           throw new Error("api could not be reached")
         }
         // If no error and we have user data token, return it
         if (res.ok && (user.token as string)) {
-          console.log(user)
-          delete user.token
-          return { ...user, email: user.username, id: user.username }
+          // return { id: "1", name: "J Smith", email: "jsmith@example.com" }
+          return { id: "1", name: user.subject, email: user.subject, token: user.token }
         }
 
         // Return null if user data could not be retrieved
