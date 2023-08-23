@@ -10,15 +10,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 
-  jwt: {
-    signingKey: process.env.NEXTAUTH_SECRET,
-  },
-
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
-  },
-
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -50,16 +41,15 @@ export const authOptions: NextAuthOptions = {
 
         const res = await loginApi(payload)
 
-        const user: { username: string; token: string } = (await res.json()) as never
+        const user: { subject: string; token: string } = (await res.json()) as never
 
         if (!res.ok) {
           throw new Error("api could not be reached")
         }
         // If no error and we have user data token, return it
         if (res.ok && (user.token as string)) {
-          console.log(user)
-          delete user.token
-          return { ...user, email: user.username, id: user.username }
+          // return { id: "1", name: "J Smith", email: "jsmith@example.com" }
+          return { id: "1", name: user.subject, email: user.subject, token: user.token }
         }
 
         // Return null if user data could not be retrieved
@@ -86,6 +76,16 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
+
+  jwt: {
+    signingKey: process.env.NEXTAUTH_SECRET,
+    encryption: true,
+  },
+
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+  },
 
   // Enable debug messages in the console if you are having problems
   debug: process.env.NODE_ENV === "development",

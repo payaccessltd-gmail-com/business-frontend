@@ -1,9 +1,28 @@
+"use client"
+
 import { Metadata } from "next"
+import { Button } from "components/ui/button"
+import { Typography } from "components/ui/Typography"
+import SubNav from "./components/sub-nav"
+import * as React from "react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "components/ui/dropdown-menu"
+import CreateInvoice from "./components/create-invoice"
+
 export const metadata: Metadata = {
-  title: "Get Started",
-  description: "Business page as it should be",
+  title: "Transaction",
+  description: "Transaction page",
 }
 
-export default function GetStarted() {
-  return <main>coming soon</main>
+const Transaction = () => {
+  const [position, setPosition] = React.useState("bottom")
+  return (
+    <div className="flex h-full w-full flex-col items-center pt-[70px]">
+      <SubNav />
+      <div className="mt-[150px]">
+        <CreateInvoice />
+      </div>
+    </div>
+  )
 }
+
+export default Transaction
