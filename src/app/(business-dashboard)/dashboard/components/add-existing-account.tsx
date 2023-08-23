@@ -1,17 +1,13 @@
 "use client"
 
-import { Input } from "components/ui/input"
-import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Button } from "components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Input } from "components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 import { toast } from "components/ui/use-toast"
-import { Label } from "components/ui/label"
-import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
-import { Typography } from "components/ui/Typography"
-import { Button } from "components/ui/button"
 
 const FormSchema = z.object({
   email: z
@@ -42,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="flex w-[493px] flex-col items-start justify-center rounded-[6px] bg-[#fff] px-6 py-6">
+      <div className="flex w-[493px] flex-col items-start justify-center rounded-[6px] bg-[#fff] p-6">
         <Form {...form}>
           <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField

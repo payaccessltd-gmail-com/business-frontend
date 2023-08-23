@@ -1,11 +1,12 @@
 "use client"
 
+import { ReactNode } from "react"
 import { Label } from "components/ui/label"
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
-import { ReactNode } from "react"
 
 type toggleStateType = {
   createBusiness?: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setCreateBusiness?: ReactNode | any
 }
 
