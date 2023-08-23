@@ -10,15 +10,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 
-  jwt: {
-    signingKey: process.env.NEXTAUTH_SECRET,
-  },
-
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
-  },
-
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
@@ -86,6 +77,16 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
+
+  jwt: {
+    signingKey: process.env.NEXTAUTH_SECRET,
+    encryption: true,
+  },
+
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+  },
 
   // Enable debug messages in the console if you are having problems
   debug: process.env.NODE_ENV === "development",
