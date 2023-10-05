@@ -1,8 +1,8 @@
+import { LuBriefcase, LuCreditCard, LuHelpCircle, LuUser } from "react-icons/lu"
 import AccountInformationForm from "./account-information-form"
 import BusinessInformationForm from "./business-information-form"
 import PersonalInformationForm from "./personal-information-form"
 import TermsConditionForm from "./terms-condition-form"
-import { LuUser, LuBriefcase, LuCreditCard, LuHelpCircle } from "react-icons/lu"
 
 export const accordianData = [
   {
@@ -10,6 +10,7 @@ export const accordianData = [
     label: "Personal Information",
     description: "Detailed information about you ",
     Form: PersonalInformationForm,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Icon: (value: boolean | any) => (
       <LuUser className={`text-[24px]  group-hover:text-[#23AAE1] ${value ? "text-[#23AAE1]" : "text-[#777777]"}`} />
     ),
@@ -35,6 +36,7 @@ export const accordianData = [
     label: "Business Information",
     description: "Details about your business ",
     Form: BusinessInformationForm,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Icon: (value: boolean | any) => (
       <LuBriefcase
         className={`text-[24px]  group-hover:text-[#23AAE1] ${value ? "text-[#23AAE1]" : "text-[#777777]"}`}
@@ -62,6 +64,7 @@ export const accordianData = [
     label: "Account Information",
     description: "Bank details",
     Form: AccountInformationForm,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Icon: (value: boolean | any) => (
       <LuCreditCard
         className={`text-[24px]  group-hover:text-[#23AAE1] ${value ? "text-[#23AAE1]" : "text-[#777777]"}`}
@@ -90,6 +93,7 @@ export const accordianData = [
     label: "Teams and Condition",
     description: "Accept our conditions",
     Form: TermsConditionForm,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Icon: (value: boolean | any) => (
       <LuHelpCircle
         className={`text-[24px]  group-hover:text-[#23AAE1] ${value ? "text-[#23AAE1]" : "text-[#777777]"}`}

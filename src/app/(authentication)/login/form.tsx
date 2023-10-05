@@ -12,11 +12,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "components/ui/input"
 import { useToast } from "components/ui/use-toast"
 
-// export const metadata: Metadata = {
-//   title: "Authentication",
-//   description: "Authentication forms built using the components.",
-// }
-
 const loginFormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -27,8 +22,8 @@ const loginFormSchema = z.object({
 })
 
 export default function LoginForm() {
-  const { toast } = useToast()
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
@@ -43,7 +38,6 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     try {
       setLoading(true)
-
       const res = await signIn("credentials", {
         redirect: false,
         username: values.username,
@@ -54,8 +48,16 @@ export default function LoginForm() {
       setLoading(false)
 
       if (!res?.error) {
+        localStorage.setItem("email", values.username)
         router.push(callbackUrl)
+      } else if (res.error === "fetch failed") {
+        toast({
+          variant: "destructive",
+          title: "Service Unreachable",
+          description: "Request failed to reach the service resource",
+        })
       } else {
+        console.log(res?.error)
         toast({
           variant: "destructive",
           title: "invalid email or password",
@@ -83,10 +85,12 @@ export default function LoginForm() {
           control={loginForm.control}
           name="username"
           render={({ field }) => (
+
             <FormItem className="w-full">
               <FormLabel className="text-[#777777] ">Username</FormLabel>
+
               <FormControl>
-                <Input className="min-h-[48px]" placeholder="Enter your user name" {...field} />
+                <Input className="min-h-[48px]" placeholder="Enter your email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

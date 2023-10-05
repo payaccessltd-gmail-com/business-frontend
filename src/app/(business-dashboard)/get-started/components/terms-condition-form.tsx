@@ -1,30 +1,28 @@
 "use client"
-import { zodResolver } from "@hookform/resolvers/zod"
+// import { zodResolver } from "@hookform/resolvers/zod"
+// import * as zod from "zod"
 import { Checkbox } from "components/ui/checkbox"
-import * as zod from "zod"
-import { Typography } from "components/ui/Typography"
 import { ScrollArea } from "components/ui/scroll-area"
+import { Typography } from "components/ui/Typography"
 
-const merchantRegFormSchema = zod.object({
-  country: zod.string(),
-  firstName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
+// const merchantRegFormSchema = zod.object({
+//   country: zod.string(),
+//   firstName: zod.string().min(2, {
+//     message: "First name must be at least 2 characters.",
+//   }),
+//   lastName: zod.string().min(2, {
+//     message: "Last name must be at least 2 characters.",
+//   }),
 
-  emailAddress: zod.string().email({ message: "Invalid email address" }),
-  password: zod.string().min(2, {
-    message: "",
-  }),
-  businessName: zod.string(),
-  businessType: zod.string(),
-  businessCategory: zod.string(),
-  isSoftwareDeveloper: zod.string(),
-})
-;("react")
-
+//   emailAddress: zod.string().email({ message: "Invalid email address" }),
+//   password: zod.string().min(2, {
+//     message: "",
+//   }),
+//   businessName: zod.string(),
+//   businessType: zod.string(),
+//   businessCategory: zod.string(),
+//   isSoftwareDeveloper: zod.string(),
+// })
 const TermsConditionForm = () => {
   return (
     <div className="flex flex-col items-center pb-[50px] pl-[49px] pr-[18px] pt-[21px]">

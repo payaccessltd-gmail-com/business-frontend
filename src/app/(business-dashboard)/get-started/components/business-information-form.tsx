@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import * as zod from "zod"
 import { useForm } from "react-hook-form"
+import * as zod from "zod"
 
 import { updateMerchantBusinessData } from "api/registration"
 import { Button } from "components/ui/button"
@@ -47,8 +47,10 @@ export default function BusinessInformationForm() {
   })
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
-    updateMerchantBusinessDataMutation.mutate(values)
-    console.log(values)
+    const emailAddress = localStorage.getItem("emailAddress") as string
+
+    const updatedValue = { emailAddress, ...values }
+    updateMerchantBusinessDataMutation.mutate(updatedValue)
   }
 
   return (
