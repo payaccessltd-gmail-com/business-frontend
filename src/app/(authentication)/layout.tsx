@@ -13,8 +13,8 @@ export default function RegistrationLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="relative h-screen font-raleway">
-      <svg
+    <div className="relative h-screen">
+      {/* <svg
         className="absolute -z-10 max-h-screen"
         width="100%"
         height="662"
@@ -53,9 +53,9 @@ export default function RegistrationLayout({
             <stop offset="1" stopColor="#2682A1" />
           </linearGradient>
         </defs>
-      </svg>
+      </svg> */}
 
-      <svg
+      {/* <svg
         className="absolute top-16 -z-10 h-screen max-h-screen"
         width="100%"
         height="1065"
@@ -89,7 +89,7 @@ export default function RegistrationLayout({
             <feGaussianBlur stdDeviation="50" result="effect1_foregroundBlur_1583_88213" />
           </filter>
         </defs>
-      </svg>
+      </svg> */}
       {children}
     </div>
   )

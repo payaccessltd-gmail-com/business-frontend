@@ -12,5 +12,5 @@ export default function RegistrationLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <div className="relative h-screen bg-gradient-body font-raleway">{children}</div>
+  return <div className="w-full h-full">{children}</div>
 }

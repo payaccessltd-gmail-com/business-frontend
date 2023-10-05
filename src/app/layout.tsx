@@ -1,5 +1,5 @@
 import { Metadata } from "next"
-import { Raleway } from "next/font/google"
+import { Raleway, DM_Sans, Poppins, Plus_Jakarta_Sans } from "next/font/google"
 import localFont from "next/font/local"
 
 import "@styles/globals.css"
@@ -19,6 +19,24 @@ const raleway = Raleway({
   subsets: ["latin"],
   variable: "--font-raleway",
 })
+const dmsans = DM_Sans({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-DMSans",
+  weight: "400"
+})
+const poppins = Poppins({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-Poppins",
+  weight: "400",
+})
+const PlusJakartaSans = Plus_Jakarta_Sans({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-Plus_Jakarta_Sans",
+  weight: "400",
+})
 
 const sfpro = localFont({
   display: "swap",
@@ -34,6 +52,14 @@ const sfpro = localFont({
     { path: "../assets/fonts/sf-pro-text-heavy-webfont.woff2", weight: "900", style: "normal" },
   ],
 })
+const CenturyGothic = localFont({
+  display: "swap",
+  variable: "--font-century-gothic",
+  src: [
+    { path: "../assets/fonts/century-gothic/CenturyGothic-Bold.woff", style: "normal" },
+    { path: "../assets/fonts/century-gothic/CenturyGothic.woff2", style: "normal" },
+  ],
+})
 export default function RootLayout({
   // Layouts must accept a children prop.
   // This will be populated with nested layouts or pages
@@ -42,8 +68,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${raleway.variable} ${sfpro.variable} h-full scroll-smooth antialiased`}>
-      <body className="font-raleway">
+    <html
+      lang="en"
+      className={`${PlusJakartaSans.variable} ${CenturyGothic.variable} ${poppins.variable} ${dmsans.variable} ${raleway.variable} ${sfpro.variable} h-full scroll-smooth antialiased`}
+    >
+      <body className="font-CenturyGothic">
         <AppSessionProvider>
           <Provider>{children}</Provider>
         </AppSessionProvider>

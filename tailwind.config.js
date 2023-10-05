@@ -176,6 +176,10 @@ module.exports = {
       fontFamily: {
         raleway: "var(--font-raleway)",
         sfpro: "var(--font-sfpro)",
+        CenturyGothic: "var(--font-century-gothic)",
+        DMSans: "var(--font-DMSans)",
+        Poppins: "var(--font-Poppins)",
+        PlusJakartaSans:"var(--font-Plus_Jakarta_Sans)"
       },
 
       backgroundImage: {
@@ -183,6 +187,7 @@ module.exports = {
         "gradient-blue":
           "linear-gradient(126deg, rgba(191, 239, 255, 0.20) 0%, rgba(205, 242, 255, 0.38) 19.27%, #FFF 84.90%, #2682A1 100%)",
         "gradient-body": "linear-gradient(126deg, #FFF 0%, #FFF 94.74%, rgba(248, 126, 25, 0.00) 100%)",
+        
       },
       borderWidth: {
         DEFAULT: "1px",

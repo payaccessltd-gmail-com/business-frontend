@@ -77,14 +77,14 @@ export default function LoginForm() {
     <Form {...loginForm}>
       <form
         onSubmit={loginForm.handleSubmit(onSubmit)}
-        className="w-full rounded-lg bg-white px-[40px] py-[32px] shadow-form"
+        className="w-full rounded-lg bg-white pb-[40px] flex flex-col items-center"
       >
         <FormField
           control={loginForm.control}
           name="username"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[#777777]">Username</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777] ">Username</FormLabel>
               <FormControl>
                 <Input className="min-h-[48px]" placeholder="Enter your user name" {...field} />
               </FormControl>
@@ -96,7 +96,7 @@ export default function LoginForm() {
           control={loginForm.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="mt-[25px]">
+            <FormItem className="mt-[25px] w-full">
               <FormLabel className="text-[#777777]">Enter password</FormLabel>
               <FormControl>
                 <Input className="min-h-[48px]" placeholder="Password" {...field} type="password" />
@@ -107,7 +107,7 @@ export default function LoginForm() {
         />
         <Button
           disabled={loading}
-          className="mt-[42px] min-h-[48px] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          className="mt-[42px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
           Login

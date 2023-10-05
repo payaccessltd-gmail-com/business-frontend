@@ -1,8 +1,8 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "ResetPassword",
-  description: "Enter email to reset password",
+  title: "reset password",
+  description: "reset password",
 }
 
 export default function RegistrationLayout({
@@ -12,5 +12,5 @@ export default function RegistrationLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <div className="relative h-screen bg-gradient-body font-raleway">{children}</div>
+  return <div className="w-full h-full">{children}</div>
 }
