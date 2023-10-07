@@ -1,77 +1,48 @@
 "use client"
 
-// import { Metadata } from "next"
-import { zodResolver } from "@hookform/resolvers/zod"
+
 import Image from "next/image"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
+import Link from "next/link"
+import sideBg from "../../../assets/img/login/login-bg.png"
 import { Typography } from "components/ui/Typography"
-import { loginBackground, logoPath } from "lib/constants"
+import { MdLock } from "react-icons/md"
+import { LuChevronLeft } from "react-icons/lu"
+import OTPForm from "./form"
 
-// export const metadata: Metadata = {
-//   title: "Authentication",
-//   description: "Authentication forms built using the components.",
-// }
-
-const resetPasswordFormSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-})
 
 export default function AuthenticationPage() {
-  const resetPasswordForm = useForm<z.infer<typeof resetPasswordFormSchema>>({
-    resolver: zodResolver(resetPasswordFormSchema),
-    defaultValues: {
-      email: "",
-    },
-  })
 
-  function onSubmit(values: z.infer<typeof resetPasswordFormSchema>) {
-    console.log(values)
-  }
+
   return (
-    <div className="relative h-full w-full ">
-      <Image className="absolute left-0 top-0 z-0 h-full w-full" src={loginBackground.src} alt={loginBackground.alt} />
-      <div className="flex h-full w-full flex-row items-center justify-center">
-        <div className="z-10 flex w-[330px] flex-col items-center sm:w-[468px]">
-          <Image className="mb-8" src={logoPath.src} width={140} height={60} alt={logoPath.alt} />
-          <Typography className="mb-4  inline-block bg-transparent" level="h1">
-            Reset password
-          </Typography>
-          <Typography className="mb-8 inline-block text-center text-[#115570]" level="h6">
-            To reset your password pls provide the following information
-          </Typography>
-          <Form {...resetPasswordForm}>
-            <form
-              onSubmit={resetPasswordForm.handleSubmit(onSubmit)}
-              className="flex w-full flex-col items-center rounded-lg bg-white px-[40px] py-[32px] shadow-form"
-            >
-              <FormField
-                control={resetPasswordForm.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-[#777777]">Email address</FormLabel>
-                    <FormControl>
-                      <Input className="min-h-[48px]" placeholder="Enter your email address" type="email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                className="mt-[24px] min-h-[48px] w-[100%] hover:bg-[#1D8EBB] hover:opacity-[0.4] sm:w-[290px]"
-                type="submit"
-              >
-                Proceed
-              </Button>
-            </form>
-          </Form>
+    <div className="flex h-full w-full flex-row ">
+      <div className={`lg:flex hidden overflow-hidden login-bg relative w-1/2 h-full bg-[#177196] flex-col`}>
+        <Image className="absolute z-0" src={sideBg} alt={"sidebg"} />
+        <div className="absolute left-0 top-[229px] w-[55%] z-0 h-[126px] bg-[#F38020] rounded-r-[42px]">
+        </div>
+        <div className="bg-[#177196] z-[1] ml-[125px] mt-[651px] flex flex-col items-start gap-4 w-[361px]">
+          <p className="text-[24px] font-[700] leading-[125%] text-[#fff]">Easy payment method</p>
+          <p className="text-[14px] font-[400] leading-[145%] text-[#fff]">Create an account with pay access for all your payment transactions pay access for all your payment trasactions</p>
         </div>
       </div>
+      <div className="relative flex flex-col lg:w-1/2 w-full h-full items-center justify-center xl:px-[160px] lg:px-[100px] md:px-[120px] sm:px-[200px] px-[20px]">
+        <p className="cursor-pointer absolute sm:left-[74px] left-[20px] top-[52px] flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-[145%] text-[#000000]"><LuChevronLeft className="text-[24px] text-[#000000]" />Back</p>
+        {/* <Image className="mb-8" src={lock} alt={"lock"} /> */}
+        <div className="mb-[13px]  rounded-full h-[92px] w-[92px] bg-[#BFEFFF33] flex flex-row items-center justify-center">
+          <MdLock className="text-[50px] text-[#23AAE1]" />
+        </div>
+        <Typography className="text-center mb-4 text-[32px] leading-[40px] font-black inline-block bg-transparent" level="h1">
+          Reset Password
+        </Typography>
+        <Typography className="mb-8 inline-block text-[14px] text-center font-[400] leading-[145%] text-[#115570]" level="h6">
+          Create a new password
+        </Typography>
+
+        {/* logic and control for form signin is located here */}
+        <OTPForm />
+
+      </div>
     </div>
+
+
   )
 }
