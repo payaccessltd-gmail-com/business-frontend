@@ -1,11 +1,13 @@
-import React from "react"
 import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+
+
+import { Button } from "components/ui/button"
+import { Typography } from "components/ui/Typography"
 import GetStartedBg from "../../../../assets/img/home-getstarted/get-started.png"
 import Hero from "../../../../assets/img/home-getstarted/hero.png"
 import TextImg from "../../../../assets/img/home-getstarted/text.png"
-import { Typography } from "components/ui/Typography"
-import { Button } from "components/ui/button"
-import Link from "next/link"
 
 
 
@@ -21,7 +23,7 @@ const GetStarted = () => {
         </Typography>
         <Button asChild className="h-[54px] w-[192px] rounded-[8px] font-DMSans text-[16px] font-[700] leading-[18px] text-[#ffffff] shadow-none">
           <Link href={"/registration"}>
-          Get Started
+            Get Started
           </Link>
         </Button>
       </div>

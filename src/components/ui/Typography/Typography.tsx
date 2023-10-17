@@ -10,13 +10,12 @@ const typographyVarients = cva(
     variants: {
       intent: {},
       level: {
-        h1: "text-2xl font-bold",
-        h2: "",
-        h3: "",
-        h4: "",
-        h5: "",
-        h6: "text-sm font-semibold",
-        p: "text-",
+        h1: "font-CenturyGothic text-[64px] font-bold",
+        h2: "font-CenturyGothic text-[40px] font-bold",
+        h3: "font-CenturyGothic text-[40px] font-bold",
+        h4: "font-CenturyGothic text-[36px] font-bold",
+        h5: "font-CenturyGothic text-[32px] font-bold",
+        h6: "font-CenturyGothic text-[24px] font-semibold",
       },
       shade: {
         70: "bg-primary-70",
@@ -37,7 +36,7 @@ const typographyVarients = cva(
 
 export interface Heading4Props
   extends React.HTMLAttributes<HTMLHeadingElement>,
-    VariantProps<typeof typographyVarients> {
+  VariantProps<typeof typographyVarients> {
   underline?: boolean
 }
 

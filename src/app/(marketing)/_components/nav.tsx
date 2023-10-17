@@ -1,21 +1,18 @@
 "use client"
 
-import * as React from "react"
+import Image from "next/image"
 import Link from "next/link"
-import { cn } from "lib/utils"
+import * as React from "react"
+import { Button } from "components/ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "components/ui/navigation-menu"
 
-import { Button } from "components/ui/button"
 import logo from "../../../assets/img/payaccess-logo.png"
-import Image from "next/image"
 
 export const Nav = () => {
   return (
