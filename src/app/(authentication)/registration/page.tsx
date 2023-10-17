@@ -1,5 +1,5 @@
-"use client"
 
+"use client"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -10,8 +10,6 @@ import { MdLock } from "react-icons/md"
 import { LuChevronLeft } from "react-icons/lu"
 import RegistrationForm from "./form"
 import { ScrollArea } from "components/ui/scroll-area"
-
-
 
 export default function AuthenticationPage() {
 
@@ -55,7 +53,5 @@ export default function AuthenticationPage() {
         </div>
       </ScrollArea>
     </div>
-
-
   )
 }

@@ -1,11 +1,13 @@
-import React from "react"
 import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+
+
+import { Button } from "components/ui/button"
+import { Typography } from "components/ui/Typography"
 import GetStartedBg from "../../../../assets/img/home-getstarted/get-started.png"
 import Hero from "../../../../assets/img/home-getstarted/hero.png"
 import TextImg from "../../../../assets/img/home-getstarted/text.png"
-import { Typography } from "components/ui/Typography"
-import { Button } from "components/ui/button"
-import Link from "next/link"
 
 
 
