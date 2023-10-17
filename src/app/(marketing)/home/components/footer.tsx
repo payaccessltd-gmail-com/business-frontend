@@ -5,10 +5,10 @@ import Link from "next/link"
 
 const Footer = () => {
     return (
-        <div className='flex flex-row max-[1070px]:flex-col max-[1070px]:gap-10 items-center justify-between px-[100px] max-[1160px]:pr-[20px] pt-16 pb-12 bg-[#07222D]'>
-            <div className='max-[1070px]:items-center flex flex-col items-start gap-4 max-[1070px]:w-[70%] w-[320px]'>
+        <div className='flex flex-row max-[1070px]:flex-col max-[1070px]:gap-10 justify-between pl-[24px] sm:pl-[100px] pt-16 pb-12 bg-[#07222D]'>
+            <div className='flex flex-col items-start gap-4 max-[1070px]:w-[70%] w-[320px]'>
                 <Image src={Logo} alt='footer' />
-                <p className='max-[1070px]:text-center text-[16px] text-[#EAECF0] leading-6 font-[400]'>
+                <p className=' text-[16px] text-[#EAECF0] leading-6 font-[400]'>
                     A payment gateway is a technology solution that facilitates and manages online financial transactions between a customer and a merchant.
                 </p>
             </div>

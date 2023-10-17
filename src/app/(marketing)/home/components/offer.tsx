@@ -12,7 +12,7 @@ const Offer = () => {
         <div className='relative flex flex-col items-center bg-[#FDD1C71F]'>
             <Image className="absolute z-0 w-full h-full mb-[16px]" src={offerBg} alt={"offer bg"} />
 
-            <div className="z-[1] my-[56px] flex w-[941px] flex-col items-center gap-[20px]">
+            <div className="z-[1] my-[56px] flex w-[85%] lg:w-[941px] flex-col items-center gap-[20px]">
                 <Typography level="p" className="text-center text-[48px] font-black leading-normal text-[#07222D]">
                     We offer endless enterprise solution.
                 </Typography>
@@ -20,9 +20,9 @@ const Offer = () => {
                     Pay access Certainly! I can provide you with information about payment transactions. or question you have regarding payment transactions, and I'll be glad .
                 </Typography>
             </div>
-            <div className='z-[1] flex flex-row items-center px-[100px] gap-10 pb-[139px]'>
-                <Image className="hidden min-[1362px]:flex" src={offerHero} alt={"offer bg"} />
-                <div className='grid grid-cols-2 gap-10'>
+            <div className='z-[1] flex flex-col 2xl:flex-row items-center px-[24px] sm:px-[100px] gap-10 pb-[139px]'>
+                <Image className="" src={offerHero} alt={"offer bg"} />
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
                     {
                         OfferData.map(({ title, id, text }) => {
                             return <OfferCard key={id} title={title} text={text} />

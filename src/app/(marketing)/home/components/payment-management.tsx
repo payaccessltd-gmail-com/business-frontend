@@ -49,8 +49,8 @@ const graphStyleData: any[] = [
 ]
 const PaymentManagement = () => {
     return (
-        <div className='relative flex flex-col items-center px-[100px] pb-[131px] bg-gradient-to-r from-[#fdfdfd8c] to-[#d7e2e600]   via-transparent'>
-            <div className="z-[1] my-[56px] flex w-[941px] flex-col items-center gap-[20px]">
+        <div className='flex flex-col items-center px-[24px] lg:px-[100px] pb-[131px] bg-gradient-to-r from-[#fdfdfd8c] to-[#d7e2e600] via-transparent'>
+            <div className="z-[1] w-[85%] lg:w-[941px] my-[56px] flex flex-col items-center gap-[20px]">
                 <Typography level="p" className="text-center text-[48px] font-black leading-normal text-[#07222D]">
                     Build your personal Freelancing with the payment management.
                 </Typography>
@@ -58,8 +58,8 @@ const PaymentManagement = () => {
                     Lorem ipsum dolor sit amet, consectetur adipis elit. Sit enim nec, proin faucibus nibh et sagittis a. Lacinia purus ac amet.
                 </Typography>
             </div>
-            <div className='relative h-[511.88px] w-[983px]'>
-                <div className='p-8 flex flex-col items-center z-[1] absolute top-0 left-0 w-[358px] h-[477px] rounded-[15px] bg-[#FAFAF9] border-solid border border-[#D3EEF9] '>
+            <div className='relative h-[680px] lg:h-[511.88px] sm:h-[800px]  w-full lg:w-[983px]'>
+                <div className='p-8 flex flex-col items-center z-[1] absolute top-0 lg:left-0 left-[9px] sm:left-[85px] w-[95%] sm:w-[358px] h-[477px] rounded-[15px] bg-[#FAFAF9] border-solid border border-[#D3EEF9] '>
 
                     <Image className="self-start mb-[5.5px] " src={icon} alt={"icon"} />
                     <p className='font-PlusJakartaSans font-[500] text-[15px] text-[#71717A] leading-6 mb-[5px]'>www.payaccess business.com</p>
@@ -87,7 +87,7 @@ const PaymentManagement = () => {
                     </div>
                     <Image className="absolute bottom-0" src={shadow} alt={"shadow"} />
                 </div>
-                <Image className="z-0 absolute bottom-0 right-0 h-auto max-w-[672px]" src={pay} alt={"pay management"} />
+                <Image className="z-0 absolute bottom-0 lg:right-0 w-full lg:w-[672px]" src={pay} alt={"pay management"} />
             </div>
 
         </div>

@@ -17,10 +17,28 @@ const GetStarted = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false,
     autoplay: true,
     autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          initialSlide: 0,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 0,
+        },
+      },
 
+    ],
   }
   const slickRef = useRef<HTMLDivElement | null | any>(null)
 
@@ -33,7 +51,7 @@ const GetStarted = () => {
 
   return (
     <div className="relative flex w-full flex-col items-center bg-[#5A99DC0F] pb-[113.92px]">
-      <div className="my-[55px] flex w-[941px] flex-col items-center gap-[20px]">
+      <div className="my-[55px] flex w-[85%] lg:w-[941px] flex-col items-center gap-[20px]">
         <Typography level="p" className="text-center text-[40px] font-black leading-normal text-[#07222D]">
           Our unique solutions for every problems relating to fintech
         </Typography>
@@ -44,7 +62,7 @@ const GetStarted = () => {
       </div>
       <div className="w-full gap-4 flex flex-row items-center justify-center">
         <LuChevronLeft onClick={() => Prev()} className="text-[#115570] text-[30px] cursor-pointer" />
-        <div className="w-[1175px]">
+        <div className="w-[380px] xl:w-[1175px] lg:w-[780px] sm:w-[500px]">
           <Slider className="" {...settings} ref={slickRef}>
             {CarouselData.map(({ id, title, text, button, img }) => {
               return <CarouselCard key={id} title={title} text={text} button={button} img={img} />

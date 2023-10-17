@@ -7,8 +7,8 @@ import { Button } from "components/ui/button"
 
 const JoinWidget = () => {
     return (
-        <div className='w-full py-[55px] flex flex-col items-center'>
-            <div className='bg-[#CDE6F08F] rounded-[16px] flex flex-col items-center gap-8 py-8 w-[877px]'>
+        <div className='w-full py-[55px] flex flex-col items-center px-[24px]'>
+            <div className='bg-[#CDE6F08F] rounded-[16px] flex flex-col items-center gap-8 py-8 px-2 w-full lg:w-[877px]'>
                 <Image className="" src={profileGroup} alt={"join"} />
                 <div className='flex flex-col gap-2 items-center'>
                     <p className='text-[#005677] text-center text-[20px] font-[600] leading-8'>Join over 20 people currently using Payaccess</p>

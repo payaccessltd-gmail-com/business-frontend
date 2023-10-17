@@ -6,7 +6,7 @@ import DescriptionCard from './description-card'
 const SME = () => {
     return (
         <div className='w-full flex flex-col items-center pb-[111px]'>
-            <div className="z-[1] my-[56px] flex w-[941px] flex-col items-center gap-[20px]">
+            <div className="z-[1] w-[85%] lg:w-[941px] my-[56px] flex flex-col items-center gap-[20px]">
                 <Typography level="p" className="text-center text-[48px] font-black leading-normal text-[#07222D]">
                     We offer endless SME solutions
                 </Typography>

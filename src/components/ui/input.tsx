@@ -25,18 +25,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
 
 
   const handleVisibility = (value: string) => {
-    console.log("running handle visibility......")
-    console.log(value, inputType)
+    // console.log("running handle visibility......")
+    // console.log(value, inputType)
     if (value === "show" && inputType === "password") {
       setInputChange("text")
       setShow(true)
-      console.log("11111running handle visibility......")
-      console.log(show, inputType)
+      // console.log("11111running handle visibility......")
+      // console.log(show, inputType)
     } else if (value === "close" && inputType === "text") {
       setInputChange("password")
       setShow(false)
-      console.log("22222running handle visibility......")
-      console.log(show, inputType)
+      // console.log("22222running handle visibility......")
+      // console.log(show, inputType)
     }
   }
   return (

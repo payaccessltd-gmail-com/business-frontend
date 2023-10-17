@@ -1,9 +1,8 @@
 import { Metadata } from "next"
-import { Nav } from "./_components/nav"
 
 export const metadata: Metadata = {
-  title: "Home",
-  description: "Home page",
+  title: "success message",
+  description: "success message",
 }
 
 export default function RegistrationLayout({
@@ -13,10 +12,5 @@ export default function RegistrationLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <div className="relative w-full">
-      <Nav />
-      {children}
-    </div>
-  )
+  return <div className="w-full h-full">{children}</div>
 }
