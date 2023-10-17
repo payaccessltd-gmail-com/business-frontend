@@ -44,7 +44,7 @@ const Join = () => {
     return (
         <div className='w-full flex flex-col gap-[32px] items-center py-[67px]'>
             <p className='font-[700] leading-[22px] text-[20px] text-center text-[#475569] '>Join over 200+ companies already using Payaccess business</p>
-            <div className='flex flex-row items-center justify-center flex-wrap gap-16'>
+            <div className='flex flex-row items-center justify-center flex-wrap gap-16 px-[24px]'>
                 {
                     JoinData.map(({ id, Img }) => {
                         return <Image key={id} className="" src={Img} alt={`company ${id}`} />

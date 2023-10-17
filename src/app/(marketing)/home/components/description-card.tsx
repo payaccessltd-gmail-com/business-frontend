@@ -8,9 +8,9 @@ import { LuChevronRight } from "react-icons/lu"
 
 const DescriptionCard = ({ title, subtitle, text, linktext, link, direction, img }: any) => {
     return (
-        <div className={`flex items-center gap-8 ${direction === "reverse" ? "flex-row-reverse" : "flex-row"}`}>
-            <div className='flex flex-col items-start gap-4 w-[494px]'>
-                <Typography level="p" className="text-start text-[40px] font-black leading-[118%] text-[#0C394B]">
+        <div className={`flex items-center gap-8 ${direction === "reverse" ? "flex-col-reverse lg:flex-row-reverse" : "flex-col lg:flex-row"}`}>
+            <div className='flex flex-col items-start gap-4 w-[80%] lg:w-[494px]'>
+                <Typography level="p" className="text-start text-[22px] lg:text-[40px] font-black leading-[118%] text-[#0C394B]">
                     {title}
                 </Typography>
                 <Typography level="p" className="text-start text-[16px] font-[600] leading-[184%] text-[#000000] font-raleway">
@@ -24,7 +24,7 @@ const DescriptionCard = ({ title, subtitle, text, linktext, link, direction, img
                     <LuChevronRight className='text-[24px] text-[#23AAE1]' />
                 </Link>
             </div>
-            <Image className="h-auto max-w-[439px]" src={img} alt={"Featured Icon"} />
+            <Image className="h-auto w-[80%] lg:max-w-[439px] sm:w-[50%]" src={img} alt={"Featured Icon"} />
 
         </div>
     )

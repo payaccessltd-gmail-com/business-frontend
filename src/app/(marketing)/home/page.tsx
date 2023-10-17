@@ -14,7 +14,7 @@ import SubFooter from "./components/sub-footer"
 
 const page = () => {
   return (
-    <div className="">
+    <div className="pt-[104px]">
       <GetStarted />
       <Solution />
       <Offer />

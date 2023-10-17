@@ -1,143 +1,66 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+
 import Image from "next/image"
-import { useRouter, useSearchParams } from "next/navigation"
-
-import { activateNewMerchant } from "api/verification"
-
-import { Button } from "components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "components/ui/card"
+import Link from "next/link"
+import sideBg from "../../../assets/img/login/login-bg.png"
+import Logo from "../../../assets/img/payaccess-logo.png"
 import { Typography } from "components/ui/Typography"
-import { useToast } from "components/ui/use-toast"
-import { logoPath } from "lib/constants"
+import { LiaEnvelopeOpenTextSolid } from "react-icons/lia"
+import { LuChevronLeft } from "react-icons/lu"
+import EmailVerificationForm from "./form"
+import { ScrollArea } from "components/ui/scroll-area"
 
-export default function CardWithForm() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const searchParams = useSearchParams()
-  const { refetch } = useQuery(
-    ["activation"],
-    () =>
-      activateNewMerchant({
-        activationToken: searchParams?.get("activationToken") as string,
-        email: searchParams?.get("email") as string,
-      }),
 
-    {
-      enabled: false,
-      onError: (error) => {
-        console.log({ error })
-      },
 
-      onSuccess: (data) => {
-        if (data?.status === 500) {
-          toast({
-            variant: "destructive",
-            title: data.status.toString(),
-            description: "activation unsuccessful please confirm from administator",
-          })
-        }
+export default function AuthenticationPage() {
 
-        if (data?.status === 200) {
-          router.push("login")
-        }
-      },
-    }
-  )
 
   return (
-    <main className="flex flex-col items-center justify-center overflow-hidden bg-transparent">
-      <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent py-8">
-        <Image className="mb-8" src={logoPath.src} width={130} height={60} alt={logoPath.alt} />
-        <Typography className="mb-4  inline-block bg-transparent" level="h1">
-          Verify your email address
-        </Typography>
-        <Typography className="mb-12 inline-block" level="h6">
-          To continue with the registration pls verify your email address
-        </Typography>
-
-        <Card className="border-none px-20 shadow-card">
-          <CardHeader className="flex flex-col items-center">
-            <CardTitle>
-              <span className="inline-block rounded-full bg-primary-10 p-4 shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <mask
-                    id="mask0_511_18316"
-                    // style="mask-type:luminance"
-                    maskUnits="userSpaceOnUse"
-                    x="2"
-                    y="4"
-                    width="44"
-                    height="41"
-                  >
-                    <path
-                      d="M44 24V40.818C44 42.023 43.105 43 42 43H6C4.895 43 4 42.023 4 40.818V24L24 37L44 24Z"
-                      stroke="white"
-                      stroke-width="3"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M4 23.7841L14 16.8921M44 23.7841L34 16.8921"
-                      stroke="white"
-                      stroke-width="3"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M34 5H14V29.415C14 29.7482 14.0832 30.0761 14.2421 30.369C14.4011 30.6619 14.6306 30.9104 14.91 31.092L22.91 36.292C23.2344 36.5029 23.6131 36.6151 24 36.6151C24.3869 36.6151 24.7656 36.5029 25.09 36.292L33.09 31.092C33.3694 30.9104 33.5989 30.6619 33.7579 30.369C33.9168 30.0761 34 29.7482 34 29.415V5Z"
-                      fill="white"
-                      stroke="white"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M20 13H24M20 19H28"
-                      stroke="black"
-                      stroke-width="4"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </mask>
-                  <g mask="url(#mask0_511_18316)">
-                    <path d="M0 0H48V48H0V0Z" fill="#177196" />
-                  </g>
-                </svg>
-              </span>
-            </CardTitle>
-            <Button
-              variant="link"
-              className="px-0 text-sm font-semibold text-primary-80"
-              onClick={() => {
-                refetch()
-              }}
-            >
-              Verify your email address
-            </Button>
-          </CardHeader>
-          <CardContent className="w-[386px]">
-            <Typography level="p" className="text-center text-sm leading-6 text-gray-60">
-              A link has been sent to your email address{" "}
-              <span className="font-semibold text-gray-70"> “{searchParams.get("email")}”</span> please click on the
-              link to verify your email.
-            </Typography>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Typography level="p" className="text-xs text-gray-90">
-              Didn’t get the mail?{" "}
-              <Button
-                variant="link"
-                className="px-0 text-sm font-semibold text-primary-70"
-                onClick={() => {
-                  refetch()
-                }}
-              >
-                click
-              </Button>{" "}
-              to resend.
-            </Typography>
-          </CardFooter>
-        </Card>
+    <div className="flex h-full w-full flex-row ">
+      <div className={`lg:flex hidden overflow-hidden login-bg relative w-[50%] h-full bg-[#177196] flex-col`}>
+        <Image className="absolute z-0 xl:left-[100px] left-[50px] top-[48px]" src={Logo} alt={"logo"} />
+        <Image className="absolute z-0" src={sideBg} alt={"sidebg"} />
+        <div className="absolute left-0 top-[229px] w-[55%] z-0 h-[126px] bg-[#F38020] rounded-r-[42px]">
+        </div>
+        <div className="bg-[#177196] z-[1] xl:ml-[125px] ml-[50px] mt-[651px] flex flex-col items-start gap-4 w-[361px]">
+          <p className="text-[24px] font-[700] leading-[125%] text-[#fff]">Easy payment method</p>
+          <p className="text-[14px] font-[400] leading-[145%] text-[#fff]">Create an account with pay access for all your payment transactions pay access for all your payment trasactions</p>
+        </div>
       </div>
-    </main>
+      <ScrollArea className="relative lg:w-[50%] w-full h-full">
+
+        <div className="lg:pt-[210px] pt-[180px] flex flex-col w-full h-full items-center xl:px-[160px] lg:px-[100px] md:px-[120px] sm:px-[200px] px-[20px]">
+          <div className="absolute top-0 bg-white w-full sm:px-[74px] px-[20px] pb-[30px] pt-[52px] flex flex-row items-center justify-between">
+            <p className="cursor-pointer flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-[145%] text-[#000000]"><LuChevronLeft className="text-[24px] text-[#000000]" />Back</p>
+            <p className="flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-none text-[#000000]">
+              Already have an account ?
+              <Link className="text-[#1D8EBB] font-[600]" href="/login">
+                Login
+              </Link>
+            </p>
+          </div>
+
+
+
+          <div className="mb-6 rounded-full h-[92px] w-[92px] bg-[#EDFAFF] flex flex-row items-center justify-center">
+            <LiaEnvelopeOpenTextSolid className="text-[55px] text-[#177196]" />
+          </div>
+          <Typography className="text-center mb-4 text-[32px] leading-[40px] font-black inline-block bg-transparent" level="h1">
+            Verify your email address
+          </Typography>
+          <Typography className="mb-8 inline-block text-[14px] text-center font-[400] leading-[145%] text-[#115570]" level="h6">
+            To continue with the registration pls verify your email address
+          </Typography>
+
+          {/* logic and control for form signin is located here */}
+          <EmailVerificationForm />
+          <p className="text-[#1A1A1A] mb-4 text-[14px] text-center font-[400] leading-[145%]">Didn’t get the mail? <Link className="text-[#1D8EBB] font-[700] leading-normal" href={""}>click here to resend.</Link></p>
+          <p className="text-[14px] font-[400] leading-[145%] text-[#000000]">Resend code in <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">2:00sec</span></p>
+        </div>
+      </ScrollArea>
+    </div>
+
+
   )
 }

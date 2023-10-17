@@ -1,119 +1,123 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
-import * as zod from "zod"
-
-import { createMerchant } from "api/registration"
+import * as z from "zod"
 import { Button } from "components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
-import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-
 import { useToast } from "components/ui/use-toast"
+import { Checkbox } from "components/ui/checkbox"
+import Link from "next/link"
 
-const merchantRegFormSchema = zod.object({
-  country: zod.string(),
-  firstName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
 
-  emailAddress: zod.string().email({ message: "Invalid email address" }),
-  password: zod.string().min(2, {
-    message: "",
-  }),
-  businessName: zod.string(),
-  businessType: zod.string(),
-  businessCategory: zod.string(),
-  isSoftwareDeveloper: zod.string(),
+// export const metadata: Metadata = {
+//   title: "Authentication",
+//   description: "Authentication forms built using the components.",
+// }
+
+const RegistrationSchema = z.object({
+  FirstName: z.string().min(2, "first name must contain more than 2 characters"),
+  LastName: z.string().min(2, "last name must contain more than 2 characters"),
+  EmailAddress: z.string().email(),
+  BusinessName: z.string().min(2, "business name must contain more than 2 characters"),
+  password: z.string().min(2, "Password must contain more than 2 characters").max(8, "Password must not be above 8 characters"),
+  agreement: z.boolean().default(false).optional(),
 })
 
 export default function RegistrationForm() {
   const { toast } = useToast()
   const router = useRouter()
-  const merchantRegForm = useForm<zod.infer<typeof merchantRegFormSchema>>({
-    defaultValues: {},
-    resolver: zodResolver(merchantRegFormSchema),
-  })
+  const [loading, setLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
+  const [isInputFocused, setInputFocused] = useState(false);
 
-  const merchantRegMutation = useMutation({
-    mutationFn: createMerchant,
-    onSuccess: async (data) => {
-      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
-
-      if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
-      }
-
-      if (responseData?.statusCode === "0") {
-        toast({ variant: "default", title: "", description: responseData?.message })
-        if (typeof window) {
-          router.push(
-            `/email-verification?email=${merchantRegForm.getValues("emailAddress")}&activationToken=${
-              responseData?.responseObject
-            }`
-          )
-        }
-
-        merchantRegForm.reset()
-      }
+  const RegistrationForm = useForm<z.infer<typeof RegistrationSchema>>({
+    resolver: zodResolver(RegistrationSchema),
+    defaultValues: {
+      password: "",
+      agreement: false
     },
 
-    onError: () => {
-      return null
-    },
-  })
 
-  function onSubmit(values: zod.infer<typeof merchantRegFormSchema>) {
-    merchantRegMutation.mutate(values)
+  })
+  const { formState } = useForm();
+  const { isValid, } = formState;
+
+
+  async function onSubmit(values: z.infer<typeof RegistrationSchema>) {
+    console.log(values)
+    // try {
+    //   setLoading(true)
+
+    //   const res = await signIn("credentials", {
+    //     redirect: false,
+    //     email: values.email,
+    //     callbackUrl,
+    //   })
+
+    //   setLoading(false)
+
+    //   if (!res?.error) {
+    //     router.push(callbackUrl)
+    //   } else {
+    //     toast({
+    //       variant: "destructive",
+    //       title: "invalid email or password",
+    //       description: "Please confirm if user is registered",
+    //     })
+    //   }
+    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // } catch (error: any) {
+    //   setLoading(false)
+    //   toast({
+    //     variant: "destructive",
+    //     title: error,
+    //     description: error,
+    //   })
+    // }
   }
 
   return (
-    <Form {...merchantRegForm}>
+    <Form {...RegistrationForm}>
       <form
-        onSubmit={merchantRegForm.handleSubmit(onSubmit)}
-        className="space-y-8 rounded-[10px] border-gray-10 bg-white p-8 shadow-form"
+        onSubmit={RegistrationForm.handleSubmit(onSubmit)}
+        className="w-full rounded-lg bg-white pb-[50px] space-y-6 flex flex-col items-center"
       >
-        <FormField
-          name="country"
-          control={merchantRegForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Business category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Country" />
-                  </SelectTrigger>
-                </FormControl>
+        {/* <FormMessage> */}
+        <div className="w-fit h-fit flex flex-row items-center">
+          <div className="w-6 h-6 rounded-full bg-[#23AAE1]"></div>
+          <div className={`h-[3px] w-[38px] bg-[#1D8EBB]`}></div>
+          <div className={`w-6 h-6 rounded-full bg-[#D9D9D9]`}></div>
+        </div>
+        {/* </FormMessage> */}
 
-                <SelectContent>
-                  <SelectItem value="AFGHANISTAN">Afghanistan</SelectItem>
-                  <SelectItem value="BELARUS">Belarus</SelectItem>
-                  <SelectItem value="SPAIN">Spain</SelectItem>
-                  <SelectItem value="NIGERIA">Nigeria</SelectItem>
-                </SelectContent>
-              </Select>
+        <FormField
+          control={RegistrationForm.control}
+          name="FirstName"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">First Name</FormLabel>
+              <FormControl>
+                <Input type="text" className="min-h-[48px]" placeholder="Enter first name" {...field} />
+
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
-          name="firstName"
-          control={merchantRegForm.control}
+          control={RegistrationForm.control}
+          name="LastName"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>First name</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter first name" {...field} />
+                <Input type="text" className="min-h-[48px]" placeholder="Enter last name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -121,41 +125,39 @@ export default function RegistrationForm() {
         />
 
         <FormField
-          name="lastName"
-          control={merchantRegForm.control}
+          control={RegistrationForm.control}
+          name="EmailAddress"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last name</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">Email address</FormLabel>
               <FormControl>
-                <Input placeholder="Enter last name" {...field} />
+                <Input type="email" className="min-h-[48px]" placeholder="Enter email address" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
-          name="emailAddress"
-          control={merchantRegForm.control}
+          control={RegistrationForm.control}
+          name="BusinessName"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email address</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">Business name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter email address" {...field} />
+                <Input type="text" className="min-h-[48px]" placeholder="eg oil&gas" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
+          control={RegistrationForm.control}
           name="password"
-          control={merchantRegForm.control}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">Enter password</FormLabel>
               <FormControl>
-                <Input placeholder="Enter password" {...field} type="password" />
+                <Input type="password" icon="show" className="min-h-[48px]" placeholder="Password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -163,126 +165,39 @@ export default function RegistrationForm() {
         />
 
         <FormField
-          name="businessName"
-          control={merchantRegForm.control}
+          control={RegistrationForm.control}
+          name="agreement"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Business name</FormLabel>
+            <FormItem className="w-full">
               <FormControl>
-                <Input placeholder="eg oil & gas" {...field} />
+                <div className="flex flex-row items-start gap-4">
+                  <Checkbox checked={field.value} onCheckedChange={field.onChange as () => void} id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-[14px] font-[400] leading-[145%] text-[#555]"
+                  >
+                    {`I consent to the collection and processing of my personal data in line with data regulations as described in `}
+                    <Link className="text-[#48B8E6] text-[16px] font-[600] underline" href="/">
+                      Pay Access Policy
+                    </Link>
+                  </label>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          name="businessCategory"
-          control={merchantRegForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Business category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select business category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="TRANSPORTATION">Transportation</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          name="businessType"
-          control={merchantRegForm.control}
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel className="font-semibold text-gray-50">What kind of business do you own</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-baseline space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="INDIVIDUAL" />
-                    </FormControl>
-                    <div>
-                      <FormLabel className="font-normal">Starter/individaul business</FormLabel>
-                      <FormDescription>
-                        I am testing my ideas with real customers, and preparing to register my company
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-
-                  <FormItem className="flex items-baseline space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="BUSINESS" />
-                    </FormControl>
-                    <div>
-                      <FormLabel className="font-normal">Registered business</FormLabel>
-                      <FormDescription>
-                        My business has the approval, documentation, and licences required to operate legally
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={merchantRegForm.control}
-          name="isSoftwareDeveloper"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Are you a software developer</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-row space-x-6"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="1" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Yes i am</FormLabel>
-                  </FormItem>
-
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="0" />
-                    </FormControl>
-                    <FormLabel className="font-normal">No I am not</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button disabled={merchantRegMutation.isLoading} className="w-full" type="submit" size="default">
-          Submit
+        <Button
+          disabled={loading}
+          className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          type="submit"
+        >
+          Create account
         </Button>
 
-        <div className="flex flex-col items-center space-y-2">
-          <div className="text-sm font-normal text-primary-100">
-            By clicking the &quot;Create your account&quot; button, you agree to Pay access
-          </div>
-          <Link href="/" className="text-sm font-semibold text-primary-70">
-            TERMS & CONDITIONS
-          </Link>
-        </div>
       </form>
     </Form>
   )
 }
+
