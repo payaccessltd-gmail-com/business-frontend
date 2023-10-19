@@ -82,10 +82,10 @@ export default function AuthenticationPage() {
           Forget Password
         </Link>
         <div className="mt-4 flex flex-row items-center gap-2">
-          <Typography className=" inline-block  bg-transparent text-[#0C394B]" level="h4">
+          <Typography className="inline-block  bg-transparent text-[#0C394B] text-sm font-[400]" level="h4">
             New to pay access?
           </Typography>
-          <Link href="/registration" className=" text-sm font-semibold text-primary-70">
+          <Link href="/registration" className="text-sm font-semibold text-primary-70">
             Signup
           </Link>
         </div>

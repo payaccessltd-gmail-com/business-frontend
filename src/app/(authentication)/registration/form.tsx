@@ -26,7 +26,6 @@ const RegistrationSchema = z.object({
   BusinessName: z.string().min(2, "business name must contain more than 2 characters"),
   password: z.string().min(2, "Password must contain more than 2 characters").max(8, "Password must not be above 8 characters"),
   agreement: z.boolean().default(false).optional(),
-
 })
 
 export default function RegistrationForm() {
@@ -105,6 +104,7 @@ export default function RegistrationForm() {
               <FormLabel className="text-[#777777]">First Name</FormLabel>
               <FormControl>
                 <Input type="text" className="min-h-[48px]" placeholder="Enter first name" {...field} />
+
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -123,6 +123,7 @@ export default function RegistrationForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={RegistrationForm.control}
           name="EmailAddress"
@@ -162,6 +163,7 @@ export default function RegistrationForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={RegistrationForm.control}
           name="agreement"
@@ -186,7 +188,6 @@ export default function RegistrationForm() {
           )}
         />
 
-
         <Button
           disabled={loading}
           className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
@@ -194,43 +195,9 @@ export default function RegistrationForm() {
         >
           Create account
         </Button>
+
       </form>
     </Form>
   )
 }
-
-
-
-//-------------FORM METHOD TO CHECK A FEILD. ---------------
-
-// formName.watch("name of field")
-
-//-------------IMPORTANT CODE TIP FOR THE REACT FORM. ---------------
-
-// import { useForm } from "react-hook-form";
-
-// function MyForm() {
-//   const { register, handleSubmit, formState } = useForm();
-//   const { isValid } = formState;
-
-//   const onSubmit = (data) => {
-//     // Handle form submission
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit(onSubmit)}>
-//       <input {...register("field1", { required: true })} />
-//       <input {...register("field2", { required: true })} />
-//       <input {...register("field3", { required: true })} />
-
-//       <button type="submit">Submit</button>
-
-//       {isValid ? null : (
-//         <p>Please fill in all required fields.</p>
-//       )}
-//     </form>
-//   );
-// }
-
-
 

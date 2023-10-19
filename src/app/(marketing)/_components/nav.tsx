@@ -8,15 +8,12 @@ import {
 } from "components/ui/accordion"
 import * as React from "react"
 import Link from "next/link"
-import { cn } from "lib/utils"
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "components/ui/navigation-menu"
 import { Button } from "components/ui/button"
 import logo from "../../../assets/img/payaccess-logo.png"
@@ -26,6 +23,7 @@ import { solutionData, developersData, companysData } from "./nav-item-data"
 import { LuMenu } from "react-icons/lu"
 import { CgClose } from "react-icons/cg"
 import { ScrollArea } from "components/ui/scroll-area"
+
 
 export const Nav = () => {
 
