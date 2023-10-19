@@ -1,55 +1,69 @@
 "use client"
-
-import React, { useState } from 'react';
-import { Cell, Pie, PieChart } from 'recharts';
+import React from 'react';
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { CategoricalChartState } from 'recharts/types/chart/generateCategoricalChart';
+
+import { Typography } from 'components/ui/Typography';
+import CardContainer from './card-container';
 
 
 
 
 const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
+  { name: 'Group A', value: 800 },
+  { name: 'Group B', value: 100 },
 
 ];
 
-const COLORS = ['#0088FE', '#00C49F'];
+const COLORS = ['#D6D6D6', '#23AAE1'];
 
 export default function TransactionSuccessRate() {
 
-  const [activeIndex, setActiveIndex] = useState(0)
+  // const [activeIndex, setActiveIndex] = useState(0)
 
 
   const onPieEnter = (_: CategoricalChartState, index: React.SetStateAction<number>) => {
-    setActiveIndex(index)
+    console.log(index)
+    // setActiveIndex(index)
   };
 
   return (
-    <div className="flex flex-col rounded-lg border border-solid border-gray-10 px-7 py-5">
-      <div className="flex flex-col justify-center space-y-2 text-center">
-        <p className="font-CenturyGothic text-base font-bold leading-6 text-gray-80">Transaction success rate</p>
-        <p>Percentage of valid transactions carried out this month</p>
+    <CardContainer className='basis-2/6'>
+      <div className="flex flex-col">
+        <div className="flex flex-col justify-center space-y-2 text-center">
+          <Typography level="CT" className='text-gray-900'>Transaction success rate</Typography>
+          <Typography level="LP">Percentage of valid transactions carried out this month</Typography>
+        </div>
+
+        <div className='mb-4'>
+          <ResponsiveContainer width="100%" height={180} className="flex items-center justify-center">
+            <PieChart onMouseEnter={onPieEnter} className='flex items-center justify-center self-center'>
+              <Pie
+                data={data}
+                innerRadius={35}
+                outerRadius={60}
+                fill="#8884d8"
+                paddingAngle={0}
+                dataKey="value"
+                className='flex justify-center self-center'
+              >
+                {data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className='flex flex-col items-center justify-center space-y-5'>
+          <Typography level={'h5'} className='text-gray-50'>
+            0.0%
+          </Typography>
+
+          <Typography level="NP">No successful traction yet.</Typography>
+        </div>
       </div>
-
-      <div>
-        <PieChart width={100} height={100} onMouseEnter={onPieEnter} className='bg-orange-700'>
-          <Pie
-            cx={50}
-            cy={50}
-            data={data}
-            innerRadius={40}
-            outerRadius={50}
-            fill="#8884d8"
-            paddingAngle={0}
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-
-        </PieChart>
-      </div>
-
-    </div>)
+    </CardContainer>
+  )
 }

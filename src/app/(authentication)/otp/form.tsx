@@ -100,19 +100,18 @@ export default function OTPForm() {
     //   })
     // }
   }
- 
   return (
     <Form {...otpForm}>
       <form
         onSubmit={otpForm.handleSubmit(onSubmit)}
-        className="w-full rounded-lg bg-white pb-[24px] flex flex-col items-center"
+        className="flex w-full flex-col items-center rounded-lg bg-white pb-[24px]"
       >
         <FormField
           control={otpForm.control}
           name="otp"
           render={({ field }) => (
-            <FormItem className="w-full flex flex-col items-center">
-              <FormLabel className="text-[#0C394B] mb-4 text-[14px] text-center font-[700] leading-normal">Enter OTP code</FormLabel>
+            <FormItem className="flex w-full flex-col items-center">
+              <FormLabel className="mb-4 text-center text-[14px] font-[700] leading-normal text-[#0C394B]">Enter OTP code</FormLabel>
               <FormControl>
                 {/* <Input className="min-h-[48px]" placeholder="Enter your email address" {...field} /> */}
                 <div className="flex flex-row items-center gap-3">
@@ -126,7 +125,7 @@ export default function OTPForm() {
                         (event) => handleChange(index, event)
                       }
                       onPaste={(event) => handlePaste(event)}
-                      className="bg-[#FFFFFF] border border-[#D3EEF9] border-solid h-12 w-12"
+                      className="h-12 w-12 border border-solid border-[#D3EEF9] bg-[#FFFFFF]"
                     // {...field}
                     />
                   ))}</div>
