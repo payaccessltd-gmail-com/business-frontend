@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <ScrollArea>
           <main className="h-[calc(100vh-84px)] overflow-visible  bg-sky-50 bg-opacity-30 px-12 py-4">{children}</main>
         </ScrollArea>
-      </div>
+     </div>
     </div>
   )
 }

@@ -116,7 +116,7 @@ export default function OTPForm() {
                 {/* <Input className="min-h-[48px]" placeholder="Enter your email address" {...field} /> */}
                 <div className="flex flex-row items-center gap-3">
                   {otp.map((digit, index) => (
-                    <Input
+                    <input
                       key={index}
                       type="text"
                       maxLength={1}
@@ -125,7 +125,7 @@ export default function OTPForm() {
                         (event) => handleChange(index, event)
                       }
                       onPaste={(event) => handlePaste(event)}
-                      className="h-12 w-12 border border-solid border-[#D3EEF9] bg-[#FFFFFF]"
+                      className="bg-[#FFFFFF] border text-center border-[#D3EEF9] border-solid h-12 w-12"
                     // {...field}
                     />
                   ))}</div>
