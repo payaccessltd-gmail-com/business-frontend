@@ -17,7 +17,7 @@ const GetStarted = () => {
       <Image className="absolute left-0 top-0 z-0 h-full w-full" src={GetStartedBg} alt={"bg"} />
       <div className="z-[1] flex max-[1100px]:w-full w-[606px] flex-col items-start">
         <Image className="mb-[16px]" src={TextImg} alt={"Get payment"} />
-        <Typography level="p" className="max-[494px]:w-[350px] max-[1100px]:w-[450px] mb-[23px] text-left text-[14px] font-[400] leading-[140%] text-[#222]">
+        <Typography level="h1" className="max-[494px]:w-[350px] max-[1100px]:w-[450px] mb-[23px] text-left text-[14px] font-[400] leading-[140%] text-[#222]">
           Pay access Certainly! I can provide you with information about payment transactions. or question you have
           regarding payment transactions, and I'll be glad to assist you.
         </Typography>

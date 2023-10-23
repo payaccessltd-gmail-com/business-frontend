@@ -8,8 +8,6 @@ import {
 } from "components/ui/accordion"
 import * as React from "react"
 import Link from "next/link"
-import * as React from "react"
-import { Button } from "components/ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
