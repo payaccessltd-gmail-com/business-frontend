@@ -7,7 +7,7 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex w-[493px] flex-col items-start justify-center rounded-[6px] bg-[#fff] px-6 py-4">
-        <Typography level="p" className="mb-[18px] text-[14px] font-[600] leading-normal text-[#555555]">
+        <Typography className="mb-[18px] text-[14px] font-[600] leading-normal text-[#555555]">
           What kind of business do you own
         </Typography>
         <RadioGroup className="gap-0" defaultValue="">
@@ -18,7 +18,7 @@ export default function Dashboard() {
             </Label>
           </div>
           <Typography
-            level="p"
+
             className="mb-[20px] ml-[32px] mt-[8px] w-[429px] text-[12px] font-[400] leading-[145%] text-[#0C394B]"
           >
             I`m testing my ideas with real customers, and preparing to register my company
@@ -30,7 +30,7 @@ export default function Dashboard() {
             </Label>
           </div>
           <Typography
-            level="p"
+
             className="ml-[32px] mt-[8px] w-[429px] text-[12px] font-[400] leading-[145%] text-[#0C394B]"
           >
             My business has the approval, documentation, and licences required to operate legally

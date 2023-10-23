@@ -16,6 +16,11 @@ const typographyVarients = cva(
         h4: "font-CenturyGothic text-[36px] font-bold",
         h5: "font-CenturyGothic text-[32px] font-bold",
         h6: "font-CenturyGothic text-[24px] font-semibold",
+        CT: "font-CenturyGothic text-base font-bold leading-6",
+        LP: "font-CenturyGothic text-[12px] font-normal text-gray-50",
+        BP: "font-CenturyGothic text-base font-normal leading-5 text-gray-50",
+        NP: "font-CenturyGothic text-[14px] font-normal leading-5 text-gray-50",
+        HP: "",
       },
       shade: {
         70: "bg-primary-70",

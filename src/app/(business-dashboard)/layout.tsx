@@ -1,3 +1,4 @@
+/* eslint-disable tailwindcss/migration-from-tailwind-2 */
 "use client"
 
 import { ScrollArea } from "components/ui/scroll-area"
@@ -16,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="relative col-span-3 h-full lg:col-span-20">
         <Header />
         <ScrollArea>
-          <main className="bg-sky-50 bg-opacity-30  h-[calc(100vh-84px)] overflow-visible px-12 py-6">{children}</main>
+          <main className="h-[calc(100vh-84px)] overflow-visible  bg-sky-50 bg-opacity-30 px-12 py-4">{children}</main>
         </ScrollArea>
      </div>
     </div>

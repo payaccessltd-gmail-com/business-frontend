@@ -55,7 +55,7 @@ export default function BusinessInformationForm() {
 
   return (
     <Form {...businessInfoForm}>
-      <form onSubmit={businessInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10 p-8">
+      <form onSubmit={businessInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10">
         <FormField
           name="businessName"
           control={businessInfoForm.control}

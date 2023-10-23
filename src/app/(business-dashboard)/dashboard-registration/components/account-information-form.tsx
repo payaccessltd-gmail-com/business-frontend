@@ -53,7 +53,7 @@ export default function AccountInformationForm() {
 
   return (
     <Form {...acctInfoForm}>
-      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8 p-8">
+      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8">
         <FormField
           name="businessBvn"
           control={acctInfoForm.control}

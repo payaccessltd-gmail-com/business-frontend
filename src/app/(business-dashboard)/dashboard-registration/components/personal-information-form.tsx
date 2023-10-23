@@ -90,7 +90,7 @@ export default function PersonalInformationForm() {
       <form
         id="personalInformation"
         onSubmit={personalInfoForm.handleSubmit(onSubmit)}
-        className="space-y-8 border-gray-10 p-8"
+        className="space-y-8 border-gray-10"
       >
         <FormField
           name="emailAddress"
@@ -245,7 +245,7 @@ export default function PersonalInformationForm() {
               <FormDescription>Please upload identification document.</FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                <Typography level="p" className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
                   Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
                 </Typography>
               </FormLabel>
