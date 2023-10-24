@@ -1,16 +1,23 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, useSearchParams } from "next/navigation"
-import { signIn } from "next-auth/react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { useToast } from "components/ui/use-toast"
+import { Button } from "components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
+import { Input } from "components/ui/input";
+import { useToast } from "components/ui/use-toast";
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -18,18 +25,16 @@ import { useToast } from "components/ui/use-toast"
 // }
 
 const ForgetPasswordSchema = z.object({
-  otp: z.number()
-})
+  otp: z.number(),
+});
 
 export default function OTPForm() {
-  const { toast } = useToast()
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
+  const { toast } = useToast();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
   const [otp, setOtp] = useState(Array(4).fill(""));
-
-
 
   const handleChange = (index: any, event: any) => {
     const value = event.target.value;
@@ -64,12 +69,11 @@ export default function OTPForm() {
     defaultValues: {
       otp: undefined,
     },
-
-  })
-  console.log(otp)
+  });
+  console.log(otp);
 
   async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
-    console.log(values)
+    console.log(values);
     // try {
     //   setLoading(true)
 
@@ -111,7 +115,9 @@ export default function OTPForm() {
           name="otp"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col items-center">
-              <FormLabel className="mb-4 text-center text-[14px] font-[700] leading-normal text-[#0C394B]">Enter OTP code</FormLabel>
+              <FormLabel className="mb-4 text-center text-[14px] font-[700] leading-normal text-[#0C394B]">
+                Enter OTP code
+              </FormLabel>
               <FormControl>
                 {/* <Input className="min-h-[48px]" placeholder="Enter your email address" {...field} /> */}
                 <div className="flex flex-row items-center gap-3">
@@ -121,15 +127,13 @@ export default function OTPForm() {
                       type="text"
                       maxLength={1}
                       value={digit}
-                      onChange={
-                        (event) => handleChange(index, event)
-                      }
+                      onChange={(event) => handleChange(index, event)}
                       onPaste={(event) => handlePaste(event)}
                       className="bg-[#FFFFFF] border text-center border-[#D3EEF9] border-solid h-12 w-12"
-                    // {...field}
+                      // {...field}
                     />
-                  ))}</div>
-
+                  ))}
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,5 +148,5 @@ export default function OTPForm() {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

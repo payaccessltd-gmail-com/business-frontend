@@ -1,24 +1,38 @@
-"use client"
+"use client";
 
-import { DevTool } from "@hookform/devtools"
+import { DevTool } from "@hookform/devtools";
 // import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { format } from "date-fns"
-import { useForm } from "react-hook-form"
-import { HiOutlineCloudUpload } from "react-icons/hi"
-import { LuCalendar } from "react-icons/lu"
-import * as zod from "zod"
+import { useMutation } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { useForm } from "react-hook-form";
+import { HiOutlineCloudUpload } from "react-icons/hi";
+import { LuCalendar } from "react-icons/lu";
+import * as zod from "zod";
 
-import { updateMerchantBioData } from "api/registration"
-import { Button } from "components/ui/button"
-import { Calendar } from "components/ui/calendar"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { Typography } from "components/ui/Typography"
-import { useToast } from "components/ui/use-toast"
-import { cn } from "lib/utils"
+import { updateMerchantBioData } from "api/registration";
+import { Button } from "components/ui/button";
+import { Calendar } from "components/ui/calendar";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
+import { Input } from "components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
+import { Typography } from "components/ui/Typography";
+import { useToast } from "components/ui/use-toast";
+import { cn } from "lib/utils";
 
 const personalInfoFormSchema = zod.object({
   emailAddress: zod.string().email(),
@@ -47,43 +61,52 @@ const personalInfoFormSchema = zod.object({
   }),
 
   identificationDocumentPath: zod.string(),
-})
+});
 
 export default function PersonalInformationForm() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const personalInfoForm = useForm<zod.infer<typeof personalInfoFormSchema>>({
     // resolver: zodResolver(personalInfoFormSchema),
     defaultValues: {
-      emailAddress: localStorage.getItem("email") || (localStorage.getItem("email") as string),
+      // emailAddress: localStorage.getItem("email") || (localStorage.getItem("email") as string),
+      emailAddress: "user.user@gmail.com",
     },
-  })
+  });
 
   const updateMerchantBioDataMutation = useMutation({
     mutationFn: updateMerchantBioData,
     onSuccess: async (data) => {
-      const res: { statusCode: string; message: string } = (await data.json()) as {
-        statusCode: string
-        message: string
-      }
+      const res: { statusCode: string; message: string } =
+        (await data.json()) as {
+          statusCode: string;
+          message: string;
+        };
 
       if (res.statusCode === "403") {
-        toast({ variant: "destructive", title: res.statusCode, description: res.message })
+        toast({
+          variant: "destructive",
+          title: res.statusCode,
+          description: res.message,
+        });
       }
     },
 
     onError: (error, variables, context) => {
-      console.log({ error, variables, context })
+      console.log({ error, variables, context });
     },
     onMutate: () => {
-      return null
+      return null;
     },
-  })
+  });
 
   const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
-    const emailAddress = localStorage.getItem("email") || (localStorage.getItem("email") as string)
-    const updatedData = { ...values, emailAddress: emailAddress }
-    updateMerchantBioDataMutation.mutate(updatedData)
-  }
+    // const emailAddress =
+    //   localStorage.getItem("email") ||
+    //   (localStorage.getItem("email") as string);
+    const emailAddress = "user.user@gmail.com";
+    const updatedData = { ...values, emailAddress: emailAddress };
+    updateMerchantBioDataMutation.mutate(updatedData);
+  };
 
   return (
     <Form {...personalInfoForm}>
@@ -143,7 +166,10 @@ export default function PersonalInformationForm() {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel className="text-[#555555]">Gender</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select gender" />
@@ -163,8 +189,10 @@ export default function PersonalInformationForm() {
             control={personalInfoForm.control}
             name="dateOfBirth"
             render={({ field }) => (
-              <FormItem className="flex w-full flex-col">
-                <FormLabel className="w-full text-[#555555]">Date of birth</FormLabel>
+              <FormItem className="flex flex-col w-full">
+                <FormLabel className="w-full text-[#555555]">
+                  Date of birth
+                </FormLabel>
                 <Popover>
                   <PopoverTrigger asChild className="w-full">
                     <FormControl>
@@ -172,11 +200,15 @@ export default function PersonalInformationForm() {
                         variant={"outline"}
                         className={cn(
                           "flex flex-row items-center justify-start font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         <LuCalendar className="mr-2" />
-                        {field.value ? format(field.value, "PPP") : <span>DD/MM/YY</span>}
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>DD/MM/YY</span>
+                        )}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -187,7 +219,9 @@ export default function PersonalInformationForm() {
                       selected={field.value}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       onSelect={field.onChange as any}
-                      disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -204,7 +238,9 @@ export default function PersonalInformationForm() {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[#555555]">Identification Document</FormLabel>
+              <FormLabel className="text-[#555555]">
+                Identification Document
+              </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -212,10 +248,16 @@ export default function PersonalInformationForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="driversLicenses">Drivers lincenses</SelectItem>
+                  <SelectItem value="driversLicenses">
+                    Drivers lincenses
+                  </SelectItem>
                   <SelectItem value="NATIONAL_ID">National ID</SelectItem>
-                  <SelectItem value="INTL_PASSPORT">International passport</SelectItem>
-                  <SelectItem value="VOTERS_CARD">Voter&apos;`s card</SelectItem>
+                  <SelectItem value="INTL_PASSPORT">
+                    International passport
+                  </SelectItem>
+                  <SelectItem value="VOTERS_CARD">
+                    Voter&apos;`s card
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -228,7 +270,9 @@ export default function PersonalInformationForm() {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[#555555]">Identification Number</FormLabel>
+              <FormLabel className="text-[#555555]">
+                Identification Number
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Enter identification number" {...field} />
               </FormControl>
@@ -242,15 +286,23 @@ export default function PersonalInformationForm() {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Please upload identification document.</FormDescription>
+              <FormDescription>
+                Please upload identification document.
+              </FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
-                  Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                  Drag file here to upload document or{" "}
+                  <span className="text-[#6B7280]">choose file</span>
                 </Typography>
               </FormLabel>
               <FormControl>
-                <Input className="hidden" placeholder="Enter identification number" {...field} type="file" />
+                <Input
+                  className="hidden"
+                  placeholder="Enter identification number"
+                  {...field}
+                  type="file"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -267,5 +319,5 @@ export default function PersonalInformationForm() {
       </form>
       <DevTool control={personalInfoForm.control} />
     </Form>
-  )
+  );
 }

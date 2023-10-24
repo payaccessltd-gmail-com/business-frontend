@@ -1,5 +1,4 @@
-import { cn } from 'lib/utils'
-
+import { cn } from "lib/utils";
 
 interface CardContainerProps {
   className?: string;
@@ -7,10 +6,20 @@ interface CardContainerProps {
   children?: React.ReactNode;
 }
 
-export default function CardContainer({ children, className, ...props }: CardContainerProps) {
-
-  return (<div {...props} className={cn('w-full rounded-md border border-solid border-gray-200 bg-white p-5', className)}>
-    {children}
-  </div>
-  )
+export default function CardContainer({
+  children,
+  className,
+  ...props
+}: CardContainerProps) {
+  return (
+    <div
+      {...props}
+      className={cn(
+        "w-full rounded-md border border-solid border-gray-200 bg-white p-5",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
 }

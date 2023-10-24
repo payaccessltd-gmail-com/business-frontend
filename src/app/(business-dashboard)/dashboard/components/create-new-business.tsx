@@ -1,7 +1,7 @@
-import { Button } from "components/ui/button"
-import { Label } from "components/ui/label"
-import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
-import { Typography } from "components/ui/Typography"
+import { Button } from "components/ui/button";
+import { Label } from "components/ui/label";
+import { RadioGroup, RadioGroupItem } from "components/ui/radio-group";
+import { Typography } from "components/ui/Typography";
 
 export default function Dashboard() {
   return (
@@ -13,27 +13,29 @@ export default function Dashboard() {
         <RadioGroup className="gap-0" defaultValue="">
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="option-one" id="option-one" />
-            <Label htmlFor="option-one" className="text-[14px] font-[400] text-[#777777]">
+            <Label
+              htmlFor="option-one"
+              className="text-[14px] font-[400] text-[#777777]"
+            >
               Starter / individual business
             </Label>
           </div>
-          <Typography
-
-            className="mb-[20px] ml-[32px] mt-[8px] w-[429px] text-[12px] font-[400] leading-[145%] text-[#0C394B]"
-          >
-            I`m testing my ideas with real customers, and preparing to register my company
+          <Typography className="mb-[20px] ml-[32px] mt-[8px] w-[429px] text-[12px] font-[400] leading-[145%] text-[#0C394B]">
+            I`m testing my ideas with real customers, and preparing to register
+            my company
           </Typography>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="option-two" id="option-two" />
-            <Label className="text-[14px] font-[400] text-[#777777]" htmlFor="option-two">
+            <Label
+              className="text-[14px] font-[400] text-[#777777]"
+              htmlFor="option-two"
+            >
               Registered business
             </Label>
           </div>
-          <Typography
-
-            className="ml-[32px] mt-[8px] w-[429px] text-[12px] font-[400] leading-[145%] text-[#0C394B]"
-          >
-            My business has the approval, documentation, and licences required to operate legally
+          <Typography className="ml-[32px] mt-[8px] w-[429px] text-[12px] font-[400] leading-[145%] text-[#0C394B]">
+            My business has the approval, documentation, and licences required
+            to operate legally
           </Typography>
         </RadioGroup>
       </div>
@@ -46,5 +48,5 @@ export default function Dashboard() {
         </Button>
       </div>
     </>
-  )
+  );
 }
