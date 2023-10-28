@@ -61,35 +61,17 @@ export default function RegistrationForm() {
 
   async function onSubmit(values: z.infer<typeof RegistrationSchema>) {
     console.log(values);
-    // try {
-    //   setLoading(true)
-
-    //   const res = await signIn("credentials", {
-    //     redirect: false,
-    //     email: values.email,
-    //     callbackUrl,
-    //   })
-
-    //   setLoading(false)
-
-    //   if (!res?.error) {
-    //     router.push(callbackUrl)
-    //   } else {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "invalid email or password",
-    //       description: "Please confirm if user is registered",
-    //     })
-    //   }
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // } catch (error: any) {
-    //   setLoading(false)
-    //   toast({
-    //     variant: "destructive",
-    //     title: error,
-    //     description: error,
-    //   })
-    // }
+    try {
+      setLoading(true)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setLoading(false)
+      toast({
+        variant: "destructive",
+        title: error,
+        description: error,
+      })
+    }
   }
 
   return (

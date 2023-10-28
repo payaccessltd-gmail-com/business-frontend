@@ -5,6 +5,7 @@ import { Typography } from "components/ui/Typography";
 import { MdLock } from "react-icons/md";
 import { LuChevronLeft } from "react-icons/lu";
 import OTPForm from "./form";
+import { BackButton } from "../_components/back-button"
 
 export default function ResetPasswordPage() {
   return (
@@ -25,10 +26,7 @@ export default function ResetPasswordPage() {
         </div>
       </div>
       <div className="relative flex flex-col lg:w-1/2 w-full h-full items-center justify-center xl:px-[160px] lg:px-[100px] md:px-[120px] sm:px-[200px] px-[20px]">
-        <p className="cursor-pointer absolute sm:left-[74px] left-[20px] top-[52px] flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-[145%] text-[#000000]">
-          <LuChevronLeft className="text-[24px] text-[#000000]" />
-          Back
-        </p>
+        <BackButton />
         {/* <Image className="mb-8" src={lock} alt={"lock"} /> */}
         <div className="mb-[13px]  rounded-full h-[92px] w-[92px] bg-[#BFEFFF33] flex flex-row items-center justify-center">
           <MdLock className="text-[50px] text-[#23AAE1]" />

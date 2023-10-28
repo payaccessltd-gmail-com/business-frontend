@@ -7,6 +7,8 @@ import { LiaEnvelopeOpenTextSolid } from "react-icons/lia";
 import { LuChevronLeft } from "react-icons/lu";
 import EmailVerificationForm from "./form";
 import { ScrollArea } from "components/ui/scroll-area";
+import { BackButton } from "../_components/back-button"
+
 
 export default function AuthenticationPage() {
   return (
@@ -34,11 +36,11 @@ export default function AuthenticationPage() {
       <ScrollArea className="relative lg:w-[50%] w-full h-full">
         <div className="lg:pt-[210px] pt-[180px] flex flex-col w-full h-full items-center xl:px-[160px] lg:px-[100px] md:px-[120px] sm:px-[200px] px-[20px]">
           <div className="absolute top-0 bg-white w-full sm:px-[74px] px-[20px] pb-[30px] pt-[52px] flex flex-row items-center justify-between">
-            <p className="cursor-pointer flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-[145%] text-[#000000]">
-              <LuChevronLeft className="text-[24px] text-[#000000]" />
-              Back
-            </p>
-            <p className="flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-none text-[#000000]">
+            <div>
+              <BackButton />
+            </div>
+
+            <p className="mt-[5px] flex flex-row items-center gap-[7px] text-[14px] font-[400] leading-none text-[#000000]">
               Already have an account ?
               <Link className="text-[#1D8EBB] font-[600]" href="/login">
                 Login
