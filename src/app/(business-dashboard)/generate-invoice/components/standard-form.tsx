@@ -26,20 +26,25 @@ import {
 import { Textarea } from "components/ui/textarea"
 
 
-// export const metadata: Metadata = {
-//   title: "Authentication",
-//   description: "Authentication forms built using the components.",
-// }
 
-const SimpleSchema = z.object({
+const StandardSchema = z.object({
     CustomerName: z.string().min(2, "first name must contain more than 2 characters"),
     email1: z.string().email(),
     email2: z.string().email().optional(),
     email3: z.string().email().optional(),
+    invoiceItem1: z.string(),
+    qty1: z.number(),
+    costPerUnit1: z.number(),
+    invoiceItem2: z.string(),
+    qty2: z.number(),
+    costPerUnit2: z.number(),
+    invoiceItem3: z.string(),
+    qty3: z.number(),
+    costPerUnit3: z.number(),
+    amount: z.number().optional(),
     date: z.date({
         required_error: "Due date is required.",
     }),
-    amount: z.string().optional(),
     note: z.string().optional(),
     logo: z.string().optional()
 
@@ -47,24 +52,34 @@ const SimpleSchema = z.object({
 })
 
 
-export default function SimpleForm() {
+export default function StandardForm() {
     const { toast } = useToast()
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
+    const [invoiceItem, setInvoiceItem] = useState<any[]>([""])
     const searchParams = useSearchParams()
     const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
     const [isInputFocused, setInputFocused] = useState(false);
     const [date, setDate] = useState<Date>()
-    const SimpleForm = useForm<z.infer<typeof SimpleSchema>>({
-        resolver: zodResolver(SimpleSchema),
+    const StandardForm = useForm<z.infer<typeof StandardSchema>>({
+        resolver: zodResolver(StandardSchema),
         defaultValues: {
             CustomerName: "",
-            email1: "",
+            email1: "example@gmail.com",
             email2: "example@gmail.com",
             email3: "example@gmail.com",
+            invoiceItem1: "",
+            qty1: 0,
+            costPerUnit1: 0,
+            invoiceItem2: "",
+            qty2: 0,
+            costPerUnit2: 0,
+            invoiceItem3: "",
+            qty3: 0,
+            costPerUnit3: 0,
             date: undefined,
-            amount: "",
+            amount: 0,
             note: "",
             logo: ""
 
@@ -72,14 +87,20 @@ export default function SimpleForm() {
 
 
     })
-    const addInputField = () => {
+    const addEmail = () => {
         if (inputField.length === 3) {
             return
         }
         setInputField([...inputField, { label: "" }]);
     };
+    const addInvoiceItem = () => {
+        if (invoiceItem.length === 3) {
+            return
+        }
+        setInvoiceItem([...invoiceItem, ""]);
+    };
 
-    async function onSubmit(values: z.infer<typeof SimpleSchema>) {
+    async function onSubmit(values: z.infer<typeof StandardSchema>) {
         console.log(values)
         // try {
         //   setLoading(true)
@@ -113,14 +134,14 @@ export default function SimpleForm() {
     }
 
     return (
-        <Form {...SimpleForm}>
+        <Form {...StandardForm}>
             <form
-                onSubmit={SimpleForm.handleSubmit(onSubmit)}
+                onSubmit={StandardForm.handleSubmit(onSubmit)}
                 className="w-full rounded-lg pb-[50px] space-y-6 flex flex-col items-center"
             >
 
                 <FormField
-                    control={SimpleForm.control}
+                    control={StandardForm.control}
                     name="CustomerName"
                     render={({ field }) => (
                         <FormItem className="w-full ">
@@ -135,18 +156,23 @@ export default function SimpleForm() {
                 />
                 {
                     inputField.map(({ label }, id) => {
-                        const nameString: any = `email${id+1}`
+                        const nameString: any = `email${id + 1}`
                         return (
 
                             <FormField
                                 key={id}
-                                control={SimpleForm.control}
+                                control={StandardForm.control}
                                 name={nameString}
                                 render={({ field }) => (
                                     <FormItem className="w-full">
                                         <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">{label}</FormLabel>
                                         <FormControl>
-                                            <Input type="email" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Enter customer Email address" {...field} value={field.value ?? ''} />
+                                            <Input type="email" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Enter customer Email address" {...field}
+                                                onChange={(event) => {
+                                                    field.onChange(event);
+                                                }}
+                                            // value={field.value ?? ''}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -159,10 +185,91 @@ export default function SimpleForm() {
 
                     })
                 }
-                <p onClick={() => addInputField()} className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"><FiPlus className="text-[#1D8EBB] text-[24px]" />Add additional email address</p>
+                <p onClick={() => addEmail()} className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
+                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                    Add additional email address
+                </p>
+
+                {
+                    invoiceItem.map((value, id) => {
+
+                        let invoiceItemNameString: any = `invoiceItem${id + 1}`
+                        let qtyNameString: any = `qty${id + 1}`
+                        let costPerUnitNameString: any = `costPerUnit${id + 1}`
+                        return (
+                            <div key={id} className="flex flex-row items-start w-full gap-[13px]">
+                                <FormField
+                                    control={StandardForm.control}
+                                    name={invoiceItemNameString}
+                                    render={({ field }) => (
+                                        <FormItem className="w-[40%] ">
+                                            <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice item</FormLabel>
+                                            <FormControl>
+                                                <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Product or service name" {...field} />
+
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={StandardForm.control}
+                                    name={qtyNameString}
+                                    render={({ field }) => (
+                                        <FormItem className="w-[20%] ">
+                                            <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={StandardForm.control}
+                                    name={costPerUnitNameString}
+                                    render={({ field }) => (
+                                        <FormItem className="w-[40%] ">
+                                            <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice item</FormLabel>
+                                            <FormControl>
+                                                <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                            </div>
+                        )
+
+
+                    })
+                }
+
+                <p onClick={() => addInvoiceItem()} className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
+                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                    Add additional items
+                </p>
+
+
 
                 <FormField
-                    control={SimpleForm.control}
+                    control={StandardForm.control}
+                    name="amount"
+                    render={({ field }) => (
+                        <FormItem className="w-full">
+                            <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Amount (optional)</FormLabel>
+                            <FormControl>
+                                <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="0.00" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={StandardForm.control}
                     name="date"
                     render={({ field }) => (
                         <FormItem className="w-full">
@@ -200,22 +307,8 @@ export default function SimpleForm() {
                         </FormItem>
                     )}
                 />
-
                 <FormField
-                    control={SimpleForm.control}
-                    name="amount"
-                    render={({ field }) => (
-                        <FormItem className="w-full">
-                            <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Amount (optional)</FormLabel>
-                            <FormControl>
-                                <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="0.00" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={SimpleForm.control}
+                    control={StandardForm.control}
                     name="note"
                     render={({ field }) => (
                         <FormItem className="w-full">
@@ -232,9 +325,9 @@ export default function SimpleForm() {
                         </FormItem>
                     )}
                 />
-                {/* ----------input type: file/// */}
+
                 <FormField
-                    control={SimpleForm.control}
+                    control={StandardForm.control}
                     name="logo"
                     render={({ field }) => (
                         <FormItem className="w-full">
@@ -252,6 +345,30 @@ export default function SimpleForm() {
                         </FormItem>
                     )}
                 />
+                <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
+                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                    Add Tax & Discount
+                </p>
+                <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
+                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                    Add Shipping Fee
+                </p>
+                <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+                        Subtotal
+                    </p>
+                    <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+                        00.000
+                    </p>
+                </div>
+                <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+                        Grand Total
+                    </p>
+                    <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+                        00.000
+                    </p>
+                </div>
 
                 <Button
                     disabled={loading}
@@ -260,14 +377,14 @@ export default function SimpleForm() {
                 >
                     Preview
                 </Button>
-                <Button
+                {/* <Button
                     variant={"outline"}
                     disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                     type="submit"
                 >
                     Save as Draft
-                </Button>
+                </Button> */}
 
             </form>
         </Form>
