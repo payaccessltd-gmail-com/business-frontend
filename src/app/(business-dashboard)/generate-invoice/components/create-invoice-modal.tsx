@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Label } from "components/ui/label"
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
 import SimpleForm from './simple-form'
+import StandardForm from './standard-form'
 
 export const CreateInvoice = () => {
     const [toggle, setToggle] = useState<number>(0)
@@ -35,7 +36,9 @@ export const CreateInvoice = () => {
                 </RadioGroup>
             </div>
             <div className='py-[36px] px-[109px]'>
-                <SimpleForm />
+                {
+                    toggle ? <StandardForm /> : <SimpleForm />
+                }
             </div>
         </div>
     )
