@@ -1,6 +1,6 @@
-import { render } from "@testing-library/react"
-import { AppProps } from "next/app"
-import MyApp from "./layout"
+import { render } from "@testing-library/react";
+import { AppProps } from "next/app";
+import MyApp from "./layout";
 
 // Mock router object with required properties
 const router = {
@@ -8,7 +8,7 @@ const router = {
   pathname: "/",
   query: {},
   asPath: "/",
-}
+};
 
 describe("MyApp", () => {
   it("should render a component with page props", () => {
@@ -21,10 +21,10 @@ describe("MyApp", () => {
       ),
       pageProps: { title: "Test Page" },
       router: router as never, // Include mocked router object in props
-    }
+    };
     // eslint-disable-next-line react/no-children-prop
-    const { getByText } = render(<MyApp children={undefined} {...props} />)
-    expect(getByText("Test Component")).toBeInTheDocument()
-    expect(getByText("Test Page")).toBeInTheDocument()
-  })
-})
+    const { getByText } = render(<MyApp children={undefined} {...props} />);
+    expect(getByText("Test Component")).toBeInTheDocument();
+    expect(getByText("Test Page")).toBeInTheDocument();
+  });
+});

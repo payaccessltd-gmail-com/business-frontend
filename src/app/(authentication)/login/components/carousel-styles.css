@@ -1,7 +1,7 @@
 .slick-dots li {
-  margin: 0 1px; 
+  margin: 0 1px;
 }
-.login-bg{
+.login-bg {
   background-image: url("../../../../assets/img/login/login-bg.png");
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Do not repeat the image */

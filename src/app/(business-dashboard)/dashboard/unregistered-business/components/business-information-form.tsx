@@ -1,16 +1,30 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import { useForm } from "react-hook-form"
-import * as zod from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import * as zod from "zod";
 
-import { updateMerchantBusinessData } from "api/registration"
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { Textarea } from "components/ui/textarea"
+import { updateMerchantBusinessData } from "api/registration";
+import { Button } from "components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
+import { Input } from "components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
+import { Textarea } from "components/ui/textarea";
 
 const businessInfoFormSchema = zod.object({
   merchantId: zod.number(),
@@ -28,34 +42,38 @@ const businessInfoFormSchema = zod.object({
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
-})
+});
 
 export default function BusinessInformationForm() {
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(businessInfoFormSchema),
-  })
+  });
 
   const updateMerchantBusinessDataMutation = useMutation({
     mutationFn: updateMerchantBusinessData,
     onSuccess: () => {
-      return null
+      return null;
     },
     onMutate: () => {
-      return null
+      return null;
     },
-  })
+  });
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
-    const emailAddress = localStorage.getItem("emailAddress") as string
+    // const emailAddress = localStorage.getItem("emailAddress") as string
+    const emailAddress = "user.user@gmail.com";
 
-    const updatedValue = { emailAddress, ...values }
-    updateMerchantBusinessDataMutation.mutate(updatedValue)
-  }
+    const updatedValue = { emailAddress, ...values };
+    updateMerchantBusinessDataMutation.mutate(updatedValue);
+  };
 
   return (
     <Form {...businessInfoForm}>
-      <form onSubmit={businessInfoForm.handleSubmit(onSubmit)} className="space-y-8 border-gray-10">
+      <form
+        onSubmit={businessInfoForm.handleSubmit(onSubmit)}
+        className="space-y-8 border-gray-10"
+      >
         <FormField
           name="businessName"
           control={businessInfoForm.control}
@@ -77,7 +95,10 @@ export default function BusinessInformationForm() {
             <FormItem>
               <FormLabel>Business Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Tell us a little bit about yourself" {...field} />
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  {...field}
+                />
               </FormControl>
 
               <FormMessage />
@@ -107,7 +128,11 @@ export default function BusinessInformationForm() {
               <FormItem className="w-full">
                 <FormLabel>Business mobile number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter businesss mobile number" {...field} type="number" />
+                  <Input
+                    placeholder="Enter businesss mobile number"
+                    {...field}
+                    type="number"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -150,7 +175,10 @@ export default function BusinessInformationForm() {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
@@ -188,7 +216,11 @@ export default function BusinessInformationForm() {
             <FormItem>
               <FormDescription>Business logo (optional)</FormDescription>
               <FormControl>
-                <Input placeholder="Drag file here to upload document or choose file" {...field} type="file" />
+                <Input
+                  placeholder="Drag file here to upload document or choose file"
+                  {...field}
+                  type="file"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -202,7 +234,11 @@ export default function BusinessInformationForm() {
             <FormItem>
               <FormDescription>Business Certificate</FormDescription>
               <FormControl>
-                <Input placeholder="Drag file here to upload document or choose file" {...field} type="file" />
+                <Input
+                  placeholder="Drag file here to upload document or choose file"
+                  {...field}
+                  type="file"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -214,5 +250,5 @@ export default function BusinessInformationForm() {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

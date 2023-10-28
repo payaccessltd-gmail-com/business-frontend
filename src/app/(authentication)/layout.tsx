@@ -1,21 +1,21 @@
-import { Metadata } from "next"
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Registration",
   description: "Registration where all the business are being registered",
-}
+};
 
 export default function RegistrationLayout({
   // Layouts must accept a children prop.
   // This will be populated with nested layouts or pages
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="relative h-screen">
       {/* <svg
-        className="absolute -z-10 max-h-screen"
+        className="absolute max-h-screen -z-10"
         width="100%"
         height="662"
         viewBox="0 0 1440 662"
@@ -56,7 +56,7 @@ export default function RegistrationLayout({
       </svg> */}
 
       {/* <svg
-        className="absolute top-16 -z-10 h-screen max-h-screen"
+        className="absolute h-screen max-h-screen top-16 -z-10"
         width="100%"
         height="1065"
         viewBox="0 0 1440 1065"
@@ -92,5 +92,5 @@ export default function RegistrationLayout({
       </svg> */}
       {children}
     </div>
-  )
+  );
 }
