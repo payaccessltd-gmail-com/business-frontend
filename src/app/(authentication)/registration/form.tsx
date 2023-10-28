@@ -19,19 +19,20 @@ import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 import { Checkbox } from "components/ui/checkbox";
 import Link from "next/link";
-
+import { useMutation } from "@tanstack/react-query";
+import { createNewUser } from "../../../api/registration"
 // export const metadata: Metadata = {
 //   title: "Authentication",
 //   description: "Authentication forms built using the components.",
 // }
 
 const RegistrationSchema = z.object({
-  FirstName: z
+  firstName: z
     .string()
     .min(2, "first name must contain more than 2 characters"),
-  LastName: z.string().min(2, "last name must contain more than 2 characters"),
-  EmailAddress: z.string().email(),
-  BusinessName: z
+  lastName: z.string().min(2, "last name must contain more than 2 characters"),
+  emailAddress: z.string().email(),
+  businessName: z
     .string()
     .min(2, "business name must contain more than 2 characters"),
   password: z
@@ -49,7 +50,7 @@ export default function RegistrationForm() {
   const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
 
-  const RegistrationForm = useForm<z.infer<typeof RegistrationSchema>>({
+  const registrationForm = useForm<z.infer<typeof RegistrationSchema>>({
     resolver: zodResolver(RegistrationSchema),
     defaultValues: {
       password: "",
@@ -59,25 +60,48 @@ export default function RegistrationForm() {
   const { formState } = useForm();
   const { isValid } = formState;
 
-  async function onSubmit(values: z.infer<typeof RegistrationSchema>) {
-    console.log(values);
-    try {
-      setLoading(true)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setLoading(false)
+
+  const userRegMutation = useMutation({
+    mutationFn: createNewUser,
+    onSuccess: async (data) => {
+      const responseData: API.CreateAccountResponse = (await data.json()) as API.CreateAccountResponse
+
+      if (responseData?.statusCode === "1") {
+        toast({ variant: "destructive", title: "", description: responseData?.message })
+      }
+
+      if (responseData?.statusCode === "0") {
+        toast({ variant: "default", title: "", description: responseData?.message })
+        if (typeof window) {
+          router.push(
+            `/email-verification?email=${registrationForm.getValues("emailAddress")}&verification-link=${responseData?.responseObject?.split("/").pop()}`
+          )
+        }
+
+        registrationForm.reset()
+      }
+    },
+
+    onError: (e) => {
+      console.log(e);
       toast({
         variant: "destructive",
-        title: error,
-        description: error,
+        title: `${e}`,
+        description: "error",
       })
-    }
+
+    },
+  })
+
+
+  async function onSubmit(values: z.infer<typeof RegistrationSchema>) {
+    userRegMutation.mutate(values)
   }
 
   return (
-    <Form {...RegistrationForm}>
+    <Form {...registrationForm}>
       <form
-        onSubmit={RegistrationForm.handleSubmit(onSubmit)}
+        onSubmit={registrationForm.handleSubmit(onSubmit)}
         className="w-full rounded-lg bg-white pb-[50px] space-y-6 flex flex-col items-center"
       >
         {/* <FormMessage> */}
@@ -89,8 +113,8 @@ export default function RegistrationForm() {
         {/* </FormMessage> */}
 
         <FormField
-          control={RegistrationForm.control}
-          name="FirstName"
+          control={registrationForm.control}
+          name="firstName"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel className="text-[#777777]">First Name</FormLabel>
@@ -107,8 +131,8 @@ export default function RegistrationForm() {
           )}
         />
         <FormField
-          control={RegistrationForm.control}
-          name="LastName"
+          control={registrationForm.control}
+          name="lastName"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel className="text-[#777777]">Last Name</FormLabel>
@@ -126,8 +150,8 @@ export default function RegistrationForm() {
         />
 
         <FormField
-          control={RegistrationForm.control}
-          name="EmailAddress"
+          control={registrationForm.control}
+          name="emailAddress"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel className="text-[#777777]">Email address</FormLabel>
@@ -144,8 +168,8 @@ export default function RegistrationForm() {
           )}
         />
         <FormField
-          control={RegistrationForm.control}
-          name="BusinessName"
+          control={registrationForm.control}
+          name="businessName"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel className="text-[#777777]">Business name</FormLabel>
@@ -162,7 +186,7 @@ export default function RegistrationForm() {
           )}
         />
         <FormField
-          control={RegistrationForm.control}
+          control={registrationForm.control}
           name="password"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -182,7 +206,7 @@ export default function RegistrationForm() {
         />
 
         <FormField
-          control={RegistrationForm.control}
+          control={registrationForm.control}
           name="agreement"
           render={({ field }) => (
             <FormItem className="w-full">

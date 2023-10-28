@@ -10,9 +10,10 @@ import { ScrollArea } from "components/ui/scroll-area";
 import { BackButton } from "../_components/back-button"
 
 
+
 export default function AuthenticationPage() {
   return (
-    <div className="flex flex-row w-full h-full ">
+    <div className="relative flex flex-row w-full h-full ">
       <div
         className={`lg:flex hidden overflow-hidden login-bg relative w-[50%] h-full bg-[#177196] flex-col`}
       >
@@ -66,23 +67,10 @@ export default function AuthenticationPage() {
 
           {/* logic and control for form signin is located here */}
           <EmailVerificationForm />
-          <p className="text-[#1A1A1A] mb-4 text-[14px] text-center font-[400] leading-[145%]">
-            Didn’t get the mail?{" "}
-            <Link
-              className="text-[#1D8EBB] font-[700] leading-normal"
-              href={""}
-            >
-              click here to resend.
-            </Link>
-          </p>
-          <p className="text-[14px] font-[400] leading-[145%] text-[#000000]">
-            Resend code in{" "}
-            <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">
-              2:00sec
-            </span>
-          </p>
+         
         </div>
       </ScrollArea>
+
     </div>
   );
 }
