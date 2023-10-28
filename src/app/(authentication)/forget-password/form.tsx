@@ -1,16 +1,23 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, useSearchParams } from "next/navigation"
-import { signIn } from "next-auth/react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { useToast } from "components/ui/use-toast"
+import { Button } from "components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
+import { Input } from "components/ui/input";
+import { useToast } from "components/ui/use-toast";
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -19,51 +26,50 @@ import { useToast } from "components/ui/use-toast"
 
 const ForgetPasswordSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-
-})
+});
 
 export default function ForgetForm() {
-  const { toast } = useToast()
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
+  const { toast } = useToast();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
   const loginForm = useForm<z.infer<typeof ForgetPasswordSchema>>({
     resolver: zodResolver(ForgetPasswordSchema),
     defaultValues: {
       email: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const res = await signIn("credentials", {
         redirect: false,
         email: values.email,
         callbackUrl,
-      })
+      });
 
-      setLoading(false)
+      setLoading(false);
 
       if (!res?.error) {
-        router.push(callbackUrl)
+        router.push(callbackUrl);
       } else {
         toast({
           variant: "destructive",
           title: "invalid email or password",
           description: "Please confirm if user is registered",
-        })
+        });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setLoading(false)
+      setLoading(false);
       toast({
         variant: "destructive",
         title: error,
         description: error,
-      })
+      });
     }
   }
 
@@ -80,7 +86,11 @@ export default function ForgetForm() {
             <FormItem className="w-full">
               <FormLabel className="text-[#777777] ">Email Address</FormLabel>
               <FormControl>
-                <Input className="min-h-[48px]" placeholder="Enter your email address" {...field} />
+                <Input
+                  className="min-h-[48px]"
+                  placeholder="Enter your email address"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -95,5 +105,5 @@ export default function ForgetForm() {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

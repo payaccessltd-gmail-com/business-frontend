@@ -114,7 +114,7 @@ export default function OTPForm() {
           control={otpForm.control}
           name="otp"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col items-center">
+            <FormItem className="flex flex-col items-center w-full">
               <FormLabel className="mb-4 text-center text-[14px] font-[700] leading-normal text-[#0C394B]">
                 Enter OTP code
               </FormLabel>

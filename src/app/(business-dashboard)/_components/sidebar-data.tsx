@@ -1,28 +1,23 @@
 type SVGIconProps = {
-  isActive: boolean
-  activeColor?: string
-  defaultColor?: string
-}
-
-
-
+  isActive: boolean;
+  activeColor?: string;
+  defaultColor?: string;
+};
 
 export const sidebarData = [
   {
     section: "first section",
     list: [
-
       {
         name: "Dashboard",
         path: "/dashboard",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={24}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -35,15 +30,17 @@ export const sidebarData = [
         name: "Transaction",
         path: "/transaction",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={24}
             fill="none"
-
           >
-            <path fill="#999" d="M2 7h18H2Zm14-5 5 5-5 5m6 5H4h18ZM8 12l-5 5 5 5" />
+            <path
+              fill="#999"
+              d="M2 7h18H2Zm14-5 5 5-5 5m6 5H4h18ZM8 12l-5 5 5 5"
+            />
             <path
               stroke={isActive ? activeColor : defaultColor}
               strokeWidth={1.5}
@@ -57,13 +54,12 @@ export const sidebarData = [
         name: "Settlement",
         path: "/settlement",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={24}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -90,13 +86,12 @@ export const sidebarData = [
         name: "Refunds",
         path: "/refunds",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={25}
             height={25}
             fill="none"
-
           >
             <path
               stroke={isActive ? activeColor : defaultColor}
@@ -112,13 +107,12 @@ export const sidebarData = [
         name: "Spit/Skil",
         path: "/spit-skil",
         tagText: "coming soon",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={25}
             height={25}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -131,13 +125,12 @@ export const sidebarData = [
         name: "Invoice",
         path: "/invoice",
         tagText: "new",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={25}
             height={25}
             fill="none"
-
           >
             <path
               stroke={isActive ? activeColor : defaultColor}
@@ -167,13 +160,12 @@ export const sidebarData = [
         name: "Developers Tools",
         path: "/developers-tools",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={25}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -188,13 +180,12 @@ export const sidebarData = [
         name: "Audit Log",
         path: "/audit-log",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={25}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -209,13 +200,12 @@ export const sidebarData = [
         name: "POS",
         path: "/pos",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={25}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -242,13 +232,12 @@ export const sidebarData = [
         name: "Customer",
         path: "/customer",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={24}
             fill="none"
-
           >
             <g clipPath="url(#a)">
               <path
@@ -261,7 +250,10 @@ export const sidebarData = [
             </g>
             <defs>
               <clipPath id="a">
-                <path fill={isActive ? activeColor : defaultColor} d="M0 0h24v24H0z" />
+                <path
+                  fill={isActive ? activeColor : defaultColor}
+                  d="M0 0h24v24H0z"
+                />
               </clipPath>
             </defs>
           </svg>
@@ -271,13 +263,12 @@ export const sidebarData = [
         name: "Settings",
         path: "/settings",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={24}
             fill="none"
-
           >
             <g clipPath="url(#a)">
               <path
@@ -287,7 +278,10 @@ export const sidebarData = [
             </g>
             <defs>
               <clipPath id="a">
-                <path fill={isActive ? activeColor : defaultColor} d="M0 0h24v24H0z" />
+                <path
+                  fill={isActive ? activeColor : defaultColor}
+                  d="M0 0h24v24H0z"
+                />
               </clipPath>
             </defs>
           </svg>
@@ -297,13 +291,12 @@ export const sidebarData = [
         name: "Logout",
         path: "/login",
         tagText: "",
-        SVGIcon: (({ isActive, defaultColor, activeColor }: SVGIconProps) =>
+        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={24}
             height={24}
             fill="none"
-
           >
             <path
               fill={isActive ? activeColor : defaultColor}
@@ -322,9 +315,7 @@ export const sidebarData = [
       },
     ],
   },
-]
-
-
+];
 
 export const SvgLogoComponent = () => (
   <svg
@@ -333,7 +324,6 @@ export const SvgLogoComponent = () => (
     width={43}
     height={52}
     fill="none"
-
   >
     <path fill="url(#a)" d="M0 0h43v52H0z" />
     <defs>
@@ -353,5 +343,4 @@ export const SvgLogoComponent = () => (
       />
     </defs>
   </svg>
-)
-
+);
