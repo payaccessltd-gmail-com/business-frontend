@@ -1,9 +1,22 @@
 declare namespace API {
   type StatusReponse = {
-    statusCode: string;
-    message: string;
-    responseObject: string;
+    statusCode?: string;
+    message?: string;
+    responseObject?: string;
   };
+
+  type CreateAccountResponse = StatusReponse & {
+    responseObject?: string;
+  }
+  type VerifyAccountResponse = StatusReponse & {
+    responseObject: {
+      firstName: string;
+      lastName: string;
+      emailAddress: string;
+      userStatus: string;
+      softwareDeveloper: boolean;
+    }
+  }
 
   type UserDTO = {
     firstName: string;
@@ -11,6 +24,26 @@ declare namespace API {
     emailAddress: string;
     businessName: string;
     password: string;
+  };
+  type UserOTP = {
+    otp: string;
+    verificationLink: string;
+    emailAddress: string;
+  };
+  type ResendOTP = {
+    emailAddress: string;
+  };
+  type ForgetPassword = {
+    email: string;
+  };
+  type resetPasword = {
+    password: string,
+    newPassword: string
+  };
+  type OTP = {
+    email: string;
+    otp: string;
+
   };
 
   type MerchantRegistrationDTO = {

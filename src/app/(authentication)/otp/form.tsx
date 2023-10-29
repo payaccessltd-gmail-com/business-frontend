@@ -6,7 +6,6 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -18,6 +17,8 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { OTP } from "../../../api/registration"
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -33,7 +34,7 @@ export default function OTPForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
+  const email = searchParams.get("email")
   const [otp, setOtp] = useState(Array(4).fill(""));
 
   const handleChange = (index: any, event: any) => {
@@ -70,44 +71,58 @@ export default function OTPForm() {
       otp: undefined,
     },
   });
-  console.log(otp);
 
-  async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
-    console.log(values);
-    // try {
-    //   setLoading(true)
+  const OTPMutation = useMutation({
+    mutationFn: OTP,
+    onSuccess: async (data) => {
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
-    //   const res = await signIn("credentials", {
-    //     redirect: false,
-    //     email: values.email,
-    //     callbackUrl,
-    //   })
+      if (responseData?.statusCode === "1") {
+        toast({ variant: "destructive", title: "", description: responseData?.message })
+      }
 
-    //   setLoading(false)
+      if (responseData?.statusCode === "0") {
+        toast({ variant: "default", title: "", description: responseData?.message })
+        setOtp(Array(4).fill(""))
+        if (typeof window) {
+          router.push(
+            `/reset-password?email=${email}`
+          )
+        }
+      }
+    },
 
-    //   if (!res?.error) {
-    //     router.push(callbackUrl)
-    //   } else {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "invalid email or password",
-    //       description: "Please confirm if user is registered",
-    //     })
-    //   }
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // } catch (error: any) {
-    //   setLoading(false)
-    //   toast({
-    //     variant: "destructive",
-    //     title: error,
-    //     description: error,
-    //   })
-    // }
+    onError: (e) => {
+      console.log(e);
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      })
+
+    },
+  })
+
+  // async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
+  //   console.log(values);
+
+
+  // }
+
+  const handleSubmit = (event: any) => {
+    event?.preventDefault()
+    console.log(otp.join(""));
+    let OTP = {
+      email: email,
+      otp: otp.join(""),
+    };
+    OTPMutation.mutate(OTP as any)
   }
+
   return (
     <Form {...otpForm}>
       <form
-        onSubmit={otpForm.handleSubmit(onSubmit)}
+        // onSubmit={otpForm.handleSubmit(onSubmit)}
         className="flex w-full flex-col items-center rounded-lg bg-white pb-[24px]"
       >
         <FormField
@@ -130,7 +145,7 @@ export default function OTPForm() {
                       onChange={(event) => handleChange(index, event)}
                       onPaste={(event) => handlePaste(event)}
                       className="bg-[#FFFFFF] border text-center border-[#D3EEF9] border-solid h-12 w-12"
-                      // {...field}
+                    // {...field}
                     />
                   ))}
                 </div>
@@ -142,7 +157,8 @@ export default function OTPForm() {
         <Button
           disabled={loading}
           className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-          type="submit"
+          // type="submit"
+          onClick={(event) => handleSubmit(event)}
         >
           Continue
         </Button>

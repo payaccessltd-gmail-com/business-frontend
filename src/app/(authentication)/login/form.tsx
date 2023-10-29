@@ -18,6 +18,8 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
+import { loginApi } from "../../../api/login"
+import { useMutation } from "@tanstack/react-query";
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
@@ -42,44 +44,44 @@ export default function LoginForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    try {
-      setLoading(true);
-      const res = await signIn("credentials", {
-        redirect: false,
-        username: values.username,
-        password: values.password,
-        callbackUrl,
-      });
 
-      setLoading(false);
 
-      if (!res?.error) {
-        localStorage.setItem("email", values.username);
-        router.push(callbackUrl);
-      } else if (res.error === "fetch failed") {
-        toast({
-          variant: "destructive",
-          title: "Service Unreachable",
-          description: "Request failed to reach the service resource",
-        });
-      } else {
-        console.log(res?.error);
-        toast({
-          variant: "destructive",
-          title: "invalid email or password",
-          description: "Please confirm if user is registered",
-        });
+
+
+  const loginMutation = useMutation({
+    mutationFn: loginApi,
+    onSuccess: async (data) => {
+      const responseData: API.LoginResponse = (await data.json()) as API.LoginResponse
+
+      if (!responseData?.subject) {
+        toast({ variant: "destructive", title: "", description: "Error Signin in" })
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setLoading(false);
+
+      if (responseData?.subject) {
+        toast({ variant: "default", title: "", description: "Signin successful" })
+        if (typeof window) {
+          router.push(
+            `/dashboard`
+          )
+        }
+        loginForm.reset()
+      }
+    },
+
+    onError: (e) => {
+      console.log(e);
       toast({
         variant: "destructive",
-        title: error,
-        description: error,
-      });
-    }
+        title: `${e}`,
+        description: "error",
+      })
+
+    },
+  })
+
+
+  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    loginMutation.mutate(values)
   }
 
   return (
