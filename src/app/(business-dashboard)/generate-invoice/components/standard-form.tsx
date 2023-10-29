@@ -8,6 +8,13 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "components/ui/select"
 import { Input } from "components/ui/input"
 import { useToast } from "components/ui/use-toast"
 import { Checkbox } from "components/ui/checkbox"
@@ -24,6 +31,12 @@ import {
     PopoverTrigger,
 } from "components/ui/popover"
 import { Textarea } from "components/ui/textarea"
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "components/ui/collapsible"
+
 
 
 
@@ -46,8 +59,11 @@ const StandardSchema = z.object({
         required_error: "Due date is required.",
     }),
     note: z.string().optional(),
-    logo: z.string().optional()
-
+    logo: z.string().optional(),
+    discountType: z.string().optional(),
+    tax: z.number().optional(),
+    discount: z.number().optional(),
+    shipping: z.number().optional(),
 
 })
 
@@ -81,7 +97,11 @@ export default function StandardForm() {
             date: undefined,
             amount: 0,
             note: "",
-            logo: ""
+            logo: "",
+            tax: 0,
+            discountType: "Percentage",
+            discount: 0,
+            shipping: 0
 
         },
 
@@ -345,14 +365,106 @@ export default function StandardForm() {
                         </FormItem>
                     )}
                 />
-                <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
-                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
-                    Add Tax & Discount
-                </p>
-                <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
-                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
-                    Add Shipping Fee
-                </p>
+                <Collapsible className="w-full">
+                    <CollapsibleTrigger className="flex flex-col items-start w-full">
+                        <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
+                            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                            Add Tax & Discount
+                        </p>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="flex flex-col items-start w-full gap-6">
+                        <FormField
+                            control={StandardForm.control}
+                            name="tax"
+                            render={({ field }) => (
+                                <FormItem className="mt-[31px] w-full">
+                                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Tax payment(%)</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="0.00" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+
+                        <div className="flex flex-row items-end w-full gap-6">
+
+                            <FormField
+                                control={StandardForm.control}
+                                name="discountType"
+                                render={({ field }) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Discount</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger className="border-[#A1CBDE] min-h-[48px] bg-transparent">
+                                                    <SelectValue defaultValue={field.value} placeholder="Percentage" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="percentage1">Percentage</SelectItem>
+                                                <SelectItem value="percentage2">Percentage</SelectItem>
+                                                <SelectItem value="percentage3">Percentage</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+
+                            <FormField
+                                control={StandardForm.control}
+                                name="discount"
+                                render={({ field }) => (
+                                    <FormItem className="w-full ">
+                                        {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
+                                        <FormControl>
+                                            <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+
+                        </div>
+                    </CollapsibleContent>
+                </Collapsible>
+
+
+
+
+                <Collapsible className="w-full">
+                    <CollapsibleTrigger className="flex flex-col items-start w-full">
+                        <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
+                            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                            Add Shipping Fee
+                        </p>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="flex flex-col items-start w-full gap-6">
+                        <FormField
+                            control={StandardForm.control}
+                            name="shipping"
+                            render={({ field }) => (
+                                <FormItem className="mt-[31px] w-full">
+                                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Shipping fee (optional)</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="0.00" {...field} onChange={event => field.onChange(Number(event.target.value))} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CollapsibleContent>
+                </Collapsible>
+
+
+
+
                 <div className="flex flex-row items-center justify-between w-full">
                     <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
                         Subtotal
@@ -372,7 +484,7 @@ export default function StandardForm() {
 
                 <Button
                     disabled={loading}
-                    className="mt-[32px] min-h-[48px] font-[700] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+                    className="mt-[32px] min-h-[48px] font-[700] w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     type="submit"
                 >
                     Preview
@@ -390,10 +502,6 @@ export default function StandardForm() {
         </Form>
     )
 }
-
-
-
-
 
 
 

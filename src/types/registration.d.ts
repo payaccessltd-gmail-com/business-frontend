@@ -36,6 +36,10 @@ declare namespace API {
   type ForgetPassword = {
     email: string;
   };
+  type resetPasword = {
+    password: string,
+    newPassword: string
+  };
   type OTP = {
     email: string;
     otp: string;

@@ -61,3 +61,15 @@ export const OTP = async (OTPBody: API.OTP) => {
     },
   );
 };
+export const resetPassword = async (resetPasswordBody: API.resetPasword) => {
+  return await fetch(
+    `${baseUrl}/api/v1/user/update-user-password`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(resetPasswordBody),
+    },
+  );
+};
