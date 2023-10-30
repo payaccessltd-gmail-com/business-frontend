@@ -18,6 +18,9 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
+import { forgetPassword } from "../../../api/registration"
+import { useMutation } from "@tanstack/react-query";
+
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -34,54 +37,57 @@ export default function ForgetForm() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
-  const loginForm = useForm<z.infer<typeof ForgetPasswordSchema>>({
+  const forgetForm = useForm<z.infer<typeof ForgetPasswordSchema>>({
     resolver: zodResolver(ForgetPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
-    try {
-      setLoading(true);
+  const forgetPasswordMutation = useMutation({
+    mutationFn: forgetPassword,
+    onSuccess: async (data) => {
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
-      const res = await signIn("credentials", {
-        redirect: false,
-        email: values.email,
-        callbackUrl,
-      });
-
-      setLoading(false);
-
-      if (!res?.error) {
-        router.push(callbackUrl);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "invalid email or password",
-          description: "Please confirm if user is registered",
-        });
+      if (responseData?.statusCode === "1") {
+        toast({ variant: "destructive", title: "", description: responseData?.message })
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setLoading(false);
+
+      if (responseData?.statusCode === "00") {
+        toast({ variant: "default", title: "", description: responseData?.message })
+        if (typeof window) {
+          router.push(
+            `/otp?email=${forgetForm.getValues("email")}`
+          )
+        }
+
+      }
+    },
+
+    onError: (e) => {
+      console.log(e);
       toast({
         variant: "destructive",
-        title: error,
-        description: error,
-      });
-    }
+        title: `${e}`,
+        description: "error",
+      })
+
+    },
+  })
+
+  async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
+    forgetPasswordMutation.mutate(values)
   }
 
   return (
-    <Form {...loginForm}>
+    <Form {...forgetForm}>
       <form
-        onSubmit={loginForm.handleSubmit(onSubmit)}
+        onSubmit={forgetForm.handleSubmit(onSubmit)}
         className="w-full rounded-lg bg-white pb-[40px] flex flex-col items-center"
       >
         <FormField
           name="email"
-          control={loginForm.control}
+          control={forgetForm.control}
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel className="text-[#777777] ">Email Address</FormLabel>

@@ -3,4 +3,9 @@ declare namespace API {
     username: string
     password: string
   }
+  type LoginResponse = {
+    subject?: string
+    token?: string
+  }
 }
+

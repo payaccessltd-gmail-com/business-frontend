@@ -1,8 +1,8 @@
-export const loginApi = async (loginBody: API.LoginDTO) => {
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+import { baseUrlAuth } from "./baseUrl"
 
-  return await fetch("http://137.184.47.182:8081/token-issuer-1.0.0/api/jwe", {
+export const loginApi = async (loginBody: API.LoginDTO) => {
+
+  return await fetch(`${baseUrlAuth}/api/jwe`, {
     method: "POST",
     headers: myHeaders,
     redirect: "follow",

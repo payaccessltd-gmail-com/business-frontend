@@ -18,11 +18,10 @@ import {
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 import PasswordMustInclude from "./PasswordMustInclude";
+import { useMutation } from "@tanstack/react-query";
+import { resetPassword } from "../../../api/registration"
+import ResetSuccessModal from "./components/reset-success-modal";
 
-// export const metadata: Metadata = {
-//   title: "Authentication",
-//   description: "Authentication forms built using the components.",
-// }
 
 const ResetPasswordSchema = z
   .object({
@@ -30,13 +29,13 @@ const ResetPasswordSchema = z
       .string()
       .min(2, "Password must contain more than 2 characters")
       .max(8, "Password must not be above 8 characters"),
-    confirmPassword: z
+    newPassword: z
       .string()
       .min(2, "Password must contain more than 2 characters")
       .max(8, "Password must not be above 8 characters"),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
+  .refine((data) => data.password === data.newPassword, {
+    path: ["newPassword"],
     message: "Password do not match",
   });
 
@@ -47,12 +46,13 @@ export default function ResetForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
+  const [isOpen, setOpen] = useState(0)
 
   const resetPasswordForm = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
       password: "",
-      confirmPassword: "",
+      newPassword: "",
     },
   });
 
@@ -73,38 +73,44 @@ export default function ResetForm() {
     { re: /[!@#$%^&*]/, id: 1, text: "Special character" },
   ];
 
+
+
+  const passwordResetMutation = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: async (data) => {
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+
+      if (responseData?.statusCode === "1") {
+        toast({ variant: "destructive", title: "", description: responseData?.message })
+      }
+
+      if (responseData?.statusCode === "0") {
+        toast({ variant: "default", title: "", description: responseData?.message })
+        resetPasswordForm.reset()
+        setOpen(1);
+        // if (typeof window) {
+        //   router.push(
+        //     `/login`
+        //   )
+        // }
+      }
+    },
+
+    onError: (e) => {
+      console.log(e);
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      })
+
+    },
+  })
+
   async function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
-    console.log(values);
-    // try {
-    //   setLoading(true)
-
-    //   const res = await signIn("credentials", {
-    //     redirect: false,
-    //     email: values.email,
-    //     callbackUrl,
-    //   })
-
-    //   setLoading(false)
-
-    //   if (!res?.error) {
-    //     router.push(callbackUrl)
-    //   } else {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "invalid email or password",
-    //       description: "Please confirm if user is registered",
-    //     })
-    //   }
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // } catch (error: any) {
-    //   setLoading(false)
-    //   toast({
-    //     variant: "destructive",
-    //     title: error,
-    //     description: error,
-    //   })
-    // }
+    passwordResetMutation.mutate(values)
   }
+
 
   return (
     <Form {...resetPasswordForm}>
@@ -151,7 +157,7 @@ export default function ResetForm() {
           </div>
         ) : null}
         <FormField
-          name="confirmPassword"
+          name="newPassword"
           control={resetPasswordForm.control}
           render={({ field }) => (
             <FormItem className="w-full mt-6">
@@ -177,6 +183,7 @@ export default function ResetForm() {
         >
           Continue
         </Button>
+        {isOpen ? <ResetSuccessModal /> : ""}
       </form>
     </Form>
   );
