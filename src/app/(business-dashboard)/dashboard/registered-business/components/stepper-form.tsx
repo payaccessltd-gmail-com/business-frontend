@@ -4,7 +4,7 @@ import { useStepper } from "headless-stepper";
 import React, { useMemo } from "react";
 import { cn } from "lib/utils";
 
-import ApprovalForm from "./approval-form";
+import ApprovalForm from "./approval-description";
 import AccountInformationForm from "./account-information-form";
 import BusinessInformationForm from "./business-information-form";
 import PersonalInformationForm from "./personal-information-form";
@@ -14,7 +14,7 @@ function Stepper() {
     () => [
       {
         label: "Step 1",
-        title: "Personal Information",
+        title: "Business Registration KYC",
         description:
           "Upload documents, input bank details  and indicate your color(s)",
       },
@@ -25,13 +25,14 @@ function Stepper() {
       },
       {
         label: "Step 3",
-        title: "Account Information",
-        description: "Register on Interswitch Developer Console",
+        title: "Personal Information",
+        description:
+          "Upload documents, input bank details  and indicate your color(s)",
       },
       {
         label: "Step 4",
-        title: "Approval",
-        description: "Review and approval of your KYC documents",
+        title: "Account Information",
+        description: "Register on Interswitch Developer Console",
       },
     ],
     [],
