@@ -1,14 +1,13 @@
-import { baseUrlAuth } from "./baseUrl"
-
-
-
+import { baseUrlAuth } from "./baseUrl";
 
 export const loginApi = async (loginBody: API.LoginDTO) => {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
   return await fetch(`${baseUrlAuth}/api/jwe`, {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
+    headers: myHeaders,
+    redirect: "follow",
     body: JSON.stringify(loginBody),
   });
 };

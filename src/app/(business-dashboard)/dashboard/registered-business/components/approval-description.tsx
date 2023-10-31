@@ -5,9 +5,9 @@ import { Button } from "components/ui/button";
 import ReviewDetails from "./review-details";
 
 import InformationFrame from "./information-frame";
-import PersonalInformationForm from "./personal-information-form";
-import AccountInformationForm from "./account-information-form";
-import BusinessInformationForm from "./business-information-form";
+import PersonalInformation from "./personal-information";
+import BusinessInformation from "./business-information";
+import AccountInformation from "./account-information";
 type Props = {};
 
 export default function ApprovalDescription({}: Props) {
@@ -29,15 +29,15 @@ export default function ApprovalDescription({}: Props) {
         <div className="self-stretch h-px border border-gray-200"></div>
         <div className="flex flex-col items-start justify-start space-y-3 ">
           <InformationFrame title="Personal Information">
-            <PersonalInformationForm />
+            <PersonalInformation />
           </InformationFrame>
 
           <InformationFrame title="Business Information">
-            <BusinessInformationForm />
+            <BusinessInformation />
           </InformationFrame>
 
           <InformationFrame title="Account Information">
-            <AccountInformationForm />
+            <AccountInformation />
           </InformationFrame>
         </div>
       </div>
