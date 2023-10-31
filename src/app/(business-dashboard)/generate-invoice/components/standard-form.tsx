@@ -36,6 +36,8 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "components/ui/collapsible"
+import StandardRecipt from "./standard-form-recipt"
+import ReviewPopup from "./review-popup"
 
 
 
@@ -69,8 +71,10 @@ const StandardSchema = z.object({
 
 
 export default function StandardForm() {
+    const [receipt, setReceipt] = useState(false)
     const { toast } = useToast()
     const router = useRouter()
+    const [popup, setPopup] = useState(false)
     const [loading, setLoading] = useState(false)
     const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
     const [invoiceItem, setInvoiceItem] = useState<any[]>([""])
@@ -78,6 +82,10 @@ export default function StandardForm() {
     const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
     const [isInputFocused, setInputFocused] = useState(false);
     const [date, setDate] = useState<Date>()
+    const handleModal = (e: any) => {
+        e.preventDefault()
+        setReceipt((value) => !value)
+    }
     const StandardForm = useForm<z.infer<typeof StandardSchema>>({
         resolver: zodResolver(StandardSchema),
         defaultValues: {
@@ -486,6 +494,7 @@ export default function StandardForm() {
                     disabled={loading}
                     className="mt-[32px] min-h-[48px] font-[700] w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     type="submit"
+                    onClick={(e) => handleModal(e)}
                 >
                     Preview
                 </Button>
@@ -499,6 +508,8 @@ export default function StandardForm() {
                 </Button> */}
 
             </form>
+            {receipt ? <StandardRecipt receipt={receipt} setReceipt={setReceipt} setPopup={setPopup} /> : ""}
+            {popup ? <ReviewPopup value={"NGN 20,000"} setPopup={setPopup} /> : ""}
         </Form>
     )
 }

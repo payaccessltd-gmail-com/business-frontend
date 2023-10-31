@@ -28,7 +28,7 @@ import { useMutation } from "@tanstack/react-query";
 // }
 
 const ForgetPasswordSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  emailAddress: z.string().email({ message: "Invalid email address" }),
 });
 
 export default function ForgetForm() {
@@ -40,7 +40,7 @@ export default function ForgetForm() {
   const forgetForm = useForm<z.infer<typeof ForgetPasswordSchema>>({
     resolver: zodResolver(ForgetPasswordSchema),
     defaultValues: {
-      email: "",
+      emailAddress: "",
     },
   });
 
@@ -57,7 +57,7 @@ export default function ForgetForm() {
         toast({ variant: "default", title: "", description: responseData?.message })
         if (typeof window) {
           router.push(
-            `/otp?email=${forgetForm.getValues("email")}`
+            `/otp?email=${forgetForm.getValues("emailAddress")}`
           )
         }
 
@@ -76,7 +76,7 @@ export default function ForgetForm() {
   })
 
   async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
-    forgetPasswordMutation.mutate(values)
+    forgetPasswordMutation.mutate(values as any)
   }
 
   return (
@@ -86,7 +86,7 @@ export default function ForgetForm() {
         className="w-full rounded-lg bg-white pb-[40px] flex flex-col items-center"
       >
         <FormField
-          name="email"
+          name="emailAddress"
           control={forgetForm.control}
           render={({ field }) => (
             <FormItem className="w-full">
