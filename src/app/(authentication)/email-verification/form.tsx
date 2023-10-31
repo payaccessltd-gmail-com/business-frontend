@@ -137,7 +137,7 @@ export default function EmailVerificationForm() {
     event?.preventDefault()
     console.log(otp.join(""));
     let userOTP = {
-      email: email,
+      emailAddress: email,
       otp: otp.join(""),
       verificationLink: verificationLink
     };

@@ -24,6 +24,8 @@ import {
     PopoverTrigger,
 } from "components/ui/popover"
 import { Textarea } from "components/ui/textarea"
+import SimpleRecipt from "./simple-form-recipt"
+import ReviewPopup from "./review-popup"
 
 
 // export const metadata: Metadata = {
@@ -50,6 +52,8 @@ const SimpleSchema = z.object({
 export default function SimpleForm() {
     const { toast } = useToast()
     const router = useRouter()
+    const [receipt, setReceipt] = useState(false)
+    const [popup, setPopup] = useState(false)
     const [loading, setLoading] = useState(false)
     const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
     const searchParams = useSearchParams()
@@ -72,6 +76,10 @@ export default function SimpleForm() {
 
 
     })
+    const handleModal = (e: any) => {
+        e.preventDefault()
+        setReceipt((value) => !value)
+    }
     const addInputField = () => {
         if (inputField.length === 3) {
             return
@@ -135,7 +143,7 @@ export default function SimpleForm() {
                 />
                 {
                     inputField.map(({ label }, id) => {
-                        const nameString: any = `email${id+1}`
+                        const nameString: any = `email${id + 1}`
                         return (
 
                             <FormField
@@ -256,7 +264,7 @@ export default function SimpleForm() {
                 <Button
                     disabled={loading}
                     className="mt-[32px] min-h-[48px] font-[700] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                    type="submit"
+                    onClick={(e) => handleModal(e)}
                 >
                     Preview
                 </Button>
@@ -268,8 +276,10 @@ export default function SimpleForm() {
                 >
                     Save as Draft
                 </Button>
-
             </form>
+            {receipt ? <SimpleRecipt receipt={receipt} setReceipt={setReceipt} setPopup={setPopup} /> : ""}
+            {popup ? <ReviewPopup value={"open"} setPopup={setPopup} /> : ""}
+
         </Form>
     )
 }
