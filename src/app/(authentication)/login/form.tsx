@@ -57,6 +57,9 @@ export default function LoginForm() {
 
       if (responseData?.subject) {
         toast({ variant: "default", title: "", description: "Signin successful" })
+        localStorage.setItem("subject", responseData?.subject);
+        localStorage.setItem("merchantList", JSON.stringify(responseData?.merchantList));
+        localStorage.setItem("token", responseData?.token as any);
         if (typeof window) {
           router.push(
             `/dashboard`
