@@ -4,7 +4,7 @@ import { useStepper } from "headless-stepper";
 import React, { useMemo } from "react";
 import { cn } from "lib/utils";
 
-import ApprovalForm from "./approval-form";
+import ApprovalForm from "./approval-description";
 import AccountInformationForm from "./account-information-form";
 import BusinessInformationForm from "./business-information-form";
 import PersonalInformationForm from "./personal-information-form";
