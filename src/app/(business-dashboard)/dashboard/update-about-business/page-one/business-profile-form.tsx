@@ -2,17 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-// import type { Metadata } from "next"
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
 // import { Button } from "components/ui/Button/Button"
-import { createMerchant } from "api/registration";
 import { Button } from "components/ui/button";
 import { Checkbox } from "components/ui/checkbox";
+import { updateAboutBusiness } from "api/merchant-management";
 import {
   Form,
   FormControl,
@@ -31,46 +29,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
-import { Typography } from "components/ui/Typography";
-import { useToast } from "components/ui/use-toast";
 
-import { logoPath } from "lib/constants";
+import { useToast } from "components/ui/use-toast";
 
 // export const metadata: Metadata = {
 //   title: "Business",
 //   description: "Business page as it should be",
 // }
 
-const merchantRegFormSchema = zod.object({
-  country: zod.string(),
-  firstName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-
-  emailAddress: zod.string().email({ message: "Invalid email address" }),
-  password: zod.string().min(2, {
-    message: "",
-  }),
-  businessName: zod.string(),
-  businessType: zod.string(),
+const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
-  isSoftwareDeveloper: zod.string(),
+  businessType: zod.string(),
+  softwareDeveloper: zod.string(),
+  mobileNumber: zod.string(),
+  merchantId: zod.string(),
   policy: zod.boolean(),
 });
 
-export default function BusinessRegistrationForm() {
-  const { toast } = useToast();
+export default function BusinessProfileUpdate() {
   const router = useRouter();
-  const merchantRegForm = useForm<zod.infer<typeof merchantRegFormSchema>>({
-    defaultValues: {},
-    resolver: zodResolver(merchantRegFormSchema),
+  const { toast } = useToast();
+  const businessProfileForm = useForm<
+    zod.infer<typeof businessProfileFormSchema>
+  >({
+    defaultValues: {
+      softwareDeveloper: "",
+    },
+    resolver: zodResolver(businessProfileFormSchema),
   });
 
-  const merchantRegMutation = useMutation({
-    mutationFn: createMerchant,
+  const businessProfileMutation = useMutation({
+    mutationFn: updateAboutBusiness,
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
@@ -90,14 +79,9 @@ export default function BusinessRegistrationForm() {
           description: responseData?.message,
         });
         if (typeof window) {
-          router.push(
-            `/email-verification?email=${merchantRegForm.getValues(
-              "emailAddress",
-            )}&activationToken=${responseData?.responseObject}`,
-          );
         }
 
-        merchantRegForm.reset();
+        businessProfileForm.reset();
       }
     },
 
@@ -106,22 +90,22 @@ export default function BusinessRegistrationForm() {
     },
   });
 
-  function onSubmit(values: zod.infer<typeof merchantRegFormSchema>) {
-    merchantRegMutation.mutate(values);
+  function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
+    businessProfileMutation.mutate(values);
   }
 
   return (
     <main className="flex flex-col items-center justify-center bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent ">
-        <Form {...merchantRegForm}>
+        <Form {...businessProfileForm}>
           <form
-            onSubmit={merchantRegForm.handleSubmit(onSubmit)}
+            onSubmit={businessProfileForm.handleSubmit(onSubmit)}
             className="space-y-12 bg-white"
           >
             <div className="space-y-8">
               <FormField
                 name="businessCategory"
-                control={merchantRegForm.control}
+                control={businessProfileForm.control}
                 render={({ field }) => (
                   <FormItem className="space-y-4">
                     <FormLabel className="text-sm font-normal text-gray-50">
@@ -148,8 +132,30 @@ export default function BusinessRegistrationForm() {
               />
 
               <FormField
+                control={businessProfileForm.control}
+                name="mobileNumber"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm font-normal text-gray-50">
+                      Phone Number
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        icon="show"
+                        className="min-h-[48px]"
+                        placeholder="Enter phone number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
                 name="businessType"
-                control={merchantRegForm.control}
+                control={businessProfileForm.control}
                 render={({ field }) => (
                   <FormItem className="space-y-4">
                     <FormLabel className="text-sm font-normal text-gray-50 ">
@@ -179,7 +185,7 @@ export default function BusinessRegistrationForm() {
 
                         <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="INDIVIDUAL" />
+                            <RadioGroupItem value="REGISTERED_BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">
@@ -215,8 +221,8 @@ export default function BusinessRegistrationForm() {
               />
 
               <FormField
-                control={merchantRegForm.control}
-                name="isSoftwareDeveloper"
+                control={businessProfileForm.control}
+                name="softwareDeveloper"
                 render={({ field }) => (
                   <FormItem className="space-y-7">
                     <FormLabel className="text-sm font-normal text-gray-50">
@@ -230,7 +236,7 @@ export default function BusinessRegistrationForm() {
                       >
                         <FormItem className="flex items-center space-x-3 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="1" />
+                            <RadioGroupItem value={"true"} />
                           </FormControl>
                           <FormLabel className="text-sm font-normal text-gray-80">
                             Yes i am
@@ -239,7 +245,7 @@ export default function BusinessRegistrationForm() {
 
                         <FormItem className="flex items-center space-x-3 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="0" />
+                            <RadioGroupItem value={"false"} />
                           </FormControl>
                           <FormLabel className="text-sm font-normal text-gray-80">
                             No I am not
@@ -253,7 +259,7 @@ export default function BusinessRegistrationForm() {
               />
 
               <FormField
-                control={merchantRegForm.control}
+                control={businessProfileForm.control}
                 name="policy"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-4 space-y-0">
@@ -282,7 +288,7 @@ export default function BusinessRegistrationForm() {
             </div>
 
             <Button
-              disabled={merchantRegMutation.isLoading}
+              disabled={businessProfileMutation.isLoading}
               className="flex self-center w-56 mx-auto font-bold"
               type="submit"
               size="lg"

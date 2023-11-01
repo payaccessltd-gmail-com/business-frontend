@@ -2,7 +2,7 @@ declare namespace API {
   type UpdateAboutBusinessDTO = {
     businessCategory: string;
     businessType: string;
-    softwareDeveloper: boolean;
+    softwareDeveloper: string;
     mobileNumber: string;
     merchantId: string;
   };

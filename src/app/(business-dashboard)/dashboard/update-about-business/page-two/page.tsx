@@ -2,7 +2,7 @@ import { LuChevronLeft } from "react-icons/lu";
 
 import { ScrollArea } from "components/ui/scroll-area";
 import { Typography } from "components/ui/Typography";
-import BusinessLocationForm from "../components/business-location-form";
+import BusinessLocationForm from "./business-location-form";
 
 export default function SelectBusinessProfilePage() {
   return (

@@ -117,7 +117,7 @@ export default function Dashboard() {
               size="lg"
               className="rounded-lg bg-secondary-60 py-2.5 font-bold text-white"
             >
-              <Link key={"/"} href="">
+              <Link key={"/"} href="/dashboard/update-about-business/page-one">
                 Get started
               </Link>
             </Button>
