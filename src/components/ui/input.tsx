@@ -1,22 +1,79 @@
+"use client"
+
 import * as React from "react"
-
+import { useState } from "react";
 import { cn } from "lib/utils"
+import { LuEyeOff, LuEye } from "react-icons/lu"
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement>
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  icon?: "show" | "hide"; // Add the 'icon' prop
+};
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => {
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, icon, ...props }, ref) => {
+
+  const [show, setShow] = useState(false)
+  const [inputType, setInputType] = useState(type === "password" && icon === "show" ? "password" : type)
+  const [inputchange, setInputChange] = useState(type === "password" && icon === "show" ? "password" : type)
+
+  React.useEffect(() => {
+    inputType !== inputchange ?
+      setInputType(inputchange) : null
+  }, [inputchange])
+
+  // Define a variable to store the input type (password or text)
+
+
+  const handleVisibility = (value: string) => {
+    // console.log("running handle visibility......")
+    // console.log(value, inputType)
+    if (value === "show" && inputType === "password") {
+      setInputChange("text")
+      setShow(true)
+      // console.log("11111running handle visibility......")
+      // console.log(show, inputType)
+    } else if (value === "close" && inputType === "text") {
+      setInputChange("password")
+      setShow(false)
+      // console.log("22222running handle visibility......")
+      // console.log(show, inputType)
+    }
+  }
   return (
-    <input
-      type={type}
-      className={cn(
-        "flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-        className
+    <div className="relative">
+      <input
+        type={inputType} // Use the input type based on 'icon' prop
+        className={cn(
+          "flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+      {type === "password" && ( // Only show the eye icon for password fields
+        <div className="absolute inset-y-0 right-2 flex items-center">
+          {show ?
+            <button type="button" onClick={() => handleVisibility("close")}>
+              <LuEyeOff className="text-[#757575] text-[16px]" />
+            </button>
+            :
+            <button type="button" onClick={() => handleVisibility("show")}>
+              <LuEye className="text-[#757575] text-[16px]" />
+            </button>
+          }
+
+        </div>
       )}
-      ref={ref}
-      {...props}
-    />
+    </div>
+
   )
 })
 Input.displayName = "Input"
 
 export { Input }
+
+
+
+
+
+

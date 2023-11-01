@@ -1,40 +1,62 @@
-export const createMerchant = async (merchantRegBody: API.MerchantRegistrationDTO) => {
-  return await fetch("http://137.184.47.182:8081/payaccess/api/v1/merchant/new-merchant-signup", {
+import { baseUrl } from "./baseUrl";
+
+export const createNewUser = async (merchantRegBody: API.UserDTO) => {
+  return await fetch(`${baseUrl}/api/v1/user/new-signup`, {
     method: "POST",
     headers: {
-      "content-type": "application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(merchantRegBody),
-  })
-}
+  });
+};
 
-export const updateMerchantBioData = async (merchantRegBody: API.MerchantBioDataDTO) => {
-  return await fetch("http://137.184.47.182:8081/payaccess/api/v1/merchant/update-merchant-bio-data", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(merchantRegBody),
-  })
-}
-
-export const updateMerchantBusinessData = async (merchantRegBody: API.MerchantBusinessDataDTO) => {
-  return await fetch("http://137.184.47.182:8081/payaccess/api/v1/merchant/update-merchant-business-data", {
+export const activateAccount = async (otpBody: API.UserOTP) => {
+  return await fetch(`${baseUrl}/api/v1/user/activate-account`, {
     method: "POST",
     headers: {
-      "content-type": "application/json",
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(merchantRegBody),
-  })
-}
+    body: JSON.stringify(otpBody),
+  });
+};
 
-export const updateBusinessBankData = async (merchantRegBody: API.MerchantAccountDataDTO) => {
-  return await fetch(
-    "http://137.184.47.182:8081/payaccess/api/v1/merchant/update-merchant-business-bank-account-data",
-    {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(merchantRegBody),
-    }
-  )
-}
+export const resendOTP = async (resendOTPBody: API.ResendOTP) => {
+  return await fetch(`${baseUrl}/api/v1/user/resend-signup-otp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(resendOTPBody),
+  });
+};
+
+export const forgetPassword = async (
+  forgetPasswordBody: API.ForgetPassword,
+) => {
+  return await fetch(`${baseUrl}/api/v1/user/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(forgetPasswordBody),
+  });
+};
+
+export const OTP = async (OTPBody: API.OTP) => {
+  return await fetch(`${baseUrl}/api/v1/auth/otp-validate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(OTPBody),
+  });
+};
+export const resetPassword = async (resetPasswordBody: API.resetPasword) => {
+  return await fetch(`${baseUrl}/api/v1/user/update-user-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(resetPasswordBody),
+  });
+};

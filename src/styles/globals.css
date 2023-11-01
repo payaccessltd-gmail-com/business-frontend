@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  .font-feature-normal {
+    font-feature-settings:
+      "clig" off,
+      "liga" off;
+  }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -44,7 +50,7 @@
     --muted-foreground: 0 0% 63.9%;
 
     --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;  
+    --popover-foreground: 0 0% 98%;
 
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -69,10 +75,23 @@
 }
 
 @layer base {
+  .font-feature-normal {
+    font-feature-settings:
+      "clig" off,
+      "liga" off;
+  }
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .font-feature-normal {
+    font-feature-settings:
+      "clig" off,
+      "liga" off;
   }
 }

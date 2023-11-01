@@ -1,16 +1,24 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, useSearchParams } from "next/navigation"
-import { signIn } from "next-auth/react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { useToast } from "components/ui/use-toast"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
+import { Input } from "components/ui/input";
+import { useToast } from "components/ui/use-toast";
+import { loginApi } from "../../../api/login"
+import { useMutation } from "@tanstack/react-query";
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
@@ -19,76 +27,85 @@ const loginFormSchema = z.object({
   password: z.string().min(6, {
     message: "Password must be at least 6 characters",
   }),
-})
+});
 
 export default function LoginForm() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [loading, setLoading] = useState(false)
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
+  const router = useRouter();
+  const { toast } = useToast();
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
       username: "",
       password: "",
     },
-  })
+  });
 
-  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    try {
-      setLoading(true)
-      const res = await signIn("credentials", {
-        redirect: false,
-        username: values.username,
-        password: values.password,
-        callbackUrl,
-      })
+  const loginMutation = useMutation({
+    mutationFn: loginApi,
+    onSuccess: async (data) => {
+      const responseData: API.LoginResponse = (await data.json()) as API.LoginResponse
 
-      setLoading(false)
-
-      if (!res?.error) {
-        localStorage.setItem("email", values.username)
-        router.push(callbackUrl)
-      } else if (res.error === "fetch failed") {
-        toast({
-          variant: "destructive",
-          title: "Service Unreachable",
-          description: "Request failed to reach the service resource",
-        })
-      } else {
-        console.log(res?.error)
-        toast({
-          variant: "destructive",
-          title: "invalid email or password",
-          description: "Please confirm if user is registered",
-        })
+      if (!responseData?.subject) {
+        toast({ variant: "destructive", title: "", description: "Error Signin in" })
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setLoading(false)
+
+      if (responseData?.subject) {
+        toast({ variant: "default", title: "", description: "Signin successful", className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]" })
+
+        localStorage.setItem("subject", responseData?.subject);
+        localStorage.setItem("merchantList", JSON.stringify(responseData?.merchantList));
+        localStorage.setItem("token", responseData?.token as any);
+
+        
+        if (typeof window) {
+          router.push(
+            `/dashboard`
+          )
+        }
+        loginForm.reset()
+      }
+    },
+
+    onError: (e) => {
+      console.log(e);
       toast({
         variant: "destructive",
-        title: error,
-        description: error,
+        title: `${e}`,
+        description: "error",
       })
-    }
+
+    },
+  })
+
+
+  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    loginMutation.mutate(values)
   }
 
   return (
     <Form {...loginForm}>
       <form
         onSubmit={loginForm.handleSubmit(onSubmit)}
-        className="w-full rounded-lg bg-white px-[40px] py-[32px] shadow-form"
+        className="w-full rounded-lg bg-white pb-[40px] flex flex-col items-center"
       >
         <FormField
           control={loginForm.control}
           name="username"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[#777777]">Email</FormLabel>
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777] ">Username</FormLabel>
+
               <FormControl>
-                <Input className="min-h-[48px]" placeholder="Enter your email" {...field} />
+                <Input
+                  className="min-h-[48px]"
+                  placeholder="Enter your email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,10 +115,15 @@ export default function LoginForm() {
           control={loginForm.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="mt-[25px]">
+            <FormItem className="mt-[25px] w-full">
               <FormLabel className="text-[#777777]">Enter password</FormLabel>
               <FormControl>
-                <Input className="min-h-[48px]" placeholder="Password" {...field} type="password" />
+                <Input
+                  className="min-h-[48px]"
+                  placeholder="Password"
+                  {...field}
+                  type="password"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -109,12 +131,12 @@ export default function LoginForm() {
         />
         <Button
           disabled={loading}
-          className="mt-[42px] min-h-[48px] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          className="mt-[42px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
           Login
         </Button>
       </form>
     </Form>
-  )
+  );
 }
