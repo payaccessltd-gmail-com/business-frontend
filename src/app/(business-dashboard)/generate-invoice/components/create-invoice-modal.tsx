@@ -6,7 +6,7 @@ import SimpleForm from "./simple-form";
 import StandardForm from "./standard-form";
 
 export const CreateInvoice = () => {
-  const [toggle, setToggle] = useState<number>(0);
+  const [toggle, setToggle] = useState(0);
   return (
     <div className="overflow-hidden w-full rounded-[16px] border border-solid border-[#DADADA] bg-[#E4F8FF33]">
       <div className=" w-full bg-[#177196] px-[148px] py-[30px] flex flex-col items-center gap-8">
@@ -22,9 +22,8 @@ export const CreateInvoice = () => {
             <div className="flex items-start space-x-2">
               <RadioGroupItem
                 onClick={() => setToggle(0)}
-                className={`h-[26px] w-[26px] text-[white]  ${
-                  !toggle ? "bg-[#ED7F04] border-none" : "border-[white]"
-                }`}
+                className={`h-[26px] w-[26px] text-[white]  ${!toggle ? "bg-[#ED7F04] border-none" : "border-[white]"
+                  }`}
                 value="Simple / Open invoice"
                 id="r1"
               />
@@ -43,9 +42,8 @@ export const CreateInvoice = () => {
             <div className="flex items-start space-x-2">
               <RadioGroupItem
                 onClick={() => setToggle(1)}
-                className={`h-[26px] w-[26px] text-[white]  ${
-                  toggle ? "bg-[#ED7F04] border-none" : "border-[white]"
-                }`}
+                className={`h-[26px] w-[26px] text-[white]  ${toggle ? "bg-[#ED7F04] border-none" : "border-[white]"
+                  }`}
                 value="Standard invoice"
                 id="r2"
               />
