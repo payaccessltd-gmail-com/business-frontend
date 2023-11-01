@@ -19,7 +19,7 @@ export default function SelectBusinessProfileLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 flex flex-col w-screen h-screen bg-white">
+    <div className="fixed top-0 bottom-0 left-0 right-0 z-40 flex flex-col w-screen h-screen bg-white">
       <div className="w-full max-w-screen-xl px-10 py-10 mx-auto">
         <div className="w-full space-y-10 mb-14">
           <Image className="inline-block" src={Logo} alt={"logo"} />

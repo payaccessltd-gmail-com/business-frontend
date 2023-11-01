@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
-import { updateMerchantBusinessData } from "api/registration";
+import {} from "api/registration";
 import { Button } from "components/ui/button";
 import {
   Form,

@@ -27,7 +27,7 @@ function Stepper() {
         label: "Step 3",
         title: "Personal Information",
         description:
-          "Upload documents, input bank details  and indicate your color(s)",
+          "Upload documents, input bank details  and indicate your color(s) ",
       },
       {
         label: "Step 4",
