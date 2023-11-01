@@ -38,12 +38,13 @@ import {
 } from "components/ui/collapsible"
 import StandardRecipt from "./standard-form-recipt"
 import ReviewPopup from "./review-popup"
-
+import { useMutation } from "@tanstack/react-query"
+import { standardInvoice } from "../../../../api/invoice"
 
 
 
 const StandardSchema = z.object({
-    CustomerName: z.string().min(2, "first name must contain more than 2 characters"),
+    customerName: z.string().min(2, "first name must contain more than 2 characters"),
     email1: z.string().email(),
     email2: z.string().email().optional(),
     email3: z.string().email().optional(),
@@ -57,14 +58,14 @@ const StandardSchema = z.object({
     qty3: z.number(),
     costPerUnit3: z.number(),
     amount: z.number().optional(),
-    date: z.date({
+    dueDate: z.date({
         required_error: "Due date is required.",
     }),
-    note: z.string().optional(),
-    logo: z.string().optional(),
+    invoiceNote: z.string().optional(),
+    // logo: z.string().optional(),
     discountType: z.string().optional(),
-    tax: z.number().optional(),
-    discount: z.number().optional(),
+    taxPercent: z.number().optional(),
+    discountAmount: z.number().optional(),
     shipping: z.number().optional(),
 
 })
@@ -86,10 +87,10 @@ export default function StandardForm() {
         e.preventDefault()
         setReceipt((value) => !value)
     }
-    const StandardForm = useForm<z.infer<typeof StandardSchema>>({
+    const standardForm = useForm<z.infer<typeof StandardSchema>>({
         resolver: zodResolver(StandardSchema),
         defaultValues: {
-            CustomerName: "",
+            customerName: "",
             email1: "example@gmail.com",
             email2: "example@gmail.com",
             email3: "example@gmail.com",
@@ -102,13 +103,13 @@ export default function StandardForm() {
             invoiceItem3: "",
             qty3: 0,
             costPerUnit3: 0,
-            date: undefined,
+            dueDate: undefined,
             amount: 0,
-            note: "",
-            logo: "",
-            tax: 0,
-            discountType: "Percentage",
-            discount: 0,
+            invoiceNote: "",
+            // logo: "",
+            taxPercent: 0,
+            discountType: "PERCENTAGE",
+            discountAmount: 0,
             shipping: 0
 
         },
@@ -128,49 +129,79 @@ export default function StandardForm() {
         setInvoiceItem([...invoiceItem, ""]);
     };
 
+
+
+
+    const standardFormMutation = useMutation({
+        mutationFn: standardInvoice,
+        onSuccess: async (data) => {
+            const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
+
+            if (responseData?.statusCode === "1") {
+                toast({ variant: "destructive", title: "", description: "Error Creating Invoice" })
+            }
+
+            if (responseData?.statusCode === "0") {
+                toast({ variant: "default", title: "", description: "Invoice Created", className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]" })
+
+                standardForm.reset()
+                if (typeof window) {
+                    router.push(
+                        `/invoice`
+                    )
+                }
+
+            }
+        },
+
+        onError: (e) => {
+            console.log(e);
+            toast({
+                variant: "destructive",
+                title: `${e}`,
+                description: "error",
+            })
+
+        },
+    })
+
     async function onSubmit(values: z.infer<typeof StandardSchema>) {
-        console.log(values)
-        // try {
-        //   setLoading(true)
-
-        //   const res = await signIn("credentials", {
-        //     redirect: false,
-        //     email: values.email,
-        //     callbackUrl,
-        //   })
-
-        //   setLoading(false)
-
-        //   if (!res?.error) {
-        //     router.push(callbackUrl)
-        //   } else {
-        //     toast({
-        //       variant: "destructive",
-        //       title: "invalid email or password",
-        //       description: "Please confirm if user is registered",
-        //     })
-        //   }
-        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // } catch (error: any) {
-        //   setLoading(false)
-        //   toast({
-        //     variant: "destructive",
-        //     title: error,
-        //     description: error,
-        //   })
-        // }
+        let newValues = {
+            ...values,
+            dueDate: values?.dueDate?.toISOString().split("T")[0],
+            additionalCustomerEmailAddress: [values?.email1, values?.email2, values?.email3]?.toString(),
+            invoiceBreakdownList: [
+                {
+                    invoiceItem: values?.invoiceItem1,
+                    quantity: values?.qty1,
+                    costPerUnit: values?.costPerUnit1
+                },
+                {
+                    invoiceItem: values?.invoiceItem2,
+                    quantity: values?.qty2,
+                    costPerUnit: values?.costPerUnit2
+                },
+                {
+                    invoiceItem: values?.invoiceItem3,
+                    quantity: values?.qty3,
+                    costPerUnit: values?.costPerUnit3
+                }
+            ]
+        }
+        console.log(newValues)
+        standardFormMutation.mutate(newValues as any)
     }
 
     return (
-        <Form {...StandardForm}>
+        <Form {...standardForm}>
             <form
-                onSubmit={StandardForm.handleSubmit(onSubmit)}
+                onSubmit={standardForm.handleSubmit(onSubmit)}
                 className="w-full rounded-lg pb-[50px] space-y-6 flex flex-col items-center"
             >
 
                 <FormField
-                    control={StandardForm.control}
-                    name="CustomerName"
+                    control={standardForm.control}
+                    name="customerName"
                     render={({ field }) => (
                         <FormItem className="w-full ">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Customer Name</FormLabel>
@@ -189,7 +220,7 @@ export default function StandardForm() {
 
                             <FormField
                                 key={id}
-                                control={StandardForm.control}
+                                control={standardForm.control}
                                 name={nameString}
                                 render={({ field }) => (
                                     <FormItem className="w-full">
@@ -227,7 +258,7 @@ export default function StandardForm() {
                         return (
                             <div key={id} className="flex flex-row items-start w-full gap-[13px]">
                                 <FormField
-                                    control={StandardForm.control}
+                                    control={standardForm.control}
                                     name={invoiceItemNameString}
                                     render={({ field }) => (
                                         <FormItem className="w-[40%] ">
@@ -241,7 +272,7 @@ export default function StandardForm() {
                                     )}
                                 />
                                 <FormField
-                                    control={StandardForm.control}
+                                    control={standardForm.control}
                                     name={qtyNameString}
                                     render={({ field }) => (
                                         <FormItem className="w-[20%] ">
@@ -255,7 +286,7 @@ export default function StandardForm() {
                                     )}
                                 />
                                 <FormField
-                                    control={StandardForm.control}
+                                    control={standardForm.control}
                                     name={costPerUnitNameString}
                                     render={({ field }) => (
                                         <FormItem className="w-[40%] ">
@@ -284,7 +315,7 @@ export default function StandardForm() {
 
 
                 <FormField
-                    control={StandardForm.control}
+                    control={standardForm.control}
                     name="amount"
                     render={({ field }) => (
                         <FormItem className="w-full">
@@ -297,8 +328,8 @@ export default function StandardForm() {
                     )}
                 />
                 <FormField
-                    control={StandardForm.control}
-                    name="date"
+                    control={standardForm.control}
+                    name="dueDate"
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Due Date</FormLabel>
@@ -324,7 +355,7 @@ export default function StandardForm() {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) =>
-                                            date > new Date() || date < new Date("1900-01-01")
+                                            date < new Date("1900-01-01")
                                         }
                                         initialFocus
                                     />
@@ -336,8 +367,8 @@ export default function StandardForm() {
                     )}
                 />
                 <FormField
-                    control={StandardForm.control}
-                    name="note"
+                    control={standardForm.control}
+                    name="invoiceNote"
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice note (optional)</FormLabel>
@@ -353,9 +384,9 @@ export default function StandardForm() {
                         </FormItem>
                     )}
                 />
-
+                {/* 
                 <FormField
-                    control={StandardForm.control}
+                    control={standardForm.control}
                     name="logo"
                     render={({ field }) => (
                         <FormItem className="w-full">
@@ -372,7 +403,7 @@ export default function StandardForm() {
                             <FormMessage />
                         </FormItem>
                     )}
-                />
+                /> */}
                 <Collapsible className="w-full">
                     <CollapsibleTrigger className="flex flex-col items-start w-full">
                         <p className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]">
@@ -382,8 +413,8 @@ export default function StandardForm() {
                     </CollapsibleTrigger>
                     <CollapsibleContent className="flex flex-col items-start w-full gap-6">
                         <FormField
-                            control={StandardForm.control}
-                            name="tax"
+                            control={standardForm.control}
+                            name="taxPercent"
                             render={({ field }) => (
                                 <FormItem className="mt-[31px] w-full">
                                     <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Tax payment(%)</FormLabel>
@@ -399,7 +430,7 @@ export default function StandardForm() {
                         <div className="flex flex-row items-end w-full gap-6">
 
                             <FormField
-                                control={StandardForm.control}
+                                control={standardForm.control}
                                 name="discountType"
                                 render={({ field }) => (
                                     <FormItem className="w-full">
@@ -411,7 +442,7 @@ export default function StandardForm() {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="percentage1">Percentage</SelectItem>
+                                                <SelectItem value="PERCENTAGE">Percentage</SelectItem>
                                                 <SelectItem value="percentage2">Percentage</SelectItem>
                                                 <SelectItem value="percentage3">Percentage</SelectItem>
                                             </SelectContent>
@@ -424,8 +455,8 @@ export default function StandardForm() {
 
 
                             <FormField
-                                control={StandardForm.control}
-                                name="discount"
+                                control={standardForm.control}
+                                name="discountAmount"
                                 render={({ field }) => (
                                     <FormItem className="w-full ">
                                         {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
@@ -455,7 +486,7 @@ export default function StandardForm() {
                     </CollapsibleTrigger>
                     <CollapsibleContent className="flex flex-col items-start w-full gap-6">
                         <FormField
-                            control={StandardForm.control}
+                            control={standardForm.control}
                             name="shipping"
                             render={({ field }) => (
                                 <FormItem className="mt-[31px] w-full">
@@ -494,7 +525,7 @@ export default function StandardForm() {
                     disabled={loading}
                     className="mt-[32px] min-h-[48px] font-[700] w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     type="submit"
-                    onClick={(e) => handleModal(e)}
+                    // onClick={(e) => handleModal(e)}
                 >
                     Preview
                 </Button>
