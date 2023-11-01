@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
-import { updateBusinessBankData } from "api/registration";
+import { updateMerchantBusinessBankAccountData } from "api/merchant-management";
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -27,6 +27,7 @@ import {
 } from "components/ui/select";
 
 const accInfoFormSchema = zod.object({
+  merchantId: zod.string(),
   emailAddress: zod.string().email(),
   businessBvn: zod.string(),
   businessBankName: zod.string().min(2, {
@@ -48,7 +49,7 @@ export default function AccountInformationForm() {
   });
 
   const updateBusinessBankDataMutation = useMutation({
-    mutationFn: updateBusinessBankData,
+    mutationFn: updateMerchantBusinessBankAccountData,
     onSuccess: (data, variables, context) => {
       console.log({ data, variables, context });
     },
@@ -71,6 +72,24 @@ export default function AccountInformationForm() {
         onSubmit={acctInfoForm.handleSubmit(onSubmit)}
         className="flex flex-col space-y-8"
       >
+        <FormField
+          name="merchantId"
+          control={acctInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="hidden">
+              <FormLabel>BVN</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter BVN" {...field} />
+              </FormControl>
+
+              <FormDescription>
+                To get your BVN dial *565*0# on your registered mobile number.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           name="businessBvn"
           control={acctInfoForm.control}

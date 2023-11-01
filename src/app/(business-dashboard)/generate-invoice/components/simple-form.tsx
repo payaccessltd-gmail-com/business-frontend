@@ -1,24 +1,14 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, useSearchParams } from "next/navigation"
-import { signIn } from "next-auth/react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { useToast } from "components/ui/use-toast"
-import { Checkbox } from "components/ui/checkbox"
-import Link from "next/link"
-import { LuChevronDown } from "react-icons/lu"
-import { format } from "date-fns"
-import { cn } from "lib/utils"
-import { Calendar } from "components/ui/calendar"
-import { HiOutlineCloudUpload } from "react-icons/hi"
-import { FiPlus } from "react-icons/fi"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "components/ui/button";
 import {
+
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -30,13 +20,13 @@ import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice"
 
 
-
 // export const metadata: Metadata = {
 //   title: "Authentication",
 //   description: "Authentication forms built using the components.",
 // }
 
 const SimpleSchema = z.object({
+
     customerName: z.string().min(2, "first name must contain more than 2 characters"),
     email1: z.string().email(),
     email2: z.string().email().optional(),
@@ -316,13 +306,5 @@ export default function SimpleForm() {
 
         </Form>
     )
+
 }
-
-
-
-
-
-
-
-
-

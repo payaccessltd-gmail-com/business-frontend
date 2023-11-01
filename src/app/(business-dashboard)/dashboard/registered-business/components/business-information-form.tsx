@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
-import {} from "api/registration";
+import { updateMerchantBusinessData } from "api/merchant-management";
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -65,7 +65,7 @@ export default function BusinessInformationForm() {
     const emailAddress = "user.user@gmail.com";
 
     const updatedValue = { emailAddress, ...values };
-    updateMerchantBusinessDataMutation.mutate(updatedValue);
+    updateMerchantBusinessDataMutation.mutate(updatedValue as any);
   };
 
   return (

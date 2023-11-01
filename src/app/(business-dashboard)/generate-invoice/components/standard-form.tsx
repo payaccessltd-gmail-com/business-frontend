@@ -1,37 +1,42 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, useSearchParams } from "next/navigation"
-import { signIn } from "next-auth/react"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "components/ui/select"
-import { Input } from "components/ui/input"
-import { useToast } from "components/ui/use-toast"
-import { Checkbox } from "components/ui/checkbox"
-import Link from "next/link"
-import { LuChevronDown } from "react-icons/lu"
-import { format } from "date-fns"
-import { cn } from "lib/utils"
-import { Calendar } from "components/ui/calendar"
-import { HiOutlineCloudUpload } from "react-icons/hi"
-import { FiPlus } from "react-icons/fi"
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "components/ui/popover"
-import { Textarea } from "components/ui/textarea"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
+import { Input } from "components/ui/input";
+import { useToast } from "components/ui/use-toast";
+import { Checkbox } from "components/ui/checkbox";
+import Link from "next/link";
+import { LuChevronDown } from "react-icons/lu";
+import { format } from "date-fns";
+import { cn } from "lib/utils";
+import { Calendar } from "components/ui/calendar";
+import { HiOutlineCloudUpload } from "react-icons/hi";
+import { FiPlus } from "react-icons/fi";
+import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import { Textarea } from "components/ui/textarea";
 import {
+
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
@@ -530,6 +535,7 @@ export default function StandardForm() {
                     Preview
                 </Button>
                 {/* <Button
+
                     variant={"outline"}
                     disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
@@ -538,14 +544,11 @@ export default function StandardForm() {
                     Save as Draft
                 </Button> */}
 
+
             </form>
             {receipt ? <StandardRecipt receipt={receipt} setReceipt={setReceipt} setPopup={setPopup} /> : ""}
             {popup ? <ReviewPopup value={"NGN 20,000"} setPopup={setPopup} /> : ""}
         </Form>
     )
+
 }
-
-
-
-
-

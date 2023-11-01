@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
-import { updateBusinessBankData } from "api/registration";
+// import { updateBusinessBankData } from "api/registration";
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -47,28 +47,28 @@ export default function AccountInformationForm() {
     resolver: zodResolver(accInfoFormSchema),
   });
 
-  const updateBusinessBankDataMutation = useMutation({
-    mutationFn: updateBusinessBankData,
-    onSuccess: (data, variables, context) => {
-      console.log({ data, variables, context });
-    },
+  // const updateBusinessBankDataMutation = useMutation({
+  //   mutationFn: updateBusinessBankData,
+  //   onSuccess: (data, variables, context) => {
+  //     console.log({ data, variables, context });
+  //   },
 
-    onError: (error, variables, context) => {
-      console.log({ error, variables, context });
-    },
-    onMutate: () => {
-      return null;
-    },
-  });
+  //   onError: (error, variables, context) => {
+  //     console.log({ error, variables, context });
+  //   },
+  //   onMutate: () => {
+  //     return null;
+  //   },
+  // });
 
-  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-    updateBusinessBankDataMutation.mutate(values);
-  };
+  // const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
+  //   updateBusinessBankDataMutation.mutate(values);
+  // };
 
   return (
     <Form {...acctInfoForm}>
       <form
-        onSubmit={acctInfoForm.handleSubmit(onSubmit)}
+        // onSubmit={acctInfoForm.handleSubmit(onSubmit)}
         className="flex flex-col space-y-8"
       >
         <FormField

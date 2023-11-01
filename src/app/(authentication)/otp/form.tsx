@@ -18,7 +18,7 @@ import {
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { OTP } from "../../../api/registration"
+import { OTP } from "../../../api/registration";
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -34,7 +34,7 @@ export default function OTPForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const email = searchParams.get("email")
+  const email = searchParams?.get("email");
   const [otp, setOtp] = useState(Array(4).fill(""));
 
   const handleChange = (index: any, event: any) => {
@@ -75,19 +75,26 @@ export default function OTPForm() {
   const OTPMutation = useMutation({
     mutationFn: OTP,
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      const responseData: API.StatusReponse =
+        (await data.json()) as API.StatusReponse;
 
       if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
 
       if (responseData?.statusCode === "0") {
-        toast({ variant: "default", title: "", description: responseData?.message })
-        setOtp(Array(4).fill(""))
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
+        setOtp(Array(4).fill(""));
         if (typeof window) {
-          router.push(
-            `/reset-password?email=${email}`
-          )
+          router.push(`/reset-password?email=${email}`);
         }
       }
     },
@@ -98,26 +105,24 @@ export default function OTPForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
+  });
 
   // async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
   //   console.log(values);
 
-
   // }
 
   const handleSubmit = (event: any) => {
-    event?.preventDefault()
+    event?.preventDefault();
     console.log(otp.join(""));
     let OTP = {
       email: email,
       otp: otp.join(""),
     };
-    OTPMutation.mutate(OTP as any)
-  }
+    OTPMutation.mutate(OTP as any);
+  };
 
   return (
     <Form {...otpForm}>
@@ -145,7 +150,7 @@ export default function OTPForm() {
                       onChange={(event) => handleChange(index, event)}
                       onPaste={(event) => handlePaste(event)}
                       className="bg-[#FFFFFF] border text-center border-[#D3EEF9] border-solid h-12 w-12"
-                    // {...field}
+                      // {...field}
                     />
                   ))}
                 </div>

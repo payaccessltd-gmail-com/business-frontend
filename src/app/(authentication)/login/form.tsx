@@ -17,7 +17,7 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
-import { loginApi } from "../../../api/login"
+import { loginApi } from "../../../api/login";
 import { useMutation } from "@tanstack/react-query";
 
 const loginFormSchema = z.object({
@@ -36,7 +36,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -48,13 +48,20 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: loginApi,
     onSuccess: async (data) => {
-      const responseData: API.LoginResponse = (await data.json()) as API.LoginResponse
+      const responseData: API.LoginResponse =
+        (await data.json()) as API.LoginResponse;
 
       if (!responseData?.subject) {
-        toast({ variant: "destructive", title: "", description: "Error Signin in" })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: "Error Signin in",
+        });
       }
 
       if (responseData?.subject) {
+
+
         toast({ variant: "default", title: "", description: "Signin successful", className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]" })
 
         localStorage.setItem("subject", responseData?.subject);
@@ -62,12 +69,11 @@ export default function LoginForm() {
         localStorage.setItem("token", responseData?.token as any);
 
         
+
         if (typeof window) {
-          router.push(
-            `/dashboard`
-          )
+          router.push(`/dashboard`);
         }
-        loginForm.reset()
+        loginForm.reset();
       }
     },
 
@@ -77,14 +83,12 @@ export default function LoginForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
-
+  });
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    loginMutation.mutate(values)
+    loginMutation.mutate(values);
   }
 
   return (
