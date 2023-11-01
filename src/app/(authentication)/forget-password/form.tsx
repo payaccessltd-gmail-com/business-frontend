@@ -18,9 +18,8 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
-import { forgetPassword } from "../../../api/registration"
+import { forgetPassword } from "../../../api/registration";
 import { useMutation } from "@tanstack/react-query";
-
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -36,7 +35,7 @@ export default function ForgetForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const forgetForm = useForm<z.infer<typeof ForgetPasswordSchema>>({
     resolver: zodResolver(ForgetPasswordSchema),
     defaultValues: {
@@ -47,20 +46,26 @@ export default function ForgetForm() {
   const forgetPasswordMutation = useMutation({
     mutationFn: forgetPassword,
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      const responseData: API.StatusReponse =
+        (await data.json()) as API.StatusReponse;
 
       if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
 
       if (responseData?.statusCode === "00") {
-        toast({ variant: "default", title: "", description: responseData?.message })
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
         if (typeof window) {
-          router.push(
-            `/otp?email=${forgetForm.getValues("email")}`
-          )
+          router.push(`/otp?email=${forgetForm.getValues("email")}`);
         }
-
       }
     },
 
@@ -70,13 +75,12 @@ export default function ForgetForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
-    forgetPasswordMutation.mutate(values)
+    forgetPasswordMutation.mutate(values);
   }
 
   return (

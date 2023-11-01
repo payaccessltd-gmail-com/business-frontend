@@ -18,8 +18,8 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
-import { activateAccount } from "../../../api/registration"
-import { resendOTP } from "../../../api/registration"
+import { activateAccount } from "../../../api/registration";
+import { resendOTP } from "../../../api/registration";
 import { useMutation } from "@tanstack/react-query";
 import SuccessPopOver from "./component/success";
 
@@ -33,18 +33,16 @@ const ForgetPasswordSchema = z.object({
 });
 
 export default function EmailVerificationForm() {
-
-  const email = useSearchParams().get("email")
-  const verificationLink = useSearchParams().get("verification-link")
-
+  const email = useSearchParams()?.get("email");
+  const verificationLink = useSearchParams()?.get("verification-link");
 
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
+  // const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
   const [otp, setOtp] = useState(Array(6).fill(""));
-  const [success, setSuccess] = useState(0)
+  const [success, setSuccess] = useState(0);
 
   const handleChange = (index: any, event: any) => {
     const value = event.target.value;
@@ -85,15 +83,24 @@ export default function EmailVerificationForm() {
   const OTPMutation = useMutation({
     mutationFn: activateAccount,
     onSuccess: async (data) => {
-      const responseData: API.VerifyAccountResponse = (await data.json()) as API.VerifyAccountResponse
+      const responseData: API.VerifyAccountResponse =
+        (await data.json()) as API.VerifyAccountResponse;
 
       if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
 
       if (responseData?.statusCode === "0") {
-        toast({ variant: "default", title: "", description: responseData?.message })
-        setOtp(Array(6).fill(""))
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
+        setOtp(Array(6).fill(""));
         setSuccess(1);
       }
     },
@@ -104,21 +111,29 @@ export default function EmailVerificationForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
+  });
   const resendMutation = useMutation({
     mutationFn: resendOTP,
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      const responseData: API.StatusReponse =
+        (await data.json()) as API.StatusReponse;
 
       if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
 
       if (responseData?.statusCode === "0") {
-        toast({ variant: "default", title: "", description: responseData?.message })
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
       }
     },
 
@@ -128,43 +143,39 @@ export default function EmailVerificationForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
+  });
 
   const handleSubmit = (event: any) => {
-    event?.preventDefault()
+    event?.preventDefault();
     console.log(otp.join(""));
     let userOTP = {
       email: email,
       otp: otp.join(""),
-      verificationLink: verificationLink
+      verificationLink: verificationLink,
     };
-    OTPMutation.mutate(userOTP as any)
-  }
+    OTPMutation.mutate(userOTP as any);
+  };
 
   const handleResend = (event: any) => {
-    event?.preventDefault()
+    event?.preventDefault();
     const value = {
-      emailAddress: email
-    }
-    resendMutation.mutate(value as any)
-  }
+      emailAddress: email,
+    };
+    resendMutation.mutate(value as any);
+  };
 
   async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
     // console.log(values);
     // try {
     //   setLoading(true)
-
     //   const res = await signIn("credentials", {
     //     redirect: false,
     //     email: values.email,
     //     callbackUrl,
     //   })
-
     //   setLoading(false)
-
     //   if (!res?.error) {
     //     router.push(callbackUrl)
     //   } else {
@@ -189,11 +200,13 @@ export default function EmailVerificationForm() {
     <Form {...otpForm}>
       <form
         // onSubmit={otpForm.handleSubmit(onSubmit)}
-        className="w-full rounded-lg bg-white flex flex-col items-center"
+        className="flex flex-col items-center w-full bg-white rounded-lg"
       >
         <p className="text-[#666] w-full mb-6 text-[14px] text-center font-[400] leading-[22px]">
           A link has been sent to your email address{" "}
-          <span className="text-[#CA6B1B] text-[14px] font-[700] leading-normal">{email}</span>{" "}
+          <span className="text-[#CA6B1B] text-[14px] font-[700] leading-normal">
+            {email}
+          </span>{" "}
           please enter the code sent to your email.
         </p>
 
@@ -214,7 +227,7 @@ export default function EmailVerificationForm() {
                       onChange={(event) => handleChange(index, event)}
                       onPaste={(event) => handlePaste(event)}
                       className="outline-[#D3EEF9] shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)] bg-[#FFFFFF] rounded-sm border border-[#46727033] border-solid h-12 w-12 text-center"
-                    // {...field}
+                      // {...field}
                     />
                   ))}
                 </div>

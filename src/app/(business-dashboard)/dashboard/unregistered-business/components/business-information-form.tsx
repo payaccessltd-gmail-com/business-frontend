@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
-import {} from "api/registration";
+// import {} from "api/registration";
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -50,28 +50,28 @@ export default function BusinessInformationForm() {
     resolver: zodResolver(businessInfoFormSchema),
   });
 
-  const updateMerchantBusinessDataMutation = useMutation({
-    mutationFn: updateMerchantBusinessData,
-    onSuccess: () => {
-      return null;
-    },
-    onMutate: () => {
-      return null;
-    },
-  });
+  // const updateMerchantBusinessDataMutation = useMutation({
+  //   mutationFn: updateMerchantBusinessData,
+  //   onSuccess: () => {
+  //     return null;
+  //   },
+  //   onMutate: () => {
+  //     return null;
+  //   },
+  // });
 
-  const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
-    // const emailAddress = localStorage.getItem("emailAddress") as string
-    const emailAddress = "user.user@gmail.com";
+  // const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
+  //   // const emailAddress = localStorage.getItem("emailAddress") as string
+  //   const emailAddress = "user.user@gmail.com";
 
-    const updatedValue = { emailAddress, ...values };
-    updateMerchantBusinessDataMutation.mutate(updatedValue);
-  };
+  //   const updatedValue = { emailAddress, ...values };
+  //   updateMerchantBusinessDataMutation.mutate(updatedValue);
+  // };
 
   return (
     <Form {...businessInfoForm}>
       <form
-        onSubmit={businessInfoForm.handleSubmit(onSubmit)}
+        // onSubmit={businessInfoForm.handleSubmit(onSubmit)}
         className="space-y-8 border-gray-10"
       >
         <FormField
