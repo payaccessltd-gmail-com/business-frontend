@@ -23,4 +23,5 @@ const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
   },
 });
 
-export default config;
+export default config
+

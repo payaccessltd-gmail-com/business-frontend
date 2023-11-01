@@ -6,7 +6,6 @@ import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -56,7 +55,13 @@ export default function LoginForm() {
       }
 
       if (responseData?.subject) {
-        toast({ variant: "default", title: "", description: "Signin successful" })
+        toast({ variant: "default", title: "", description: "Signin successful", className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]" })
+
+        localStorage.setItem("subject", responseData?.subject);
+        localStorage.setItem("merchantList", JSON.stringify(responseData?.merchantList));
+        localStorage.setItem("token", responseData?.token as any);
+
+        
         if (typeof window) {
           router.push(
             `/dashboard`

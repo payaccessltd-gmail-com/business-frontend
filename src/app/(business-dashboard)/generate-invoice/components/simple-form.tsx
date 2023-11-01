@@ -24,6 +24,11 @@ import {
     PopoverTrigger,
 } from "components/ui/popover"
 import { Textarea } from "components/ui/textarea"
+import SimpleRecipt from "./simple-form-recipt"
+import ReviewPopup from "./review-popup"
+import { useMutation } from "@tanstack/react-query";
+import { simpleInvoice } from "../../../../api/invoice"
+
 
 
 // export const metadata: Metadata = {
@@ -32,16 +37,16 @@ import { Textarea } from "components/ui/textarea"
 // }
 
 const SimpleSchema = z.object({
-    CustomerName: z.string().min(2, "first name must contain more than 2 characters"),
+    customerName: z.string().min(2, "first name must contain more than 2 characters"),
     email1: z.string().email(),
     email2: z.string().email().optional(),
     email3: z.string().email().optional(),
-    date: z.date({
+    dueDate: z.date({
         required_error: "Due date is required.",
     }),
-    amount: z.string().optional(),
-    note: z.string().optional(),
-    logo: z.string().optional()
+    amount: z.number().optional(),
+    invoiceNote: z.string().optional(),
+    businessLogo: z.instanceof(File).optional()
 
 
 })
@@ -50,28 +55,34 @@ const SimpleSchema = z.object({
 export default function SimpleForm() {
     const { toast } = useToast()
     const router = useRouter()
+    const [receipt, setReceipt] = useState(false)
+    const [popup, setPopup] = useState(false)
     const [loading, setLoading] = useState(false)
     const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
     const searchParams = useSearchParams()
     const callbackUrl = searchParams.get("callbackUrl") || "/get-started"
     const [isInputFocused, setInputFocused] = useState(false);
     const [date, setDate] = useState<Date>()
-    const SimpleForm = useForm<z.infer<typeof SimpleSchema>>({
+    let simpleForm = useForm<z.infer<typeof SimpleSchema>>({
         resolver: zodResolver(SimpleSchema),
         defaultValues: {
-            CustomerName: "",
+            customerName: "",
             email1: "",
             email2: "example@gmail.com",
             email3: "example@gmail.com",
-            date: undefined,
-            amount: "",
-            note: "",
-            logo: ""
+            dueDate: undefined,
+            amount: 0,
+            invoiceNote: "",
+            businessLogo: new File([], "")
 
         },
 
 
     })
+    const handleModal = (e: any) => {
+        e.preventDefault()
+        setReceipt((value) => !value)
+    }
     const addInputField = () => {
         if (inputField.length === 3) {
             return
@@ -79,49 +90,71 @@ export default function SimpleForm() {
         setInputField([...inputField, { label: "" }]);
     };
 
+
+
+    const simpleFormMutation = useMutation({
+        mutationFn: simpleInvoice,
+        onSuccess: async (data) => {
+            const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
+
+            if (responseData?.statusCode === "1") {
+                toast({ variant: "destructive", title: "", description: "Error Creating Invoice" })
+            }
+
+            if (responseData?.statusCode === "0") {
+                toast({ variant: "default", title: "", description: "Invoice Created", className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]" })
+
+                simpleForm.reset()
+                if (typeof window) {
+                    router.push(
+                        `/invoice`
+                    )
+                }
+
+            }
+        },
+
+        onError: (e) => {
+            console.log(e);
+            toast({
+                variant: "destructive",
+                title: `${e}`,
+                description: "error",
+            })
+
+        },
+    })
+
+
+
+
+
+
+
+
+
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
         console.log(values)
-        // try {
-        //   setLoading(true)
-
-        //   const res = await signIn("credentials", {
-        //     redirect: false,
-        //     email: values.email,
-        //     callbackUrl,
-        //   })
-
-        //   setLoading(false)
-
-        //   if (!res?.error) {
-        //     router.push(callbackUrl)
-        //   } else {
-        //     toast({
-        //       variant: "destructive",
-        //       title: "invalid email or password",
-        //       description: "Please confirm if user is registered",
-        //     })
-        //   }
-        //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        // } catch (error: any) {
-        //   setLoading(false)
-        //   toast({
-        //     variant: "destructive",
-        //     title: error,
-        //     description: error,
-        //   })
-        // }
+        let newValues = {
+            ...values,
+            amount: values?.amount?.toString(),
+            dueDate: values?.dueDate?.toISOString().split("T")[0],
+            additionalCustomerEmailAddress: [values?.email1, values?.email2, values?.email3]?.toString()
+        }
+        console.log(newValues)
+        simpleFormMutation.mutate(newValues as any)
     }
 
     return (
-        <Form {...SimpleForm}>
+        <Form {...simpleForm}>
             <form
-                onSubmit={SimpleForm.handleSubmit(onSubmit)}
+                onSubmit={simpleForm.handleSubmit(onSubmit)}
                 className="w-full rounded-lg pb-[50px] space-y-6 flex flex-col items-center"
             >
 
                 <FormField
-                    control={SimpleForm.control}
-                    name="CustomerName"
+                    control={simpleForm.control}
+                    name="customerName"
                     render={({ field }) => (
                         <FormItem className="w-full ">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Customer Name</FormLabel>
@@ -135,12 +168,12 @@ export default function SimpleForm() {
                 />
                 {
                     inputField.map(({ label }, id) => {
-                        const nameString: any = `email${id+1}`
+                        const nameString: any = `email${id + 1}`
                         return (
 
                             <FormField
                                 key={id}
-                                control={SimpleForm.control}
+                                control={simpleForm.control}
                                 name={nameString}
                                 render={({ field }) => (
                                     <FormItem className="w-full">
@@ -162,8 +195,8 @@ export default function SimpleForm() {
                 <p onClick={() => addInputField()} className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"><FiPlus className="text-[#1D8EBB] text-[24px]" />Add additional email address</p>
 
                 <FormField
-                    control={SimpleForm.control}
-                    name="date"
+                    control={simpleForm.control}
+                    name="dueDate"
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Due Date</FormLabel>
@@ -189,7 +222,7 @@ export default function SimpleForm() {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) =>
-                                            date > new Date() || date < new Date("1900-01-01")
+                                            date < new Date("1900-01-01")
                                         }
                                         initialFocus
                                     />
@@ -202,21 +235,21 @@ export default function SimpleForm() {
                 />
 
                 <FormField
-                    control={SimpleForm.control}
+                    control={simpleForm.control}
                     name="amount"
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Amount (optional)</FormLabel>
                             <FormControl>
-                                <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="0.00" {...field} />
+                                <Input type="number" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="0.00" {...field} onChange={event => field.onChange(Number(event.target.value))} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <FormField
-                    control={SimpleForm.control}
-                    name="note"
+                    control={simpleForm.control}
+                    name="invoiceNote"
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice note (optional)</FormLabel>
@@ -234,8 +267,8 @@ export default function SimpleForm() {
                 />
                 {/* ----------input type: file/// */}
                 <FormField
-                    control={SimpleForm.control}
-                    name="logo"
+                    control={simpleForm.control}
+                    name="businessLogo"
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormDescription className="text-[#0C394B] text-[16px] leading-normal font-[400]">Business Logo (optional)</FormDescription>
@@ -246,7 +279,16 @@ export default function SimpleForm() {
                                 </p>
                             </FormLabel>
                             <FormControl>
-                                <Input className="hidden" placeholder="Enter identification number" {...field} type="file" />
+                                <Input
+                                    accept=".jpg, .jpeg, .png, .svg, .gif"
+                                    type="file"
+                                    className="hidden"
+                                    placeholder="Enter identification number"
+                                    // {...field}
+                                    onChange={(e) =>
+                                        field.onChange(e.target.files ? e.target.files[0] : null)
+                                    }
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -256,7 +298,7 @@ export default function SimpleForm() {
                 <Button
                     disabled={loading}
                     className="mt-[32px] min-h-[48px] font-[700] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                    type="submit"
+                    onClick={(e) => handleModal(e)}
                 >
                     Preview
                 </Button>
@@ -268,8 +310,10 @@ export default function SimpleForm() {
                 >
                     Save as Draft
                 </Button>
-
             </form>
+            {receipt ? <SimpleRecipt receipt={receipt} setReceipt={setReceipt} setPopup={setPopup} /> : ""}
+            {popup ? <ReviewPopup value={"open"} setPopup={setPopup} /> : ""}
+
         </Form>
     )
 }

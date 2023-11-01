@@ -34,7 +34,7 @@ declare namespace API {
     emailAddress: string;
   };
   type ForgetPassword = {
-    email: string;
+    emailAddress: string;
   };
   type resetPasword = {
     password: string,

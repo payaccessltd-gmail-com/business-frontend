@@ -31,6 +31,7 @@ import {
   PopoverTrigger,
 } from "components/ui/popover"
 import EmptyState from "./components/empty-state"
+import InvoiceTable from "../generate-invoice/components/table"
 
 
 
@@ -148,6 +149,9 @@ export default function GetStarted() {
     <div className="w-[602px] mt-[132px] self-center">
       <EmptyState />
     </div>
+    {/* <div className="w-full mt-[35px] self-center">
+      <InvoiceTable />
+    </div> */}
   </div>
 }
 
