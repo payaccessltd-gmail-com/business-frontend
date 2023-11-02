@@ -1,13 +1,26 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { Input } from "components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
-import { toast } from "components/ui/use-toast"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "components/ui/form";
+import { Input } from "components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
+import { toast } from "components/ui/use-toast";
 
 const FormSchema = z.object({
   email: z
@@ -18,12 +31,12 @@ const FormSchema = z.object({
   businessName: z.string().min(2, {
     message: "Business name must be at least 2 characters.",
   }),
-})
+});
 
 export default function Dashboard() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-  })
+  });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -33,7 +46,7 @@ export default function Dashboard() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   return (
@@ -49,16 +62,25 @@ export default function Dashboard() {
                   <FormLabel className="text-[14px] font-[400] leading-[145%] text-[#555555] ">
                     Select existing business
                   </FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl className="h-[48px] rounded-[10px]">
                       <SelectTrigger>
                         <SelectValue placeholder="Choose" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">Goodness oil&gas</SelectItem>
-                      <SelectItem value="m@google.com">Goodness oil&gas</SelectItem>
-                      <SelectItem value="m@support.com">Goodness oil&gas</SelectItem>
+                      <SelectItem value="m@example.com">
+                        Goodness oil&gas
+                      </SelectItem>
+                      <SelectItem value="m@google.com">
+                        Goodness oil&gas
+                      </SelectItem>
+                      <SelectItem value="m@support.com">
+                        Goodness oil&gas
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -92,5 +114,5 @@ export default function Dashboard() {
         </Button>
       </div>
     </>
-  )
+  );
 }
