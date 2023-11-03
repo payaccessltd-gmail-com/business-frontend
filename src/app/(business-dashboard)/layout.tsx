@@ -13,10 +13,22 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  let isAuth = false;
   const router = useRouter();
-  const isAuth = !!localStorage.getItem("token");
 
-  if (!isAuth) {
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    // LocalStorage is available, perform operations
+    // Read or write data using window.localStorage
+    isAuth = !!localStorage.getItem("token");
+  } else {
+    // LocalStorage is not available, handle the error
+    console.error("LocalStorage is not supported in this environment");
+  }
+
+  if (!isAuth && typeof window !== "undefined") {
     router.push("/login");
   }
 
