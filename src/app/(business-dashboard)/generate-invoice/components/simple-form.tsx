@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -53,6 +53,7 @@ export default function SimpleForm() {
     const router = useRouter();
     const [receipt, setReceipt] = useState(false);
     const [popup, setPopup] = useState(false);
+    const [modalData, setModalData] = useState<any>("");
     // const [loading, setLoading] = useState(false);
     const [inputField, setInputField] = useState<any[]>([
         { label: "Customer Email" },
@@ -73,6 +74,31 @@ export default function SimpleForm() {
     });
     const handleModal = (e: any) => {
         e.preventDefault();
+        simpleForm.clearErrors()
+
+        setModalData(simpleForm?.getValues())
+        if (simpleForm?.getValues()?.customerName?.length == 0) {
+            simpleForm.setError("customerName", {
+                type: "manual",
+                message: "Customer name required",
+            })
+            return
+        }
+        if (simpleForm?.getValues()?.email1?.length == 0) {
+            simpleForm.setError("email1", {
+                type: "manual",
+                message: "Email required",
+            })
+            return
+        }
+        if (!simpleForm?.getValues()?.dueDate) {
+            simpleForm.setError("dueDate", {
+                type: "manual",
+                message: "Due date required",
+            })
+            return
+        }
+
         setReceipt((value) => !value);
     };
     const addInputField = () => {
@@ -132,6 +158,12 @@ export default function SimpleForm() {
         console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
     }
+    const modalRef = useRef<any>();
+    const handleModalSubmit = () => {
+        modalRef.current.click()
+    }
+
+
     return (
         <Form {...simpleForm}>
             <form
@@ -322,17 +354,37 @@ export default function SimpleForm() {
                 >
                     Save as Draft
                 </Button>
+                <Button
+                    variant={"outline"}
+                    className="hidden"
+                    type="submit"
+                    ref={modalRef}
+                >
+                    Save as Draft
+                </Button>
             </form>
             {receipt ? (
                 <SimpleRecipt
                     receipt={receipt}
                     setReceipt={setReceipt}
                     setPopup={setPopup}
+                    modalData={modalData}
                 />
             ) : (
                 null
             )}
-            {popup ? <ReviewPopup value={"open"} setPopup={setPopup} /> : null}
+            {
+                popup ?
+                    <ReviewPopup
+                        value={"open"}
+                        setPopup={setPopup}
+                        handleSubmit={handleModalSubmit}
+                        modalData={modalData}
+
+                    />
+                    :
+                    null
+            }
         </Form>
     );
 }
