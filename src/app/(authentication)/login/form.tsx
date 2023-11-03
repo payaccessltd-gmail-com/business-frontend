@@ -52,17 +52,13 @@ export default function LoginForm() {
       const responseData: API.LoginResponse =
         (await data.json()) as API.LoginResponse;
 
-      console.log(responseData);
-
-      if (!responseData?.subject) {
+      if (!responseData?.subject && !responseData?.token) {
         toast({
           variant: "destructive",
           title: "",
           description: "Error Signin in",
         });
-      }
-
-      if (responseData?.subject) {
+      } else if (responseData?.token && responseData?.token) {
         toast({
           variant: "default",
           title: "",
@@ -71,17 +67,23 @@ export default function LoginForm() {
             "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
 
-        localStorage.setItem("subject", responseData?.subject);
+        localStorage.setItem("subject", responseData?.subject as string);
         localStorage.setItem(
           "merchantList",
           JSON.stringify(responseData?.merchantList),
         );
-        localStorage.setItem("token", responseData?.token as any);
+        localStorage.setItem("token", responseData?.token as string);
 
-        if (typeof window && !!localStorage.getItem("token")) {
+        if (typeof window) {
           router.push(`/dashboard`);
         }
         loginForm.reset();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: "Error Signin in",
+        });
       }
     },
 
@@ -95,7 +97,6 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    console.log(values);
     loginMutation.mutate(values);
   }
 

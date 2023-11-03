@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { LuChevronDown } from "react-icons/lu";
 import { Button } from "components/ui/button";
@@ -23,6 +23,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   navArr: typeof sidebarData;
 }
 export function Sidebar({ className }: SidebarProps) {
+  const router = useRouter();
   const pathname = usePathname();
 
   return (
@@ -59,7 +60,7 @@ export function Sidebar({ className }: SidebarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <ScrollArea className="h-[80vh]">
+        <ScrollArea className="h-[70vh]">
           {sidebarData.map(({ list, section }) => {
             return (
               <div className="h-full py-4" key={section}>
@@ -73,7 +74,7 @@ export function Sidebar({ className }: SidebarProps) {
                           key={name}
                           size="lg"
                           onClick={() => {
-                            signOut();
+                            router.push("/login");
                             localStorage.clear();
                           }}
                           className={cn(
