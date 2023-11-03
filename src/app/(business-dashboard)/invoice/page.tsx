@@ -152,7 +152,6 @@ export default function GetStarted() {
     {/* <div className="w-full mt-[35px] self-center">
       <InvoiceTable />
     </div> */}
-    {/* comm */}
   </div>
 }
 
