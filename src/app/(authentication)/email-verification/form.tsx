@@ -46,7 +46,7 @@ export default function EmailVerificationForm() {
 
   const handleChange = (index: any, event: any) => {
     const value = event.target.value;
-    console.log("check: ", event.target.nextElementSibling);
+
     if (isNaN(value)) {
       // Only allow numbers
       return;
