@@ -12,31 +12,10 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const reciptData: any[] = [
-  {
-    id: 0,
-    title: "Sent date",
-    value: "27th May 2023",
-  },
-  {
-    id: 1,
-    title: "Amount",
-    value: "NGN 00.00",
-  },
-  {
-    id: 2,
-    title: "Status",
-    value: "Pending",
-  },
-  {
-    id: 3,
-    title: "Offline reference",
-    value: "TTT989900002377",
-  },
-];
-const SimpleRecipt = ({ receipt, setReceipt, setPopup }: any) => {
-  const { toast } = useToast();
 
+const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
+  const { toast } = useToast();
+  console.log("modalData: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");
@@ -61,6 +40,29 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup }: any) => {
     });
   };
   const [link, setLink] = useState("");
+
+  const reciptData: any[] = [
+    {
+      id: 0,
+      title: "Sent date",
+      value: `${modalData?.dueDate?.toDateString() || "undefined"}`,
+    },
+    {
+      id: 1,
+      title: "Amount",
+      value: `NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`,
+    },
+    {
+      id: 2,
+      title: "Status",
+      value: "Pending",
+    },
+    {
+      id: 3,
+      title: "Offline reference",
+      value: "TTT989900002377",
+    },
+  ];
   return (
     <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
       <ScrollArea className="w-full h-full">
@@ -77,11 +79,11 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup }: any) => {
                   A request has been sent out to
                 </p>
                 <p className="text-[20px] text-[#177196] font-[700] leading-normal">
-                  Faitholuwande
+                  {modalData?.customerName || "Undefined"}
                 </p>
               </div>
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                NGN 00.00
+                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`}
               </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">
@@ -116,6 +118,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup }: any) => {
             <div className="flex flex-col items-center w-full pt-10">
               <Button
                 variant={"outline"}
+                onClick={() => setReceipt(false)}
                 className="min-h-[36px] gap-2 flex items-center font-[700] w-[100px] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
               >
                 <FiEdit className="text-[20px] text-[#555555]" />

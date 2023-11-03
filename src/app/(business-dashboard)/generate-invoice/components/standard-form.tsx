@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -87,10 +87,11 @@ export default function StandardForm() {
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
   const [date, setDate] = useState<Date>();
-  const handleModal = (e: any) => {
-    e.preventDefault();
-    setReceipt((value) => !value);
-  };
+  const [modalData, setModalData] = useState<any>("");
+
+
+
+
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
     defaultValues: {
@@ -117,6 +118,36 @@ export default function StandardForm() {
       shipping: 0,
     },
   });
+
+
+  const handleModal = (e: any) => {
+    e.preventDefault();
+    standardForm.clearErrors()
+    setModalData(standardForm?.getValues())
+    if (standardForm?.getValues()?.customerName?.length == 0) {
+      standardForm.setError("customerName", {
+        type: "manual",
+        message: "Customer name required",
+      })
+      return
+    }
+    if (standardForm?.getValues()?.email1?.length == 0) {
+      standardForm.setError("email1", {
+        type: "manual",
+        message: "Email required",
+      })
+      return
+    }
+    if (!standardForm?.getValues()?.dueDate) {
+      standardForm.setError("dueDate", {
+        type: "manual",
+        message: "Due date required",
+      })
+      return
+    }
+    setReceipt((value) => !value);
+  };
+
   const addEmail = () => {
     if (inputField.length === 3) {
       return;
@@ -201,6 +232,13 @@ export default function StandardForm() {
     standardFormMutation.mutate(newValues as any);
   }
 
+
+  const modalRef2 = useRef<any>();
+  const handleModalSubmit = () => {
+    modalRef2.current.click()
+  }
+
+
   return (
     <Form {...standardForm}>
       <form
@@ -248,7 +286,7 @@ export default function StandardForm() {
                       onChange={(event) => {
                         field.onChange(event);
                       }}
-                      // value={field.value ?? ''}
+                    // value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -603,7 +641,15 @@ export default function StandardForm() {
           disabled={loading}
           className="mt-[32px] min-h-[48px] font-[700] w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
-          // onClick={(e) => handleModal(e)}
+          onClick={(e) => handleModal(e)}
+        >
+          Preview
+        </Button>
+        <Button
+          disabled={loading}
+          className="hidden"
+          type="submit"
+          ref={modalRef2}
         >
           Preview
         </Button>
@@ -622,11 +668,19 @@ export default function StandardForm() {
           receipt={receipt}
           setReceipt={setReceipt}
           setPopup={setPopup}
+          modalData={modalData}
         />
       ) : (
         ""
       )}
-      {popup ? <ReviewPopup value={"NGN 20,000"} setPopup={setPopup} /> : ""}
+      {popup ? <ReviewPopup
+        value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
+        setPopup={setPopup}
+        handleSubmit={handleModalSubmit}
+        modalData={modalData}
+      /> : ""}
     </Form>
   );
 }
+
+
