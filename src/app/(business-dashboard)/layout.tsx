@@ -1,6 +1,7 @@
 /* eslint-disable tailwindcss/migration-from-tailwind-2 */
 "use client";
 
+import { useRouter } from "next/navigation";
 import { ScrollArea } from "components/ui/scroll-area";
 
 import { Header } from "./_components/header";
@@ -12,6 +13,13 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const isAuth = !!localStorage.getItem("token");
+
+  if (!isAuth) {
+    router.push("/login");
+  }
+
   return (
     <div className="grid overflow-hidden lg:h-screen lg:grid-cols-24">
       <aside className="h-full col-span-4 overflow-hidden bg-primary-110">

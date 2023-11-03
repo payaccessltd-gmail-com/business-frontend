@@ -59,10 +59,10 @@ export function Sidebar({ className }: SidebarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <ScrollArea className="h-[90%]">
+        <ScrollArea className="h-[80vh]">
           {sidebarData.map(({ list, section }) => {
             return (
-              <div className="py-4" key={section}>
+              <div className="h-full py-4" key={section}>
                 <div className="flex flex-col space-y-1">
                   {list.map(({ name, SVGIcon, path = "/", tagText = "" }) => {
                     if (name.toLowerCase() === "logout") {
@@ -72,7 +72,10 @@ export function Sidebar({ className }: SidebarProps) {
                           variant="ghost"
                           key={name}
                           size="lg"
-                          onClick={() => signOut()}
+                          onClick={() => {
+                            signOut();
+                            localStorage.clear();
+                          }}
                           className={cn(
                             "w-full justify-start space-x-2 rounded-none text-white text-center",
                             pathname === path

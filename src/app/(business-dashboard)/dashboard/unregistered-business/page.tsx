@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Typography } from "components/ui/Typography";
 import StepperForm from "./components/stepper-form";
 
@@ -14,7 +15,7 @@ function page() {
         </Typography>
 
         <div className="mb-10 flex w-full max-w-[650px] flex-col space-y-2">
-          <Typography className="font-CenturyGothic font-bold leading-8 text-primary-110">
+          <Typography className="font-bold leading-8 font-CenturyGothic text-primary-110">
             Welcome to your dashboard
           </Typography>
           <Typography level="NP">
