@@ -17,8 +17,9 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
-import { loginApi } from "../../../api/login";
+
 import { useMutation } from "@tanstack/react-query";
+import { loginApi } from "api/login";
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
@@ -51,34 +52,42 @@ export default function LoginForm() {
       const responseData: API.LoginResponse =
         (await data.json()) as API.LoginResponse;
 
-      if (!responseData?.subject) {
+      if (!responseData?.subject && !responseData?.token) {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: "Error Signin in",
+        });
+      } else if (responseData?.token && responseData?.token) {
+        toast({
+          variant: "default",
+          title: "",
+          description: "Signin successful",
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        });
+
+        localStorage.setItem("subject", responseData?.subject as string);
+        localStorage.setItem(
+          "merchantList",
+          JSON.stringify(responseData?.merchantList),
+        );
+        localStorage.setItem("token", responseData?.token as string);
+
+        if (typeof window) {
+          router.push(`/dashboard`);
+        }
+        loginForm.reset();
+      } else {
         toast({
           variant: "destructive",
           title: "",
           description: "Error Signin in",
         });
       }
-
-      if (responseData?.subject) {
-
-
-        toast({ variant: "default", title: "", description: "Signin successful", className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]" })
-
-        localStorage.setItem("subject", responseData?.subject);
-        localStorage.setItem("merchantList", JSON.stringify(responseData?.merchantList));
-        localStorage.setItem("token", responseData?.token as any);
-
-        
-
-        if (typeof window) {
-          router.push(`/dashboard`);
-        }
-        loginForm.reset();
-      }
     },
 
     onError: (e) => {
-      console.log(e);
       toast({
         variant: "destructive",
         title: `${e}`,
@@ -102,7 +111,7 @@ export default function LoginForm() {
           name="username"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-[#777777] ">Username</FormLabel>
+              <FormLabel className="text-[#777777] ">Email</FormLabel>
 
               <FormControl>
                 <Input

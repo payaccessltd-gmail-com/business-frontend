@@ -42,4 +42,10 @@ declare namespace API {
     businessAccountNumber: string;
     businessAccountName: string;
   };
+
+  type MerchantList = Array<{
+    id: number;
+    businessName: string;
+    merchantCode: string;
+  }>;
 }
