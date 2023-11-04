@@ -16,6 +16,7 @@ import {
 
 import Payment from "./components/payment";
 import Balance from "./components/balance";
+import CustomerName from "./components/customer-name";
 import PaymentIssues from "./components/payment-issues";
 import ReportOverview from "./components/report-overview";
 import TransactionSuccessRate from "./components/transaction-success-rate";
@@ -92,10 +93,7 @@ export default function Dashboard() {
 
         <div className="flex justify-between py-1 rounded-2xl bg-gradient-to-r from-sky-200 to-cyan-700 px-7">
           <div className="flex flex-col items-start py-5 space-y-4">
-            <Typography level={"h5"} className="font-bold text-primary-100">
-              Welcome back Goodness oluwatobi,
-            </Typography>
-
+            <CustomerName />
             <Typography className="text-primary-100">
               Activate your business to start receiving payment form <br /> your
               account.
