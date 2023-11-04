@@ -19,9 +19,8 @@ import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 import PasswordMustInclude from "./PasswordMustInclude";
 import { useMutation } from "@tanstack/react-query";
-import { resetPassword } from "../../../api/registration"
+import { resetPassword } from "../../../api/registration";
 import ResetSuccessModal from "./components/reset-success-modal";
-
 
 const ResetPasswordSchema = z
   .object({
@@ -44,9 +43,9 @@ export default function ResetForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
-  const [isOpen, setOpen] = useState(0)
+  const [isOpen, setOpen] = useState(0);
 
   const resetPasswordForm = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
@@ -73,20 +72,27 @@ export default function ResetForm() {
     { re: /[!@#$%^&*]/, id: 1, text: "Special character" },
   ];
 
-
-
   const passwordResetMutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      const responseData: API.StatusReponse =
+        (await data.json()) as API.StatusReponse;
 
       if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
 
       if (responseData?.statusCode === "0") {
-        toast({ variant: "default", title: "", description: responseData?.message })
-        resetPasswordForm.reset()
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
+        resetPasswordForm.reset();
         setOpen(1);
         // if (typeof window) {
         //   router.push(
@@ -102,15 +108,13 @@ export default function ResetForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
-    passwordResetMutation.mutate(values)
+    passwordResetMutation.mutate(values);
   }
-
 
   return (
     <Form {...resetPasswordForm}>

@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import * as zod from "zod";
 
 // import { Button } from "components/ui/Button/Button"
-import { createMerchant } from "api/registration";
+import { updateMerchantLocation } from "api/merchant-management";
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -67,7 +67,7 @@ export default function RegistrationPage() {
   });
 
   const merchantRegMutation = useMutation({
-    mutationFn: createMerchant,
+    mutationFn: updateMerchantLocation,
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
@@ -104,7 +104,7 @@ export default function RegistrationPage() {
   });
 
   function onSubmit(values: zod.infer<typeof merchantRegFormSchema>) {
-    merchantRegMutation.mutate(values);
+    merchantRegMutation.mutate(values as any);
   }
 
   return (

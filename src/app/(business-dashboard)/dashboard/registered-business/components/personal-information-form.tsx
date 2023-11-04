@@ -9,7 +9,7 @@ import { HiOutlineCloudUpload } from "react-icons/hi";
 import { LuCalendar } from "react-icons/lu";
 import * as zod from "zod";
 
-import { updateMerchantBioData } from "api/registration";
+// import { updateMerchantBioData } from "api/registration";
 import { Button } from "components/ui/button";
 import { Calendar } from "components/ui/calendar";
 import {
@@ -73,31 +73,31 @@ export default function PersonalInformationForm() {
     },
   });
 
-  const updateMerchantBioDataMutation = useMutation({
-    mutationFn: updateMerchantBioData,
-    onSuccess: async (data) => {
-      const res: { statusCode: string; message: string } =
-        (await data.json()) as {
-          statusCode: string;
-          message: string;
-        };
+  // const updateMerchantBioDataMutation = useMutation({
+  //   mutationFn: updateMerchantBioData,
+  //   onSuccess: async (data) => {
+  //     const res: { statusCode: string; message: string } =
+  //       (await data.json()) as {
+  //         statusCode: string;
+  //         message: string;
+  //       };
 
-      if (res.statusCode === "403") {
-        toast({
-          variant: "destructive",
-          title: res.statusCode,
-          description: res.message,
-        });
-      }
-    },
+  //     if (res.statusCode === "403") {
+  //       toast({
+  //         variant: "destructive",
+  //         title: res.statusCode,
+  //         description: res.message,
+  //       });
+  //     }
+  //   },
 
-    onError: (error, variables, context) => {
-      console.log({ error, variables, context });
-    },
-    onMutate: () => {
-      return null;
-    },
-  });
+  //   onError: (error, variables, context) => {
+  //     console.log({ error, variables, context });
+  //   },
+  //   onMutate: () => {
+  //     return null;
+  //   },
+  // });
 
   const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
     // const emailAddress =
@@ -105,7 +105,7 @@ export default function PersonalInformationForm() {
     //   (localStorage.getItem("email") as string);
     const emailAddress = "user.user@gmail.com";
     const updatedData = { ...values, emailAddress: emailAddress };
-    updateMerchantBioDataMutation.mutate(updatedData);
+    // updateMerchantBioDataMutation.mutate(updatedData);
   };
 
   return (
@@ -309,7 +309,7 @@ export default function PersonalInformationForm() {
           )}
         />
         <Button
-          disabled={updateMerchantBioDataMutation.isLoading}
+          // disabled={updateMerchantBioDataMutation.isLoading}
           className="h-[48px] w-[70%] self-center"
           type="submit"
           size="default"

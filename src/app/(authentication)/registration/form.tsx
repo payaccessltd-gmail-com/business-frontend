@@ -20,7 +20,7 @@ import { useToast } from "components/ui/use-toast";
 import { Checkbox } from "components/ui/checkbox";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
-import { createNewUser } from "../../../api/registration"
+import { createNewUser } from "../../../api/registration";
 // export const metadata: Metadata = {
 //   title: "Authentication",
 //   description: "Authentication forms built using the components.",
@@ -47,7 +47,7 @@ export default function RegistrationForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
 
   const registrationForm = useForm<z.infer<typeof RegistrationSchema>>({
@@ -60,25 +60,37 @@ export default function RegistrationForm() {
   const { formState } = useForm();
   const { isValid } = formState;
 
-
   const userRegMutation = useMutation({
     mutationFn: createNewUser,
     onSuccess: async (data) => {
-      const responseData: API.CreateAccountResponse = (await data.json()) as API.CreateAccountResponse
+      const responseData: API.CreateAccountResponse =
+        (await data.json()) as API.CreateAccountResponse;
 
       if (responseData?.statusCode === "1") {
-        toast({ variant: "destructive", title: "", description: responseData?.message })
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
 
       if (responseData?.statusCode === "0") {
-        toast({ variant: "default", title: "", description: responseData?.message })
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
         if (typeof window) {
           router.push(
-            `/email-verification?email=${registrationForm.getValues("emailAddress")}&verification-link=${responseData?.responseObject?.split("/").pop()}`
-          )
+            `/email-verification?email=${registrationForm.getValues(
+              "emailAddress",
+            )}&verification-link=${responseData?.responseObject
+              ?.split("/")
+              .pop()}`,
+          );
         }
 
-        registrationForm.reset()
+        registrationForm.reset();
       }
     },
 
@@ -88,14 +100,12 @@ export default function RegistrationForm() {
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      })
-
+      });
     },
-  })
-
+  });
 
   async function onSubmit(values: z.infer<typeof RegistrationSchema>) {
-    userRegMutation.mutate(values)
+    userRegMutation.mutate(values);
   }
 
   return (
