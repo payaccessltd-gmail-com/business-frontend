@@ -2,9 +2,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { LuChevronDown } from "react-icons/lu";
+
 import { Button } from "components/ui/button";
 import {
   DropdownMenu,
@@ -23,8 +24,19 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   navArr: typeof sidebarData;
 }
 export function Sidebar({ className }: SidebarProps) {
+  const router = useRouter();
   const pathname = usePathname();
+  let merchangeListJSON;
+  const merchantList: API.MerchantList = merchangeListJSON
+    ? (JSON.parse(merchangeListJSON) as API.MerchantList)
+    : [];
 
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    merchangeListJSON = localStorage.getItem("merchantList");
+  }
   return (
     <nav className={cn("col-span-4 h-full bg-primary-80", className)}>
       <div className="flex justify-center py-6">
@@ -33,9 +45,10 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="flex flex-col h-full space-y-4">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-[194px] flex-row items-center gap-[14px] self-center text-center text-[16px] font-normal leading-[24px] text-white">
-            Goodness Daniel's oil & gas{" "}
+            {merchantList?.[0]?.businessName}
             <LuChevronDown className="text-[28px] " />
           </DropdownMenuTrigger>
+
           <DropdownMenuContent side="right" sideOffset={20}>
             <DropdownMenuLabel className="text-base font-bold leading-normal text-neutral-800">
               Add new business
@@ -59,10 +72,10 @@ export function Sidebar({ className }: SidebarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <ScrollArea className="h-[90%]">
+        <ScrollArea className="h-[70vh]">
           {sidebarData.map(({ list, section }) => {
             return (
-              <div className="py-4" key={section}>
+              <div className="h-full py-4" key={section}>
                 <div className="flex flex-col space-y-1">
                   {list.map(({ name, SVGIcon, path = "/", tagText = "" }) => {
                     if (name.toLowerCase() === "logout") {
@@ -72,7 +85,10 @@ export function Sidebar({ className }: SidebarProps) {
                           variant="ghost"
                           key={name}
                           size="lg"
-                          onClick={() => signOut()}
+                          onClick={() => {
+                            router.push("/login");
+                            localStorage.clear();
+                          }}
                           className={cn(
                             "w-full justify-start space-x-2 rounded-none text-white text-center",
                             pathname === path

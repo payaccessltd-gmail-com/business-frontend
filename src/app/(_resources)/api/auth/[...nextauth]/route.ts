@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
               id: user.token,
               name: user.subject,
               email: user.subject,
-              tokenAccess: user.token,
+              jwt: user.token,
               aniebiet: `aniebie`,
               roel: "roel",
             };
@@ -82,7 +82,7 @@ export const authOptions: NextAuthOptions = {
 
         session({ session, token, user }) {
           session.user = token;
-          console.log("async session", session);
+
           return session;
         },
       },

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 import { Button } from "components/ui/button";
 import { Typography } from "components/ui/Typography";
@@ -16,6 +15,8 @@ import {
 } from "components/ui/select";
 
 import Payment from "./components/payment";
+import Balance from "./components/balance";
+import CustomerName from "./components/customer-name";
 import PaymentIssues from "./components/payment-issues";
 import ReportOverview from "./components/report-overview";
 import TransactionSuccessRate from "./components/transaction-success-rate";
@@ -26,17 +27,7 @@ export default function Dashboard() {
       <div className="relative flex flex-col w-full h-full space-y-5">
         <Typography level="h3">Dashboard</Typography>
         <div className="flex flex-row justify-between w-full">
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <Typography>Total Balance</Typography>
-              <AiOutlineEyeInvisible />
-            </div>
-
-            <Typography className="first-letter:line-through">
-              N 0.000
-            </Typography>
-          </div>
-
+          <Balance />
           <div className="ml-auto">
             <Select>
               <SelectTrigger className="border-0 shadow-none outline-none w-28">
@@ -97,14 +88,12 @@ export default function Dashboard() {
           </div>
 
           <div></div>
+          <div></div>
         </div>
 
         <div className="flex justify-between py-1 rounded-2xl bg-gradient-to-r from-sky-200 to-cyan-700 px-7">
           <div className="flex flex-col items-start py-5 space-y-4">
-            <Typography level={"h5"} className="font-bold text-primary-100">
-              Welcome back Goodness oluwatobi,
-            </Typography>
-
+            <CustomerName />
             <Typography className="text-primary-100">
               Activate your business to start receiving payment form <br /> your
               account.
