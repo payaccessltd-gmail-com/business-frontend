@@ -63,6 +63,8 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
       value: "TTT989900002377",
     },
   ];
+
+
   return (
     <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
       <ScrollArea className="w-full h-full">
@@ -73,7 +75,10 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
               className="absolute top-[45px] right-[66px] text-[20px] text-[#F61212] cursor-pointer"
             />
             <div className="flex flex-col items-center gap-6 w-full pb-6 border-b border-dashed border-[#999999]">
-              <Image src={defaultLogo} alt="default" />
+              {
+                modalData?.businessLogo ? <Image className="h-[86px] w-[86px]" height={86} width={86} src={URL.createObjectURL(modalData?.businessLogo)} alt="default" /> : <Image src={defaultLogo} alt="default" />
+
+              }
               <div className="flex flex-col items-center w-full">
                 <p className="text-[16px] text-[#555] font-[400] leading-normal">
                   A request has been sent out to
