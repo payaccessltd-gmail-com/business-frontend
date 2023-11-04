@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { LuChevronDown } from "react-icons/lu";
+
 import { Button } from "components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +26,10 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const merchangeListJSON = localStorage.getItem("merchantList");
+  const merchantList: API.MerchantList = merchangeListJSON
+    ? (JSON.parse(merchangeListJSON) as API.MerchantList)
+    : [];
 
   return (
     <nav className={cn("col-span-4 h-full bg-primary-80", className)}>
@@ -34,9 +39,10 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="flex flex-col h-full space-y-4">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-[194px] flex-row items-center gap-[14px] self-center text-center text-[16px] font-normal leading-[24px] text-white">
-            Goodness Daniel's oil & gas{" "}
+            {merchantList?.[0]?.businessName}
             <LuChevronDown className="text-[28px] " />
           </DropdownMenuTrigger>
+
           <DropdownMenuContent side="right" sideOffset={20}>
             <DropdownMenuLabel className="text-base font-bold leading-normal text-neutral-800">
               Add new business
