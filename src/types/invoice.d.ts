@@ -5,7 +5,10 @@ declare namespace API {
         dueDate: string,
         amount: string,
         invoiceNote: string,
-        businessLogo: File
+        businessLogo: File,
+        token: string,
+        subject: string,
+        merchantId: string
     };
     type InvoiceStatusReponse = {
         statusCode?: string;
@@ -22,6 +25,9 @@ declare namespace API {
         taxPercent: number,
         discountType: string,
         discountAmount: number,
+        token: string,
+        subject: string,
+        merchantId: string
         invoiceBreakdownList: {
             invoiceItem: string,
             quantity: number,

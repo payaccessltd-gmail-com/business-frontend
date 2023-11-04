@@ -1,5 +1,5 @@
 import { baseUrl } from "./baseUrl";
-import { token, merchantId, subject } from "./baseUrl";
+
 
 export const simpleInvoice = async ({
   customerName,
@@ -8,6 +8,9 @@ export const simpleInvoice = async ({
   amount,
   invoiceNote,
   businessLogo,
+  token,
+  subject,
+  merchantId
 }: API.SimpleInvoice) => {
   let formdata = new FormData();
   formdata.append("customerName", customerName);
@@ -41,6 +44,9 @@ export const standardInvoice = async ({
   discountType,
   discountAmount,
   invoiceBreakdownList,
+  token,
+  subject,
+  merchantId
 }: API.StandardInvoice) => {
   const newData = {
     customerName,
