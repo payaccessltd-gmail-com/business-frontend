@@ -111,7 +111,7 @@ export default function LoginForm() {
           name="username"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-[#777777] ">Username</FormLabel>
+              <FormLabel className="text-[#777777] ">Email</FormLabel>
 
               <FormControl>
                 <Input
