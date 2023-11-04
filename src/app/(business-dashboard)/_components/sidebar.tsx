@@ -26,11 +26,17 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const merchangeListJSON = localStorage.getItem("merchantList");
+  let merchangeListJSON;
   const merchantList: API.MerchantList = merchangeListJSON
     ? (JSON.parse(merchangeListJSON) as API.MerchantList)
     : [];
 
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    merchangeListJSON = localStorage.getItem("merchantList");
+  }
   return (
     <nav className={cn("col-span-4 h-full bg-primary-80", className)}>
       <div className="flex justify-center py-6">
