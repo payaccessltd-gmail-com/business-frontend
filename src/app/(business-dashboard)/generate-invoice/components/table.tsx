@@ -108,9 +108,9 @@ const InvoiceTable = ({ invoiceTableData }: any) => {
                 </div>
             </ScrollArea>
 
-            {/* <div className='w-full h-10 mb-6 flex flex-row items-center justify-end'>
+            <div className='w-full h-10 mb-6 flex flex-row items-center justify-end'>
 
-            </div> */}
+            </div>
 
         </div>
     )
