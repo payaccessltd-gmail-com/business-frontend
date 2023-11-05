@@ -35,5 +35,9 @@ declare namespace API {
         }[]
 
     };
+    type GetAllInovice = {
+        currentPageNumber: string,
+        token: string
+    }
 }
 

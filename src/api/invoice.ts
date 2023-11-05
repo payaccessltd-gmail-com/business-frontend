@@ -70,3 +70,19 @@ export const standardInvoice = async ({
     body: JSON.stringify(newData),
   });
 };
+
+export const getAllInvoice = async ({ currentPageNumber, token }: API.GetAllInovice) => {
+
+  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${currentPageNumber}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
+};
