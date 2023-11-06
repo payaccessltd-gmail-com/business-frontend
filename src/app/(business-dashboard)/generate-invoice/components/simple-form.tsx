@@ -30,6 +30,22 @@ import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice";
 
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+
+if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+) {
+    token = window.localStorage.getItem("token") as any
+    subject = window.localStorage.getItem("subject") as any
+    merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+    merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
+
 
 
 const SimpleSchema = z.object({
@@ -58,6 +74,9 @@ export default function SimpleForm() {
     const [inputField, setInputField] = useState<any[]>([
         { label: "Customer Email" },
     ]);
+
+
+
 
     let simpleForm = useForm<z.infer<typeof SimpleSchema>>({
         resolver: zodResolver(SimpleSchema),
@@ -154,6 +173,9 @@ export default function SimpleForm() {
                 values?.email2,
                 values?.email3,
             ]?.toString(),
+            token: token,
+            subject: subject,
+            merchantId: merchantId
         };
         console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
