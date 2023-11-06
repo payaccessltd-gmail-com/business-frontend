@@ -1,5 +1,5 @@
 import { baseUrl } from "./baseUrl";
-import { token, merchantId, subject } from "./baseUrl";
+
 
 export const simpleInvoice = async ({
   customerName,
@@ -8,6 +8,9 @@ export const simpleInvoice = async ({
   amount,
   invoiceNote,
   businessLogo,
+  token,
+  subject,
+  merchantId
 }: API.SimpleInvoice) => {
   let formdata = new FormData();
   formdata.append("customerName", customerName);
@@ -41,6 +44,9 @@ export const standardInvoice = async ({
   discountType,
   discountAmount,
   invoiceBreakdownList,
+  token,
+  subject,
+  merchantId
 }: API.StandardInvoice) => {
   const newData = {
     customerName,
@@ -63,4 +69,20 @@ export const standardInvoice = async ({
     },
     body: JSON.stringify(newData),
   });
+};
+
+export const getAllInvoice = async ({ currentPageNumber, token }: API.GetAllInovice) => {
+
+  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${currentPageNumber}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
 };

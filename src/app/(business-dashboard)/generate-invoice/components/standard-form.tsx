@@ -45,6 +45,27 @@ import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { standardInvoice } from "../../../../api/invoice";
 
+
+
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+
+if (
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined"
+) {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
+
+
+
+
 const StandardSchema = z.object({
   customerName: z
     .string()
@@ -205,6 +226,9 @@ export default function StandardForm() {
     let newValues = {
       ...values,
       dueDate: values?.dueDate?.toISOString().split("T")[0],
+      token: token,
+      subject: subject,
+      merchantId: merchantId,
       additionalCustomerEmailAddress: [
         values?.email1,
         values?.email2,

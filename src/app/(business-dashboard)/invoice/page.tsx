@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { MdContactSupport } from "react-icons/md"
 import { LuChevronDown } from "react-icons/lu"
 import { IoSearchSharp } from "react-icons/io5"
@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "components/ui/dropdown-menu"
 import { Label } from "components/ui/label"
+import Link from "next/link"
 import {
   Select,
   SelectContent,
@@ -32,17 +33,42 @@ import {
 } from "components/ui/popover"
 import EmptyState from "./components/empty-state"
 import InvoiceTable from "../generate-invoice/components/table"
+import { getAllInvoice } from "../../../api/invoice"
+import { useQuery } from "@tanstack/react-query"
 
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
 
+if (
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined"
+) {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
 
 
 export default function GetStarted() {
-  const [data, setData] = useState(0)
+  // const [data, setData] = useState<any>(null)
   const [date, setDate] = useState<Date>()
   const [date1, setDate1] = useState<Date>()
+
+
+
+
+
+  const GetParameters = { currentPageNumber: "0", token }
+  const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllInvoice(GetParameters));
+
+  // console.log(data?.data?.responseObject)
+
   return <div className="relative w-full h-full flex flex-col">
     <Button
-      className="absolute z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
+      className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
     >
       <MdContactSupport className="text-[24px] text-[#fff]" />
       Support
@@ -138,20 +164,27 @@ export default function GetStarted() {
         </div>
       </div>
       {
-        data ? <Button
-          className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
-        >
-          Generate  Invoice
-        </Button> : ""
+        data ?
+          <Button
+            asChild
+            className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
+          >
+            <Link href={"/generate-invoice"}>Generate Invoice</Link>
+          </Button> : ""
       }
 
     </div>
-    <div className="w-[602px] mt-[132px] self-center">
-      <EmptyState />
-    </div>
-    {/* <div className="w-full mt-[35px] self-center">
-      <InvoiceTable />
-    </div> */}
+    {
+      data ?
+        <div className="w-full mt-[35px] self-center">
+          <InvoiceTable invoiceTableData={data?.data?.responseObject} />
+        </div> :
+        <div className="w-[602px] mt-[132px] self-center">
+          <EmptyState />
+        </div>
+    }
+
+
   </div>
 }
 
