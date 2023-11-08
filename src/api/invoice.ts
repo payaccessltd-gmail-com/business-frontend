@@ -71,9 +71,9 @@ export const standardInvoice = async ({
   });
 };
 
-export const getAllInvoice = async ({ currentPageNumber, token }: API.GetAllInovice) => {
+export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage, token }: API.GetAllInovice) => {
 
-  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${currentPageNumber}`, {
+  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${merchantId}/${rowPerPage}/${currentPageNumber}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,

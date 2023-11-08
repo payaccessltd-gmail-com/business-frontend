@@ -180,6 +180,15 @@ export default function SimpleForm() {
         console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
     }
+
+    const handleDraft = (e: any) => {
+        e.preventDefault();
+        console.log(simpleForm.getValues())
+    }
+
+
+
+
     const modalRef = useRef<any>();
     const handleModalSubmit = () => {
         modalRef.current.click()
@@ -373,6 +382,7 @@ export default function SimpleForm() {
                     // disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                     type="submit"
+                    onClick={(e) => handleDraft(e)}
                 >
                     Save as Draft
                 </Button>

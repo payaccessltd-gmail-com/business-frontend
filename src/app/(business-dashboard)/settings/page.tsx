@@ -1,10 +1,187 @@
-import { Metadata } from "next";
+"use client"
 
-export const metadata: Metadata = {
-  title: "Get Started",
-  description: "Business page as it should be",
-};
+import { Button } from "components/ui/button"
+import { useEffect, useState } from "react"
+import { MdContactSupport } from "react-icons/md"
+import { LuChevronDown } from "react-icons/lu"
+import { IoSearchSharp } from "react-icons/io5"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "components/ui/dropdown-menu"
 
-export default function Setttings() {
-  return <main>coming soon</main>;
+import { Label } from "components/ui/label"
+import Link from "next/link"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select"
+import { addDays, format } from "date-fns"
+import { cn } from "lib/utils"
+import { Calendar } from "components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "components/ui/popover"
+import InvoiceTable from "../generate-invoice/components/table"
+import { getAllInvoice } from "../../../api/invoice"
+import { useQuery } from "@tanstack/react-query"
+import { ScrollArea } from "components/ui/scroll-area"
+import PersonalForm from "./components/profile/personal-info-form"
+import PasswordForm from "./components/profile/password"
+import BusinessType from "./components/business-type/business"
+
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+if (
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined"
+) {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
 }
+
+
+export default function GetStarted() {
+  // const [data, setData] = useState<any>(null)
+  const [date, setDate] = useState<Date>()
+  const [date1, setDate1] = useState<Date>()
+  const [tab, setTab] = useState<number>(0)
+  const dropOptions = ["Contact us", "Share feedback", "Resolve a complain"]
+
+
+
+
+
+  // const GetParameters = { currentPageNumber: "0", token }
+  // const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllInvoice(GetParameters));
+
+  // console.log(data?.data?.responseObject)
+
+  return (
+    <div className="relative w-full h-full flex flex-col">
+
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            className="fixed z-50 right-[72px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
+          >
+            <MdContactSupport className="text-[24px] text-[#fff]" />
+            Support
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end' className="w-[206px] p-[15px]">
+          <div className='w-full flex flex-col items-center gap-2'>
+            {
+              dropOptions.map((value, id) => {
+                return <p key={id} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                  {value}
+                </p>
+              })
+            }
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+
+      <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Setting</p>
+      <div className="flex flex-row items-end">
+        <p onClick={() => setTab(0)} className={`flex flex-row items-center px-4 h-11 border-b-[2px] border-b-solid cursor-pointer ${tab === 0 ? "text-[#23AAE1] text-[16px] font-[600] leading-6 border-[#23AAE1] bg-[#F2FBFF]" : "text-[#6B7280] text-[16px] font-[400] leading-6 border-[#E6E7E8]"}`}>
+          Profile
+        </p>
+        <p onClick={() => setTab(1)} className={`flex flex-row items-center px-4 h-11 border-b-[2px] border-b-solid cursor-pointer ${tab === 1 ? "text-[#23AAE1] text-[16px] font-[600] leading-6 border-[#23AAE1] bg-[#F2FBFF]" : "text-[#6B7280] text-[16px] font-[400] leading-6 border-[#E6E7E8]"}`}>
+          Business Profile
+        </p>
+        <p onClick={() => setTab(2)} className={`flex flex-row items-center px-4 h-11 border-b-[2px] border-b-solid cursor-pointer ${tab === 2 ? "text-[#23AAE1] text-[16px] font-[600] leading-6 border-[#23AAE1] bg-[#F2FBFF]" : "text-[#6B7280] text-[16px] font-[400] leading-6 border-[#E6E7E8]"}`}>
+          Business Type
+        </p>
+        <p onClick={() => setTab(3)} className={`flex flex-row items-center px-4 h-11 border-b-[2px] border-b-solid cursor-pointer ${tab === 3 ? "text-[#23AAE1] text-[16px] font-[600] leading-6 border-[#23AAE1] bg-[#F2FBFF]" : "text-[#6B7280] text-[16px] font-[400] leading-6 border-[#E6E7E8]"}`}>
+          Security
+        </p>
+        <p onClick={() => setTab(4)} className={`flex flex-row items-center px-4 h-11 border-b-[2px] border-b-solid cursor-pointer ${tab === 4 ? "text-[#23AAE1] text-[16px] font-[600] leading-6 border-[#23AAE1] bg-[#F2FBFF]" : "text-[#6B7280] text-[16px] font-[400] leading-6 border-[#E6E7E8]"}`}>
+          Notification
+        </p>
+        <p onClick={() => setTab(5)} className={`flex flex-row items-center px-4 h-11 border-b-[2px] border-b-solid cursor-pointer ${tab === 5 ? "text-[#23AAE1] text-[16px] font-[600] leading-6 border-[#23AAE1] bg-[#F2FBFF]" : "text-[#6B7280] text-[16px] font-[400] leading-6 border-[#E6E7E8]"}`}>
+          Device
+        </p>
+
+      </div>
+      <ScrollArea className="pt-11 h-[650px] w-full">
+        {
+          tab === 0 ?
+            <div className="flex flex-col items-start w-full gap-8 px-8">
+              <div className="flex flex-col items-start gap-4">
+                <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Personal Information</p>
+                <PersonalForm />
+              </div>
+              <div className="flex flex-col items-start gap-4 mb-12">
+                <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Password</p>
+                <PasswordForm />
+              </div>
+
+            </div> : ""
+        }
+        {
+          tab === 1 ?
+            <div className="flex flex-col items-start w-full gap-4">
+
+
+            </div> : ""
+        }
+        {
+          tab === 2 ?
+            <div className="flex flex-col items-start w-full px-8">
+              <BusinessType />
+            </div> : ""
+        }
+        {
+          tab === 3 ?
+            <div className="flex flex-col items-start w-full gap-8">
+
+
+            </div> : ""
+        }
+        {
+          tab === 4 ?
+            <div className="flex flex-col items-start w-full gap-8">
+
+
+            </div> : ""
+        }
+        {
+          tab === 5 ?
+            <div className="flex flex-col items-start w-full gap-8">
+
+
+            </div> : ""
+        }
+      </ScrollArea>
+
+
+
+
+    </div>)
+}
+
+
+
+
+
+
+
+

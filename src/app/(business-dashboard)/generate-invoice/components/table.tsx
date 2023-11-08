@@ -1,7 +1,7 @@
 "use client"
 
 
-import React from 'react'
+import React, { useState } from 'react'
 import { IoMdCheckmark } from "react-icons/io"
 import { LuChevronsRight } from "react-icons/lu"
 import { SlOptions } from "react-icons/sl"
@@ -15,11 +15,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "components/ui/dropdown-menu"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "components/ui/select";
 import { ScrollArea } from 'components/ui/scroll-area'
+import { RiArrowDropDownFill } from "react-icons/ri"
+import { LuChevronLeft, LuChevronRight } from "react-icons/lu"
 
-type Checked = DropdownMenuCheckboxItemProps["checked"]
-
-const InvoiceTable = ({ invoiceTableData }: any) => {
+const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => {
     const heading = ["Amount", "Customer Name", "Invoice No.", "Status", "Date"]
     const dropOptions = ["View", "Download", "Delete", "Revoke"]
     // const demoData: any[] = [
@@ -42,7 +49,27 @@ const InvoiceTable = ({ invoiceTableData }: any) => {
 
     //     }
     // ]
-    console.log(invoiceTableData)
+    // console.log(invoiceTableData)
+    const handlePageNumber = (option: any) => {
+        if (option === "next") {
+            if (page < Math.ceil(invoiceTableData?.totalCount / row)-1) {
+                // console.log("next: ", page)
+                setPage(Number(page) + 1)
+            } else {
+                return;
+            }
+        }
+        else if (option === "prev") {
+            if (page > 0) {
+                // console.log("prev: ", page)
+                setPage(Number(page) - 1)
+            } else {
+                return;
+            }
+
+        }
+    }
+
     return (
         <div className='flex flex-col items-center'>
             <div className='flex flex-row items-center justify-between rounded-[8px] p-[10px] h-[58px] w-full bg-[#0C394B] mb-[24px]'>
@@ -56,7 +83,7 @@ const InvoiceTable = ({ invoiceTableData }: any) => {
             <ScrollArea className='w-full h-[400px]'>
 
                 <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                    {invoiceTableData?.map(({ id, amount, customerName, InvoiceNo, invoiceStatus, dueDate }: any) => {
+                    {invoiceTableData?.list?.map(({ id, amount, customerName, InvoiceNo, invoiceStatus, dueDate }: any) => {
                         return <div className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] w-[20%] font-raleway'>{`₦ ${amount}`}</p>
                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{customerName}</p>
@@ -108,7 +135,31 @@ const InvoiceTable = ({ invoiceTableData }: any) => {
                 </div>
             </ScrollArea>
 
-            <div className='w-full h-10 mb-6 flex flex-row items-center justify-end'>
+            <div className='w-full h-10 mb-6 flex flex-row items-center gap-12 justify-end bg-white pr-[20px]'>
+
+                <div className='flex flex-row items-center w-[155px]'>
+                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row}`}</span>
+                    <Select
+                        onValueChange={(value) => setRow(value)}
+                        value={row}
+                    >
+                        <SelectTrigger className='w-fit border-none shadow-none' >
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="2">2</SelectItem>
+                            <SelectItem value="4">4</SelectItem>
+                            <SelectItem value="6">6</SelectItem>
+                            <SelectItem value="8">8</SelectItem>
+                            <SelectItem value="10">10</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <p className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-[70px] flex flex-row items-center'>{`${invoiceTableData?.list[0]?.id}-${invoiceTableData?.list[invoiceTableData?.list.length - 1]?.id} of ${invoiceTableData?.totalCount}`}</p>
+                <div className='flex flex-row items-center gap-12 w-[90px]'>
+                    <LuChevronLeft onClick={() => handlePageNumber("prev")} className="text-[24px] text-[#AAB7C6] cursor-pointer" />
+                    <LuChevronRight onClick={() => handlePageNumber("next")} className="text-[24px] text-[#AAB7C6] cursor-pointer" />
+                </div>
+
 
             </div>
 
@@ -117,6 +168,8 @@ const InvoiceTable = ({ invoiceTableData }: any) => {
 }
 
 export default InvoiceTable
+
+
 
 
 

@@ -36,8 +36,11 @@ declare namespace API {
 
     };
     type GetAllInovice = {
-        currentPageNumber: string,
+        currentPageNumber: string
         token: string
+        rowPerPage: string
+        merchantId: string
+
     }
 }
 

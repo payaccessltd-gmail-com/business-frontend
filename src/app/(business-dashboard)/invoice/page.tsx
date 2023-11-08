@@ -56,15 +56,17 @@ export default function GetStarted() {
   // const [data, setData] = useState<any>(null)
   const [date, setDate] = useState<Date>()
   const [date1, setDate1] = useState<Date>()
+  const [row, setRow] = useState<string>("5")
+  const [page, setPage] = useState<string>("0")
 
 
 
 
 
-  const GetParameters = { currentPageNumber: "0", token }
+  const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, token }
   const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllInvoice(GetParameters));
 
-  // console.log(data?.data?.responseObject)
+  // console.log(data?.data?.responseObject?.list)
 
   return <div className="relative w-full h-full flex flex-col">
     <Button
@@ -164,7 +166,7 @@ export default function GetStarted() {
         </div>
       </div>
       {
-        data ?
+        data?.data?.responseObject?.list.length ?
           <Button
             asChild
             className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
@@ -175,9 +177,9 @@ export default function GetStarted() {
 
     </div>
     {
-      data ?
+      data?.data?.responseObject?.list.length ?
         <div className="w-full mt-[35px] self-center">
-          <InvoiceTable invoiceTableData={data?.data?.responseObject} />
+          <InvoiceTable setPage={setPage} page={page} row={row} setRow={setRow} invoiceTableData={data?.data?.responseObject} />
         </div> :
         <div className="w-[602px] mt-[132px] self-center">
           <EmptyState />
