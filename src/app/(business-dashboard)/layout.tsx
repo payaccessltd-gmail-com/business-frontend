@@ -23,9 +23,6 @@ export default function DashboardLayout({
     // LocalStorage is available, perform operations
     // Read or write data using window.localStorage
     isAuth = !!localStorage.getItem("token");
-  } else {
-    // LocalStorage is not available, handle the error
-    console.error("LocalStorage is not supported in this environment");
   }
 
   if (!isAuth && typeof window !== "undefined") {
