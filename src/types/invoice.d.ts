@@ -9,6 +9,7 @@ declare namespace API {
         token: string,
         subject: string,
         merchantId: string
+        invoiceStatus: string
     };
     type InvoiceStatusReponse = {
         statusCode?: string;
@@ -28,6 +29,7 @@ declare namespace API {
         token: string,
         subject: string,
         merchantId: string
+        invoiceStatus: string
         invoiceBreakdownList: {
             invoiceItem: string,
             quantity: number,
