@@ -1,7 +1,8 @@
-import { baseUrl, token } from "./baseUrl";
+import { baseUrl } from "./baseUrl";
 
 export const updateAboutBusiness = async (
   updateAboutBusiness: API.UpdateAboutBusinessDTO,
+  token: string,
 ) => {
   return await fetch(`${baseUrl}/api/v1/merchant/update-about-business`, {
     method: "POST",
@@ -15,25 +16,30 @@ export const updateAboutBusiness = async (
 
 export const updateMerchantLocation = async (
   updateMerchantLocation: API.UpdateLocationDTO,
+  token: string,
 ) => {
-  return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-county`, {
+  return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-country`, {
     method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(updateMerchantLocation),
   });
 };
 
-export const updateMerchantBioData = async ({
-  emailAddress,
-  gender,
-  dateOfBirth,
-  identificationDocument,
-  identificationDocumentPath,
-  merchantId,
-  identificationNumber,
-}: API.UpdateMerchantBioDataDTO) => {
+export const updateMerchantBioData = async (
+  {
+    emailAddress,
+    gender,
+    dateOfBirth,
+    identificationDocument,
+    identificationDocumentPath,
+    merchantId,
+    identificationNumber,
+  }: API.UpdateMerchantBioDataDTO,
+  token: string,
+) => {
   let formdata = new FormData();
   formdata.append("emailAddress", emailAddress);
   formdata.append("gender", gender);
@@ -57,17 +63,20 @@ export const updateMerchantBioData = async ({
   });
 };
 
-export const updateMerchantBusinessData = async ({
-  businessDescription,
-  businessEmail,
-  primaryMobile,
-  supportContact,
-  businessCity,
-  businessState,
-  businessWebsite,
-  businessLogoFile,
-  merchantId,
-}: API.UpdateMerchantBusinessDataDTO) => {
+export const updateMerchantBusinessData = async (
+  {
+    businessDescription,
+    businessEmail,
+    primaryMobile,
+    supportContact,
+    businessCity,
+    businessState,
+    businessWebsite,
+    businessLogoFile,
+    merchantId,
+  }: API.UpdateMerchantBusinessDataDTO,
+  token: string,
+) => {
   let formdata = new FormData();
   formdata.append("businessDescription", businessDescription);
   formdata.append("businessEmail", businessEmail);
@@ -93,6 +102,7 @@ export const updateMerchantBusinessData = async ({
 
 export const updateMerchantBusinessBankAccountData = async (
   merchantBuinessBankAccountData: API.UpdateMerchantBankAccountDataDTO,
+  token: string,
 ) => {
   return await fetch(
     `${baseUrl}/api/v1/merchant/update-merchant-business-bank-account-data`,

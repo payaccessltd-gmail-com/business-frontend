@@ -4,13 +4,12 @@ declare namespace API {
     businessType: string;
     softwareDeveloper: string;
     mobileNumber: string;
-    merchantId: string;
+    merchantId: number;
   };
 
   type UpdateLocationDTO = {
-    mobileNumber: string;
     country: string;
-    merchantId: string;
+    merchantId: number;
   };
 
   type UpdateMerchantBioDataDTO = {
@@ -43,9 +42,11 @@ declare namespace API {
     businessAccountName: string;
   };
 
-  type MerchantList = Array<{
+  interface Merchant {
     id: number;
     businessName: string;
     merchantCode: string;
-  }>;
+  }
+
+  type MerchantList = Array<Merchant>;
 }
