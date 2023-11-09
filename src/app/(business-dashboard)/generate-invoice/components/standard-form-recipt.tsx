@@ -12,7 +12,7 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
+const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft }: any) => {
   const { toast } = useToast();
   console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
@@ -190,6 +190,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                 Send Invoice
               </Button>
               <Button
+                onClick={() => handleModalSubmitDraft()}
                 variant={"outline"}
                 className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
               >

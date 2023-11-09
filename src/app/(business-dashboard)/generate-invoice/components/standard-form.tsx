@@ -234,6 +234,7 @@ export default function StandardForm() {
         values?.email2,
         values?.email3,
       ]?.toString(),
+      invoiceStatus: "PENDING",
       invoiceBreakdownList: [
         {
           invoiceItem: values?.invoiceItem1,
@@ -257,9 +258,52 @@ export default function StandardForm() {
   }
 
 
+
+  const handleDraftSubmit = (e: any) => {
+    e.preventDefault();
+    let values = standardForm.getValues()
+    let newValues = {
+      ...values,
+      dueDate: values?.dueDate?.toISOString().split("T")[0],
+      token: token,
+      subject: subject,
+      merchantId: merchantId,
+      additionalCustomerEmailAddress: [
+        values?.email1,
+        values?.email2,
+        values?.email3,
+      ]?.toString(),
+      invoiceStatus: "DRAFT",
+      invoiceBreakdownList: [
+        {
+          invoiceItem: values?.invoiceItem1,
+          quantity: values?.qty1,
+          costPerUnit: values?.costPerUnit1,
+        },
+        {
+          invoiceItem: values?.invoiceItem2,
+          quantity: values?.qty2,
+          costPerUnit: values?.costPerUnit2,
+        },
+        {
+          invoiceItem: values?.invoiceItem3,
+          quantity: values?.qty3,
+          costPerUnit: values?.costPerUnit3,
+        },
+      ],
+    };
+    // console.log(newValues);
+    standardFormMutation.mutate(newValues as any);
+  }
+
+
   const modalRef2 = useRef<any>();
+  const modalRef3 = useRef<any>();
   const handleModalSubmit = () => {
     modalRef2.current.click()
+  }
+  const handleModalSubmitDraft = () => {
+    modalRef3.current.click()
   }
 
 
@@ -677,6 +721,15 @@ export default function StandardForm() {
         >
           Preview
         </Button>
+        <Button
+          disabled={loading}
+          className="hidden"
+          type="submit"
+          onClick={(e) => handleDraftSubmit(e)}
+          ref={modalRef3}
+        >
+          Preview
+        </Button>
         {/* <Button
 
                     variant={"outline"}
@@ -693,6 +746,7 @@ export default function StandardForm() {
           setReceipt={setReceipt}
           setPopup={setPopup}
           modalData={modalData}
+          handleModalSubmitDraft={handleModalSubmitDraft}
         />
       ) : (
         ""

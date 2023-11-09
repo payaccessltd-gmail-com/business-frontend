@@ -8,6 +8,7 @@ export const simpleInvoice = async ({
   amount,
   invoiceNote,
   businessLogo,
+  invoiceStatus,
   token,
   subject,
   merchantId
@@ -24,6 +25,7 @@ export const simpleInvoice = async ({
   formdata.append("businessLogo", businessLogo, businessLogo.name);
   formdata.append("merchantId", merchantId);
   formdata.append("customerEmail", subject);
+  formdata.append("invoiceStatus", invoiceStatus);
 
   return await fetch(`${baseUrl}/api/v1/invoice/create-simple-invoice`, {
     method: "POST",
@@ -46,7 +48,8 @@ export const standardInvoice = async ({
   invoiceBreakdownList,
   token,
   subject,
-  merchantId
+  merchantId,
+  invoiceStatus
 }: API.StandardInvoice) => {
   const newData = {
     customerName,
@@ -58,6 +61,7 @@ export const standardInvoice = async ({
     discountType,
     discountAmount,
     invoiceBreakdownList,
+    invoiceStatus,
     merchantId: merchantId,
     customerEmail: subject,
   };
@@ -71,9 +75,9 @@ export const standardInvoice = async ({
   });
 };
 
-export const getAllInvoice = async ({ currentPageNumber, token }: API.GetAllInovice) => {
+export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage, token }: API.GetAllInovice) => {
 
-  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${currentPageNumber}`, {
+  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${merchantId}/${rowPerPage}/${currentPageNumber}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,

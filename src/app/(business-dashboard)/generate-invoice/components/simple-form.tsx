@@ -175,14 +175,51 @@ export default function SimpleForm() {
             ]?.toString(),
             token: token,
             subject: subject,
-            merchantId: merchantId
+            merchantId: merchantId,
+            invoiceStatus: "PENDING"
         };
         console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
     }
+
+    const handleDraft = (e: any) => {
+        e.preventDefault();
+        if (simpleForm.getValues("dueDate") === undefined) {
+            toast({
+                variant: "destructive",
+                title: "Due Date required",
+                description: "Provide a due date",
+            });
+            return
+        }
+        const values = simpleForm.getValues()
+        let newValues = {
+            ...values,
+            amount: values?.amount?.toString(),
+            dueDate: values?.dueDate?.toISOString().split("T")[0],
+            additionalCustomerEmailAddress: [
+                values?.email1,
+                values?.email2,
+                values?.email3,
+            ]?.toString(),
+            token: token,
+            subject: subject,
+            merchantId: merchantId,
+            invoiceStatus: "DRAFT"
+        };
+        // console.log(newValues);
+        simpleFormMutation.mutate(newValues as any);
+
+    }
+
+
     const modalRef = useRef<any>();
+    const modalRef4 = useRef<any>();
     const handleModalSubmit = () => {
         modalRef.current.click()
+    }
+    const handleModalDraftSubmit = () => {
+        modalRef4.current.click()
     }
 
 
@@ -373,6 +410,7 @@ export default function SimpleForm() {
                     // disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                     type="submit"
+                    onClick={(e) => handleDraft(e)}
                 >
                     Save as Draft
                 </Button>
@@ -382,7 +420,16 @@ export default function SimpleForm() {
                     type="submit"
                     ref={modalRef}
                 >
-                    Save as Draft
+
+                </Button>
+                <Button
+                    variant={"outline"}
+                    className="hidden"
+                    type="submit"
+                    onClick={(e) => handleDraft(e)}
+                    ref={modalRef4}
+                >
+
                 </Button>
             </form>
             {receipt ? (
@@ -391,6 +438,7 @@ export default function SimpleForm() {
                     setReceipt={setReceipt}
                     setPopup={setPopup}
                     modalData={modalData}
+                    handleModalDraftSubmit={handleModalDraftSubmit}
                 />
             ) : (
                 null
