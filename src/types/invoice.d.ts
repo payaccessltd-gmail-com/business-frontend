@@ -5,7 +5,11 @@ declare namespace API {
         dueDate: string,
         amount: string,
         invoiceNote: string,
-        businessLogo: File
+        businessLogo: File,
+        token: string,
+        subject: string,
+        merchantId: string
+        invoiceStatus: string
     };
     type InvoiceStatusReponse = {
         statusCode?: string;
@@ -22,6 +26,10 @@ declare namespace API {
         taxPercent: number,
         discountType: string,
         discountAmount: number,
+        token: string,
+        subject: string,
+        merchantId: string
+        invoiceStatus: string
         invoiceBreakdownList: {
             invoiceItem: string,
             quantity: number,
@@ -29,5 +37,12 @@ declare namespace API {
         }[]
 
     };
+    type GetAllInovice = {
+        currentPageNumber: string
+        token: string
+        rowPerPage: string
+        merchantId: string
+
+    }
 }
 

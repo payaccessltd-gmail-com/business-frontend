@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -30,6 +30,22 @@ import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice";
 
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+
+if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+) {
+    token = window.localStorage.getItem("token") as any
+    subject = window.localStorage.getItem("subject") as any
+    merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+    merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
+
 
 
 const SimpleSchema = z.object({
@@ -53,10 +69,14 @@ export default function SimpleForm() {
     const router = useRouter();
     const [receipt, setReceipt] = useState(false);
     const [popup, setPopup] = useState(false);
+    const [modalData, setModalData] = useState<any>("");
     // const [loading, setLoading] = useState(false);
     const [inputField, setInputField] = useState<any[]>([
         { label: "Customer Email" },
     ]);
+
+
+
 
     let simpleForm = useForm<z.infer<typeof SimpleSchema>>({
         resolver: zodResolver(SimpleSchema),
@@ -73,6 +93,31 @@ export default function SimpleForm() {
     });
     const handleModal = (e: any) => {
         e.preventDefault();
+        simpleForm.clearErrors()
+
+        setModalData(simpleForm?.getValues())
+        if (simpleForm?.getValues()?.customerName?.length == 0) {
+            simpleForm.setError("customerName", {
+                type: "manual",
+                message: "Customer name required",
+            })
+            return
+        }
+        if (simpleForm?.getValues()?.email1?.length == 0) {
+            simpleForm.setError("email1", {
+                type: "manual",
+                message: "Email required",
+            })
+            return
+        }
+        if (!simpleForm?.getValues()?.dueDate) {
+            simpleForm.setError("dueDate", {
+                type: "manual",
+                message: "Due date required",
+            })
+            return
+        }
+
         setReceipt((value) => !value);
     };
     const addInputField = () => {
@@ -128,10 +173,56 @@ export default function SimpleForm() {
                 values?.email2,
                 values?.email3,
             ]?.toString(),
+            token: token,
+            subject: subject,
+            merchantId: merchantId,
+            invoiceStatus: "PENDING"
         };
         console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
     }
+
+    const handleDraft = (e: any) => {
+        e.preventDefault();
+        if (simpleForm.getValues("dueDate") === undefined) {
+            toast({
+                variant: "destructive",
+                title: "Due Date required",
+                description: "Provide a due date",
+            });
+            return
+        }
+        const values = simpleForm.getValues()
+        let newValues = {
+            ...values,
+            amount: values?.amount?.toString(),
+            dueDate: values?.dueDate?.toISOString().split("T")[0],
+            additionalCustomerEmailAddress: [
+                values?.email1,
+                values?.email2,
+                values?.email3,
+            ]?.toString(),
+            token: token,
+            subject: subject,
+            merchantId: merchantId,
+            invoiceStatus: "DRAFT"
+        };
+        // console.log(newValues);
+        simpleFormMutation.mutate(newValues as any);
+
+    }
+
+
+    const modalRef = useRef<any>();
+    const modalRef4 = useRef<any>();
+    const handleModalSubmit = () => {
+        modalRef.current.click()
+    }
+    const handleModalDraftSubmit = () => {
+        modalRef4.current.click()
+    }
+
+
     return (
         <Form {...simpleForm}>
             <form
@@ -319,8 +410,26 @@ export default function SimpleForm() {
                     // disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                     type="submit"
+                    onClick={(e) => handleDraft(e)}
                 >
                     Save as Draft
+                </Button>
+                <Button
+                    variant={"outline"}
+                    className="hidden"
+                    type="submit"
+                    ref={modalRef}
+                >
+
+                </Button>
+                <Button
+                    variant={"outline"}
+                    className="hidden"
+                    type="submit"
+                    onClick={(e) => handleDraft(e)}
+                    ref={modalRef4}
+                >
+
                 </Button>
             </form>
             {receipt ? (
@@ -328,11 +437,24 @@ export default function SimpleForm() {
                     receipt={receipt}
                     setReceipt={setReceipt}
                     setPopup={setPopup}
+                    modalData={modalData}
+                    handleModalDraftSubmit={handleModalDraftSubmit}
                 />
             ) : (
                 null
             )}
-            {popup ? <ReviewPopup value={"open"} setPopup={setPopup} /> : null}
+            {
+                popup ?
+                    <ReviewPopup
+                        value={"open"}
+                        setPopup={setPopup}
+                        handleSubmit={handleModalSubmit}
+                        modalData={modalData}
+
+                    />
+                    :
+                    null
+            }
         </Form>
     );
 }

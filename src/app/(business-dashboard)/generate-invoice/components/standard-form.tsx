@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -44,6 +44,27 @@ import StandardRecipt from "./standard-form-recipt";
 import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { standardInvoice } from "../../../../api/invoice";
+
+
+
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+
+if (
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined"
+) {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
+
+
+
 
 const StandardSchema = z.object({
   customerName: z
@@ -87,10 +108,11 @@ export default function StandardForm() {
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
   const [date, setDate] = useState<Date>();
-  const handleModal = (e: any) => {
-    e.preventDefault();
-    setReceipt((value) => !value);
-  };
+  const [modalData, setModalData] = useState<any>("");
+
+
+
+
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
     defaultValues: {
@@ -117,6 +139,36 @@ export default function StandardForm() {
       shipping: 0,
     },
   });
+
+
+  const handleModal = (e: any) => {
+    e.preventDefault();
+    standardForm.clearErrors()
+    setModalData(standardForm?.getValues())
+    if (standardForm?.getValues()?.customerName?.length == 0) {
+      standardForm.setError("customerName", {
+        type: "manual",
+        message: "Customer name required",
+      })
+      return
+    }
+    if (standardForm?.getValues()?.email1?.length == 0) {
+      standardForm.setError("email1", {
+        type: "manual",
+        message: "Email required",
+      })
+      return
+    }
+    if (!standardForm?.getValues()?.dueDate) {
+      standardForm.setError("dueDate", {
+        type: "manual",
+        message: "Due date required",
+      })
+      return
+    }
+    setReceipt((value) => !value);
+  };
+
   const addEmail = () => {
     if (inputField.length === 3) {
       return;
@@ -174,11 +226,15 @@ export default function StandardForm() {
     let newValues = {
       ...values,
       dueDate: values?.dueDate?.toISOString().split("T")[0],
+      token: token,
+      subject: subject,
+      merchantId: merchantId,
       additionalCustomerEmailAddress: [
         values?.email1,
         values?.email2,
         values?.email3,
       ]?.toString(),
+      invoiceStatus: "PENDING",
       invoiceBreakdownList: [
         {
           invoiceItem: values?.invoiceItem1,
@@ -200,6 +256,56 @@ export default function StandardForm() {
     console.log(newValues);
     standardFormMutation.mutate(newValues as any);
   }
+
+
+
+  const handleDraftSubmit = (e: any) => {
+    e.preventDefault();
+    let values = standardForm.getValues()
+    let newValues = {
+      ...values,
+      dueDate: values?.dueDate?.toISOString().split("T")[0],
+      token: token,
+      subject: subject,
+      merchantId: merchantId,
+      additionalCustomerEmailAddress: [
+        values?.email1,
+        values?.email2,
+        values?.email3,
+      ]?.toString(),
+      invoiceStatus: "DRAFT",
+      invoiceBreakdownList: [
+        {
+          invoiceItem: values?.invoiceItem1,
+          quantity: values?.qty1,
+          costPerUnit: values?.costPerUnit1,
+        },
+        {
+          invoiceItem: values?.invoiceItem2,
+          quantity: values?.qty2,
+          costPerUnit: values?.costPerUnit2,
+        },
+        {
+          invoiceItem: values?.invoiceItem3,
+          quantity: values?.qty3,
+          costPerUnit: values?.costPerUnit3,
+        },
+      ],
+    };
+    // console.log(newValues);
+    standardFormMutation.mutate(newValues as any);
+  }
+
+
+  const modalRef2 = useRef<any>();
+  const modalRef3 = useRef<any>();
+  const handleModalSubmit = () => {
+    modalRef2.current.click()
+  }
+  const handleModalSubmitDraft = () => {
+    modalRef3.current.click()
+  }
+
 
   return (
     <Form {...standardForm}>
@@ -248,7 +354,7 @@ export default function StandardForm() {
                       onChange={(event) => {
                         field.onChange(event);
                       }}
-                      // value={field.value ?? ''}
+                    // value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -603,7 +709,24 @@ export default function StandardForm() {
           disabled={loading}
           className="mt-[32px] min-h-[48px] font-[700] w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
-          // onClick={(e) => handleModal(e)}
+          onClick={(e) => handleModal(e)}
+        >
+          Preview
+        </Button>
+        <Button
+          disabled={loading}
+          className="hidden"
+          type="submit"
+          ref={modalRef2}
+        >
+          Preview
+        </Button>
+        <Button
+          disabled={loading}
+          className="hidden"
+          type="submit"
+          onClick={(e) => handleDraftSubmit(e)}
+          ref={modalRef3}
         >
           Preview
         </Button>
@@ -622,11 +745,20 @@ export default function StandardForm() {
           receipt={receipt}
           setReceipt={setReceipt}
           setPopup={setPopup}
+          modalData={modalData}
+          handleModalSubmitDraft={handleModalSubmitDraft}
         />
       ) : (
         ""
       )}
-      {popup ? <ReviewPopup value={"NGN 20,000"} setPopup={setPopup} /> : ""}
+      {popup ? <ReviewPopup
+        value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
+        setPopup={setPopup}
+        handleSubmit={handleModalSubmit}
+        modalData={modalData}
+      /> : ""}
     </Form>
   );
 }
+
+

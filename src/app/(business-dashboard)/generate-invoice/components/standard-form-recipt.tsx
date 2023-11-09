@@ -12,31 +12,9 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const reciptData: any[] = [
-  {
-    id: 0,
-    title: "Sent date",
-    value: "27th May 2023",
-  },
-  {
-    id: 1,
-    title: "Amount",
-    value: "NGN 00.00",
-  },
-  {
-    id: 2,
-    title: "Status",
-    value: "Pending",
-  },
-  {
-    id: 3,
-    title: "Offline reference",
-    value: "TTT989900002377",
-  },
-];
-const StandardRecipt = ({ receipt, setReceipt, setPopup }: any) => {
+const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft }: any) => {
   const { toast } = useToast();
-
+  console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");
@@ -62,6 +40,31 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup }: any) => {
   };
   const [link, setLink] = useState("");
 
+  const reciptData: any[] = [
+    {
+      id: 0,
+      title: "Sent date",
+      value: `${modalData?.dueDate?.toDateString() || "undefined"}`,
+
+    },
+    {
+      id: 1,
+      title: "Amount",
+      value: `NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`,
+
+    },
+    {
+      id: 2,
+      title: "Status",
+      value: "Pending",
+    },
+    {
+      id: 3,
+      title: "Offline reference",
+      value: "TTT989900002377",
+    },
+  ];
+
   return (
     <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
       <ScrollArea className="w-full h-full">
@@ -77,12 +80,13 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup }: any) => {
               <p className="text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
                 A request has been sent out to{" "}
                 <span className="text-[16px] text-[#177196] font-[700] leading-normal">
-                  Faitholuwande
+                  {modalData?.customerName || "Undefined"}
                 </span>
               </p>
 
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                NGN 00.00
+                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`}
+
               </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-start gap-8">
@@ -186,6 +190,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup }: any) => {
                 Send Invoice
               </Button>
               <Button
+                onClick={() => handleModalSubmitDraft()}
                 variant={"outline"}
                 className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
               >
