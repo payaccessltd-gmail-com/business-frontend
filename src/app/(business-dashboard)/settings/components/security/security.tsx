@@ -49,10 +49,10 @@ export default function Security({ data, security, setSecurity }: any) {
     const { toast } = useToast();
 
 
-    const getParameters = {
-        token,
-        merchantCode: merchantList[0]?.merchantCode
-    }
+    // const getParameters = {
+    //     token,
+    //     merchantCode: merchantList[0]?.merchantCode
+    // }
     const data2: any = useQuery(['getUserInfo', token], () => getUserInfo(token));
 
     // console.log(data2?.data?.responseObject?.twoFactorAuthForLogin)
