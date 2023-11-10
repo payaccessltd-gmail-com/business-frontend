@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { useQuery } from "@tanstack/react-query"
 import { updateSecurity } from "api/settings";
+import { getUserInfo } from "api/settings";
 import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "components/ui/button"
@@ -47,23 +48,26 @@ const FormSchema = z.object({
 export default function Security({ data, security, setSecurity }: any) {
     const { toast } = useToast();
 
+
+    // const getParameters = {
+    //     token,
+    //     merchantCode: merchantList[0]?.merchantCode
+    // }
+    const data2: any = useQuery(['getUserInfo', token], () => getUserInfo(token));
+
+    // console.log(data2?.data?.responseObject?.twoFactorAuthForLogin)
+
+    // console.log(data?.twoFactorAuthForPaymentAndTransfer)
+
+
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            option1: false,
+            option1: data2?.data?.responseObject?.twoFactorAuthForLogin,
             option2: data?.twoFactorAuthForPaymentAndTransfer,
         },
     })
-
-    const getParameters = {
-        token,
-        merchantCode: merchantList[0]?.merchantCode
-    }
-    // const data: any = useQuery(['getMerchantDetails', getParameters], () => getMerchantDetails(getParameters));
-
-
-
-    console.log(data?.twoFactorAuthForPaymentAndTransfer)
 
     const securityUpdateMutation = useMutation({
         mutationFn: updateSecurity,
@@ -114,13 +118,14 @@ export default function Security({ data, security, setSecurity }: any) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleUpdate)} className="w-[60%] mb-5 p-[24px] rounded-[10px] flex flex-col gap-[14px] items-start bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]">
-                <FormField
+                {data2?.data?.responseObject?.twoFactorAuthForLogin ? <FormField
                     control={form.control}
                     name="option1"
                     render={({ field }) => (
                         <FormItem className="flex flex-row items-start gap-2 space-y-0">
                             <FormControl>
                                 <Checkbox
+                                    defaultChecked={data2?.data?.responseObject?.twoFactorAuthForLogin}
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
                                     onClick={() => { handleUpdate() }}
@@ -139,7 +144,7 @@ export default function Security({ data, security, setSecurity }: any) {
                             </div>
                         </FormItem>
                     )}
-                />
+                /> : ""}
                 <FormField
                     control={form.control}
                     name="option2"

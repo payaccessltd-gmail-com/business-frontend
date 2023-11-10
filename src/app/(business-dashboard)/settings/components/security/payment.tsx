@@ -57,16 +57,18 @@ const FormSchema = z.object({
 })
 
 export default function Payment({ data, security, setSecurity }: any) {
+    console.log(data?.enableAcceptPosChannel)
+    console.log(data?.enableUssdTransfer)
 
     const { toast } = useToast();
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
             enableAcceptBankTransfers: data?.enableAcceptBankTransfers,
-            enableAcceptPOSChannel: data?.enableAcceptPOSChannel || false,
+            enableAcceptPOSChannel: data?.enableAcceptPosChannel,
             enableAcceptCardPayment: data?.enableAcceptCardPayment,
             enableAcceptMobileMoneyTransfer: data?.enableAcceptMobileMoneyTransfer,
-            enableUSSDTransfer: data?.enableUSSDTransfer,
+            enableUSSDTransfer: data?.enableUssdTransfer,
             defaultCurrency: data?.defaultCurrency,
         },
     })
@@ -81,7 +83,7 @@ export default function Payment({ data, security, setSecurity }: any) {
 
     // console.log(data?.customerNotificationByEmail)
 
-    console.log(data)
+    // console.log(data)
 
     const paymentSettingsMutation = useMutation({
         mutationFn: paymentSettings,
