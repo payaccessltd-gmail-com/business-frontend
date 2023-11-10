@@ -33,6 +33,8 @@ import { FiPlus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
+import { updateAccountData } from "api/settings"
+
 
 let merchantList: any
 let token = ""
@@ -53,10 +55,10 @@ if (
 
 
 const BusinessInfoSchema = z.object({
-    bvn: z.string(),
-    accountNumber: z.string(),
-    bankName: z.string(),
-    accountName: z.string(),
+    businessBvn: z.number(),
+    businessAccountNumber: z.number(),
+    businessBankName: z.string(),
+    businessAccountName: z.string(),
 
 
 });
@@ -77,69 +79,59 @@ export default function AccountInfoForm() {
     let businessInfoForm = useForm<z.infer<typeof BusinessInfoSchema>>({
         resolver: zodResolver(BusinessInfoSchema),
         defaultValues: {
-            bvn: "",
-            accountNumber: "",
-            bankName: "",
-            accountName: "",
+            // businessBvn: "",
+            // businessAccountNumber: "",
+            businessBankName: "",
+            businessAccountName: "",
         },
     });
     const handleModal = (e: any) => {
 
     };
 
-    // const businessInfoFormMutation = useMutation({
-    //     mutationFn: ,
-    //     onSuccess: async (data) => {
-    //         const responseData: API.InvoiceStatusReponse =
-    //             (await data.json()) as API.InvoiceStatusReponse;
-    //         if (responseData?.statusCode === "1") {
-    //             toast({
-    //                 variant: "destructive",
-    //                 title: "",
-    //                 description: "Error Creating Invoice",
-    //             });
-    //         }
-    //         if (responseData?.statusCode === "0") {
-    //             toast({
-    //                 variant: "default",
-    //                 title: "",
-    //                 description: "Invoice Created",
-    //                 className:
-    //                     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-    //             });
-    //             businessInfoForm.reset();
-    //             if (typeof window) {
-    //                 router.push(`/invoice`);
-    //             }
-    //         }
-    //     },
-    //     onError: (e) => {
-    //         console.log(e);
-    //         toast({
-    //             variant: "destructive",
-    //             title: `${e}`,
-    //             description: "error",
-    //         });
-    //     },
-    // });
+    const accountInfoFormMutation = useMutation({
+        mutationFn: updateAccountData,
+        onSuccess: async (data) => {
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
+            if (responseData?.statusCode === "1") {
+                toast({
+                    variant: "destructive",
+                    title: "",
+                    description: "Error Creating Invoice",
+                });
+            }
+            if (responseData?.statusCode === "0") {
+                toast({
+                    variant: "default",
+                    title: "",
+                    description: "Invoice Created",
+                    className:
+                        "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+                });
+                businessInfoForm.reset();
+              
+            }
+        },
+        onError: (e) => {
+            console.log(e);
+            toast({
+                variant: "destructive",
+                title: `${e}`,
+                description: "error",
+            });
+        },
+    });
 
     async function onSubmit(values: z.infer<typeof BusinessInfoSchema>) {
         console.log(values);
-        // let newValues = {
-        //     ...values,
-        //     amount: values?.amount?.toString(),
-        //     dueDate: values?.dueDate?.toISOString().split("T")[0],
-        //     additionalCustomerEmailAddress: [
-        //         values?.email1,
-        //         values?.email2,
-        //         values?.email3,
-        //     ]?.toString(),
-        //     token: token,
-        //     subject: subject,
-        //     merchantId: merchantId
-        // };
-        // console.log(newValues);
-        // simpleFormMutation.mutate(newValues as any);
+        let newValues = {
+            ...values,
+            token: token,
+            merchantId: merchantId
+        };
+        console.log(newValues);
+        accountInfoFormMutation.mutate(newValues as any);
     }
     // const modalRef = useRef<any>();
     // const handleModalSubmit = () => {
@@ -156,7 +148,7 @@ export default function AccountInfoForm() {
 
                 <FormField
                     control={businessInfoForm.control}
-                    name="bvn"
+                    name="businessBvn"
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col">
                             <div className="w-full flex flex-row items-center justify-end gap-4">
@@ -165,10 +157,13 @@ export default function AccountInfoForm() {
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
-                                        type="text"
+                                        type="number"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter BVN"
                                         {...field}
+                                        onChange={(event) =>
+                                            field.onChange(Number(event.target.value))
+                                        }
                                     />
                                 </FormControl>
                             </div>
@@ -181,7 +176,7 @@ export default function AccountInfoForm() {
 
                 <FormField
                     control={businessInfoForm.control}
-                    name="accountNumber"
+                    name="businessAccountNumber"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
                             <div className="w-full flex flex-row items-center justify-end gap-4">
@@ -190,10 +185,13 @@ export default function AccountInfoForm() {
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
-                                        type="text"
+                                        type="number"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter account number"
                                         {...field}
+                                        onChange={(event) =>
+                                            field.onChange(Number(event.target.value))
+                                        }
                                     />
                                 </FormControl>
                             </div>
@@ -203,7 +201,7 @@ export default function AccountInfoForm() {
                 />
                 <FormField
                     control={businessInfoForm.control}
-                    name="bankName"
+                    name="businessBankName"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
                             <div className="w-full flex flex-row items-center justify-end gap-4">
@@ -225,7 +223,7 @@ export default function AccountInfoForm() {
                 />
                 <FormField
                     control={businessInfoForm.control}
-                    name="accountName"
+                    name="businessAccountName"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
                             <div className="w-full flex flex-row items-center justify-end gap-4">

@@ -33,6 +33,10 @@ import { FiPlus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
+// import { getMerchantSetting } from "../../../../../api/settings"
+import { useQuery } from "@tanstack/react-query"
+import { getUserInfo } from "api/settings";
+
 
 let merchantList: any
 let token = ""
@@ -55,17 +59,21 @@ if (
 const PersonalSchema = z.object({
     firstName: z
         .string()
-        .min(2, "first name must contain more than 2 characters"),
+        .refine((value) => /^[A-Za-z]+$/.test(value), {
+            message: 'Only alphabetic characters are allowed.',
+        }),
     lastName: z
         .string()
-        .min(2, "last name must contain more than 2 characters"),
+        .refine((value) => /^[A-Za-z]+$/.test(value), {
+            message: 'Only alphabetic characters are allowed.',
+        }),
     gender: z.string(),
     email: z.string().email(),
     phone: z.string(),
     code: z.string(),
 
 });
-export default function PersonalForm() {
+export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
     const { toast } = useToast();
     const router = useRouter();
     const [receipt, setReceipt] = useState(false);
@@ -77,7 +85,9 @@ export default function PersonalForm() {
     ]);
 
 
+    const data: any = useQuery(['getMerchantSetting', token], () => getUserInfo(token));
 
+    const prefill = data?.data?.responseObject
 
     let personalForm = useForm<z.infer<typeof PersonalSchema>>({
         resolver: zodResolver(PersonalSchema),
@@ -87,7 +97,7 @@ export default function PersonalForm() {
             gender: undefined,
             email: "",
             phone: "",
-            code: undefined,
+            code: "+234",
         },
     });
     const handleModal = (e: any) => {
@@ -172,9 +182,10 @@ export default function PersonalForm() {
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
+                                        disabled
                                         type="text"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter first name"
+                                        placeholder={prefill?.firstName}
                                         {...field}
                                     />
                                 </FormControl>
@@ -194,9 +205,10 @@ export default function PersonalForm() {
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
+                                        disabled
                                         type="text"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter last name"
+                                        placeholder={prefill?.lastName}
                                         {...field}
                                     />
                                 </FormControl>
@@ -220,10 +232,10 @@ export default function PersonalForm() {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
+                                        <SelectTrigger disabled className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
                                             <SelectValue
                                                 defaultValue={field.value}
-                                                placeholder="Gender"
+                                                placeholder={prefill?.gender}
                                             />
                                         </SelectTrigger>
                                     </FormControl>
@@ -251,9 +263,10 @@ export default function PersonalForm() {
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
+                                        disabled
                                         type="email"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter email"
+                                        placeholder={prefill?.emailAddress}
                                         {...field}
                                     />
                                 </FormControl>
@@ -279,7 +292,7 @@ export default function PersonalForm() {
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
-                                            <SelectTrigger className="rounded-[10px] min-h-[56px] bg-[#F2FAFD] border-none w-[84px]">
+                                            <SelectTrigger disabled className="rounded-[10px] min-h-[56px] bg-[#F2FAFD] border-none w-[84px]">
                                                 <SelectValue
                                                     defaultValue={field.value}
                                                     placeholder="+234"
@@ -306,9 +319,12 @@ export default function PersonalForm() {
                                 {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
                                 <FormControl>
                                     <Input
-                                        type="text"
+                                        disabled
+                                        type="tel"
+                                        pattern="[0-9]*"
+                                        title="Input is only number"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[56px] shadow-none bg-white w-full p-2 "
-                                        placeholder="Enter phone number"
+                                        placeholder={prefill?.mobileNumber}
                                         {...field}
                                     />
                                 </FormControl>
@@ -320,7 +336,7 @@ export default function PersonalForm() {
 
 
                 <Button
-                    // disabled={loading}
+                    disabled
                     className="mt-[32px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
                     type="submit"
                 // onClick={(e) => handleModal(e)}

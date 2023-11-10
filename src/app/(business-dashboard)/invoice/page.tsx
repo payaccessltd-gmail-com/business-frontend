@@ -67,6 +67,7 @@ export default function GetStarted() {
   const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllInvoice(GetParameters));
 
   // console.log(data?.data?.responseObject?.list)
+  // console.log(merchantId)
 
   return <div className="relative w-full h-full flex flex-col">
     <Button

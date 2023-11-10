@@ -76,7 +76,7 @@ export const standardInvoice = async ({
 };
 
 export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage, token }: API.GetAllInovice) => {
-
+  // console.log(merchantId)
   const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${merchantId}/${rowPerPage}/${currentPageNumber}`, {
     method: "GET",
     headers: {
@@ -90,3 +90,6 @@ export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage,
   const data = JSON.parse(responseText);
   return data;
 };
+
+
+

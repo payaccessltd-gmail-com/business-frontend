@@ -6,6 +6,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
+import { updateUserPassword } from "api/settings"
 import {
     Select,
     SelectContent,
@@ -94,59 +95,49 @@ export default function PasswordForm() {
 
     };
 
-    // const passwordFormMutation = useMutation({
-    //     mutationFn: ,
-    //     onSuccess: async (data) => {
-    //         const responseData: API.InvoiceStatusReponse =
-    //             (await data.json()) as API.InvoiceStatusReponse;
-    //         if (responseData?.statusCode === "1") {
-    //             toast({
-    //                 variant: "destructive",
-    //                 title: "",
-    //                 description: "Error Creating Invoice",
-    //             });
-    //         }
-    //         if (responseData?.statusCode === "0") {
-    //             toast({
-    //                 variant: "default",
-    //                 title: "",
-    //                 description: "Invoice Created",
-    //                 className:
-    //                     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-    //             });
-    //             passwordForm.reset();
-    //             if (typeof window) {
-    //                 router.push(`/invoice`);
-    //             }
-    //         }
-    //     },
-    //     onError: (e) => {
-    //         console.log(e);
-    //         toast({
-    //             variant: "destructive",
-    //             title: `${e}`,
-    //             description: "error",
-    //         });
-    //     },
-    // });
+    const passwordFormMutation = useMutation({
+        mutationFn: updateUserPassword,
+        onSuccess: async (data) => {
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
+            if (responseData?.statusCode === "1") {
+                toast({
+                    variant: "destructive",
+                    title: "",
+                    description: "Error Updating Password",
+                });
+            }
+            if (responseData?.statusCode === "00" || "0") {
+                toast({
+                    variant: "default",
+                    title: "",
+                    description: "Password Updated Successfully",
+                    className:
+                        "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+                });
+                passwordForm.reset();
+
+            }
+        },
+        onError: (e) => {
+            console.log(e);
+            toast({
+                variant: "destructive",
+                title: `${e}`,
+                description: "error",
+            });
+        },
+    });
 
     async function onSubmit(values: z.infer<typeof PasswordSchema>) {
         console.log(values);
-        // let newValues = {
-        //     ...values,
-        //     amount: values?.amount?.toString(),
-        //     dueDate: values?.dueDate?.toISOString().split("T")[0],
-        //     additionalCustomerEmailAddress: [
-        //         values?.email1,
-        //         values?.email2,
-        //         values?.email3,
-        //     ]?.toString(),
-        //     token: token,
-        //     subject: subject,
-        //     merchantId: merchantId
-        // };
-        // console.log(newValues);
-        // simpleFormMutation.mutate(newValues as any);
+        let newValues = {
+            password: passwordForm.getValues("currentPassword"),
+            newPassword: passwordForm.getValues("newPassword"),
+            token
+        }
+
+        passwordFormMutation.mutate(newValues as any);
     }
     // const modalRef = useRef<any>();
     // const handleModalSubmit = () => {
