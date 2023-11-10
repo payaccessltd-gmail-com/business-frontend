@@ -50,6 +50,18 @@ import { EarningNotification } from "./components/notification/earning"
 import { EnableNotification } from "./components/notification/enable"
 import { useMutation } from "@tanstack/react-query";
 import { updateNotification } from "../../../api/settings";
+import VerifyModal from "./components/email-verification-modal/modal"
+import Security from "./components/security/security"
+import Payment from "./components/security/payment"
+
+
+
+
+
+
+
+
+
 let merchantList: any
 let token = ""
 let subject = ""
@@ -87,6 +99,8 @@ export default function Settings() {
 
 
   })
+  const [email, setEmail] = useState<any>("")
+  const [isModalOpen, setVerifyModal] = useState<boolean>(false)
 
 
 
@@ -200,7 +214,7 @@ export default function Settings() {
             <div className="flex flex-col items-start w-full gap-8 px-8">
               <div className="flex flex-col items-start gap-4">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Personal Information</p>
-                <PersonalForm />
+                <PersonalForm setVerifyModal={setVerifyModal} setEmail={setEmail} email={email} />
               </div>
               <div className="flex flex-col items-start gap-4 mb-12">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Password</p>
@@ -241,8 +255,15 @@ export default function Settings() {
         }
         {
           tab === 3 ?         //----------------------Security 
-            <div className="flex flex-col items-start w-full gap-8">
-
+            <div className="flex flex-col items-start w-full gap-8 pl-8">
+              <div className="flex flex-col items-start gap-4 w-full">
+                <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Security</p>
+                <Security data={data?.data?.responseObject} />
+              </div>
+              <div className="flex flex-col items-start gap-4 w-full">
+                <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Payment</p>
+                <Payment data={data?.data?.responseObject} />
+              </div>
 
             </div> : ""
         }
@@ -291,9 +312,9 @@ export default function Settings() {
         }
       </ScrollArea>
 
-
-
-
+      {isModalOpen ?
+        < VerifyModal email={email} setVerifyModal={setVerifyModal} /> : ""
+      }
     </div>)
 }
 

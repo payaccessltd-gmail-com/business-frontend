@@ -33,6 +33,11 @@ import { FiPlus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query"
+import { getMerchantDetails } from "api/settings";
+import { updateBusinessInfo } from "api/settings";
+
+
 
 let merchantList: any
 let token = ""
@@ -50,14 +55,11 @@ if (
     merchantId = merchantList[0].id ? merchantList[0]?.id : null
 }
 
-
+// console.log(merchantList[0]?.merchantCode)
 
 const BusinessInfoSchema = z.object({
-    businessName: z
-        .string()
-        .min(2, "business name must contain more than 2 characters"),
+    businessName: z.string().optional(),
     businessDescription: z.string(),
-    gender: z.string(),
     businessEmail: z.string().email(),
     phone: z.string(),
     code: z.string(),
@@ -79,16 +81,21 @@ export default function BusinessInfoForm() {
     const [inputField, setInputField] = useState<any[]>([
         { label: "Customer Email" },
     ]);
+    const getParameters = {
+        token,
+        merchantCode: merchantList[0]?.merchantCode
+    }
+    const data: any = useQuery(['getMerchantDetails', getParameters], () => getMerchantDetails(getParameters));
 
-
-
-
+    const prefill = data?.data?.responseObject[0]
+    // console.log(prefill)
+    // console.log(prefill?.primaryMobile?.split(")")[0].split("(")[1])
+    // console.log(prefill?.primaryMobile?.split(")")[1])
     let businessInfoForm = useForm<z.infer<typeof BusinessInfoSchema>>({
         resolver: zodResolver(BusinessInfoSchema),
         defaultValues: {
             businessName: "",
             businessDescription: "",
-            gender: undefined,
             businessEmail: "",
             phone: "",
             code: undefined,
@@ -101,59 +108,49 @@ export default function BusinessInfoForm() {
 
     };
 
-    // const businessInfoFormMutation = useMutation({
-    //     mutationFn: ,
-    //     onSuccess: async (data) => {
-    //         const responseData: API.InvoiceStatusReponse =
-    //             (await data.json()) as API.InvoiceStatusReponse;
-    //         if (responseData?.statusCode === "1") {
-    //             toast({
-    //                 variant: "destructive",
-    //                 title: "",
-    //                 description: "Error Creating Invoice",
-    //             });
-    //         }
-    //         if (responseData?.statusCode === "0") {
-    //             toast({
-    //                 variant: "default",
-    //                 title: "",
-    //                 description: "Invoice Created",
-    //                 className:
-    //                     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-    //             });
-    //             businessInfoForm.reset();
-    //             if (typeof window) {
-    //                 router.push(`/invoice`);
-    //             }
-    //         }
-    //     },
-    //     onError: (e) => {
-    //         console.log(e);
-    //         toast({
-    //             variant: "destructive",
-    //             title: `${e}`,
-    //             description: "error",
-    //         });
-    //     },
-    // });
+    const businessInfoFormMutation = useMutation({
+        mutationFn: updateBusinessInfo,
+        onSuccess: async (data) => {
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
+            if (responseData?.statusCode === "1") {
+                toast({
+                    variant: "destructive",
+                    title: "",
+                    description: "Error Updating Info",
+                });
+            }
+            if (responseData?.statusCode === "0") {
+                toast({
+                    variant: "default",
+                    title: "",
+                    description: "Business info updated",
+                    className:
+                        "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+                });
+                businessInfoForm.reset();
+            }
+        },
+        onError: (e) => {
+            console.log(e);
+            toast({
+                variant: "destructive",
+                title: `${e}`,
+                description: "error",
+            });
+        },
+    });
 
     async function onSubmit(values: z.infer<typeof BusinessInfoSchema>) {
         console.log(values);
-        // let newValues = {
-        //     ...values,
-        //     amount: values?.amount?.toString(),
-        //     dueDate: values?.dueDate?.toISOString().split("T")[0],
-        //     additionalCustomerEmailAddress: [
-        //         values?.email1,
-        //         values?.email2,
-        //         values?.email3,
-        //     ]?.toString(),
-        //     token: token,
-        //     subject: subject,
-        //     merchantId: merchantId
-        // };
+        let newValues = {
+            ...values,
+            token: token,
+            merchantId: merchantId,
+            primaryMobile: `(${values.code})${values.phone}`
+        };
         // console.log(newValues);
-        // simpleFormMutation.mutate(newValues as any);
+        businessInfoFormMutation.mutate(newValues as any);
     }
     // const modalRef = useRef<any>();
     // const handleModalSubmit = () => {
@@ -175,13 +172,14 @@ export default function BusinessInfoForm() {
                         <FormItem className="w-full flex flex-col">
                             <div className="w-full flex flex-row items-center justify-end gap-4">
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    First Name
+                                    Business Name
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
+                                        disabled
                                         type="text"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter first name"
+                                        placeholder={merchantList[0]?.businessName}
                                         {...field}
                                     />
                                 </FormControl>
@@ -202,7 +200,7 @@ export default function BusinessInfoForm() {
                                 </FormLabel>
                                 <FormControl>
                                     <Textarea
-                                        placeholder="Say something about your business"
+                                        placeholder={prefill?.businessDescription}
                                         className="resize-none border-[#D6D6D6] rounded-[10px] min-h-[88px] shadow-none bg-white w-[307px] p-2 "
                                         {...field}
                                     />
@@ -226,7 +224,7 @@ export default function BusinessInfoForm() {
                                     <Input
                                         type="email"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter business email"
+                                        placeholder={prefill?.businessEmail}
                                         {...field}
                                     />
                                 </FormControl>
@@ -254,7 +252,7 @@ export default function BusinessInfoForm() {
                                             <SelectTrigger className="rounded-[10px] min-h-[56px] bg-[#F2FAFD] border-none w-[84px]">
                                                 <SelectValue
                                                     defaultValue={field.value}
-                                                    placeholder="+234"
+                                                    placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1]}`}
                                                 />
                                             </SelectTrigger>
                                         </FormControl>
@@ -278,9 +276,11 @@ export default function BusinessInfoForm() {
                                 {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
                                 <FormControl>
                                     <Input
-                                        type="text"
+                                        type="tel"
+                                        pattern="[0-9]*"
+                                        title="Input is only number"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[56px] shadow-none bg-white w-full p-2 "
-                                        placeholder="Enter phone number"
+                                        placeholder={prefill?.primaryMobile?.split(")")[1]}
                                         {...field}
                                     />
                                 </FormControl>
@@ -340,7 +340,7 @@ export default function BusinessInfoForm() {
                                         <SelectTrigger className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
                                             <SelectValue
                                                 defaultValue={field.value}
-                                                placeholder="State"
+                                                placeholder={prefill?.businessState}
                                             />
                                         </SelectTrigger>
                                     </FormControl>
@@ -371,7 +371,7 @@ export default function BusinessInfoForm() {
                                     <Input
                                         type="text"
                                         className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter business website"
+                                        placeholder={prefill?.businessWebsite}
                                         {...field}
                                     />
                                 </FormControl>
