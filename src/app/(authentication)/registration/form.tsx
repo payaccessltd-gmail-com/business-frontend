@@ -29,8 +29,12 @@ import { createNewUser } from "../../../api/registration";
 const RegistrationSchema = z.object({
   firstName: z
     .string()
-    .min(2, "first name must contain more than 2 characters"),
-  lastName: z.string().min(2, "last name must contain more than 2 characters"),
+    .refine((value) => /^[A-Za-z]+$/.test(value), {
+      message: 'Only alphabetic characters are allowed.',
+    }),
+  lastName: z.string().refine((value) => /^[A-Za-z]+$/.test(value), {
+    message: 'Only alphabetic characters are allowed.',
+  }),
   emailAddress: z.string().email(),
   businessName: z
     .string()

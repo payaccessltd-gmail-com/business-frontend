@@ -48,12 +48,7 @@ export default function AuthenticationPage() {
 
         {/* logic and control for form signin is located here */}
         <OTPForm />
-        <p className="text-[14px] font-[400] leading-[145%] text-[#000000]">
-          Resend code in{" "}
-          <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">
-            2:00sec
-          </span>
-        </p>
+        
       </div>
     </div>
   );
