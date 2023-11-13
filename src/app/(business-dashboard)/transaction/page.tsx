@@ -13,7 +13,7 @@ const Transaction = () => {
   return (
     <div className="flex h-full w-full flex-col items-center pt-[70px]">
       <SubNav />
-      <div className="mt-[150px]">
+      <div className="mt-[150px] w-full">
         <CreateInvoice />
       </div>
     </div>

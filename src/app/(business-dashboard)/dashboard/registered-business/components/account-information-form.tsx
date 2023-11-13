@@ -27,7 +27,7 @@ import {
 } from "components/ui/select";
 
 const accInfoFormSchema = zod.object({
-  merchantId: zod.string(),
+  merchantId: zod.number(),
   emailAddress: zod.string().email(),
   businessBvn: zod.string(),
   businessBankName: zod.string().min(2, {
