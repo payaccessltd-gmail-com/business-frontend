@@ -92,4 +92,27 @@ export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage,
 };
 
 
-
+export const getInvoiceDetails = async ({ token, merchantId, invoiceId }: any) => {
+  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-details/${invoiceId}/${merchantId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
+};
+export const deleteInvoice = async ({ token, merchantId, invoiceId }: any) => {
+  return await fetch(`${baseUrl}/api/v1/invoice/delete-invoice/${invoiceId}/${merchantId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

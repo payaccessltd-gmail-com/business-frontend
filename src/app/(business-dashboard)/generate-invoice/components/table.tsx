@@ -7,6 +7,13 @@ import { LuChevronsRight } from "react-icons/lu"
 import { SlOptions } from "react-icons/sl"
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import { Button } from "components/ui/button"
+import { useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "components/ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import { deleteInvoice } from "api/invoice";
+
+
+
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -25,34 +32,37 @@ import {
 import { ScrollArea } from 'components/ui/scroll-area'
 import { RiArrowDropDownFill } from "react-icons/ri"
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu"
+import DeletePopup from './delete-popup'
+
+
+
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+
+if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+) {
+    token = window.localStorage.getItem("token") as any
+    subject = window.localStorage.getItem("subject") as any
+    merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+    merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
+
 
 const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => {
+    const { toast } = useToast();
+
+    const [deleteId, setDeleteId] = useState<string | undefined | null>("")
+    const [deletePopup, setPopup] = useState<boolean>(false)
     const heading = ["Amount", "Customer Name", "Invoice No.", "Status", "Date"]
-    const dropOptions = ["View", "Download", "Delete", "Revoke"]
-    // const demoData: any[] = [
-    //     {
-    //         id: 0,
-    //         amount: 500,
-    //         cname: "Faith Oluchi",
-    //         InvoiceNo: "Pay00001",
-    //         status: "not paid",
-    //         Date: "may 29th, 2:40pm"
-
-    //     },
-    //     {
-    //         id: 1,
-    //         amount: 500,
-    //         cname: "Faith Oluchi",
-    //         InvoiceNo: "Pay00001",
-    //         status: "paid",
-    //         Date: "may 29th, 2:40pm"
-
-    //     }
-    // ]
-    // console.log(invoiceTableData)
+    const router = useRouter();
     const handlePageNumber = (option: any) => {
         if (option === "next") {
-            if (page < Math.ceil(invoiceTableData?.totalCount / row)-1) {
+            if (page < Math.ceil(invoiceTableData?.totalCount / row) - 1) {
                 // console.log("next: ", page)
                 setPage(Number(page) + 1)
             } else {
@@ -69,9 +79,75 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
 
         }
     }
+    const handleView = (id: any) => {
+        if (typeof window) {
+            router.push(`/invoice-details?id=${id}`);
+        }
+    }
 
+
+
+    const deleteInvoiceMutation = useMutation({
+        mutationFn: deleteInvoice,
+        onSuccess: async (data: any) => {
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
+
+            if (responseData?.statusCode === "1") {
+                setPopup(false)
+                toast({
+                    variant: "destructive",
+                    title: "",
+                    description: "Error Deleting Invoice",
+                });
+            }
+
+            if (responseData?.statusCode === "0") {
+                setPopup(false)
+                toast({
+                    variant: "default",
+                    title: "",
+                    description: "Invoice Deleted",
+                    className:
+                        "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+                });
+
+                if (typeof window) {
+                    router.push(`/invoice`);
+                }
+            }
+        },
+
+        onError: (e) => {
+            setPopup(false)
+            console.log(e);
+            toast({
+                variant: "destructive",
+                title: `${e}`,
+                description: "error",
+            });
+        },
+    });
+
+
+    // console.log(invoiceTableData?.list)
+    const handleDelete = (id: string) => {
+        const requestData = {
+            token,
+            merchantId,
+            invoiceId: id
+        }
+        // console.log(requestData)
+        deleteInvoiceMutation.mutate(requestData as any);
+
+    }
+
+    const handleDeletePopup = (id: string) => {
+        setDeleteId(id)
+        setPopup(true)
+    }
     return (
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center relative'>
             <div className='flex flex-row items-center justify-between rounded-[8px] p-[10px] h-[58px] w-full bg-[#0C394B] mb-[24px]'>
                 {
                     heading.map((value, id) => {
@@ -83,8 +159,8 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
             <ScrollArea className='w-full h-[400px]'>
 
                 <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                    {invoiceTableData?.list?.map(({ id, amount, customerName, InvoiceNo, invoiceStatus, dueDate }: any) => {
-                        return <div className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
+                    {invoiceTableData?.list?.map(({ id, amount, customerName, InvoiceNo, invoiceStatus, dueDate }: any, idx: React.Key | null | undefined) => {
+                        return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] w-[20%] font-raleway'>{`₦ ${amount}`}</p>
                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{customerName}</p>
                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{`PAY${String(id).padStart(8, '0')}`}</p>
@@ -105,6 +181,10 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                     {"Not paid"}
                                     <IoMdCheckmark className="text-[16px]" />
                                 </p>}
+                                {invoiceStatus === "DELETED" && <p className='text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#C61010] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
+                                    {"Deleted"}
+                                    <IoMdCheckmark className="text-[16px]" />
+                                </p>}
                             </div>
                             <div className='w-[20%] flex flex-row items-center justify-end gap-[20px]'>
                                 <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center font-raleway'>{dueDate}</p>
@@ -117,13 +197,18 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align='end' className="w-[206px] p-[15px]">
                                         <div className='w-full flex flex-col items-center gap-2'>
-                                            {
-                                                dropOptions.map((value, id) => {
-                                                    return <p key={id} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                                                        {value}
-                                                    </p>
-                                                })
-                                            }
+                                            {invoiceStatus === "DELETED" ? "" : <p onClick={() => handleView(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                View
+                                            </p>}
+                                            <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                Download
+                                            </p>
+                                            {invoiceStatus === "DELETED" ? "" : <p onClick={() => handleDeletePopup(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                Delete
+                                            </p>}
+                                            {invoiceStatus === "DELETED" ? "" : <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                Revoke
+                                            </p>}
                                         </div>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -162,6 +247,10 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
 
 
             </div>
+            {
+                deletePopup ? <DeletePopup setPopup={setPopup} deleteId={deleteId} handleDelete={handleDelete} /> : ""
+            }
+
 
         </div>
     )
