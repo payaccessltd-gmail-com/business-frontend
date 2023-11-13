@@ -37,7 +37,7 @@ export default function DashboardLayout({
       <div className="relative h-full col-span-3 lg:col-span-20">
         <Header />
         <ScrollArea>
-          <main className="h-[calc(100vh-84px)] overflow-visible  bg-sky-50 bg-opacity-30 px-12 py-4">
+          <main className="h-[calc(100vh-84px)] overflow-visible bg-sky-50 bg-opacity-30 px-12 py-4">
             {children}
           </main>
         </ScrollArea>

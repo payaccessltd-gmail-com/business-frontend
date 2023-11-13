@@ -1,4 +1,23 @@
+import { format } from "date-fns";
+
 import { baseUrl } from "./baseUrl";
+
+export const getMerchantByMerchantCode = async (
+  merchantCode: string,
+  token: string,
+) => {
+  return await fetch(
+    `${baseUrl}/api/v1/merchant/get-merchant-details/${merchantCode}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updateAboutBusiness),
+    },
+  );
+};
 
 export const updateAboutBusiness = async (
   updateAboutBusiness: API.UpdateAboutBusinessDTO,
@@ -30,8 +49,8 @@ export const updateMerchantLocation = async (
 
 export const updateMerchantBioData = async (
   {
-    emailAddress,
     gender,
+    emailAddress,
     dateOfBirth,
     identificationDocument,
     identificationDocumentPath,
@@ -41,22 +60,27 @@ export const updateMerchantBioData = async (
   token: string,
 ) => {
   let formdata = new FormData();
-  formdata.append("emailAddress", emailAddress);
   formdata.append("gender", gender);
-  formdata.append("dateOfBirth", dateOfBirth);
+  formdata.append("emailAddress", emailAddress);
+  formdata.append("dateOfBirth", format(dateOfBirth, "yyyy-MM-dd"));
   formdata.append("identificationDocument", identificationDocument);
   formdata.append("identificationNumber", identificationNumber);
-  formdata.append("merchantId", merchantId);
-  formdata.append(
-    "identificationDocumentPath",
-    identificationDocumentPath,
-    identificationDocumentPath.name,
-  );
+
+  if (merchantId) {
+    formdata.append("merchantId", merchantId.toString());
+  }
+
+  if (identificationDocumentPath) {
+    formdata.append(
+      "identificationDocumentPath",
+      identificationDocumentPath,
+      identificationDocumentPath.name,
+    );
+  }
 
   return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-bio-data`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: formdata,
@@ -85,8 +109,23 @@ export const updateMerchantBusinessData = async (
   formdata.append("businessCity", businessCity);
   formdata.append("businessState", businessState);
   formdata.append("businessWebsite", businessWebsite);
-  formdata.append("businessLogoFile", businessLogoFile, businessLogoFile.name);
-  formdata.append("merchantId", merchantId);
+
+  if (merchantId) {
+    formdata.append("merchantId", merchantId.toString());
+  }
+
+  if (businessLogoFile) {
+    formdata.append(
+      "businessLogoFile",
+      businessLogoFile,
+      businessLogoFile.name,
+    );
+  } else {
+    formdata.append(
+      "businessLogoFile",
+      new Blob(["", " ", "world"], { type: "text/plain" }),
+    );
+  }
 
   return await fetch(
     `${baseUrl}/api/v1/merchant/update-merchant-business-data`,

@@ -20,7 +20,7 @@ import { useToast } from "components/ui/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
 import { loginApi } from "api/login";
-import { useMerchantStore, useAuthStore } from "store";
+import { useMerchantStore } from "store";
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
@@ -34,6 +34,7 @@ const loginFormSchema = z.object({
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
+
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const { setCurrentMerchant, setMerchants } = useMerchantStore();
