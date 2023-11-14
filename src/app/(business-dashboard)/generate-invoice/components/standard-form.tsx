@@ -45,26 +45,20 @@ import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { standardInvoice } from "../../../../api/invoice";
 
-
-
-let merchantList: any
-let token = ""
-let subject = ""
-let merchantId: any = ""
-
+let merchantList: any;
+let token = "";
+let subject = "";
+let merchantId: any = "";
 
 if (
   typeof window !== "undefined" &&
   typeof window.localStorage !== "undefined"
 ) {
-  token = window.localStorage.getItem("token") as any
-  subject = window.localStorage.getItem("subject") as any
-  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
-  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+  token = window.localStorage.getItem("token") as any;
+  subject = window.localStorage.getItem("subject") as any;
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any);
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null;
 }
-
-
-
 
 const StandardSchema = z.object({
   customerName: z
@@ -110,9 +104,6 @@ export default function StandardForm() {
   const [date, setDate] = useState<Date>();
   const [modalData, setModalData] = useState<any>("");
 
-
-
-
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
     defaultValues: {
@@ -140,31 +131,30 @@ export default function StandardForm() {
     },
   });
 
-
   const handleModal = (e: any) => {
     e.preventDefault();
-    standardForm.clearErrors()
-    setModalData(standardForm?.getValues())
+    standardForm.clearErrors();
+    setModalData(standardForm?.getValues());
     if (standardForm?.getValues()?.customerName?.length == 0) {
       standardForm.setError("customerName", {
         type: "manual",
         message: "Customer name required",
-      })
-      return
+      });
+      return;
     }
     if (standardForm?.getValues()?.email1?.length == 0) {
       standardForm.setError("email1", {
         type: "manual",
         message: "Email required",
-      })
-      return
+      });
+      return;
     }
     if (!standardForm?.getValues()?.dueDate) {
       standardForm.setError("dueDate", {
         type: "manual",
         message: "Due date required",
-      })
-      return
+      });
+      return;
     }
     setReceipt((value) => !value);
   };
@@ -257,11 +247,9 @@ export default function StandardForm() {
     standardFormMutation.mutate(newValues as any);
   }
 
-
-
   const handleDraftSubmit = (e: any) => {
     e.preventDefault();
-    let values = standardForm.getValues()
+    let values = standardForm.getValues();
     let newValues = {
       ...values,
       dueDate: values?.dueDate?.toISOString().split("T")[0],
@@ -294,18 +282,16 @@ export default function StandardForm() {
     };
     // console.log(newValues);
     standardFormMutation.mutate(newValues as any);
-  }
-
+  };
 
   const modalRef2 = useRef<any>();
   const modalRef3 = useRef<any>();
   const handleModalSubmit = () => {
-    modalRef2.current.click()
-  }
+    modalRef2.current.click();
+  };
   const handleModalSubmitDraft = () => {
-    modalRef3.current.click()
-  }
-
+    modalRef3.current.click();
+  };
 
   return (
     <Form {...standardForm}>
@@ -354,7 +340,7 @@ export default function StandardForm() {
                       onChange={(event) => {
                         field.onChange(event);
                       }}
-                    // value={field.value ?? ''}
+                      // value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -751,14 +737,16 @@ export default function StandardForm() {
       ) : (
         ""
       )}
-      {popup ? <ReviewPopup
-        value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
-        setPopup={setPopup}
-        handleSubmit={handleModalSubmit}
-        modalData={modalData}
-      /> : ""}
+      {popup ? (
+        <ReviewPopup
+          value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
+          setPopup={setPopup}
+          handleSubmit={handleModalSubmit}
+          modalData={modalData}
+        />
+      ) : (
+        ""
+      )}
     </Form>
   );
 }
-
-

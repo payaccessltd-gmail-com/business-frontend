@@ -98,19 +98,19 @@ export default function AccountInfoForm() {
                 toast({
                     variant: "destructive",
                     title: "",
-                    description: "Error Creating Invoice",
+                    description: "Error Updating Account Information",
                 });
             }
             if (responseData?.statusCode === "0") {
                 toast({
                     variant: "default",
                     title: "",
-                    description: "Invoice Created",
+                    description: "Account Information Updated",
                     className:
                         "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
                 });
                 businessInfoForm.reset();
-              
+
             }
         },
         onError: (e) => {

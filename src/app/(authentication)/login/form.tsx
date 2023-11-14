@@ -20,7 +20,7 @@ import { useToast } from "components/ui/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
 import { loginApi } from "api/login";
-import { useMerchantStore, useAuthStore } from "store";
+import { useMerchantStore } from "store";
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
@@ -34,6 +34,7 @@ const loginFormSchema = z.object({
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
+
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const { setCurrentMerchant, setMerchants } = useMerchantStore();
@@ -56,12 +57,15 @@ export default function LoginForm() {
         (await data.json()) as API.LoginResponse;
 
       if (!responseData?.subject && !responseData?.token) {
+        setLoading(false)
         toast({
           variant: "destructive",
           title: "",
           description: "Error Signin in",
         });
       } else if (responseData?.token && responseData?.token) {
+        setLoading(false)
+
         toast({
           variant: "default",
           title: "",
@@ -84,6 +88,8 @@ export default function LoginForm() {
         }
         loginForm.reset();
       } else {
+        setLoading(false)
+
         toast({
           variant: "destructive",
           title: "",
@@ -93,6 +99,8 @@ export default function LoginForm() {
     },
 
     onError: (e) => {
+      setLoading(false)
+
       toast({
         variant: "destructive",
         title: `${e}`,
@@ -102,6 +110,7 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    setLoading(true)
     loginMutation.mutate(values);
   }
 

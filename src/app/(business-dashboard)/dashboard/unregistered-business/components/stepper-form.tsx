@@ -37,12 +37,12 @@ function Stepper() {
     [],
   );
 
-  const { state, stepperProps, stepsProps } = useStepper({
+  const { state, stepperProps, stepsProps, prevStep, nextStep } = useStepper({
     steps,
   });
 
   return (
-    <div className="pb-5 space-y-10">
+    <div className="w-full h-full pb-5 space-y-10">
       <nav className="w-full" {...stepperProps}>
         <ol className="flex flex-row px-4 py-6 space-x-10 bg-white">
           {stepsProps?.map((step, index) => (
@@ -72,7 +72,7 @@ function Stepper() {
                   ></span>
                 </div>
 
-                <div className="flex flex-col space-y-1.5">
+                <div className="flex flex-col space-y-1.5 ">
                   <span className="text-sm font-semibold font-CenturyGothic text-primary-50">
                     {steps[index].title}
                   </span>
@@ -86,26 +86,21 @@ function Stepper() {
         </ol>
       </nav>
 
-      <div className="bg-white">
-        <div className="max-w-[1100px] px-4 py-6">
+      <div className="px-6 py-6 bg-white  max-w-[900px]">
+        <div className="">
           {state.currentStep === 0 ? (
-            <PersonalInformationForm />
+            <PersonalInformationForm prevStep={prevStep} nextStep={nextStep} />
           ) : state.currentStep === 1 ? (
-            <BusinessInformationForm />
+            <BusinessInformationForm prevStep={prevStep} nextStep={nextStep} />
           ) : state.currentStep === 2 ? (
-            <AccountInformationForm />
+            <AccountInformationForm prevStep={prevStep} nextStep={nextStep} />
           ) : state.currentStep === 3 ? (
-            <ApprovalForm />
+            <ApprovalForm prevStep={prevStep} nextStep={nextStep} />
           ) : (
             <></>
           )}
         </div>
       </div>
-      <p>state: </p>
-      <pre style={{ backgroundColor: "#f2f2f2" }}>
-        {/* {JSON.stringify(state, null, 2)} */}
-        {/* {JSON.stringify(progressProps, null, 2)} */}
-      </pre>
     </div>
   );
 }

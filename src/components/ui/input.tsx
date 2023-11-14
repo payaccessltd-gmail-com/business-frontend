@@ -39,7 +39,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={inputType} // Use the input type based on 'icon' prop
           className={cn(
-            "flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+            "border-input bg-background px-3 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium  focus-visible:outline-none placeholder:text-neutral-300 focus-visible:ring-1 focus-visible:border-blue-300 disabled:cursor-not-allowed disabled:opacity-50 bg-white text-sm font-medium leading-snug w-full  rounded-lg border border-blue-300 justify-start items-center  inline-flex py-3 text-cyan-800",
             className,
           )}
           ref={ref}

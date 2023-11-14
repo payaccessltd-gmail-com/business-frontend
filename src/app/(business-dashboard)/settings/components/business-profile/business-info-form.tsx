@@ -252,7 +252,7 @@ export default function BusinessInfoForm() {
                                             <SelectTrigger className="rounded-[10px] min-h-[56px] bg-[#F2FAFD] border-none w-[84px]">
                                                 <SelectValue
                                                     defaultValue={field.value}
-                                                    placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1]}`}
+                                                    placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1] || "+234"}`}
                                                 />
                                             </SelectTrigger>
                                         </FormControl>

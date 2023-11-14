@@ -2,13 +2,17 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 
-import { Typography } from "components/ui/Typography";
 import { getUserInfo } from "api/user-management";
+import { Typography } from "components/ui/Typography";
+import { useUserStore, useMerchantStore, useHydrateStore } from "store";
+import { getMerchantByMerchantCode } from "api/merchant-management";
 
 type Props = {};
 
 export default function CustomerName({}: Props) {
   let token = "";
+  const { setUser } = useUserStore();
+  const { setCurrentMerchantDetails } = useMerchantStore();
 
   if (
     typeof window !== "undefined" &&
@@ -21,7 +25,30 @@ export default function CustomerName({}: Props) {
     queryKey: ["user-details"],
     queryFn: async () => {
       const res = await getUserInfo(token as string);
-      return (await res.json()) as API.UserDetailsResponse;
+
+      const userRes = (await res.json()) as API.UserDetailsResponse;
+      setUser(userRes.responseObject);
+
+      return userRes;
+    },
+  });
+
+  const currentMerchant = useHydrateStore(
+    useMerchantStore,
+    (state) => state.currentMerchant,
+  );
+
+  const merchantDetails = useQuery({
+    queryKey: ["merchant-details", currentMerchant?.merchantCode],
+    queryFn: () =>
+      getMerchantByMerchantCode(currentMerchant?.merchantCode as string, token),
+    enabled: currentMerchant?.merchantCode ? true : false,
+    onSuccess: async (data) => {
+      const res = (await data.json()) as API.GetMerchantByMerchantCodeDTO;
+
+      if (res.statusCode === "0") {
+        setCurrentMerchantDetails(res.responseObject[0]);
+      }
     },
   });
 
