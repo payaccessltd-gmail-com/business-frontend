@@ -16,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "components/ui/dropdown-menu";
 
+import { useMerchantStore, useHydrateStore } from "store";
+
 import { cn } from "lib/utils";
 import { ScrollArea } from "components/ui/scroll-area";
 import { sidebarData, SvgLogoComponent } from "./sidebar-data";
@@ -26,17 +28,11 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Sidebar({ className }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  let merchangeListJSON;
-  const merchantList: API.MerchantList = merchangeListJSON
-    ? (JSON.parse(merchangeListJSON) as API.MerchantList)
-    : [];
+  const currentMerchant = useHydrateStore(
+    useMerchantStore,
+    (state) => state.currentMerchant,
+  );
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    merchangeListJSON = localStorage.getItem("merchantList");
-  }
   return (
     <nav className={cn("col-span-4 h-full bg-primary-80", className)}>
       <div className="flex justify-center py-6">
@@ -45,7 +41,7 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="flex flex-col h-full space-y-4">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-[194px] flex-row items-center gap-[14px] self-center text-center text-[16px] font-normal leading-[24px] text-white">
-            {merchantList?.[0]?.businessName}
+            {currentMerchant?.businessName}
             <LuChevronDown className="text-[28px] " />
           </DropdownMenuTrigger>
 

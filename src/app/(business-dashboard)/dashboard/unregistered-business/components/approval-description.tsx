@@ -8,9 +8,13 @@ import InformationFrame from "./information-frame";
 import PersonalInformation from "./personal-information";
 import BusinessInformation from "./business-information";
 import AccountInformation from "./account-information";
-type Props = {};
 
-export default function ApprovalDescription({}: Props) {
+type ApprovalDescriptionProps = {
+  prevStep?: () => void;
+  nextStep?: () => void;
+};
+
+export default function ApprovalDescription({}: ApprovalDescriptionProps) {
   return (
     <div>
       <ReviewDetails />
