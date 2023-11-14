@@ -62,11 +62,13 @@ export default function ForgetForm() {
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         if (typeof window) {
 
           router.push(
-            `/otp?email=${forgetForm.getValues("emailAddress")}`
+            `/otp?email=${forgetForm.getValues("emailAddress")}&forgotPasswordLink=${responseData?.responseObject}`
           )
 
         }

@@ -338,6 +338,7 @@ export default function SimpleForm() {
                                     className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                                     placeholder="0.00"
                                     {...field}
+                                    onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                                     onChange={(event) =>
                                         field.onChange(Number(event.target.value))
                                     }

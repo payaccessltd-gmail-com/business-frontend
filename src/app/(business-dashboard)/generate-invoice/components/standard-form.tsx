@@ -305,8 +305,14 @@ export default function StandardForm() {
   const handleModalSubmitDraft = () => {
     modalRef3.current.click()
   }
-
-
+  const amountValue =
+    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
+  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
+  const subTotal = amountValue - discount
+  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
+  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
   return (
     <Form {...standardForm}>
       <form
@@ -412,8 +418,9 @@ export default function StandardForm() {
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder=""
+                        placeholder="0"
                         {...field}
+                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                         onChange={(event) =>
                           field.onChange(Number(event.target.value))
                         }
@@ -435,8 +442,9 @@ export default function StandardForm() {
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder=""
+                        placeholder="0.00"
                         {...field}
+                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                         onChange={(event) =>
                           field.onChange(Number(event.target.value))
                         }
@@ -472,6 +480,7 @@ export default function StandardForm() {
                   className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                   placeholder="0.00"
                   {...field}
+                  onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                   onChange={(event) =>
                     field.onChange(Number(event.target.value))
                   }
@@ -584,8 +593,9 @@ export default function StandardForm() {
                     <Input
                       type="number"
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                      placeholder="0.00"
+                      placeholder="0"
                       {...field}
+                      onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                       onChange={(event) =>
                         field.onChange(Number(event.target.value))
                       }
@@ -639,8 +649,9 @@ export default function StandardForm() {
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder=""
+                        placeholder="0.00"
                         {...field}
+                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                         onChange={(event) =>
                           field.onChange(Number(event.target.value))
                         }
@@ -676,6 +687,7 @@ export default function StandardForm() {
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0.00"
                       {...field}
+                      onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                       onChange={(event) =>
                         field.onChange(Number(event.target.value))
                       }
@@ -693,7 +705,7 @@ export default function StandardForm() {
             Subtotal
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            00.000
+            {subTotal}
           </p>
         </div>
         <div className="flex flex-row items-center justify-between w-full">
@@ -701,7 +713,7 @@ export default function StandardForm() {
             Grand Total
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            00.000
+            {grandTotal}
           </p>
         </div>
 
@@ -745,7 +757,7 @@ export default function StandardForm() {
           receipt={receipt}
           setReceipt={setReceipt}
           setPopup={setPopup}
-          modalData={modalData}
+          modalData={{ ...modalData, grandTotal, tax, subTotal, discount, amountValue }}
           handleModalSubmitDraft={handleModalSubmitDraft}
         />
       ) : (
