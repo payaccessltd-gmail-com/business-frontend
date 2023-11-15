@@ -142,7 +142,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Subtotal
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    NGN 150,000.00
+                    {`NGN ${modalData.subTotal}`}
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-between w-full">
@@ -150,7 +150,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Discount
                   </p>
                   <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    -NGN 50.00
+                    {`-NGN ${modalData.discount}`}
                   </p>
                 </div>
               </div>
@@ -160,17 +160,17 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Tax
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    NGN 150,000.00
+                    {`NGN ${modalData.tax}`}
                   </p>
                 </div>
-                <div className="flex flex-row items-center justify-between w-full">
+                {/* <div className="flex flex-row items-center justify-between w-full">
                   <p className="text-[#115570] text-[16px] leading-normal font-[400]">
                     Discount
                   </p>
                   <p className="text-[#115570] text-[20px] leading-normal font-[400]">
                     +NGN 00.00
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex flex-row items-center justify-between w-full mt-6">
@@ -178,7 +178,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                 Grand Total
               </p>
               <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                NGN 150,000.00
+                {`NGN ${modalData.grandTotal}`}
               </p>
             </div>
 

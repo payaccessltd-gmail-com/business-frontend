@@ -35,6 +35,7 @@ export default function OTPForm() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const email = searchParams?.get("email");
+  const forgotPasswordLink = searchParams?.get("forgotPasswordLink");
   const [otp, setOtp] = useState(Array(4).fill(""));
   const [countdownTime, setCountdownTime] = useState(300); // 5 minutes in seconds
   const [countdownActive, setCountdownActive] = useState(true);
@@ -95,7 +96,7 @@ export default function OTPForm() {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
 
-      if (responseData?.statusCode === "1") {
+      if (responseData?.statusCode === "01") {
         toast({
           variant: "destructive",
           title: "",
@@ -103,15 +104,17 @@ export default function OTPForm() {
         });
       }
 
-      if (responseData?.statusCode === "0") {
+      if (responseData?.statusCode === "00") {
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         setOtp(Array(4).fill(""));
         if (typeof window) {
-          router.push(`/reset-password?email=${email}`);
+          router.push(`/reset-password?email=${email}&forgotPasswordLink=${forgotPasswordLink}`);
         }
       }
     },
@@ -133,11 +136,12 @@ export default function OTPForm() {
 
   const handleSubmit = (event: any) => {
     event?.preventDefault();
-    console.log(otp.join(""));
     let OTP = {
-      email: email,
+      emailAddress: email,
       otp: otp.join(""),
+      forgotPasswordLink: forgotPasswordLink
     };
+    // console.log(OTP)
     OTPMutation.mutate(OTP as any);
   };
 

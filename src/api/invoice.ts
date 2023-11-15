@@ -116,3 +116,12 @@ export const deleteInvoice = async ({ token, merchantId, invoiceId }: any) => {
     },
   });
 };
+export const markAsPaid = async ({ token, merchantId, invoiceId }: any) => {
+  return await fetch(`${baseUrl}/api/v1/invoice/mark-invoice-paid/${invoiceId}/${merchantId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

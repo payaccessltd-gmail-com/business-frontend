@@ -11,11 +11,12 @@ import logo from "assets/img/invoice/default.png"
 import { useToast } from "components/ui/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query"
-import { deleteInvoice } from "api/invoice";
+import { deleteInvoice, markAsPaid } from "api/invoice";
 import { useMutation } from "@tanstack/react-query";
 import { getInvoiceDetails } from "api/invoice";
 import { baseImgUrl } from "api/baseUrl"
 import DeletePopup from "./components/delete-popup";
+import MarkAsPaidPopup from "./components/mark-as-paid";
 
 
 
@@ -41,6 +42,7 @@ if (
 export default function GenerateInvoice() {
   const [deleteId, setDeleteId] = useState<string | undefined | null>("")
   const [deletePopup, setPopup] = useState<boolean>(false)
+  const [paidPopup, setPaidPopup] = useState<boolean>(false)
 
   const searchParams = useSearchParams();
   const invoiceIdValue = searchParams?.get("id");
@@ -174,6 +176,56 @@ export default function GenerateInvoice() {
 
   }
 
+  const markAsPaidMutation = useMutation({
+    mutationFn: markAsPaid,
+    onSuccess: async (data: any) => {
+      const responseData: API.InvoiceStatusReponse =
+        (await data.json()) as API.InvoiceStatusReponse;
+
+      if (responseData?.statusCode === "1") {
+        setPaidPopup(false)
+        toast({
+          variant: "destructive",
+          title: "",
+          description: "Error Setting Invoice as Paid",
+        });
+      }
+
+      if (responseData?.statusCode === "0") {
+        setPaidPopup(false)
+        toast({
+          variant: "default",
+          title: "",
+          description: "Invoice Set as Paid",
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        });
+
+      }
+    },
+
+    onError: (e) => {
+      setPaidPopup(false)
+      console.log(e);
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      });
+    },
+  });
+
+  const handlePaid = () => {
+    const requestData = {
+      token,
+      merchantId,
+      invoiceId: fillData?.id?.toString()
+    }
+    // console.log(typeof requestData.invoiceId)
+    markAsPaidMutation.mutate(requestData as any);
+
+  }
+
 
 
   return (
@@ -223,6 +275,7 @@ export default function GenerateInvoice() {
                   Edit
                 </Button>
                 <Button
+                  onClick={() => setPaidPopup(true)}
                   variant={"outline"}
                   className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                 >
@@ -391,6 +444,7 @@ export default function GenerateInvoice() {
         </div>
       </ScrollArea>
       {deletePopup ? <DeletePopup setPopup={setPopup} handleDelete={handleDelete} /> : ""}
+      {paidPopup ? <MarkAsPaidPopup setPaidPopup={setPaidPopup} handlePaid={handlePaid} /> : ""}
     </div>
   );
 }
