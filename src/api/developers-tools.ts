@@ -38,3 +38,44 @@ export const generateNewMerchantKeys = async ({
         body: JSON.stringify(newData),
     });
 };
+
+
+export const getMerchantByCode = async ({ merchantCode, token }: any) => {
+
+    const response = await fetch(`${baseUrl}/api/v1/merchant/get-merchant-details/${merchantCode}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const responseText = await response.text();
+    const data = JSON.parse(responseText);
+    return data;
+};
+
+
+
+
+export const updateMerchantWebhookandCallbackUrl = async ({
+    callbackUrl,
+    webhookUrl,
+    merchantId,
+    token
+}: any) => {
+    const newData = {
+        callbackUrl,
+        webhookUrl,
+        merchantId,
+    };
+    return await fetch(`${baseUrl}/api/v1/developer/update-merchant-callback-webhook`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newData),
+    });
+};

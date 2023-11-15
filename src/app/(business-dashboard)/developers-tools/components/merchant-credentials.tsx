@@ -4,7 +4,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -25,27 +25,34 @@ import { loginApi } from "api/login";
 
 const MerchantCredentialSchema = z.object({
     merchantCode: z.string(),
-    clientId: z.string(),
-    payItemId: z.string(),
+    // clientId: z.string(),
+    // payItemId: z.string(),
 });
 
-export default function MerchantCredentials() {
+export default function MerchantCredentials({ data }: any) {
     const router = useRouter();
     const { toast } = useToast();
-    const apiConfiguration = useForm<z.infer<typeof MerchantCredentialSchema>>({
+    const merchantCredentials = useForm<z.infer<typeof MerchantCredentialSchema>>({
         resolver: zodResolver(MerchantCredentialSchema),
         defaultValues: {
-            merchantCode: "",
-            clientId: "",
-            payItemId: "",
+            merchantCode: data?.merchantCode,
+            // clientId: "",
+            // payItemId: "",
         },
     });
+    // console.log(data?.merchantCode)
+
+
+    useEffect(() => {
+        merchantCredentials.setValue("merchantCode", data?.merchantCode)
+    }, [data?.merchantCode])
+
 
     const handleCopyToClipboard = (e: any) => {
         if (e.target.id === "merchantCode") {
             // Create a temporary input element
             const tempInput = document.createElement("input");
-            tempInput.value = apiConfiguration.getValues("merchantCode");
+            tempInput.value = merchantCredentials.getValues("merchantCode");
             // Append the input element to the DOM (it doesn't need to be visible)
             document.body.appendChild(tempInput);
 
@@ -60,56 +67,57 @@ export default function MerchantCredentials() {
             toast({
                 variant: "default",
                 title: "Copied",
-                description: `${apiConfiguration.getValues("merchantCode")}`,
-                className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
-            });
-        } else if (e.target.id === "clientId") {
-            // Create a temporary input element
-            const tempInput = document.createElement("input");
-            tempInput.value = apiConfiguration.getValues("clientId");
-
-            // Append the input element to the DOM (it doesn't need to be visible)
-            document.body.appendChild(tempInput);
-
-            // Select the text inside the input element
-            tempInput.select();
-
-            // Copy the selected text to the clipboard
-            document.execCommand("copy");
-
-            // Remove the temporary input element
-            document.body.removeChild(tempInput);
-            toast({
-                variant: "default",
-                title: "Copied",
-                description: `${apiConfiguration.getValues("clientId")}`,
+                description: `${merchantCredentials.getValues("merchantCode")}`,
                 className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
             });
         }
+        // else if (e.target.id === "clientId") {
+        //     // Create a temporary input element
+        //     const tempInput = document.createElement("input");
+        //     tempInput.value = merchantCredentials.getValues("clientId");
 
-        else if (e.target.id === "payItemId") {
-            // Create a temporary input element
-            const tempInput = document.createElement("input");
-            tempInput.value = apiConfiguration.getValues("payItemId");
+        //     // Append the input element to the DOM (it doesn't need to be visible)
+        //     document.body.appendChild(tempInput);
 
-            // Append the input element to the DOM (it doesn't need to be visible)
-            document.body.appendChild(tempInput);
+        //     // Select the text inside the input element
+        //     tempInput.select();
 
-            // Select the text inside the input element
-            tempInput.select();
+        //     // Copy the selected text to the clipboard
+        //     document.execCommand("copy");
 
-            // Copy the selected text to the clipboard
-            document.execCommand("copy");
+        //     // Remove the temporary input element
+        //     document.body.removeChild(tempInput);
+        //     toast({
+        //         variant: "default",
+        //         title: "Copied",
+        //         description: `${merchantCredentials.getValues("clientId")}`,
+        //         className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
+        //     });
+        // }
 
-            // Remove the temporary input element
-            document.body.removeChild(tempInput);
-            toast({
-                variant: "default",
-                title: "Copied",
-                description: `${apiConfiguration.getValues("payItemId")}`,
-                className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
-            });
-        }
+        // else if (e.target.id === "payItemId") {
+        //     // Create a temporary input element
+        //     const tempInput = document.createElement("input");
+        //     tempInput.value = merchantCredentials.getValues("payItemId");
+
+        //     // Append the input element to the DOM (it doesn't need to be visible)
+        //     document.body.appendChild(tempInput);
+
+        //     // Select the text inside the input element
+        //     tempInput.select();
+
+        //     // Copy the selected text to the clipboard
+        //     document.execCommand("copy");
+
+        //     // Remove the temporary input element
+        //     document.body.removeChild(tempInput);
+        //     toast({
+        //         variant: "default",
+        //         title: "Copied",
+        //         description: `${merchantCredentials.getValues("payItemId")}`,
+        //         className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
+        //     });
+        // }
 
     };
 
@@ -147,7 +155,7 @@ export default function MerchantCredentials() {
     //             if (typeof window) {
     //                 router.push(`/dashboard`);
     //             }
-    //             apiConfiguration.reset();
+    //             merchantCredentials.reset();
     //         } else {
     //             setLoading(false)
 
@@ -176,9 +184,9 @@ export default function MerchantCredentials() {
     }
 
     return (
-        <Form {...apiConfiguration}>
+        <Form {...merchantCredentials}>
             <form
-                onSubmit={apiConfiguration.handleSubmit(onSubmit)}
+                onSubmit={merchantCredentials.handleSubmit(onSubmit)}
                 className="w-[55%] rounded-[20px] bg-white border-[2px] py-[30px] p-[20px] border-[#EEF8FF] flex flex-col items-center"
             >
 
@@ -193,7 +201,7 @@ export default function MerchantCredentials() {
                 </div>
 
                 <FormField
-                    control={apiConfiguration.control}
+                    control={merchantCredentials.control}
                     name="merchantCode"
                     render={({ field }) => (
                         <FormItem className="w-full">
@@ -204,6 +212,7 @@ export default function MerchantCredentials() {
                                         {...field}
                                         type="text"
                                         placeholder="Copy Link"
+                                        value={data?.merchantCode}
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
                                     />
                                     <LuCopy
@@ -218,8 +227,8 @@ export default function MerchantCredentials() {
                     )}
                 />
 
-                <FormField
-                    control={apiConfiguration.control}
+                {/* <FormField
+                    control={merchantCredentials.control}
                     name="clientId"
                     render={({ field }) => (
                         <FormItem className="w-full mt-[24px]">
@@ -243,9 +252,9 @@ export default function MerchantCredentials() {
                             <FormMessage />
                         </FormItem>
                     )}
-                />
-                <FormField
-                    control={apiConfiguration.control}
+                /> */}
+                {/* <FormField
+                    control={merchantCredentials.control}
                     name="payItemId"
                     render={({ field }) => (
                         <FormItem className="w-full mt-[24px]">
@@ -269,7 +278,7 @@ export default function MerchantCredentials() {
                             <FormMessage />
                         </FormItem>
                     )}
-                />
+                /> */}
 
             </form>
         </Form>
