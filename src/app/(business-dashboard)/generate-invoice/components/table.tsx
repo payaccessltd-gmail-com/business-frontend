@@ -200,9 +200,9 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                             {invoiceStatus === "DELETED" ? "" : <p onClick={() => handleView(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                 View
                                             </p>}
-                                            <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                            {/* <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                 Download
-                                            </p>
+                                            </p> */}
                                             {invoiceStatus === "DELETED" ? "" : <p onClick={() => handleDeletePopup(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                 Delete
                                             </p>}

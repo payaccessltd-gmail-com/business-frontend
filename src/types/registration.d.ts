@@ -38,11 +38,13 @@ declare namespace API {
   };
   type resetPasword = {
     password: string,
-    newPassword: string
+    forgotPasswordLink: string,
+    emailAddress: string
   };
   type OTP = {
-    email: string;
+    emailAddress: string;
     otp: string;
+    forgotPasswordLink: string
 
   };
 
