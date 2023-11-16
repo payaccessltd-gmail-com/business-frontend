@@ -1,5 +1,8 @@
-import { Metadata } from "next";
+"use client"
+
 import { Button } from "components/ui/button"
+import { getMerchantByCode } from "api/developers-tools"
+import { useQuery } from "@tanstack/react-query"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +19,32 @@ import MerchantCredentials from "./components/merchant-credentials";
 import WebHook from "./components/web-hook";
 
 
-export const metadata: Metadata = {
-  title: "Developer",
-  description: "Developer tools",
-};
 
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+let merchantCode: any = ""
+
+if (
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined"
+) {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+  merchantCode = merchantList[0]?.merchantCode
+}
+
+// console.log(merchantCode)
 
 export default function DevelopersTools() {
   const dropOptions = ["Contact us", "Share feedback", "Resolve a complain"]
+  const GetParameters = { merchantCode, token }
+  const data: any = useQuery(['getMerchantByCode', GetParameters], () => getMerchantByCode(GetParameters));
+
+  // console.log(data?.data?.responseObject[0])
 
   return <main className="relative w-full h-full flex flex-col">
     {/* //------------------Support button------------- */}
@@ -51,15 +72,10 @@ export default function DevelopersTools() {
     {/* //------------------Support button end------------- */}
     <p className="text-[#177196] text-[36px] font-[600] leading-normal mb-[40px] mt-[24px]">Developers Tools</p>
     <ScrollArea className="w-full pr-2">
-      <div className="w-full flex flex-col items-center gap-4">
+      <div className="w-full flex flex-col items-center gap-4 pb-20 ">
         <ApiConfiguration />
-        <MerchantCredentials />
-        <WebHook />
-        <Button
-          className="mb-20 rounded-[8px] w-[40%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
-        >
-          Save changes
-        </Button>
+        <MerchantCredentials data={data?.data?.responseObject[0]} />
+        <WebHook data={data?.data?.responseObject[0]} />
       </div>
     </ScrollArea>
 
