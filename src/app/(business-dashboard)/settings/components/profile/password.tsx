@@ -164,7 +164,7 @@ export default function PasswordForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="password"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter password"
                                         {...field}
                                     />
@@ -186,7 +186,7 @@ export default function PasswordForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="password"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter password"
                                         {...field}
                                     />
@@ -209,7 +209,7 @@ export default function PasswordForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="password"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter password"
                                         {...field}
                                     />

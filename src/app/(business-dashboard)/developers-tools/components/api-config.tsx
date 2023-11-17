@@ -210,7 +210,7 @@ export default function ApiConfiguration() {
                             <FormControl className="w-full">
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input
-                                        type="text"
+                                        type="password"
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
                                         placeholder="Copy Link"
                                         {...field}
@@ -242,7 +242,7 @@ export default function ApiConfiguration() {
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input
                                         {...field}
-                                        type="text"
+                                        type="password"
                                         placeholder="Copy Link"
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
                                         value={data?.data?.responseObject?.publicKey}

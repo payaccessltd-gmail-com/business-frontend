@@ -39,7 +39,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
       className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
     });
   };
-  const [link, setLink] = useState("");
+  const [link, setLink] = useState("http://137.184.47.182:3000/invoice");
 
   const reciptData: any[] = [
     {
@@ -57,11 +57,11 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
       title: "Status",
       value: "Pending",
     },
-    {
-      id: 3,
-      title: "Offline reference",
-      value: "TTT989900002377",
-    },
+    // {
+    //   id: 3,
+    //   title: "Offline reference",
+    //   value: "TTT989900002377",
+    // },
   ];
 
 

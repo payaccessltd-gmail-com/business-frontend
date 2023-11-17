@@ -158,7 +158,7 @@ export default function AccountInfoForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="number"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter BVN"
                                         {...field}
                                         onChange={(event) =>
@@ -186,7 +186,7 @@ export default function AccountInfoForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="number"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter account number"
                                         {...field}
                                         onChange={(event) =>
@@ -211,7 +211,7 @@ export default function AccountInfoForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter Bank Name"
                                         {...field}
                                     />
@@ -233,7 +233,7 @@ export default function AccountInfoForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder="Enter Account Name"
                                         {...field}
                                     />
