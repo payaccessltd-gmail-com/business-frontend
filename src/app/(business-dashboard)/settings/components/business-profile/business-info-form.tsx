@@ -178,7 +178,7 @@ export default function BusinessInfoForm() {
                                     <Input
                                         disabled
                                         type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder={merchantList[0]?.businessName}
                                         {...field}
                                     />
@@ -201,7 +201,7 @@ export default function BusinessInfoForm() {
                                 <FormControl>
                                     <Textarea
                                         placeholder={prefill?.businessDescription}
-                                        className="resize-none border-[#D6D6D6] rounded-[10px] min-h-[88px] shadow-none bg-white w-[307px] p-2 "
+                                        className="resize-none border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         {...field}
                                     />
                                 </FormControl>
@@ -223,7 +223,7 @@ export default function BusinessInfoForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="email"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder={prefill?.businessEmail}
                                         {...field}
                                     />
@@ -249,7 +249,7 @@ export default function BusinessInfoForm() {
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
-                                            <SelectTrigger className="rounded-[10px] min-h-[56px] bg-[#F2FAFD] border-none w-[84px]">
+                                            <SelectTrigger className="rounded-[6px] min-h-[46px] bg-[#F2FAFD] border-none w-[84px]">
                                                 <SelectValue
                                                     defaultValue={field.value}
                                                     placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1] || "+234"}`}
@@ -279,7 +279,7 @@ export default function BusinessInfoForm() {
                                         type="tel"
                                         pattern="[0-9]*"
                                         title="Input is only number"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[56px] shadow-none bg-white w-full p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                         placeholder={prefill?.primaryMobile?.split(")")[1]}
                                         {...field}
                                     />
@@ -303,7 +303,7 @@ export default function BusinessInfoForm() {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
+                                        <SelectTrigger className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2">
                                             <SelectValue
                                                 defaultValue={field.value}
                                                 placeholder="Country"
@@ -337,7 +337,7 @@ export default function BusinessInfoForm() {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
+                                        <SelectTrigger className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2">
                                             <SelectValue
                                                 defaultValue={field.value}
                                                 placeholder={prefill?.businessState}
@@ -370,7 +370,7 @@ export default function BusinessInfoForm() {
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
                                         placeholder={prefill?.businessWebsite}
                                         {...field}
                                     />

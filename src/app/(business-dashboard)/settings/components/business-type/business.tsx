@@ -95,7 +95,7 @@ export default function BusinessType() {
 
     return (
         <div className="flex flex-col items-start gap-4 w-[55%]">
-            <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Business type</p>
+            <p className="self-center text-[#0C394B] text-[16px] leading-[150%] font-[600]">Business type</p>
             {data?.data?.responseObject[0]?.businessType ? <RadioGroup
                 defaultValue={data?.data?.responseObject[0]?.businessType}
                 className='p-9 w-full flex flex-col items-start gap-6 rounded-[10px] bg-white shadow-[0px_4px_8px_0px_rgba(241,241,241,0.99)]'

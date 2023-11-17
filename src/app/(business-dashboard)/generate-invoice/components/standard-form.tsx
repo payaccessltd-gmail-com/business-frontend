@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -32,7 +32,7 @@ import { format } from "date-fns";
 import { cn } from "lib/utils";
 import { Calendar } from "components/ui/calendar";
 import { HiOutlineCloudUpload } from "react-icons/hi";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiMinus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import {
@@ -100,16 +100,43 @@ export default function StandardForm() {
   const router = useRouter();
   const [popup, setPopup] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [inputField, setInputField] = useState<any[]>([
+  const [inputField, setInputField] = useState<any[] | undefined>([
     { label: "Customer Email" },
   ]);
-  const [invoiceItem, setInvoiceItem] = useState<any[]>([""]);
+  const [minusField, setMinusField] = useState<any[] | undefined>()
+
+  const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""]);
+  const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
   const [date, setDate] = useState<Date>();
   const [modalData, setModalData] = useState<any>("");
 
+
+  useEffect(() => {
+    if (minusField === undefined || minusField.length < 1) {
+      console.log("blocked at use effect")
+      return
+    } else {
+      setInputField(minusField)
+      // console.log(inputField)
+    }
+
+
+  }, [minusField])
+
+  useEffect(() => {
+    if (minusInvoice === undefined || minusInvoice.length < 1) {
+      console.log("blocked at use effect")
+      return
+    } else {
+      setInvoiceItem(minusInvoice)
+      // console.log(inputField)
+    }
+
+
+  }, [minusInvoice])
 
 
 
@@ -170,16 +197,40 @@ export default function StandardForm() {
   };
 
   const addEmail = () => {
-    if (inputField.length === 3) {
+    if (inputField?.length === 3) {
       return;
     }
-    setInputField([...inputField, { label: "" }]);
+    setInputField([...inputField as any, { label: "" }]);
   };
-  const addInvoiceItem = () => {
-    if (invoiceItem.length === 3) {
+
+  const subtractInputField = () => {
+    if (inputField?.length === 1) {
+      console.log("blocked")
       return;
     }
-    setInvoiceItem([...invoiceItem, ""]);
+    const newfieldValues = inputField
+    // console.log(newfieldValues?.slice(0, -1))
+    setMinusField(newfieldValues?.slice(0, -1));
+  };
+
+
+
+
+  const addInvoiceItem = () => {
+    if (invoiceItem?.length === 3) {
+      return;
+    }
+    setInvoiceItem([...invoiceItem as any, ""]);
+  };
+
+  const subtractInvoiceItem = () => {
+    if (invoiceItem?.length === 1) {
+      console.log("blocked")
+      return;
+    }
+    const newfieldValues = invoiceItem
+    // console.log(newfieldValues?.slice(0, -1))
+    setMinusInvoice(newfieldValues?.slice(0, -1));
   };
 
   const standardFormMutation = useMutation({
@@ -339,7 +390,7 @@ export default function StandardForm() {
             </FormItem>
           )}
         />
-        {inputField.map(({ label }, id) => {
+        {inputField?.map(({ label }, id) => {
           const nameString: any = `email${id + 1}`;
           return (
             <FormField
@@ -369,15 +420,25 @@ export default function StandardForm() {
             />
           );
         })}
-        <p
-          onClick={() => addEmail()}
-          className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-        >
-          <FiPlus className="text-[#1D8EBB] text-[24px]" />
-          Add additional email address
-        </p>
 
-        {invoiceItem.map((value, id) => {
+
+        <div className="flex flex-row items-center justify-between w-full">
+          <p
+            onClick={() => addEmail()}
+            className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+          >
+            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+            Add additional email address
+          </p>
+
+          {inputField?.length === 1 ? "" : <FiMinus
+            onClick={() => subtractInputField()}
+            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+          />}
+
+        </div>
+
+        {invoiceItem?.map((value, id) => {
           let invoiceItemNameString: any = `invoiceItem${id + 1}`;
           let qtyNameString: any = `qty${id + 1}`;
           let costPerUnitNameString: any = `costPerUnit${id + 1}`;
@@ -458,13 +519,23 @@ export default function StandardForm() {
           );
         })}
 
-        <p
-          onClick={() => addInvoiceItem()}
-          className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-        >
-          <FiPlus className="text-[#1D8EBB] text-[24px]" />
-          Add additional items
-        </p>
+
+
+        <div className="flex flex-row items-center justify-between w-full">
+          <p
+            onClick={() => addInvoiceItem()}
+            className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+          >
+            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+            Add additional items
+          </p>
+
+          {invoiceItem?.length === 1 ? "" : <FiMinus
+            onClick={() => subtractInvoiceItem()}
+            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+          />}
+
+        </div>
 
         <FormField
           control={standardForm.control}
