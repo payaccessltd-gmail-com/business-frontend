@@ -28,8 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
-import { Typography } from "components/ui/Typography";
+
 import { useToast } from "components/ui/use-toast";
+import { useHydrateStore, useMerchantStore } from "store";
 
 import { logoPath } from "lib/constants";
 
@@ -38,36 +39,35 @@ import { logoPath } from "lib/constants";
 //   description: "Business page as it should be",
 // }
 
-const merchantRegFormSchema = zod.object({
+const locationRegFormSchema = zod.object({
   country: zod.string(),
-  firstName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-
-  emailAddress: zod.string().email({ message: "Invalid email address" }),
-  password: zod.string().min(2, {
-    message: "",
-  }),
-  phoneNo: zod.string(),
-  businessName: zod.string(),
-  businessType: zod.string(),
-  businessCategory: zod.string(),
-  isSoftwareDeveloper: zod.string(),
+  merchantId: zod.number(),
 });
 
 export default function RegistrationPage() {
-  const { toast } = useToast();
+  let token = "";
   const router = useRouter();
-  const merchantRegForm = useForm<zod.infer<typeof merchantRegFormSchema>>({
-    defaultValues: {},
-    resolver: zodResolver(merchantRegFormSchema),
+  const { toast } = useToast();
+  const currentMerchant = useHydrateStore(
+    useMerchantStore,
+    (state) => state.currentMerchant,
+  );
+
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    token = localStorage.getItem("token") as string;
+  }
+
+  const locationRegForm = useForm<zod.infer<typeof locationRegFormSchema>>({
+    defaultValues: { merchantId: 0, country: "" },
+    resolver: zodResolver(locationRegFormSchema),
   });
 
-  const merchantRegMutation = useMutation({
-    mutationFn: updateMerchantLocation,
+  const locationRegMutation = useMutation({
+    mutationFn: (values: API.UpdateLocationDTO) =>
+      updateMerchantLocation(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
@@ -78,55 +78,64 @@ export default function RegistrationPage() {
           title: "",
           description: responseData?.message,
         });
-      }
+      } else if (responseData?.statusCode === "0" && typeof window) {
+        locationRegForm.reset();
+        router.push("/dashboard/update-about-business/page-three");
 
-      if (responseData?.statusCode === "0") {
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
         });
-        if (typeof window) {
-          router.push(
-            `/email-verification?email=${merchantRegForm.getValues(
-              "emailAddress",
-            )}&activationToken=${responseData?.responseObject}`,
-          );
-        }
-
-        merchantRegForm.reset();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
     },
 
-    onError: () => {
-      return null;
+    onError: (e: any) => {
+      toast({
+        variant: "destructive",
+        title: "",
+        description: e.error as string,
+      });
     },
   });
 
-  function onSubmit(values: zod.infer<typeof merchantRegFormSchema>) {
-    merchantRegMutation.mutate(values as any);
+  function onSubmit(values: zod.infer<typeof locationRegFormSchema>) {
+    locationRegMutation.mutate(values);
   }
 
   return (
-    <main className="flex flex-col items-center justify-center bg-transparent">
+    <div className="flex flex-col items-center justify-center bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent ">
-        <Form {...merchantRegForm}>
+        <Form {...locationRegForm}>
           <form
-            onSubmit={merchantRegForm.handleSubmit(onSubmit)}
+            onSubmit={locationRegForm.handleSubmit(onSubmit)}
             className="w-full space-y-12"
           >
             <div className="px-6 space-y-8">
               <FormField
                 name="country"
-                control={merchantRegForm.control}
+                control={locationRegForm.control}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-normal text-gray-50">
                       Country
                     </FormLabel>
                     <Select
-                      onValueChange={field.onChange}
                       defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        locationRegForm.setValue(
+                          "merchantId",
+                          currentMerchant?.id as number,
+                          { shouldDirty: true },
+                        );
+                      }}
                     >
                       <FormControl className="px-3 py-6 mt-20 shadow-none border-gray-20">
                         <SelectTrigger>
@@ -155,12 +164,13 @@ export default function RegistrationPage() {
               />
 
               <FormField
-                control={merchantRegForm.control}
-                name="phoneNo"
+                control={locationRegForm.control}
+                name="merchantId"
+                defaultValue={currentMerchant?.id}
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem className="hidden w-full">
                     <FormLabel className="text-sm font-normal text-gray-50">
-                      Phone Number
+                      Merchant ID
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -178,7 +188,7 @@ export default function RegistrationPage() {
             </div>
 
             <Button
-              disabled={merchantRegMutation.isLoading}
+              disabled={locationRegMutation.isLoading}
               className="flex self-center w-56 mx-auto font-bold"
               type="submit"
               size="lg"
@@ -188,6 +198,6 @@ export default function RegistrationPage() {
           </form>
         </Form>
       </div>
-    </main>
+    </div>
   );
 }

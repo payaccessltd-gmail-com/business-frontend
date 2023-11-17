@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,9 @@ import {
   FormMessage,
 } from "components/ui/form";
 import { Input } from "components/ui/input";
-
+import { useToast } from "components/ui/use-toast";
+import { updateMerchantBusinessBankAccountData } from "api/merchant-management";
+import { useHydrateStore, useMerchantStore, useUserStore } from "store";
 import {
   Select,
   SelectContent,
@@ -26,8 +28,13 @@ import {
   SelectValue,
 } from "components/ui/select";
 
+type AccountInfoFormProps = {
+  prevStep?: () => void;
+  nextStep?: () => void;
+};
+
 const accInfoFormSchema = zod.object({
-  emailAddress: zod.string().email(),
+  merchantId: zod.number(),
   businessBvn: zod.string(),
   businessBankName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -41,36 +48,109 @@ const accInfoFormSchema = zod.object({
   }),
 });
 
-export default function AccountInformationForm() {
+export default function AccountInformationForm(props: AccountInfoFormProps) {
+  let token = "";
+
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    token = localStorage.getItem("token") as string;
+  }
+  const { toast } = useToast();
+  const currentMerchant = useHydrateStore(
+    useMerchantStore,
+    (state) => state.currentMerchant,
+  );
+
   const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(accInfoFormSchema),
   });
 
-  // const updateBusinessBankDataMutation = useMutation({
-  //   mutationFn: updateBusinessBankData,
-  //   onSuccess: (data, variables, context) => {
-  //     console.log({ data, variables, context });
-  //   },
+  const updateMerchantBusinessBankAccountMutation = useMutation({
+    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) =>
+      updateMerchantBusinessBankAccountData(values, token),
+    onSuccess: async (data) => {
+      const responseData: API.StatusReponse =
+        (await data.json()) as API.StatusReponse;
 
-  //   onError: (error, variables, context) => {
-  //     console.log({ error, variables, context });
-  //   },
-  //   onMutate: () => {
-  //     return null;
-  //   },
-  // });
+      if (responseData?.statusCode === "1") {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
+      } else if (responseData?.statusCode === "0" && typeof window) {
+        acctInfoForm.reset();
 
-  // const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-  //   updateBusinessBankDataMutation.mutate(values);
-  // };
+        props.nextStep && props.nextStep();
+
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
+      }
+    },
+
+    onError: (e: any) => {
+      toast({
+        variant: "destructive",
+        title: "",
+        description: e,
+      });
+    },
+  });
+
+  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
+    updateMerchantBusinessBankAccountMutation.mutate(values);
+  };
+
+  useEffect(() => {
+    if (currentMerchant?.id) {
+      acctInfoForm.setValue("merchantId", currentMerchant?.id);
+    }
+  }, [currentMerchant?.id]);
 
   return (
     <Form {...acctInfoForm}>
       <form
-        // onSubmit={acctInfoForm.handleSubmit(onSubmit)}
+        onSubmit={acctInfoForm.handleSubmit(onSubmit)}
         className="flex flex-col space-y-8"
       >
+        {/* merchant id field is hidden but it's value is sent to the api */}
+        <FormField
+          control={acctInfoForm.control}
+          disabled={true}
+          name="merchantId"
+          defaultValue={currentMerchant?.id}
+          render={({ field }) => (
+            <FormItem className="hidden w-full">
+              <FormLabel className="text-sm font-normal text-gray-50">
+                Merchant ID
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  icon="show"
+                  className="min-h-[48px]"
+                  placeholder="Enter phone number"
+                  {...field}
+                  value={currentMerchant?.id}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           name="businessBvn"
           control={acctInfoForm.control}
@@ -145,7 +225,8 @@ export default function AccountInformationForm() {
         />
 
         <Button
-          className="h-[48px] w-[70%] self-center"
+          disabled={updateMerchantBusinessBankAccountMutation.isLoading}
+          className="w-56 h-12 p-2.5 rounded-lg justify-center items-center gap-2.5 inline-flex text-white text-sm font-bold mx-auto"
           type="submit"
           size="default"
         >
