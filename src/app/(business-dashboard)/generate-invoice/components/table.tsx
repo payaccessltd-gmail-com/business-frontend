@@ -54,8 +54,13 @@ if (
 
 
 const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => {
-    const { toast } = useToast();
 
+    console.log("rowperpage: ", row)
+    console.log("page: ", page)
+    console.log("available row per page: ", invoiceTableData?.list?.length)
+    // console.log(invoiceTableData)
+
+    const { toast } = useToast();
     const [deleteId, setDeleteId] = useState<string | undefined | null>("")
     const [deletePopup, setPopup] = useState<boolean>(false)
     const heading = ["Amount", "Customer Name", "Invoice No.", "Status", "Date"]
@@ -239,7 +244,9 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                         </SelectContent>
                     </Select>
                 </div>
-                <p className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-[70px] flex flex-row items-center'>{`${invoiceTableData?.list[0]?.id}-${invoiceTableData?.list[invoiceTableData?.list.length - 1]?.id} of ${invoiceTableData?.totalCount}`}</p>
+                <p className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-[70px] flex flex-row items-center'>
+                    {`${(((Number(page) + 1) - 1) * Number(row)) + 1}-${(Number(page) + 1) * Number(invoiceTableData?.list?.length)} of ${invoiceTableData?.totalCount}`}
+                </p>
                 <div className='flex flex-row items-center gap-12 w-[90px]'>
                     <LuChevronLeft onClick={() => handlePageNumber("prev")} className="text-[24px] text-[#AAB7C6] cursor-pointer" />
                     <LuChevronRight onClick={() => handlePageNumber("next")} className="text-[24px] text-[#AAB7C6] cursor-pointer" />

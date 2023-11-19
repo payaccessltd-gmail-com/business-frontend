@@ -49,8 +49,10 @@ export const standardInvoice = async ({
   token,
   subject,
   merchantId,
-  invoiceStatus
-}: API.StandardInvoice) => {
+  invoiceStatus,
+  shippingFee,
+  customerEmail,
+}: any) => {
   const newData = {
     customerName,
     additionalCustomerEmailAddress,
@@ -62,8 +64,10 @@ export const standardInvoice = async ({
     discountAmount,
     invoiceBreakdownList,
     invoiceStatus,
+    shippingFee,
     merchantId: merchantId,
-    customerEmail: subject,
+    // customerEmail: subject,
+    customerEmail
   };
   return await fetch(`${baseUrl}/api/v1/invoice/create-standard-invoice`, {
     method: "POST",
@@ -107,6 +111,21 @@ export const getInvoiceDetails = async ({ token, merchantId, invoiceId }: any) =
   const data = JSON.parse(responseText);
   return data;
 };
+export const getInvoiceBreakdown = async ({ token, merchantId, invoiceId }: any) => {
+  const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-breakdown/${merchantId}/${invoiceId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
+};
 export const deleteInvoice = async ({ token, merchantId, invoiceId }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/delete-invoice/${invoiceId}/${merchantId}`, {
     method: "GET",
@@ -123,5 +142,31 @@ export const markAsPaid = async ({ token, merchantId, invoiceId }: any) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
+  });
+};
+
+
+export const filterInvoices = async ({
+  invoiceStatus,
+  emailAddress,
+  startDate,
+  endDate,
+  merchantId,
+  token
+}: any) => {
+  const newData = {
+    invoiceStatus,
+    emailAddress,
+    startDate,
+    endDate,
+    merchantId,
+  };
+  return await fetch(`${baseUrl}/api/v1/invoice/filter-invoice`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(newData),
   });
 };

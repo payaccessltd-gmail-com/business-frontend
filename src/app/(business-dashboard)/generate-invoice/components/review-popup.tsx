@@ -14,7 +14,7 @@ import { useToast } from "components/ui/use-toast";
 
 const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
   const { toast } = useToast();
-  console.log("popup: ", modalData)
+  // console.log("popup: ", modalData)
   return (
     <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
       <ScrollArea className="w-full h-full">

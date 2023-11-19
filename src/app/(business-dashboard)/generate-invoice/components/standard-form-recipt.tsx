@@ -14,7 +14,7 @@ import { useToast } from "components/ui/use-toast";
 
 const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft }: any) => {
   const { toast } = useToast();
-  console.log("from standard: ", modalData)
+  // console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");
@@ -50,7 +50,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
     {
       id: 1,
       title: "Amount",
-      value: `NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`,
+      value: `NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`,
 
     },
     {
@@ -85,7 +85,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
               </p>
 
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`}
+                {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`}
 
               </p>
             </div>
@@ -150,7 +150,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Discount
                   </p>
                   <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    {`-NGN ${modalData.discount}`}
+                    {`NGN ${modalData.discount}`}
                   </p>
                 </div>
               </div>
