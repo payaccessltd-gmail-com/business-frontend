@@ -31,6 +31,7 @@ import {
 } from "components/ui/select";
 
 import { useToast } from "components/ui/use-toast";
+import { useHydrateStore, useMerchantStore } from "store";
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -42,24 +43,39 @@ const businessProfileFormSchema = zod.object({
   businessType: zod.string(),
   softwareDeveloper: zod.string(),
   mobileNumber: zod.string(),
-  merchantId: zod.string(),
+  merchantId: zod.number(),
   policy: zod.boolean(),
 });
 
 export default function BusinessProfileUpdate() {
+  let token = "";
+
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    token = localStorage.getItem("token") as string;
+  }
+
   const router = useRouter();
   const { toast } = useToast();
+  const currentMerchant = useHydrateStore(
+    useMerchantStore,
+    (state) => state.currentMerchant,
+  );
   const businessProfileForm = useForm<
     zod.infer<typeof businessProfileFormSchema>
   >({
     defaultValues: {
       softwareDeveloper: "",
+      merchantId: 0,
     },
     resolver: zodResolver(businessProfileFormSchema),
   });
 
   const businessProfileMutation = useMutation({
-    mutationFn: updateAboutBusiness,
+    mutationFn: (values: API.UpdateAboutBusinessDTO) =>
+      updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
@@ -70,23 +86,30 @@ export default function BusinessProfileUpdate() {
           title: "",
           description: responseData?.message,
         });
-      }
+      } else if (responseData?.statusCode === "0" && typeof window) {
+        businessProfileForm.reset();
+        router.push("/dashboard/update-about-business/page-two");
 
-      if (responseData?.statusCode === "0") {
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
         });
-        if (typeof window) {
-        }
-
-        businessProfileForm.reset();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
       }
     },
 
-    onError: () => {
-      return null;
+    onError: (e: any) => {
+      toast({
+        variant: "destructive",
+        title: "",
+        description: e,
+      });
     },
   });
 
@@ -112,8 +135,15 @@ export default function BusinessProfileUpdate() {
                       Business category
                     </FormLabel>
                     <Select
-                      onValueChange={field.onChange}
                       defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        businessProfileForm.setValue(
+                          "merchantId",
+                          currentMerchant?.id as number,
+                          { shouldDirty: true },
+                        );
+                      }}
                     >
                       <FormControl className="px-3 py-6 mt-20 shadow-none border-gray-20">
                         <SelectTrigger>
@@ -138,6 +168,29 @@ export default function BusinessProfileUpdate() {
                   <FormItem className="w-full">
                     <FormLabel className="text-sm font-normal text-gray-50">
                       Phone Number
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        icon="show"
+                        className="min-h-[48px]"
+                        placeholder="Enter phone number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={businessProfileForm.control}
+                name="merchantId"
+                defaultValue={currentMerchant?.id}
+                render={({ field }) => (
+                  <FormItem className="hidden w-full">
+                    <FormLabel className="text-sm font-normal text-gray-50">
+                      Merchant ID
                     </FormLabel>
                     <FormControl>
                       <Input

@@ -8,9 +8,13 @@ import InformationFrame from "./information-frame";
 import PersonalInformationForm from "./personal-information-form";
 import AccountInformationForm from "./account-information-form";
 import BusinessInformationForm from "./business-information-form";
-type Props = {};
 
-export default function ApprovalDescription({}: Props) {
+type ApprovalFormProps = {
+  prevStep?: () => void;
+  nextStep?: () => void;
+};
+
+export default function ApprovalDescription(props: ApprovalFormProps) {
   return (
     <div>
       <ReviewDetails />

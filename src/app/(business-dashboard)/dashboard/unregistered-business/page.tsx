@@ -5,7 +5,7 @@ import StepperForm from "./components/stepper-form";
 
 function page() {
   return (
-    <div className="pb-5">
+    <div className="h-full pb-5 bg-transparent">
       <div className="mb-10 space-y-2">
         <Typography
           level="h3"

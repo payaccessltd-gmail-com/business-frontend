@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import { LuChevronLeft } from "react-icons/lu";
+import Link from "next/link";
 
 import Logo from "assets/img/payaccess-logo.png";
 import { Button } from "components/ui/button";
 import { Typography } from "components/ui/Typography";
+import { BackButton } from "app/_components/back-button";
 
 export const metadata: Metadata = {
   title: "Registeration",
@@ -24,17 +25,14 @@ export default function SelectBusinessProfileLayout({
         <div className="w-full space-y-10 mb-14">
           <Image className="inline-block" src={Logo} alt={"logo"} />
           <div className="flex flex-row items-center justify-between">
-            <span className="flex cursor-pointer flex-row items-center gap-[7px] text-[14px] font-[400] leading-[145%] text-black">
-              <LuChevronLeft className="text-[24px] text-black" />
-              Back
-            </span>
+            <BackButton position="static" />
 
-            <Button
-              variant="ghost"
+            <Link
               className="inline-block text-base font-bold leading-5 text-primary-70"
+              href={"/dashboard/unregistered-business"}
             >
-              Skip
-            </Button>
+              skip
+            </Link>
           </div>
         </div>
 

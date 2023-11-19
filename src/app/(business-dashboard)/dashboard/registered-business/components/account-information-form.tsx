@@ -27,7 +27,7 @@ import {
 } from "components/ui/select";
 
 const accInfoFormSchema = zod.object({
-  merchantId: zod.string(),
+  merchantId: zod.number(),
   emailAddress: zod.string().email(),
   businessBvn: zod.string(),
   businessBankName: zod.string().min(2, {
@@ -43,13 +43,22 @@ const accInfoFormSchema = zod.object({
 });
 
 export default function AccountInformationForm() {
+  let token = "";
   const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(accInfoFormSchema),
   });
 
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    token = localStorage.getItem("token") as string;
+  }
+
   const updateBusinessBankDataMutation = useMutation({
-    mutationFn: updateMerchantBusinessBankAccountData,
+    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) =>
+      updateMerchantBusinessBankAccountData(values, token),
     onSuccess: (data, variables, context) => {
       console.log({ data, variables, context });
     },
