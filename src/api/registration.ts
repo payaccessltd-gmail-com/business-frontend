@@ -43,7 +43,7 @@ export const forgetPassword = async (
 };
 
 export const OTP = async (OTPBody: API.OTP) => {
-  return await fetch(`${baseUrl}/api/v1/auth/otp-validate`, {
+  return await fetch(`${baseUrl}/api/v1/user/update-forgot-password`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export const OTP = async (OTPBody: API.OTP) => {
   });
 };
 export const resetPassword = async (resetPasswordBody: API.resetPasword) => {
-  return await fetch(`${baseUrl}/api/v1/user/update-user-password`, {
+  return await fetch(`${baseUrl}/api/v1/user/set-password`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

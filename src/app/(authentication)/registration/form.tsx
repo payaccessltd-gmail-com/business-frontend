@@ -29,17 +29,30 @@ import { createNewUser } from "../../../api/registration";
 const RegistrationSchema = z.object({
   firstName: z
     .string()
-    .min(2, "first name must contain more than 2 characters"),
-  lastName: z.string().min(2, "last name must contain more than 2 characters"),
+    .refine((value) => /^[A-Za-z]+$/.test(value), {
+      message: 'Only alphabetic characters are allowed.',
+    }),
+  lastName: z.string().refine((value) => /^[A-Za-z]+$/.test(value), {
+    message: 'Only alphabetic characters are allowed.',
+  }),
   emailAddress: z.string().email(),
   businessName: z
     .string()
     .min(2, "business name must contain more than 2 characters"),
   password: z
-    .string()
-    .min(2, "Password must contain more than 2 characters")
-    .max(8, "Password must not be above 8 characters"),
-  agreement: z.boolean().default(false).optional(),
+    .string().refine((value) => value.length >= 6 && value.length <= 40, {
+      message: 'Password must be between 6 and 40 characters',
+    })
+    .refine((value) => /[0-9]/.test(value), {
+      message: 'Password must contain at least one number',
+    })
+    .refine((value) => /[a-zA-Z]/.test(value), {
+      message: 'Password must contain at least one alphabet character',
+    })
+    .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
+      message: 'Password must contain at least one special character',
+    }),
+  agreement: z.boolean(),
 });
 
 export default function RegistrationForm() {
@@ -54,7 +67,7 @@ export default function RegistrationForm() {
     resolver: zodResolver(RegistrationSchema),
     defaultValues: {
       password: "",
-      agreement: false,
+      agreement: undefined,
     },
   });
   const { formState } = useForm();
@@ -67,6 +80,8 @@ export default function RegistrationForm() {
         (await data.json()) as API.CreateAccountResponse;
 
       if (responseData?.statusCode === "1") {
+        setLoading(false)
+
         toast({
           variant: "destructive",
           title: "",
@@ -75,6 +90,7 @@ export default function RegistrationForm() {
       }
 
       if (responseData?.statusCode === "0") {
+        setLoading(false)
         toast({
           variant: "default",
           title: "",
@@ -95,6 +111,8 @@ export default function RegistrationForm() {
     },
 
     onError: (e) => {
+      setLoading(false)
+
       console.log(e);
       toast({
         variant: "destructive",
@@ -105,6 +123,7 @@ export default function RegistrationForm() {
   });
 
   async function onSubmit(values: z.infer<typeof RegistrationSchema>) {
+    setLoading(true)
     userRegMutation.mutate(values);
   }
 

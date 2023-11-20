@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -22,7 +22,7 @@ import { format } from "date-fns";
 import { cn } from "lib/utils";
 import { Calendar } from "components/ui/calendar";
 import { HiOutlineCloudUpload } from "react-icons/hi";
-import { FiPlus } from "react-icons/fi";
+import { FiMinus, FiPlus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import SimpleRecipt from "./simple-form-recipt";
@@ -71,12 +71,23 @@ export default function SimpleForm() {
     const [popup, setPopup] = useState(false);
     const [modalData, setModalData] = useState<any>("");
     // const [loading, setLoading] = useState(false);
-    const [inputField, setInputField] = useState<any[]>([
+    const [inputField, setInputField] = useState<any[] | undefined>([
         { label: "Customer Email" },
     ]);
+    const [minusField, setMinusField] = useState<any[] | undefined>()
 
 
+    useEffect(() => {
+        if (minusField === undefined || minusField.length < 1) {
+            console.log("blocked at use effect")
+            return
+        } else {
+            setInputField(minusField)
+            console.log(inputField)
+        }
 
+
+    }, [minusField])
 
     let simpleForm = useForm<z.infer<typeof SimpleSchema>>({
         resolver: zodResolver(SimpleSchema),
@@ -121,10 +132,19 @@ export default function SimpleForm() {
         setReceipt((value) => !value);
     };
     const addInputField = () => {
-        if (inputField.length === 3) {
+        if (inputField?.length === 3) {
             return;
         }
-        setInputField([...inputField, { label: "" }]);
+        setInputField([...inputField as any, { label: "" }]);
+    };
+    const subtractInputField = () => {
+        if (inputField?.length === 1) {
+            console.log("blocked")
+            return;
+        }
+        const newfieldValues = inputField
+        console.log(newfieldValues?.slice(0, -1))
+        setMinusField(newfieldValues?.slice(0, -1));
     };
     const simpleFormMutation = useMutation({
         mutationFn: simpleInvoice,
@@ -175,14 +195,51 @@ export default function SimpleForm() {
             ]?.toString(),
             token: token,
             subject: subject,
-            merchantId: merchantId
+            merchantId: merchantId,
+            invoiceStatus: "PENDING"
         };
         console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
     }
+
+    const handleDraft = (e: any) => {
+        e.preventDefault();
+        if (simpleForm.getValues("dueDate") === undefined) {
+            toast({
+                variant: "destructive",
+                title: "Due Date required",
+                description: "Provide a due date",
+            });
+            return
+        }
+        const values = simpleForm.getValues()
+        let newValues = {
+            ...values,
+            amount: values?.amount?.toString(),
+            dueDate: values?.dueDate?.toISOString().split("T")[0],
+            additionalCustomerEmailAddress: [
+                values?.email1,
+                values?.email2,
+                values?.email3,
+            ]?.toString(),
+            token: token,
+            subject: subject,
+            merchantId: merchantId,
+            invoiceStatus: "DRAFT"
+        };
+        // console.log(newValues);
+        simpleFormMutation.mutate(newValues as any);
+
+    }
+
+
     const modalRef = useRef<any>();
+    const modalRef4 = useRef<any>();
     const handleModalSubmit = () => {
         modalRef.current.click()
+    }
+    const handleModalDraftSubmit = () => {
+        modalRef4.current.click()
     }
 
 
@@ -212,7 +269,7 @@ export default function SimpleForm() {
                         </FormItem>
                     )}
                 />
-                {inputField.map(({ label }, id) => {
+                {inputField?.map(({ label }, id) => {
                     const nameString: any = `email${id + 1}`;
                     return (
                         <FormField
@@ -239,13 +296,22 @@ export default function SimpleForm() {
                         />
                     );
                 })}
-                <p
-                    onClick={() => addInputField()}
-                    className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-                >
-                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
-                    Add additional email address
-                </p>
+                <div className="flex flex-row items-center justify-between w-full">
+                    <p
+                        onClick={() => addInputField()}
+                        className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+                    >
+                        <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                        Add additional email address
+                    </p>
+
+                    {inputField?.length === 1 ? "" : <FiMinus
+                        onClick={() => subtractInputField()}
+                        className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+                    />}
+
+                </div>
+
                 <FormField
                     control={simpleForm.control}
                     name="dueDate"
@@ -301,6 +367,7 @@ export default function SimpleForm() {
                                     className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                                     placeholder="0.00"
                                     {...field}
+                                    onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                                     onChange={(event) =>
                                         field.onChange(Number(event.target.value))
                                     }
@@ -373,6 +440,7 @@ export default function SimpleForm() {
                     // disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                     type="submit"
+                    onClick={(e) => handleDraft(e)}
                 >
                     Save as Draft
                 </Button>
@@ -382,7 +450,16 @@ export default function SimpleForm() {
                     type="submit"
                     ref={modalRef}
                 >
-                    Save as Draft
+
+                </Button>
+                <Button
+                    variant={"outline"}
+                    className="hidden"
+                    type="submit"
+                    onClick={(e) => handleDraft(e)}
+                    ref={modalRef4}
+                >
+
                 </Button>
             </form>
             {receipt ? (
@@ -391,6 +468,7 @@ export default function SimpleForm() {
                     setReceipt={setReceipt}
                     setPopup={setPopup}
                     modalData={modalData}
+                    handleModalDraftSubmit={handleModalDraftSubmit}
                 />
             ) : (
                 null

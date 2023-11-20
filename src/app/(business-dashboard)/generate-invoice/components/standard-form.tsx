@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -32,7 +32,7 @@ import { format } from "date-fns";
 import { cn } from "lib/utils";
 import { Calendar } from "components/ui/calendar";
 import { HiOutlineCloudUpload } from "react-icons/hi";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiMinus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import {
@@ -45,26 +45,20 @@ import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { standardInvoice } from "../../../../api/invoice";
 
-
-
-let merchantList: any
-let token = ""
-let subject = ""
-let merchantId: any = ""
-
+let merchantList: any;
+let token = "";
+let subject = "";
+let merchantId: any = "";
 
 if (
   typeof window !== "undefined" &&
   typeof window.localStorage !== "undefined"
 ) {
-  token = window.localStorage.getItem("token") as any
-  subject = window.localStorage.getItem("subject") as any
-  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
-  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+  token = window.localStorage.getItem("token") as any;
+  subject = window.localStorage.getItem("subject") as any;
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any);
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null;
 }
-
-
-
 
 const StandardSchema = z.object({
   customerName: z
@@ -82,7 +76,7 @@ const StandardSchema = z.object({
   invoiceItem3: z.string(),
   qty3: z.number(),
   costPerUnit3: z.number(),
-  amount: z.number().optional(),
+  // amount: z.number().optional(),
   dueDate: z.date({
     required_error: "Due date is required.",
   }),
@@ -100,16 +94,44 @@ export default function StandardForm() {
   const router = useRouter();
   const [popup, setPopup] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [inputField, setInputField] = useState<any[]>([
+  const [inputField, setInputField] = useState<any[] | undefined>([
     { label: "Customer Email" },
   ]);
-  const [invoiceItem, setInvoiceItem] = useState<any[]>([""]);
+  const [minusField, setMinusField] = useState<any[] | undefined>()
+
+  const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""]);
+  const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
   const [date, setDate] = useState<Date>();
   const [modalData, setModalData] = useState<any>("");
 
+
+
+  useEffect(() => {
+    if (minusField === undefined || minusField.length < 1) {
+      console.log("blocked at use effect")
+      return
+    } else {
+      setInputField(minusField)
+      // console.log(inputField)
+    }
+
+
+  }, [minusField])
+
+  useEffect(() => {
+    if (minusInvoice === undefined || minusInvoice.length < 1) {
+      console.log("blocked at use effect")
+      return
+    } else {
+      setInvoiceItem(minusInvoice)
+      // console.log(inputField)
+    }
+
+
+  }, [minusInvoice])
 
 
 
@@ -130,7 +152,7 @@ export default function StandardForm() {
       qty3: 0,
       costPerUnit3: 0,
       dueDate: undefined,
-      amount: 0,
+      // amount: 0,
       invoiceNote: "",
       // logo: "",
       taxPercent: 0,
@@ -140,46 +162,69 @@ export default function StandardForm() {
     },
   });
 
-
   const handleModal = (e: any) => {
     e.preventDefault();
-    standardForm.clearErrors()
-    setModalData(standardForm?.getValues())
+    standardForm.clearErrors();
+    setModalData(standardForm?.getValues());
     if (standardForm?.getValues()?.customerName?.length == 0) {
       standardForm.setError("customerName", {
         type: "manual",
         message: "Customer name required",
-      })
-      return
+      });
+      return;
     }
     if (standardForm?.getValues()?.email1?.length == 0) {
       standardForm.setError("email1", {
         type: "manual",
         message: "Email required",
-      })
-      return
+      });
+      return;
     }
     if (!standardForm?.getValues()?.dueDate) {
       standardForm.setError("dueDate", {
         type: "manual",
         message: "Due date required",
-      })
-      return
+      });
+      return;
     }
     setReceipt((value) => !value);
   };
 
   const addEmail = () => {
-    if (inputField.length === 3) {
+    if (inputField?.length === 3) {
       return;
     }
-    setInputField([...inputField, { label: "" }]);
+    setInputField([...inputField as any, { label: "" }]);
   };
-  const addInvoiceItem = () => {
-    if (invoiceItem.length === 3) {
+
+  const subtractInputField = () => {
+    if (inputField?.length === 1) {
+      console.log("blocked")
       return;
     }
-    setInvoiceItem([...invoiceItem, ""]);
+    const newfieldValues = inputField
+    // console.log(newfieldValues?.slice(0, -1))
+    setMinusField(newfieldValues?.slice(0, -1));
+  };
+
+
+
+
+  const addInvoiceItem = () => {
+    if (invoiceItem?.length === 3) {
+      return;
+    }
+    setInvoiceItem([...invoiceItem as any, ""]);
+  };
+
+  const subtractInvoiceItem = () => {
+    if (invoiceItem?.length === 1) {
+      console.log("blocked")
+      return;
+    }
+    const newfieldValues = invoiceItem
+    // console.log(newfieldValues?.slice(0, -1))
+    setMinusInvoice(newfieldValues?.slice(0, -1));
   };
 
   const standardFormMutation = useMutation({
@@ -222,6 +267,17 @@ export default function StandardForm() {
     },
   });
 
+  //----------------Calculations-------------------
+  const amountValue =
+    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
+  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
+  const subTotal = amountValue - discount
+  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
+  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+  //----------------Calculations Ends-------------------
+
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
     let newValues = {
       ...values,
@@ -229,11 +285,14 @@ export default function StandardForm() {
       token: token,
       subject: subject,
       merchantId: merchantId,
+      amount: amountValue,
       additionalCustomerEmailAddress: [
-        values?.email1,
         values?.email2,
         values?.email3,
       ]?.toString(),
+      shippingFee: values.shipping,
+      customerEmail: values?.email1,
+      invoiceStatus: "PENDING",
       invoiceBreakdownList: [
         {
           invoiceItem: values?.invoiceItem1,
@@ -252,16 +311,56 @@ export default function StandardForm() {
         },
       ],
     };
-    console.log(newValues);
+    // console.log("from standard form: ", newValues);
     standardFormMutation.mutate(newValues as any);
   }
 
+  const handleDraftSubmit = (e: any) => {
+    e.preventDefault();
+    let values = standardForm.getValues();
+    let newValues = {
+      ...values,
+      dueDate: values?.dueDate?.toISOString().split("T")[0],
+      token: token,
+      subject: subject,
+      merchantId: merchantId,
+      additionalCustomerEmailAddress: [
+        values?.email2,
+        values?.email3,
+      ]?.toString(),
+      shippingFee: values.shipping,
+      customerEmail: values?.email1,
+      invoiceStatus: "DRAFT",
+      invoiceBreakdownList: [
+        {
+          invoiceItem: values?.invoiceItem1,
+          quantity: values?.qty1,
+          costPerUnit: values?.costPerUnit1,
+        },
+        {
+          invoiceItem: values?.invoiceItem2,
+          quantity: values?.qty2,
+          costPerUnit: values?.costPerUnit2,
+        },
+        {
+          invoiceItem: values?.invoiceItem3,
+          quantity: values?.qty3,
+          costPerUnit: values?.costPerUnit3,
+        },
+      ],
+    };
+    // console.log(newValues);
+    standardFormMutation.mutate(newValues as any);
+  };
 
   const modalRef2 = useRef<any>();
+  const modalRef3 = useRef<any>();
   const handleModalSubmit = () => {
-    modalRef2.current.click()
+    modalRef2.current.click();
+  };
+  const handleModalSubmitDraft = () => {
+    modalRef3.current.click()
   }
-
 
   return (
     <Form {...standardForm}>
@@ -289,7 +388,7 @@ export default function StandardForm() {
             </FormItem>
           )}
         />
-        {inputField.map(({ label }, id) => {
+        {inputField?.map(({ label }, id) => {
           const nameString: any = `email${id + 1}`;
           return (
             <FormField
@@ -310,7 +409,7 @@ export default function StandardForm() {
                       onChange={(event) => {
                         field.onChange(event);
                       }}
-                    // value={field.value ?? ''}
+                      // value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -319,15 +418,25 @@ export default function StandardForm() {
             />
           );
         })}
-        <p
-          onClick={() => addEmail()}
-          className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-        >
-          <FiPlus className="text-[#1D8EBB] text-[24px]" />
-          Add additional email address
-        </p>
 
-        {invoiceItem.map((value, id) => {
+
+        <div className="flex flex-row items-center justify-between w-full">
+          <p
+            onClick={() => addEmail()}
+            className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+          >
+            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+            Add additional email address
+          </p>
+
+          {inputField?.length === 1 ? "" : <FiMinus
+            onClick={() => subtractInputField()}
+            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+          />}
+
+        </div>
+
+        {invoiceItem?.map((value, id) => {
           let invoiceItemNameString: any = `invoiceItem${id + 1}`;
           let qtyNameString: any = `qty${id + 1}`;
           let costPerUnitNameString: any = `costPerUnit${id + 1}`;
@@ -368,8 +477,9 @@ export default function StandardForm() {
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder=""
+                        placeholder="0"
                         {...field}
+                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                         onChange={(event) =>
                           field.onChange(Number(event.target.value))
                         }
@@ -385,14 +495,15 @@ export default function StandardForm() {
                 render={({ field }) => (
                   <FormItem className="w-[40%] ">
                     <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Invoice item
+                      Cost per unit
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder=""
+                        placeholder="0.00"
                         {...field}
+                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                         onChange={(event) =>
                           field.onChange(Number(event.target.value))
                         }
@@ -406,15 +517,25 @@ export default function StandardForm() {
           );
         })}
 
-        <p
-          onClick={() => addInvoiceItem()}
-          className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-        >
-          <FiPlus className="text-[#1D8EBB] text-[24px]" />
-          Add additional items
-        </p>
 
-        <FormField
+
+        <div className="flex flex-row items-center justify-between w-full">
+          <p
+            onClick={() => addInvoiceItem()}
+            className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+          >
+            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+            Add additional items
+          </p>
+
+          {invoiceItem?.length === 1 ? "" : <FiMinus
+            onClick={() => subtractInvoiceItem()}
+            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+          />}
+
+        </div>
+
+        {/* <FormField
           control={standardForm.control}
           name="amount"
           render={({ field }) => (
@@ -428,6 +549,7 @@ export default function StandardForm() {
                   className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                   placeholder="0.00"
                   {...field}
+                  onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                   onChange={(event) =>
                     field.onChange(Number(event.target.value))
                   }
@@ -436,7 +558,7 @@ export default function StandardForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={standardForm.control}
           name="dueDate"
@@ -540,8 +662,9 @@ export default function StandardForm() {
                     <Input
                       type="number"
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                      placeholder="0.00"
+                      placeholder="0"
                       {...field}
+                      onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                       onChange={(event) =>
                         field.onChange(Number(event.target.value))
                       }
@@ -595,8 +718,9 @@ export default function StandardForm() {
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder=""
+                        placeholder="0.00"
                         {...field}
+                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                         onChange={(event) =>
                           field.onChange(Number(event.target.value))
                         }
@@ -632,6 +756,7 @@ export default function StandardForm() {
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0.00"
                       {...field}
+                      onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
                       onChange={(event) =>
                         field.onChange(Number(event.target.value))
                       }
@@ -649,7 +774,7 @@ export default function StandardForm() {
             Subtotal
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            00.000
+            {subTotal}
           </p>
         </div>
         <div className="flex flex-row items-center justify-between w-full">
@@ -657,7 +782,7 @@ export default function StandardForm() {
             Grand Total
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            00.000
+            {grandTotal}
           </p>
         </div>
 
@@ -677,6 +802,15 @@ export default function StandardForm() {
         >
           Preview
         </Button>
+        <Button
+          disabled={loading}
+          className="hidden"
+          type="submit"
+          onClick={(e) => handleDraftSubmit(e)}
+          ref={modalRef3}
+        >
+          Preview
+        </Button>
         {/* <Button
 
                     variant={"outline"}
@@ -692,19 +826,20 @@ export default function StandardForm() {
           receipt={receipt}
           setReceipt={setReceipt}
           setPopup={setPopup}
-          modalData={modalData}
+          modalData={{ ...modalData, grandTotal, tax, subTotal, discount, amountValue }}
+          handleModalSubmitDraft={handleModalSubmitDraft}
         />
       ) : (
         ""
       )}
+
       {popup ? <ReviewPopup
-        value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
+        value={`NGN ${grandTotal?.toLocaleString()}`}
         setPopup={setPopup}
         handleSubmit={handleModalSubmit}
         modalData={modalData}
       /> : ""}
+
     </Form>
   );
 }
-
-

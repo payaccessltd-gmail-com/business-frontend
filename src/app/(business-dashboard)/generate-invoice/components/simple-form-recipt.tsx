@@ -13,7 +13,7 @@ import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
 
-const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
+const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit }: any) => {
   const { toast } = useToast();
   console.log("modalData: ", modalData)
   const handleCopyToClipboard = () => {
@@ -39,7 +39,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
       className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
     });
   };
-  const [link, setLink] = useState("");
+  const [link, setLink] = useState("http://137.184.47.182:3000/invoice");
 
   const reciptData: any[] = [
     {
@@ -57,11 +57,11 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
       title: "Status",
       value: "Pending",
     },
-    {
-      id: 3,
-      title: "Offline reference",
-      value: "TTT989900002377",
-    },
+    // {
+    //   id: 3,
+    //   title: "Offline reference",
+    //   value: "TTT989900002377",
+    // },
   ];
 
 
@@ -137,6 +137,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                   Send Invoice
                 </Button>
                 <Button
+                  onClick={() => handleModalDraftSubmit()}
                   variant={"outline"}
                   className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                 >

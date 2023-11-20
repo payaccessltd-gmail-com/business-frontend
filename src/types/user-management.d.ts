@@ -2,10 +2,10 @@ declare namespace API {
   interface UserDetailsResponse {
     statusCode: string;
     message: string;
-    responseObject: ResponseObject;
+    responseObject: UserDetails;
   }
 
-  interface ResponseObject {
+  interface UserDetails {
     id: number;
     firstName: string;
     lastName: string;
@@ -20,5 +20,6 @@ declare namespace API {
     identificationNumber: string;
     identificationDocumentPath: string;
     primaryMerchantId: number;
+    twoFactorAuthForLogin: true;
   }
 }

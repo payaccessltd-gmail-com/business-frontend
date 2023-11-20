@@ -7,7 +7,9 @@ import { env } from "./env.mjs";
  */
 const config = withPlugins([[withBundleAnalyzer({ enabled: env.ANALYZE })]], {
   reactStrictMode: true,
-
+  images: {
+    domains: ["137.184.47.182"],
+  },
   rewrites() {
     return [
       // {

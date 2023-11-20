@@ -14,7 +14,9 @@ import { useToast } from "components/ui/use-toast";
 
 const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
   const { toast } = useToast();
-  console.log("popup: ", modalData)
+
+  // console.log("popup: ", modalData)
+
   return (
     <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
       <ScrollArea className="w-full h-full">
@@ -27,11 +29,15 @@ const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
               Review
             </p>
             <p className="w-[312px] mt-2 text-[#667085] text-[14px] leading-[20px] font-[400] text-center">
-              {`You are about to request ${value === "open" ? "an open-invoice" : value
-                } form ${modalData?.email1}`}
+              {`You are about to request ${
+                value === "open" ? "an open-invoice" : value
+              } form ${modalData?.email1}`}
             </p>
             <div className="flex flex-col items-center w-full gap-3 mt-8">
-              <Button onClick={() => handleSubmit()} className="min-h-[44px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]">
+              <Button
+                onClick={() => handleSubmit()}
+                className="min-h-[44px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+              >
                 Send Invoice
               </Button>
               <Button

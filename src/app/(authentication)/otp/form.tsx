@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -35,7 +35,25 @@ export default function OTPForm() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const email = searchParams?.get("email");
+  const forgotPasswordLink = searchParams?.get("forgotPasswordLink");
   const [otp, setOtp] = useState(Array(4).fill(""));
+  const [countdownTime, setCountdownTime] = useState(300); // 5 minutes in seconds
+  const [countdownActive, setCountdownActive] = useState(true);
+
+
+  useEffect(() => {
+    if (countdownActive) {
+      const countdownInterval = setInterval(() => {
+        if (countdownTime > 0) {
+          setCountdownTime(countdownTime - 1);
+        } else {
+          setCountdownActive(false);
+        }
+      }, 1000); // Update every second
+
+      return () => clearInterval(countdownInterval);
+    }
+  }, [countdownTime, countdownActive]);
 
   const handleChange = (index: any, event: any) => {
     const value = event.target.value;
@@ -78,7 +96,7 @@ export default function OTPForm() {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
 
-      if (responseData?.statusCode === "1") {
+      if (responseData?.statusCode === "01") {
         toast({
           variant: "destructive",
           title: "",
@@ -86,15 +104,17 @@ export default function OTPForm() {
         });
       }
 
-      if (responseData?.statusCode === "0") {
+      if (responseData?.statusCode === "00") {
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         setOtp(Array(4).fill(""));
         if (typeof window) {
-          router.push(`/reset-password?email=${email}`);
+          router.push(`/reset-password?email=${email}&forgotPasswordLink=${forgotPasswordLink}`);
         }
       }
     },
@@ -116,11 +136,12 @@ export default function OTPForm() {
 
   const handleSubmit = (event: any) => {
     event?.preventDefault();
-    console.log(otp.join(""));
     let OTP = {
-      email: email,
+      emailAddress: email,
       otp: otp.join(""),
+      forgotPasswordLink: forgotPasswordLink
     };
+    // console.log(OTP)
     OTPMutation.mutate(OTP as any);
   };
 
@@ -128,7 +149,7 @@ export default function OTPForm() {
     <Form {...otpForm}>
       <form
         // onSubmit={otpForm.handleSubmit(onSubmit)}
-        className="flex w-full flex-col items-center rounded-lg bg-white pb-[24px]"
+        className="flex w-full flex-col items-center rounded-lg bg-white"
       >
         <FormField
           control={otpForm.control}
@@ -150,7 +171,7 @@ export default function OTPForm() {
                       onChange={(event) => handleChange(index, event)}
                       onPaste={(event) => handlePaste(event)}
                       className="bg-[#FFFFFF] border text-center border-[#D3EEF9] border-solid h-12 w-12"
-                      // {...field}
+                    // {...field}
                     />
                   ))}
                 </div>
@@ -167,6 +188,21 @@ export default function OTPForm() {
         >
           Continue
         </Button>
+        <p className="text-[#1A1A1A] mt-6 text-[14px] text-center font-[400] leading-[145%]">
+          Didn’t get the mail?{" "}
+          <span
+            className="text-[#1D8EBB] font-[700] leading-normal cursor-pointer"
+          // onClick={(event) => handleResend(event)}
+          >
+            click here to resend.
+          </span>
+        </p>
+        <p className="text-[14px] font-[400] leading-[145%] text-[#000000] mt-[24px]">
+          Resend code in{" "}
+          <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">
+            {`${Math.floor(countdownTime / 60)}:${countdownTime % 60}`}
+          </span>
+        </p>
       </form>
     </Form>
   );

@@ -45,13 +45,22 @@ const businessInfoFormSchema = zod.object({
 });
 
 export default function BusinessInformationForm() {
+  let token = "";
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(businessInfoFormSchema),
   });
 
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    token = localStorage.getItem("token") as string;
+  }
+
   const updateMerchantBusinessDataMutation = useMutation({
-    mutationFn: updateMerchantBusinessData,
+    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) =>
+      updateMerchantBusinessData(values, token),
     onSuccess: () => {
       return null;
     },

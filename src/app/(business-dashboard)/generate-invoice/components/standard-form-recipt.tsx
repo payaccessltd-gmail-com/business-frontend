@@ -12,9 +12,9 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
+const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft }: any) => {
   const { toast } = useToast();
-  console.log("from standard: ", modalData)
+  // console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");
@@ -38,7 +38,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
       className: "bg-[#BEF2B9] border-[#519E47] w-fit h-fit p-[12px]",
     });
   };
-  const [link, setLink] = useState("");
+  const [link, setLink] = useState("http://137.184.47.182:3000/invoice");
 
   const reciptData: any[] = [
     {
@@ -50,7 +50,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
     {
       id: 1,
       title: "Amount",
-      value: `NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`,
+      value: `NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`,
 
     },
     {
@@ -58,11 +58,11 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
       title: "Status",
       value: "Pending",
     },
-    {
-      id: 3,
-      title: "Offline reference",
-      value: "TTT989900002377",
-    },
+    // {
+    //   id: 3,
+    //   title: "Offline reference",
+    //   value: "TTT989900002377",
+    // },
   ];
 
   return (
@@ -85,7 +85,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
               </p>
 
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`}
+                {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`}
 
               </p>
             </div>
@@ -142,7 +142,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                     Subtotal
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    NGN 150,000.00
+                    {`NGN ${modalData.subTotal}`}
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-between w-full">
@@ -150,7 +150,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                     Discount
                   </p>
                   <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    -NGN 50.00
+                    {`NGN ${modalData.discount}`}
                   </p>
                 </div>
               </div>
@@ -160,17 +160,17 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                     Tax
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    NGN 150,000.00
+                    {`NGN ${modalData.tax}`}
                   </p>
                 </div>
-                <div className="flex flex-row items-center justify-between w-full">
+                {/* <div className="flex flex-row items-center justify-between w-full">
                   <p className="text-[#115570] text-[16px] leading-normal font-[400]">
                     Discount
                   </p>
                   <p className="text-[#115570] text-[20px] leading-normal font-[400]">
                     +NGN 00.00
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex flex-row items-center justify-between w-full mt-6">
@@ -178,7 +178,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                 Grand Total
               </p>
               <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                NGN 150,000.00
+                {`NGN ${modalData.grandTotal}`}
               </p>
             </div>
 
@@ -190,6 +190,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData }: any) => {
                 Send Invoice
               </Button>
               <Button
+                onClick={() => handleModalSubmitDraft()}
                 variant={"outline"}
                 className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
               >

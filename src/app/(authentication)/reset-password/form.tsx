@@ -25,13 +25,20 @@ import ResetSuccessModal from "./components/reset-success-modal";
 const ResetPasswordSchema = z
   .object({
     password: z
-      .string()
-      .min(2, "Password must contain more than 2 characters")
-      .max(8, "Password must not be above 8 characters"),
+      .string().refine((value) => value.length >= 6 && value.length <= 40, {
+        message: 'Password must be between 6 and 40 characters',
+      })
+      .refine((value) => /[0-9]/.test(value), {
+        message: 'Password must contain at least one number',
+      })
+      .refine((value) => /[a-zA-Z]/.test(value), {
+        message: 'Password must contain at least one alphabet character',
+      })
+      .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
+        message: 'Password must contain at least one special character',
+      }),
     newPassword: z
       .string()
-      .min(2, "Password must contain more than 2 characters")
-      .max(8, "Password must not be above 8 characters"),
   })
   .refine((data) => data.password === data.newPassword, {
     path: ["newPassword"],
@@ -43,6 +50,8 @@ export default function ResetForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
+  const email = searchParams?.get("email");
+  const forgotPasswordLink = searchParams?.get("forgotPasswordLink");
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
   const [isOpen, setOpen] = useState(0);
@@ -78,7 +87,7 @@ export default function ResetForm() {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
 
-      if (responseData?.statusCode === "1") {
+      if (responseData?.statusCode === "01") {
         toast({
           variant: "destructive",
           title: "",
@@ -86,11 +95,13 @@ export default function ResetForm() {
         });
       }
 
-      if (responseData?.statusCode === "0") {
+      if (responseData?.statusCode === "00") {
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         resetPasswordForm.reset();
         setOpen(1);
@@ -113,7 +124,13 @@ export default function ResetForm() {
   });
 
   async function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
-    passwordResetMutation.mutate(values);
+    const requestValue = {
+      emailAddress: email,
+      newPassword: resetPasswordForm.getValues("password"),
+      forgotPasswordLink: forgotPasswordLink
+    }
+    // console.log(requestValue)/
+    passwordResetMutation.mutate(requestValue as any);
   }
 
   return (
