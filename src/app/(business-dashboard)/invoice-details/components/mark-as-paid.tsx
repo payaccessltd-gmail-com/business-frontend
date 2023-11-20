@@ -21,14 +21,14 @@ export default function MarkAsPaidPopup({ value, setPaidPopup, handlePaid, modal
                             <LuAlertCircle className="text-[24px] text-[#25AF36]" />
                         </div>
                         <p className="mt-5 text-[#101828] text-[20px] leading-[28px] font-[700]">
-                            Mark has paid
+                            Mark as paid
                         </p>
                         <p className="w-[312px] mt-2 text-[#667085] text-[14px] leading-[20px] font-[400] text-center">
                             Are you sure you have received payment for this invoice? 
                         </p>
                         <div className="flex flex-col items-center w-full gap-3 mt-8">
                             <Button onClick={() => handlePaid()} className="min-h-[44px] font-[700] w-full hover:bg-[#48B8E6] bg-[#48B8E6] hover:opacity-[0.4]">
-                                Mark has paid
+                                Mark as paid
                             </Button>
                             <Button
                                 variant={"outline"}

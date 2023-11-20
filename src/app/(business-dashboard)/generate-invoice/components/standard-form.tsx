@@ -76,7 +76,7 @@ const StandardSchema = z.object({
   invoiceItem3: z.string(),
   qty3: z.number(),
   costPerUnit3: z.number(),
-  amount: z.number().optional(),
+  // amount: z.number().optional(),
   dueDate: z.date({
     required_error: "Due date is required.",
   }),
@@ -152,7 +152,7 @@ export default function StandardForm() {
       qty3: 0,
       costPerUnit3: 0,
       dueDate: undefined,
-      amount: 0,
+      // amount: 0,
       invoiceNote: "",
       // logo: "",
       taxPercent: 0,
@@ -267,6 +267,17 @@ export default function StandardForm() {
     },
   });
 
+  //----------------Calculations-------------------
+  const amountValue =
+    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
+  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
+  const subTotal = amountValue - discount
+  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
+  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+  //----------------Calculations Ends-------------------
+
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
     let newValues = {
       ...values,
@@ -274,11 +285,13 @@ export default function StandardForm() {
       token: token,
       subject: subject,
       merchantId: merchantId,
+      amount: amountValue,
       additionalCustomerEmailAddress: [
-        values?.email1,
         values?.email2,
         values?.email3,
       ]?.toString(),
+      shippingFee: values.shipping,
+      customerEmail: values?.email1,
       invoiceStatus: "PENDING",
       invoiceBreakdownList: [
         {
@@ -298,7 +311,7 @@ export default function StandardForm() {
         },
       ],
     };
-    console.log(newValues);
+    // console.log("from standard form: ", newValues);
     standardFormMutation.mutate(newValues as any);
   }
 
@@ -312,10 +325,11 @@ export default function StandardForm() {
       subject: subject,
       merchantId: merchantId,
       additionalCustomerEmailAddress: [
-        values?.email1,
         values?.email2,
         values?.email3,
       ]?.toString(),
+      shippingFee: values.shipping,
+      customerEmail: values?.email1,
       invoiceStatus: "DRAFT",
       invoiceBreakdownList: [
         {
@@ -347,14 +361,7 @@ export default function StandardForm() {
   const handleModalSubmitDraft = () => {
     modalRef3.current.click()
   }
-  const amountValue =
-    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
-    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
-    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
-  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
-  const subTotal = amountValue - discount
-  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
-  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+
   return (
     <Form {...standardForm}>
       <form
@@ -488,7 +495,7 @@ export default function StandardForm() {
                 render={({ field }) => (
                   <FormItem className="w-[40%] ">
                     <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Invoice item
+                      Cost per unit
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -528,7 +535,7 @@ export default function StandardForm() {
 
         </div>
 
-        <FormField
+        {/* <FormField
           control={standardForm.control}
           name="amount"
           render={({ field }) => (
@@ -551,7 +558,7 @@ export default function StandardForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={standardForm.control}
           name="dueDate"
@@ -825,16 +832,14 @@ export default function StandardForm() {
       ) : (
         ""
       )}
-      {popup ? (
-        <ReviewPopup
-          value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
-          setPopup={setPopup}
-          handleSubmit={handleModalSubmit}
-          modalData={modalData}
-        />
-      ) : (
-        ""
-      )}
+
+      {popup ? <ReviewPopup
+        value={`NGN ${grandTotal?.toLocaleString()}`}
+        setPopup={setPopup}
+        handleSubmit={handleModalSubmit}
+        modalData={modalData}
+      /> : ""}
+
     </Form>
   );
 }
