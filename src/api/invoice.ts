@@ -144,6 +144,15 @@ export const markAsPaid = async ({ token, merchantId, invoiceId }: any) => {
     },
   });
 };
+export const sendReminder = async ({ token, merchantId, invoiceId }: any) => {
+  return await fetch(`${baseUrl}/api/v1/invoice/resend-invoice-email/${invoiceId}/${merchantId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 
 export const filterInvoices = async ({
