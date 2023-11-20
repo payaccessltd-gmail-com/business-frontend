@@ -1,27 +1,21 @@
-import React from "react";
+import React from "react"
 
-import { Typography } from "components/ui/Typography";
-import StepperForm from "./components/stepper-form";
+import { Typography } from "components/ui/Typography"
+import StepperForm from "../components/stepper-form"
 
 function page() {
   return (
     <div className="h-full pb-5 bg-transparent">
       <div className="mb-10 space-y-2">
-        <Typography
-          level="h3"
-          className="font-CenturyGothic font-bold text-[40] text-gray-80"
-        >
+        <Typography level="h3" className="font-CenturyGothic font-bold text-[40] text-gray-80">
           Business profile
         </Typography>
 
         <div className="mb-10 flex w-full max-w-[650px] flex-col space-y-2">
-          <Typography className="font-bold leading-8 font-CenturyGothic text-primary-110">
-            Welcome to your dashboard
-          </Typography>
+          <Typography className="font-bold leading-8 font-CenturyGothic text-primary-110">Welcome to your dashboard</Typography>
           <Typography level="NP">
-            Your account is currently in test mode, so there are a few more
-            things to do before you can go live and start receiving
-            payments.Follow the steps below to get activated.
+            Your account is currently in test mode, so there are a few more things to do before you can go live and start receiving payments.Follow
+            the steps below to get activated.
           </Typography>
         </div>
       </div>
@@ -29,7 +23,7 @@ function page() {
         <StepperForm />
       </div>
     </div>
-  );
+  )
 }
 
-export default page;
+export default page
