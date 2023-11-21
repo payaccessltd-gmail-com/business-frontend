@@ -177,21 +177,21 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                     name="firstName"
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    First Name
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        // disabled
-                                        type="text"
-                                        className="disabled:opacity-100 border-[#D6D6D6] placeholder:text-black rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
-                                        {...field}
-                                        value={prefill?.firstName}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                First Name
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    // disabled
+                                    type="text"
+                                    className="disabled:opacity-100 border-[#D6D6D6] placeholder:text-black rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    {...field}
+                                    value={prefill?.firstName}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -201,21 +201,21 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                     name="lastName"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Last Name
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        // disabled
-                                        type="text"
-                                        className="border-[#D6D6D6] placeholder:text-black disabled:opacity-100 rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder={prefill?.lastName}
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Last Name
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    // disabled
+                                    type="text"
+                                    className="border-[#D6D6D6] placeholder:text-black disabled:opacity-100 rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder={prefill?.lastName}
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -225,7 +225,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                     name="gender"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
                                     Gender
                                 </FormLabel>
@@ -234,7 +234,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger disabled className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2">
+                                        <SelectTrigger disabled className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2">
                                             <SelectValue
                                                 defaultValue={field.value}
                                                 placeholder={prefill?.gender}
@@ -246,7 +246,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                                         <SelectItem value="female">Female</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
+                            {/* </div> */}
 
 
                             <FormMessage className="self-end" />
@@ -259,7 +259,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                     name="email"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
                                     Email address
                                 </FormLabel>
@@ -267,12 +267,12 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                                     <Input
                                         disabled
                                         type="email"
-                                        className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
+                                        className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                         placeholder={prefill?.emailAddress}
                                         {...field}
                                     />
                                 </FormControl>
-                            </div>
+                            {/* </div> */}
                             <FormMessage className="self-end" />
                         </FormItem>
                     )}
@@ -285,7 +285,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                         name="code"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <div className="w-full flex flex-row items-center justify-end gap-4">
+                                <div className="w-full flex flex-row items-center gap-4">
                                     <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
                                         Phone Number
                                     </FormLabel>
