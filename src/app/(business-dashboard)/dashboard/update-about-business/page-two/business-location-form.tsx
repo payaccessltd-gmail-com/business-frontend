@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "components/ui/form";
 import { Input } from "components/ui/input";
+
 import {
   Select,
   SelectContent,
@@ -41,8 +42,10 @@ import { logoPath } from "lib/constants";
 
 const locationRegFormSchema = zod.object({
   country: zod.string(),
-  merchantId: zod.number(),
+  merchantId: zod.number()
 });
+
+const prefill:any =[]
 
 export default function RegistrationPage() {
   let token = "";
@@ -59,7 +62,7 @@ export default function RegistrationPage() {
   ) {
     token = localStorage.getItem("token") as string;
   }
-
+ 
   const locationRegForm = useForm<zod.infer<typeof locationRegFormSchema>>({
     defaultValues: { merchantId: 0, country: "" },
     resolver: zodResolver(locationRegFormSchema),
@@ -137,7 +140,7 @@ export default function RegistrationPage() {
                         );
                       }}
                     >
-                      <FormControl className="px-3 py-6 mt-20 shadow-none border-gray-20">
+                      <FormControl className="px-3 py-3 mt-20 shadow-none border-gray-20">
                         <SelectTrigger>
                           <SelectValue placeholder="Select Country" />
                         </SelectTrigger>
@@ -163,6 +166,33 @@ export default function RegistrationPage() {
                 )}
               />
 
+              
+              {/* <div className="flex flex-row items-center w-full gap-[10px] mt-6">
+              
+                     <FormField
+                        control={locationRegForm.control}
+                        name="phoneNo"
+                        render={({ field }) => (
+                            <FormItem className="w-full "> 
+                                <FormLabel className="text-sm font-normal text-gray-50">
+                      Phone Number
+                    </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="tel"
+                                        pattern="[0-9]*"
+                                        maxLength={11}
+                                        title="Input is only number"
+                                        className="border-[#D6D6D6] rounded-[10px] min-h-[56px] shadow-none bg-white w-full p-2 "
+                                        placeholder="08123456789"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+</div> */}
               <FormField
                 control={locationRegForm.control}
                 name="merchantId"

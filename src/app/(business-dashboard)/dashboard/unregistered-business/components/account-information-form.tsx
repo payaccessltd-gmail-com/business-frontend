@@ -35,15 +35,15 @@ type AccountInfoFormProps = {
 
 const accInfoFormSchema = zod.object({
   merchantId: zod.number(),
-  businessBvn: zod.string(),
-  businessBankName: zod.string().min(2, {
+  businessBvn: zod.number(),
+  businessBankName: zod.string().min(6, {
     message: "First name must be at least 2 characters.",
   }),
-  businessAccountNumber: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
+  businessAccountNumber: zod.number().max(11).min(11, {
+    message: "Account number should be at least 11 characters.",
   }),
 
-  businessAccountName: zod.string().min(2, {
+  businessAccountName: zod.string().min(6, {
     message: "Last name must be at least 2 characters.",
   }),
 });
@@ -68,6 +68,7 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
     resolver: zodResolver(accInfoFormSchema),
   });
 
+ 
   const updateMerchantBusinessBankAccountMutation = useMutation({
     mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) =>
       updateMerchantBusinessBankAccountData(values, token),
@@ -99,6 +100,7 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
         });
       }
     },
+    
 
     onError: (e: any) => {
       toast({
@@ -158,7 +160,11 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
             <FormItem>
               <FormLabel>BVN</FormLabel>
               <FormControl>
-                <Input placeholder="Enter BVN" {...field} />
+                <Input     
+                title="Input is only number"                  
+                pattern="[0-9]*" type="number" 
+                maxLength={11} 
+                placeholder="Enter BVN" {...field} />
               </FormControl>
 
               <FormDescription>
@@ -202,7 +208,8 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter account number" {...field} />
+                  <Input type="number" pattern="[0-9]*"  
+                maxLength={11}  placeholder="Enter account number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

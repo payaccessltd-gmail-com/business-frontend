@@ -246,7 +246,7 @@ export default function WebHook() {
                     name="callbackUrl"
                     render={({ field }) => (
                         <FormItem className="w-full mt-[24px]">
-                            <FormLabel className="text-[#666666] text-[14px] font-[400] leading-5 ">Test Callback URL</FormLabel>
+                            <FormLabel className="text-[#666666] text-[14px] font-[400] leading-5 ">Live Callback URL</FormLabel>
                             <FormControl className="w-full">
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input

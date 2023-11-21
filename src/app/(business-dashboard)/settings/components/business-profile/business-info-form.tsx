@@ -235,9 +235,7 @@ export default function BusinessInfoForm() {
                 />
 
                 <div className="flex flex-row items-center w-full gap-[10px] mt-6">
-                    <FormField
-                        control={businessInfoForm.control}
-                        name="code"
+                    <FormField control={businessInfoForm.control} name="code"
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <div className="w-full flex flex-row items-center justify-end gap-4">
