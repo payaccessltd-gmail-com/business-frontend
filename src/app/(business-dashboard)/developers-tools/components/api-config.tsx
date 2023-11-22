@@ -2,7 +2,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -49,8 +49,10 @@ if (
 
 export default function ApiConfiguration() {
     const router = useRouter();
+    const pathName = usePathname()
     const [secretKey1, setSecretKey] = useState<string | undefined>("")
     const [publicKey1, setPublicKey] = useState<string | undefined>("")
+    // const [loading, setLoading] = useState<boolean>(false)
 
     const GetParameters = { merchantId, token }
     const data: any = useQuery(['getMerchantKeys', GetParameters], () => getMerchantKeys(GetParameters));
@@ -58,12 +60,14 @@ export default function ApiConfiguration() {
     const prefill = data?.data?.responseObject
 
     const { toast } = useToast();
+
     let apiConfiguration = useForm<z.infer<typeof ApiConfigurationSchema>>({
         resolver: zodResolver(ApiConfigurationSchema),
         defaultValues: {
             publicKey: data?.data?.responseObject?.publicKey,
             secretKey: data?.data?.responseObject?.secretKey,
-        },
+        }
+
     });
 
 
@@ -136,6 +140,7 @@ export default function ApiConfiguration() {
                     description: "Error generating new keys",
                 });
             } else if (responseData?.statusCode === "0") {
+
                 toast({
                     variant: "default",
                     title: "Success",
@@ -143,6 +148,8 @@ export default function ApiConfiguration() {
                     className:
                         "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
                 });
+                // setLoading(true)
+
 
             } else {
 
@@ -203,11 +210,11 @@ export default function ApiConfiguration() {
                             <FormControl className="w-full">
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input
-                                        type="text"
+                                        type="password"
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
                                         placeholder="Copy Link"
                                         {...field}
-                                        defaultValue={data?.data?.responseObject?.secretKey}
+                                        value={data?.data?.responseObject?.secretKey}
                                     />
                                     <LuCopy
                                         id="secretKey"
@@ -235,9 +242,11 @@ export default function ApiConfiguration() {
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input
                                         {...field}
-                                        type="text"
+                                        type="password"
                                         placeholder="Copy Link"
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
+                                        value={data?.data?.responseObject?.publicKey}
+
                                     />
                                     <LuCopy
                                         id="publicKey"

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -32,7 +32,7 @@ import { format } from "date-fns";
 import { cn } from "lib/utils";
 import { Calendar } from "components/ui/calendar";
 import { HiOutlineCloudUpload } from "react-icons/hi";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiMinus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import {
@@ -76,7 +76,7 @@ const StandardSchema = z.object({
   invoiceItem3: z.string(),
   qty3: z.number(),
   costPerUnit3: z.number(),
-  amount: z.number().optional(),
+  // amount: z.number().optional(),
   dueDate: z.date({
     required_error: "Due date is required.",
   }),
@@ -94,15 +94,46 @@ export default function StandardForm() {
   const router = useRouter();
   const [popup, setPopup] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [inputField, setInputField] = useState<any[]>([
+  const [inputField, setInputField] = useState<any[] | undefined>([
     { label: "Customer Email" },
   ]);
-  const [invoiceItem, setInvoiceItem] = useState<any[]>([""]);
+  const [minusField, setMinusField] = useState<any[] | undefined>()
+
+  const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""]);
+  const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
   const [isInputFocused, setInputFocused] = useState(false);
   const [date, setDate] = useState<Date>();
   const [modalData, setModalData] = useState<any>("");
+
+
+
+  useEffect(() => {
+    if (minusField === undefined || minusField.length < 1) {
+      console.log("blocked at use effect")
+      return
+    } else {
+      setInputField(minusField)
+      // console.log(inputField)
+    }
+
+
+  }, [minusField])
+
+  useEffect(() => {
+    if (minusInvoice === undefined || minusInvoice.length < 1) {
+      console.log("blocked at use effect")
+      return
+    } else {
+      setInvoiceItem(minusInvoice)
+      // console.log(inputField)
+    }
+
+
+  }, [minusInvoice])
+
+
 
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
@@ -121,7 +152,7 @@ export default function StandardForm() {
       qty3: 0,
       costPerUnit3: 0,
       dueDate: undefined,
-      amount: 0,
+      // amount: 0,
       invoiceNote: "",
       // logo: "",
       taxPercent: 0,
@@ -160,16 +191,40 @@ export default function StandardForm() {
   };
 
   const addEmail = () => {
-    if (inputField.length === 3) {
+    if (inputField?.length === 3) {
       return;
     }
-    setInputField([...inputField, { label: "" }]);
+    setInputField([...inputField as any, { label: "" }]);
   };
-  const addInvoiceItem = () => {
-    if (invoiceItem.length === 3) {
+
+  const subtractInputField = () => {
+    if (inputField?.length === 1) {
+      console.log("blocked")
       return;
     }
-    setInvoiceItem([...invoiceItem, ""]);
+    const newfieldValues = inputField
+    // console.log(newfieldValues?.slice(0, -1))
+    setMinusField(newfieldValues?.slice(0, -1));
+  };
+
+
+
+
+  const addInvoiceItem = () => {
+    if (invoiceItem?.length === 3) {
+      return;
+    }
+    setInvoiceItem([...invoiceItem as any, ""]);
+  };
+
+  const subtractInvoiceItem = () => {
+    if (invoiceItem?.length === 1) {
+      console.log("blocked")
+      return;
+    }
+    const newfieldValues = invoiceItem
+    // console.log(newfieldValues?.slice(0, -1))
+    setMinusInvoice(newfieldValues?.slice(0, -1));
   };
 
   const standardFormMutation = useMutation({
@@ -212,6 +267,17 @@ export default function StandardForm() {
     },
   });
 
+  //----------------Calculations-------------------
+  const amountValue =
+    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
+  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
+  const subTotal = amountValue - discount
+  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
+  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+  //----------------Calculations Ends-------------------
+
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
     let newValues = {
       ...values,
@@ -219,11 +285,13 @@ export default function StandardForm() {
       token: token,
       subject: subject,
       merchantId: merchantId,
+      amount: amountValue,
       additionalCustomerEmailAddress: [
-        values?.email1,
         values?.email2,
         values?.email3,
       ]?.toString(),
+      shippingFee: values.shipping,
+      customerEmail: values?.email1,
       invoiceStatus: "PENDING",
       invoiceBreakdownList: [
         {
@@ -243,7 +311,7 @@ export default function StandardForm() {
         },
       ],
     };
-    console.log(newValues);
+    // console.log("from standard form: ", newValues);
     standardFormMutation.mutate(newValues as any);
   }
 
@@ -257,10 +325,11 @@ export default function StandardForm() {
       subject: subject,
       merchantId: merchantId,
       additionalCustomerEmailAddress: [
-        values?.email1,
         values?.email2,
         values?.email3,
       ]?.toString(),
+      shippingFee: values.shipping,
+      customerEmail: values?.email1,
       invoiceStatus: "DRAFT",
       invoiceBreakdownList: [
         {
@@ -292,14 +361,7 @@ export default function StandardForm() {
   const handleModalSubmitDraft = () => {
     modalRef3.current.click()
   }
-  const amountValue =
-    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
-    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
-    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
-  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
-  const subTotal = amountValue - discount
-  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
-  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+
   return (
     <Form {...standardForm}>
       <form
@@ -326,7 +388,7 @@ export default function StandardForm() {
             </FormItem>
           )}
         />
-        {inputField.map(({ label }, id) => {
+        {inputField?.map(({ label }, id) => {
           const nameString: any = `email${id + 1}`;
           return (
             <FormField
@@ -356,15 +418,25 @@ export default function StandardForm() {
             />
           );
         })}
-        <p
-          onClick={() => addEmail()}
-          className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-        >
-          <FiPlus className="text-[#1D8EBB] text-[24px]" />
-          Add additional email address
-        </p>
 
-        {invoiceItem.map((value, id) => {
+
+        <div className="flex flex-row items-center justify-between w-full">
+          <p
+            onClick={() => addEmail()}
+            className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+          >
+            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+            Add additional email address
+          </p>
+
+          {inputField?.length === 1 ? "" : <FiMinus
+            onClick={() => subtractInputField()}
+            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+          />}
+
+        </div>
+
+        {invoiceItem?.map((value, id) => {
           let invoiceItemNameString: any = `invoiceItem${id + 1}`;
           let qtyNameString: any = `qty${id + 1}`;
           let costPerUnitNameString: any = `costPerUnit${id + 1}`;
@@ -423,7 +495,7 @@ export default function StandardForm() {
                 render={({ field }) => (
                   <FormItem className="w-[40%] ">
                     <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Invoice item
+                      Cost per unit
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -445,15 +517,25 @@ export default function StandardForm() {
           );
         })}
 
-        <p
-          onClick={() => addInvoiceItem()}
-          className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-        >
-          <FiPlus className="text-[#1D8EBB] text-[24px]" />
-          Add additional items
-        </p>
 
-        <FormField
+
+        <div className="flex flex-row items-center justify-between w-full">
+          <p
+            onClick={() => addInvoiceItem()}
+            className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+          >
+            <FiPlus className="text-[#1D8EBB] text-[24px]" />
+            Add additional items
+          </p>
+
+          {invoiceItem?.length === 1 ? "" : <FiMinus
+            onClick={() => subtractInvoiceItem()}
+            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+          />}
+
+        </div>
+
+        {/* <FormField
           control={standardForm.control}
           name="amount"
           render={({ field }) => (
@@ -476,7 +558,7 @@ export default function StandardForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={standardForm.control}
           name="dueDate"
@@ -750,16 +832,14 @@ export default function StandardForm() {
       ) : (
         ""
       )}
-      {popup ? (
-        <ReviewPopup
-          value={`NGN ${standardForm?.getValues("amount")?.toLocaleString()}`}
-          setPopup={setPopup}
-          handleSubmit={handleModalSubmit}
-          modalData={modalData}
-        />
-      ) : (
-        ""
-      )}
+
+      {popup ? <ReviewPopup
+        value={`NGN ${grandTotal?.toLocaleString()}`}
+        setPopup={setPopup}
+        handleSubmit={handleModalSubmit}
+        modalData={modalData}
+      /> : ""}
+
     </Form>
   );
 }

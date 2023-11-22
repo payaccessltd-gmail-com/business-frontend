@@ -87,6 +87,7 @@ export default function BusinessInfoForm() {
     }
     const data: any = useQuery(['getMerchantDetails', getParameters], () => getMerchantDetails(getParameters));
 
+
     const prefill = data?.data?.responseObject[0]
     // console.log(prefill)
     // console.log(prefill?.primaryMobile?.split(")")[0].split("(")[1])
@@ -162,7 +163,7 @@ export default function BusinessInfoForm() {
         <Form {...businessInfoForm}>
             <form
                 onSubmit={businessInfoForm.handleSubmit(onSubmit)}
-                className="p-[40px] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
+                className="p-[40px] w-[60%] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
             >
 
                 <FormField
@@ -170,21 +171,21 @@ export default function BusinessInfoForm() {
                     name="businessName"
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Business Name
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        disabled
-                                        type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder={merchantList[0]?.businessName}
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Business Name
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    disabled
+                                    type="text"
+                                    className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder={merchantList[0]?.businessName}
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -194,18 +195,18 @@ export default function BusinessInfoForm() {
                     name="businessDescription"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Business Description
-                                </FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder={prefill?.businessDescription}
-                                        className="resize-none border-[#D6D6D6] rounded-[10px] min-h-[88px] shadow-none bg-white w-[307px] p-2 "
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Business Description
+                            </FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    placeholder={prefill?.businessDescription}
+                                    className="resize-none border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
 
                             <FormMessage />
                         </FormItem>
@@ -216,38 +217,53 @@ export default function BusinessInfoForm() {
                     name="businessEmail"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Business Email
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        type="email"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder={prefill?.businessEmail}
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Business Email
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    type="email"
+                                    className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder={prefill?.businessEmail}
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
+                <div className="flex flex-col items-start gap-2 w-full mt-6">
+                    <label htmlFor="phone" className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                        Phone Number
+                    </label>
+                    <div className="flex flex-row items-end w-full gap-2">
+                        <FormField
+                            control={businessInfoForm.control}
+                            name="code"
 
+<<<<<<< HEAD
                 <div className="flex flex-row items-center w-full gap-[10px] mt-6">
                     <FormField control={businessInfoForm.control} name="code"
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <div className="w-full flex flex-row items-center justify-end gap-4">
                                     <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+=======
+                            render={({ field }) => (
+                                <FormItem className="w-[30%]">
+                                    {/* <div className="w-full flex flex-col gap-2"> */}
+                                    {/* <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+>>>>>>> 7633b2792dacbe290b96a2c68696f6a0bd336626
                                         Phone Number
-                                    </FormLabel>
+                                    </FormLabel> */}
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
-                                            <SelectTrigger className="rounded-[10px] min-h-[56px] bg-[#F2FAFD] border-none w-[84px]">
+                                            <SelectTrigger className="rounded-[6px] min-h-[46px] bg-[#F2FAFD] border-none w-full">
                                                 <SelectValue
                                                     defaultValue={field.value}
                                                     placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1] || "+234"}`}
@@ -260,64 +276,66 @@ export default function BusinessInfoForm() {
                                             <SelectItem value="+212">+212</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                </div>
-                                {/* <FormMessage /> */}
-                            </FormItem>
-                        )}
-                    />
+                                    {/* </div> */}
+                                    {/* <FormMessage /> */}
+                                </FormItem>
+                            )}
+                        />
 
-                    <FormField
-                        control={businessInfoForm.control}
-                        name="phone"
-                        render={({ field }) => (
-                            <FormItem className="w-full ">
-                                {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
-                                <FormControl>
-                                    <Input
-                                        type="tel"
-                                        pattern="[0-9]*"
-                                        title="Input is only number"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[56px] shadow-none bg-white w-full p-2 "
-                                        placeholder={prefill?.primaryMobile?.split(")")[1]}
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        <FormField
+                            control={businessInfoForm.control}
+                            name="phone"
+                            render={({ field }) => (
+                                <FormItem className="w-full ">
+                                    {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
+                                    <FormControl>
+                                        <Input
+                                            id="phone"
+                                            type="tel"
+                                            pattern="[0-9]*"
+                                            title="Input is only number"
+                                            className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                            placeholder={prefill?.primaryMobile?.split(")")[1]}
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
                 </div>
                 <FormField
                     control={businessInfoForm.control}
                     name="country"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Country
-                                </FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
-                                            <SelectValue
-                                                defaultValue={field.value}
-                                                placeholder="Country"
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="NIGERIA">Nigeria</SelectItem>
-                                        <SelectItem value="GHANA">Ghana</SelectItem>
-                                        <SelectItem value="MOROCO">Moroco</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Country
+                            </FormLabel>
+                            <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                            >
+                                <FormControl>
+                                    <SelectTrigger className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2">
+                                        <SelectValue
+                                            defaultValue={field.value}
+                                            placeholder="Country"
+                                        />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="NIGERIA">Nigeria</SelectItem>
+                                    <SelectItem value="GHANA">Ghana</SelectItem>
+                                    <SelectItem value="MOROCO">Moroco</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {/* </div> */}
 
 
-                            <FormMessage className="self-end" />
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -326,29 +344,29 @@ export default function BusinessInfoForm() {
                     name="businessState"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    State
-                                </FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2">
-                                            <SelectValue
-                                                defaultValue={field.value}
-                                                placeholder={prefill?.businessState}
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Abuja">Abuja</SelectItem>
-                                        <SelectItem value="Minna">Minna</SelectItem>
-                                        <SelectItem value="Kano">Kano</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                State
+                            </FormLabel>
+                            <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                            >
+                                <FormControl>
+                                    <SelectTrigger className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2">
+                                        <SelectValue
+                                            defaultValue={field.value}
+                                            placeholder={prefill?.businessState}
+                                        />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="Abuja">Abuja</SelectItem>
+                                    <SelectItem value="Minna">Minna</SelectItem>
+                                    <SelectItem value="Kano">Kano</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {/* </div> */}
 
 
                             <FormMessage className="self-end" />
@@ -361,20 +379,20 @@ export default function BusinessInfoForm() {
                     name="businessWebsite"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Business website
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder={prefill?.businessWebsite}
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Business website
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    type="text"
+                                    className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder={prefill?.businessWebsite}
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -412,7 +430,7 @@ export default function BusinessInfoForm() {
                 />
                 <Button
                     // disabled={loading}
-                    className="mt-[32px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
+                    className="my-[32px] min-h-[48px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4] self-center"
                     type="submit"
                 // onClick={(e) => handleModal(e)}
                 >

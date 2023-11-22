@@ -211,12 +211,12 @@ export default function Settings() {
       <ScrollArea className="pt-11 h-[650px] w-full">
         {
           tab === 0 ?         //----------------------Profile
-            <div className="flex flex-col items-start w-full gap-8 px-8">
-              <div className="flex flex-col items-start gap-4">
+            <div className="flex flex-col items-center w-full gap-12 px-8">
+              <div className="flex flex-col items-center gap-4">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Personal Information</p>
                 <PersonalForm setVerifyModal={setVerifyModal} setEmail={setEmail} email={email} />
               </div>
-              <div className="flex flex-col items-start gap-4 mb-12">
+              <div className="flex flex-col items-center gap-4 mb-12">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Password</p>
                 <PasswordForm />
               </div>
@@ -234,14 +234,14 @@ export default function Settings() {
                   asChild
                   className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
                 >
-                  <Link href={"/"}>Add new business</Link>
+                  <Link href={"/dashboard/update-about-business/page-one"}>Add new business</Link>
                 </Button>
               </div>
-              <div className="flex flex-col items-start gap-4 mt-[34px]">
+              <div className="self-center flex flex-col items-center gap-4 mt-[45px] w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Business information</p>
                 <BusinessInfoForm />
               </div>
-              <div className="flex flex-col items-start gap-4 mt-[51px]">
+              <div className="self-center flex flex-col items-center gap-4 mt-[51px] w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Account information</p>
                 <AccountInfoForm />
               </div>
@@ -249,18 +249,18 @@ export default function Settings() {
         }
         {
           tab === 2 ?         //----------------------Business type 
-            <div className="flex flex-col items-start w-full px-8">
+            <div className="flex flex-col items-center w-full px-8">
               <BusinessType />
             </div> : ""
         }
         {
           tab === 3 ?         //----------------------Security 
             <div className="flex flex-col items-start w-full gap-8 pl-8">
-              <div className="flex flex-col items-start gap-4 w-full">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Security</p>
                 <Security data={data?.data?.responseObject} />
               </div>
-              <div className="flex flex-col items-start gap-4 w-full">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Payment</p>
                 <Payment data={data?.data?.responseObject} />
               </div>
@@ -269,26 +269,26 @@ export default function Settings() {
         }
         {
           tab === 4 ?         //----------------------Notification
-            <div className="flex flex-col items-start w-full gap-8 pl-8">
-              <div className="flex flex-col items-start gap-4 w-full">
+            <div className="flex flex-col items-center w-full gap-8 pl-8">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">
                   Transaction Notification
                 </p>
                 <TransactionNotification Notification={Notification} setNotification={setNotification} data={data?.data?.responseObject} />
               </div>
-              <div className="flex flex-col items-start gap-4 w-full">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">
                   Transfer Notification
                 </p>
                 <TransferNotification Notification={Notification} setNotification={setNotification} data={data?.data?.responseObject} />
               </div>
-              <div className="flex flex-col items-start gap-4 w-full">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">
                   How do you want to get your earnings.
                 </p>
                 <EarningNotification Notification={Notification} setNotification={setNotification} data={data?.data?.responseObject} />
               </div>
-              <div className="flex flex-col items-start gap-4 w-full">
+              <div className="flex flex-col items-center gap-4 w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">
                   Enable Notifications
                 </p>
@@ -306,7 +306,12 @@ export default function Settings() {
         {
           tab === 5 ?         //----------------------Device
             <div className="flex flex-col items-start w-full gap-8">
+              <div className="flex flex-col items-center gap-4 w-full">
+                <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">
+                  Comming Soon!
+                </p>
 
+              </div>
 
             </div> : ""
         }

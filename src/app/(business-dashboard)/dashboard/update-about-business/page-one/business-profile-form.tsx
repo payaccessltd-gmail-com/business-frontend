@@ -145,7 +145,7 @@ export default function BusinessProfileUpdate() {
                         );
                       }}
                     >
-                      <FormControl className="px-3 py-6 mt-20 shadow-none border-gray-20">
+                      <FormControl className="px-3 py-3 mt-20 shadow-none border-gray-20">
                         <SelectTrigger>
                           <SelectValue placeholder="Select business category" />
                         </SelectTrigger>

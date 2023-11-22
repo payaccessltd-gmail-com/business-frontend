@@ -1,28 +1,28 @@
-import React from "react";
+import React from "react"
 
-import { Typography } from "components/ui/Typography";
-import { Button } from "components/ui/button";
-import ReviewDetails from "./review-details";
+import { Typography } from "components/ui/Typography"
+import { Button } from "components/ui/button"
 
-import InformationFrame from "./information-frame";
-import PersonalInformationForm from "./personal-information-form";
-import AccountInformationForm from "./account-information-form";
-import BusinessInformationForm from "./business-information-form";
+import ReviewDetails from "./review-details"
+import InformationFrame from "../../components/information-frame"
+import PersonalInformation from "../personal-information/description"
+import BusinessInformation from "../business-information/description"
+import AccountInformation from "../account-information/description"
 
-type ApprovalFormProps = {
-  prevStep?: () => void;
-  nextStep?: () => void;
-};
+type ApprovalDescriptionProps = {
+  prevStep?: () => void
+  nextStep?: () => void
+}
 
-export default function ApprovalDescription(props: ApprovalFormProps) {
+export default function ApprovalDescription({}: ApprovalDescriptionProps) {
   return (
-    <div>
+    <div className="space-y-4">
       <ReviewDetails />
 
       {/* form display section */}
       <div className="inline-flex flex-col items-start justify-start gap-6 px-10 pt-6 pb-10 bg-white border rounded-lg border-slate-200">
         <div className="flex flex-row items-center justify-between w-full">
-          <Typography className="text-2xl font-bold leading-normal grow shrink basis-0 font-CenturyGothic">
+          <Typography className="text-2xl font-bold leading-normal grow shrink basis-0 font-CenturyGothic text-[#212429]">
             Review Information
           </Typography>
 
@@ -33,18 +33,18 @@ export default function ApprovalDescription(props: ApprovalFormProps) {
         <div className="self-stretch h-px border border-gray-200"></div>
         <div className="flex flex-col items-start justify-start space-y-3 ">
           <InformationFrame title="Personal Information">
-            <PersonalInformationForm />
+            <PersonalInformation />
           </InformationFrame>
 
           <InformationFrame title="Business Information">
-            <BusinessInformationForm />
+            <BusinessInformation />
           </InformationFrame>
 
           <InformationFrame title="Account Information">
-            <AccountInformationForm />
+            <AccountInformation />
           </InformationFrame>
         </div>
       </div>
     </div>
-  );
+  )
 }

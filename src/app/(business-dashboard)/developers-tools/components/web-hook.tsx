@@ -4,7 +4,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -21,7 +21,7 @@ import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 
 import { useMutation } from "@tanstack/react-query";
-import { loginApi } from "api/login";
+import { updateMerchantWebhookandCallbackUrl } from "api/developers-tools";
 
 
 
@@ -30,6 +30,7 @@ let merchantList: any
 let token = ""
 let subject = ""
 let merchantId: any = ""
+let businessName: any = ""
 
 if (
     typeof window !== "undefined" &&
@@ -39,10 +40,9 @@ if (
     subject = window.localStorage.getItem("subject") as any
     merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
     merchantId = merchantList[0].id ? merchantList[0]?.id : null
+    businessName = merchantList[0].businessName
 }
 
-// console.log(merchantList[0]?.businessName)
-// const businessName = merchantList[0]?.businessName
 
 const WebHookSchema = z.object({
     webHookUrl: z.string(),
@@ -50,17 +50,22 @@ const WebHookSchema = z.object({
     // payItemId: z.string(),
 });
 
-export default function WebHook() {
+export default function WebHook({ data }: any) {
     const router = useRouter();
     const { toast } = useToast();
     const webHookForm = useForm<z.infer<typeof WebHookSchema>>({
         resolver: zodResolver(WebHookSchema),
         defaultValues: {
-            webHookUrl: "",
-            callbackUrl: "",
+            webHookUrl: data?.webhookUrl,
+            callbackUrl: data?.callbackUrl,
             // payItemId: "",
         },
     });
+
+    useEffect(() => {
+        webHookForm.setValue("webHookUrl", data?.webhookUrl)
+        webHookForm.setValue("callbackUrl", data?.callbackUrl)
+    }, [data?.webhookUrl, data?.callbackUrl])
 
     const handleCopyToClipboard = (e: any) => {
         if (e.target.id === "webHookUrl") {
@@ -134,66 +139,62 @@ export default function WebHook() {
 
     };
 
-    // const loginMutation = useMutation({
-    //     mutationFn:,
-    //     onSuccess: async (data) => {
-    //         const responseData: API.LoginResponse =
-    //             (await data.json()) as API.LoginResponse;
+    const webHookMutation = useMutation({
+        mutationFn: updateMerchantWebhookandCallbackUrl,
+        onSuccess: async (data) => {
+            const responseData: API.StatusReponse =
+                (await data.json()) as API.StatusReponse;
 
-    //         if (!responseData?.subject && !responseData?.token) {
-    //             setLoading(false)
-    //             toast({
-    //                 variant: "destructive",
-    //                 title: "",
-    //                 description: "Error Signin in",
-    //             });
-    //         } else if (responseData?.token && responseData?.token) {
-    //             setLoading(false)
+            if (responseData?.statusCode === "1") {
 
-    //             toast({
-    //                 variant: "default",
-    //                 title: "",
-    //                 description: "Signin successful",
-    //                 className:
-    //                     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-    //             });
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Error updating webhook",
+                });
+            } else if (responseData?.statusCode === "0") {
+                toast({
+                    variant: "default",
+                    title: "Success",
+                    description: "Webhook updated",
+                    className:
+                        "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+                });
+                if (typeof window) {
+                    router.push(`/developers-tools`);
+                }
 
-    //             localStorage.setItem("subject", responseData?.subject as string);
-    //             localStorage.setItem(
-    //                 "merchantList",
-    //                 JSON.stringify(responseData?.merchantList),
-    //             );
-    //             localStorage.setItem("token", responseData?.token as string);
+            } else {
 
-    //             if (typeof window) {
-    //                 router.push(`/dashboard`);
-    //             }
-    //             webHookForm.reset();
-    //         } else {
-    //             setLoading(false)
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Error updating webhook",
+                });
+            }
+        },
 
-    //             toast({
-    //                 variant: "destructive",
-    //                 title: "",
-    //                 description: "Error Signin in",
-    //             });
-    //         }
-    //     },
+        onError: (e) => {
 
-    //     onError: (e) => {
-    //         setLoading(false)
-
-    //         toast({
-    //             variant: "destructive",
-    //             title: `${e}`,
-    //             description: "error",
-    //         });
-    //     },
-    // });
+            console.log(e)
+            toast({
+                variant: "destructive",
+                title: "error",
+                description: `${e}`,
+            });
+        },
+    });
 
     async function onSubmit(values: z.infer<typeof WebHookSchema>) {
-        // setLoading(true)
-        // loginMutation.mutate(values);
+        console.log(values)
+        const requestData = {
+            webhookUrl: webHookForm.getValues("webHookUrl"),
+            callbackUrl: webHookForm.getValues("callbackUrl"),
+            token,
+            merchantId,
+        }
+        // console.log(requestData)
+        webHookMutation.mutate(requestData);
     }
 
     return (
@@ -205,10 +206,9 @@ export default function WebHook() {
 
                 <div className=" w-full flex flex-col items-center gap-2 mb-6">
                     <p className="text-[#0C394B] text-[16px] font-[700] leading-6">
-                        Wed hook for Goodness oil & Gas
+                        {`Web hook for ${data?.businessName}`}
                     </p>
-                        {/* {`Web hook for ${businessName ? businessName : ""}`} */}
-                    
+
                     <p className="text-[#0C394B] text-[14px] font-[400] leading-5">
                         Add a web hook endpoint
                     </p>
@@ -267,6 +267,11 @@ export default function WebHook() {
                         </FormItem>
                     )}
                 />
+                <Button
+                    className="mt-[24px] rounded-[8px] w-[40%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
+                >
+                    Save changes
+                </Button>
                 {/* <FormField
                     control={webHookForm.control}
                     name="payItemId"

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "components/ui/button";
@@ -22,7 +22,7 @@ import { format } from "date-fns";
 import { cn } from "lib/utils";
 import { Calendar } from "components/ui/calendar";
 import { HiOutlineCloudUpload } from "react-icons/hi";
-import { FiPlus } from "react-icons/fi";
+import { FiMinus, FiPlus } from "react-icons/fi";
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import SimpleRecipt from "./simple-form-recipt";
@@ -71,12 +71,23 @@ export default function SimpleForm() {
     const [popup, setPopup] = useState(false);
     const [modalData, setModalData] = useState<any>("");
     // const [loading, setLoading] = useState(false);
-    const [inputField, setInputField] = useState<any[]>([
+    const [inputField, setInputField] = useState<any[] | undefined>([
         { label: "Customer Email" },
     ]);
+    const [minusField, setMinusField] = useState<any[] | undefined>()
 
 
+    useEffect(() => {
+        if (minusField === undefined || minusField.length < 1) {
+            console.log("blocked at use effect")
+            return
+        } else {
+            setInputField(minusField)
+            console.log(inputField)
+        }
 
+
+    }, [minusField])
 
     let simpleForm = useForm<z.infer<typeof SimpleSchema>>({
         resolver: zodResolver(SimpleSchema),
@@ -121,10 +132,19 @@ export default function SimpleForm() {
         setReceipt((value) => !value);
     };
     const addInputField = () => {
-        if (inputField.length === 3) {
+        if (inputField?.length === 3) {
             return;
         }
-        setInputField([...inputField, { label: "" }]);
+        setInputField([...inputField as any, { label: "" }]);
+    };
+    const subtractInputField = () => {
+        if (inputField?.length === 1) {
+            console.log("blocked")
+            return;
+        }
+        const newfieldValues = inputField
+        console.log(newfieldValues?.slice(0, -1))
+        setMinusField(newfieldValues?.slice(0, -1));
     };
     const simpleFormMutation = useMutation({
         mutationFn: simpleInvoice,
@@ -249,7 +269,7 @@ export default function SimpleForm() {
                         </FormItem>
                     )}
                 />
-                {inputField.map(({ label }, id) => {
+                {inputField?.map(({ label }, id) => {
                     const nameString: any = `email${id + 1}`;
                     return (
                         <FormField
@@ -276,13 +296,22 @@ export default function SimpleForm() {
                         />
                     );
                 })}
-                <p
-                    onClick={() => addInputField()}
-                    className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
-                >
-                    <FiPlus className="text-[#1D8EBB] text-[24px]" />
-                    Add additional email address
-                </p>
+                <div className="flex flex-row items-center justify-between w-full">
+                    <p
+                        onClick={() => addInputField()}
+                        className="self-start cursor-pointer text-[#1D8EBB] text-[16px] leading-normal font-[400] flex flex-row items-center gap-[6px]"
+                    >
+                        <FiPlus className="text-[#1D8EBB] text-[24px]" />
+                        Add additional email address
+                    </p>
+
+                    {inputField?.length === 1 ? "" : <FiMinus
+                        onClick={() => subtractInputField()}
+                        className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
+                    />}
+
+                </div>
+
                 <FormField
                     control={simpleForm.control}
                     name="dueDate"

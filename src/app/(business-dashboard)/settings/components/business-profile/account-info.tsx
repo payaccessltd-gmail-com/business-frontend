@@ -143,7 +143,7 @@ export default function AccountInfoForm() {
         <Form {...businessInfoForm}>
             <form
                 onSubmit={businessInfoForm.handleSubmit(onSubmit)}
-                className="mb-5 p-[40px] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
+                className="mb-5 w-[60%] p-[40px] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
             >
 
                 <FormField
@@ -151,23 +151,23 @@ export default function AccountInfoForm() {
                     name="businessBvn"
                     render={({ field }) => (
                         <FormItem className="w-full flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    BVN
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        type="number"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter BVN"
-                                        {...field}
-                                        onChange={(event) =>
-                                            field.onChange(Number(event.target.value))
-                                        }
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                BVN
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    type="number"
+                                    className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder="Enter BVN"
+                                    {...field}
+                                    onChange={(event) =>
+                                        field.onChange(Number(event.target.value))
+                                    }
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -179,23 +179,23 @@ export default function AccountInfoForm() {
                     name="businessAccountNumber"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Account Number
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        type="number"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter account number"
-                                        {...field}
-                                        onChange={(event) =>
-                                            field.onChange(Number(event.target.value))
-                                        }
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Account Number
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    type="number"
+                                    className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder="Enter account number"
+                                    {...field}
+                                    onChange={(event) =>
+                                        field.onChange(Number(event.target.value))
+                                    }
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -204,20 +204,20 @@ export default function AccountInfoForm() {
                     name="businessBankName"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Bank Name
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter Bank Name"
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Bank Name
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    type="text"
+                                    className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder="Enter Bank Name"
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -226,20 +226,20 @@ export default function AccountInfoForm() {
                     name="businessAccountName"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6 flex flex-col">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
-                                <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-                                    Account Name
-                                </FormLabel>
-                                <FormControl className="w-full bg-[red]">
-                                    <Input
-                                        type="text"
-                                        className="border-[#D6D6D6] rounded-[10px] min-h-[66px] shadow-none bg-white w-[307px] p-2 "
-                                        placeholder="Enter Account Name"
-                                        {...field}
-                                    />
-                                </FormControl>
-                            </div>
-                            <FormMessage className="self-end" />
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
+                            <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
+                                Account Name
+                            </FormLabel>
+                            <FormControl className="w-full bg-[red]">
+                                <Input
+                                    type="text"
+                                    className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                                    placeholder="Enter Account Name"
+                                    {...field}
+                                />
+                            </FormControl>
+                            {/* </div> */}
+                            <FormMessage className="" />
                         </FormItem>
                     )}
                 />
@@ -248,7 +248,7 @@ export default function AccountInfoForm() {
 
                 <Button
                     // disabled={loading}
-                    className="mt-[32px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
+                    className="mt-[32px] min-h-[48px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
                     type="submit"
                 // onClick={(e) => handleModal(e)}
                 >

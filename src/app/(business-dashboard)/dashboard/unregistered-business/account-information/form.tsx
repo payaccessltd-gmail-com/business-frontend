@@ -36,10 +36,10 @@ type AccountInfoFormProps = {
 const accInfoFormSchema = zod.object({
   merchantId: zod.number(),
   businessBvn: zod.number(),
-  businessBankName: zod.string().min(6, {
-    message: "First name must be at least 2 characters.",
+  businessBankName: zod.string().min(3, {
+    message: "First name must be at least 3 characters.",
   }),
-  businessAccountNumber: zod.number().max(11).min(11, {
+  businessAccountNumber: zod.number().min(11, {
     message: "Account number should be at least 11 characters.",
   }),
 
