@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 export const metadata: Metadata = {
   title: "Get Started",
   description: "Business page as it should be",
@@ -7,3 +8,4 @@ export const metadata: Metadata = {
 export default function POS() {
   return <main>coming soon</main>;
 }
+

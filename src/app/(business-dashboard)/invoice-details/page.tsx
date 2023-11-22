@@ -11,12 +11,13 @@ import logo from "assets/img/invoice/default.png"
 import { useToast } from "components/ui/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query"
-import { deleteInvoice, markAsPaid } from "api/invoice";
+import { deleteInvoice, markAsPaid, sendReminder } from "api/invoice";
 import { useMutation } from "@tanstack/react-query";
 import { getInvoiceDetails, getInvoiceBreakdown } from "api/invoice";
 import { baseImgUrl } from "api/baseUrl"
 import DeletePopup from "./components/delete-popup";
 import MarkAsPaidPopup from "./components/mark-as-paid";
+import ReminderPopup from "./components/send-reminder-popup";
 
 
 
@@ -43,6 +44,7 @@ export default function GenerateInvoice() {
   const [deleteId, setDeleteId] = useState<string | undefined | null>("")
   const [deletePopup, setPopup] = useState<boolean>(false)
   const [paidPopup, setPaidPopup] = useState<boolean>(false)
+  const [reminder, setReminder] = useState<boolean>(false)
 
   const searchParams = useSearchParams();
   const invoiceIdValue = searchParams?.get("id");
@@ -59,7 +61,7 @@ export default function GenerateInvoice() {
   const breakDownData: any = useQuery(['getInvoiceBreakdown', requestData], () => getInvoiceBreakdown(requestData));
 
   console.log(detailData?.data?.responseObject)
-  console.log(breakDownData?.data?.responseObject)
+  // console.log(breakDownData?.data?.responseObject)
   const breakDown = breakDownData?.data?.responseObject
   const fillData = detailData?.data?.responseObject
   const sendDate = new Date(fillData?.createdAt).toDateString().split(" ");
@@ -87,27 +89,27 @@ export default function GenerateInvoice() {
     if (breakDown) {
       setDiscount(((discountPercent) / 100) * amountValue)
     }
-  }, [amountValue])
+  }, [amountValue, discountPercent])
 
   useEffect(() => {
     if (breakDown) {
       setSubTotal(amountValue - discount)
     }
-  }, [discount])
+  }, [discount, amountValue])
   useEffect(() => {
     if (breakDown) {
       setTax(subTotal * ((taxPercent) / 100))
     }
-  }, [subTotal])
+  }, [subTotal, taxPercent])
   useEffect(() => {
     if (breakDown) {
       setGrandTotal(subTotal - tax + (shipping))
     }
-  }, [tax])
+  }, [tax, subTotal, shipping])
 
 
 
-  // console.log(tax, discount)
+  // console.log(shipping)
 
 
   const { toast } = useToast();
@@ -274,6 +276,57 @@ export default function GenerateInvoice() {
   }
 
 
+  const reminderMutation = useMutation({
+    mutationFn: sendReminder,
+    onSuccess: async (data: any) => {
+      const responseData: API.InvoiceStatusReponse =
+        (await data.json()) as API.InvoiceStatusReponse;
+
+      if (responseData?.statusCode === "1") {
+        setReminder(false)
+        toast({
+          variant: "destructive",
+          title: "",
+          description: "Error Sending Reminder",
+        });
+      }
+
+      if (responseData?.statusCode === "0") {
+        setReminder(false)
+        toast({
+          variant: "default",
+          title: "Reminder Sent",
+          description: "Reminder Sent Successfully",
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        });
+
+      }
+    },
+
+    onError: (e) => {
+      setReminder(false)
+      console.log(e);
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      });
+    },
+  });
+
+  const handleReminder = () => {
+    const requestData = {
+      token,
+      merchantId,
+      invoiceId: fillData?.id?.toString()
+    }
+    // console.log(typeof requestData.invoiceId)
+    reminderMutation.mutate(requestData as any);
+
+  }
+
+
 
   return (
     <div className="fixed top-0 left-0 flex flex-col w-screen h-screen py-[85px] pr-[60px] pl-[100px] bg-[white]">
@@ -417,6 +470,7 @@ export default function GenerateInvoice() {
                 {/* 20min ago. */}
               </p>
               <Button
+                onClick={() => setReminder(true)}
                 className="min-h-[48px] font-[700] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
               >
                 Send another reminder
@@ -430,7 +484,7 @@ export default function GenerateInvoice() {
 
 
 
-            {/* ////--------------------payment description end------------ */}
+
             <div className="flex flex-col items-center w-full gap-4 border-b border-dashed border-[#999999] pb-6">
               <div className="flex flex-row items-center justify-between w-full">
                 <p className="text-[#555555] text-[16px] leading-normal font-[700]">
@@ -445,63 +499,63 @@ export default function GenerateInvoice() {
                   Receive payments from your clients using our invoice.
                 </p>
                 <p className="text-[#0C394B] text-[20px] leading-[22px] font-[600]">
-                  ₦ {amountValue ? amountValue : "undefined"}
+                  ₦ {fillData?.invoiceType === "STANDARD" ? amountValue : fillData?.amount}
                 </p>
               </div>
             </div>
+            {/* ////--------------------payment description end------------ */}
+
+
             {/* ////--------------------subtotal and task------------ */}
-            <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
-              <div className="flex flex-col items-center w-full gap-4">
-                <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
-                    Subtotal
-                  </p>
-                  <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    NGN {subTotal ? subTotal : "undefined"}
-                  </p>
+            {fillData?.invoiceType === "STANDARD" ?
+              <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center w-full gap-4">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                      Subtotal
+                    </p>
+                    <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                      NGN {subTotal}
+                    </p>
+                  </div>
+
                 </div>
-                {/* <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                    Discount
-                  </p>
-                  <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    -NGN 50.00
-                  </p>
-                </div> */}
-              </div>
-              <div className="flex flex-col items-center w-full gap-4">
-                <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
-                    Tax
-                  </p>
-                  <p className="text-[#D92D20] text-[20px] leading-normal font-[700]">
-                    -NGN {tax}
-                  </p>
-                </div>
-                <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                    Discount
-                  </p>
-                  <p className="text-[#25AF36] text-[20px] leading-normal font-[400]">
-                    +NGN {discount}
-                  </p>
+                <div className="flex flex-col items-center w-full gap-4">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                      Tax
+                    </p>
+                    <p className="text-[#D92D20] text-[20px] leading-normal font-[700]">
+                      -NGN {tax}
+                    </p>
+                  </div>
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#115570] text-[16px] leading-normal font-[400]">
+                      Discount
+                    </p>
+                    <p className="text-[#25AF36] text-[20px] leading-normal font-[400]">
+                      +NGN {discount}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            {/* ////--------------------subtotal and task ending------------ */}
-            <div className="flex flex-row items-center justify-between w-full mt-6">
-              <p className="text-[#555555] text-[16px] leading-normal font-[700]">
-                Grand Total
-              </p>
-              <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                NGN {grandTotal ? grandTotal : "undefined"}
-              </p>
-            </div>
+              : ""}
+            {fillData?.invoiceType === "STANDARD" ?
+              <div className="flex flex-row items-center justify-between w-full mt-6">
+                <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                  Grand Total
+                </p>
+                <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                  NGN {grandTotal}
+                </p>
+              </div>
+              : ""}
           </div>
         </div>
       </ScrollArea>
       {deletePopup ? <DeletePopup setPopup={setPopup} handleDelete={handleDelete} /> : ""}
       {paidPopup ? <MarkAsPaidPopup setPaidPopup={setPaidPopup} handlePaid={handlePaid} /> : ""}
+      {reminder ? <ReminderPopup value={fillData?.customerEmail} setReminder={setReminder} handleReminder={handleReminder} /> : ""}
     </div>
   );
 }

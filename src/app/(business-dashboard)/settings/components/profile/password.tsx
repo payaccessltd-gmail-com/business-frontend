@@ -157,19 +157,19 @@ export default function PasswordForm() {
                     name="currentPassword"
                     render={({ field }) => (
                         <FormItem className="w-full">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
                                     Current password
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="password"
-                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                         placeholder="Enter password"
                                         {...field}
                                     />
                                 </FormControl>
-                            </div>
+                            {/* </div> */}
                             <FormMessage />
                         </FormItem>
                     )}
@@ -179,19 +179,19 @@ export default function PasswordForm() {
                     name="newPassword"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
                                     New password
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="password"
-                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                         placeholder="Enter password"
                                         {...field}
                                     />
                                 </FormControl>
-                            </div>
+                            {/* </div> */}
                             <FormMessage />
                         </FormItem>
                     )}
@@ -202,19 +202,19 @@ export default function PasswordForm() {
                     name="confirmPassword"
                     render={({ field }) => (
                         <FormItem className="w-full mt-6">
-                            <div className="w-full flex flex-row items-center justify-end gap-4">
+                            {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
                                     Confirm password
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
                                         type="password"
-                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-[307px] p-2 "
+                                        className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                         placeholder="Enter password"
                                         {...field}
                                     />
                                 </FormControl>
-                            </div>
+                            {/* </div> */}
                             <FormMessage />
                         </FormItem>
                     )}
