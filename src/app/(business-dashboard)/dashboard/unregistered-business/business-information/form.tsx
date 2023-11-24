@@ -1,42 +1,28 @@
-"use client";
+"use client"
 
-import { DevTool } from "@hookform/devtools";
-import * as zod from "zod";
-import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { HiOutlineCloudUpload } from "react-icons/hi";
-import { useForm } from "react-hook-form";
+import { DevTool } from "@hookform/devtools"
+import * as zod from "zod"
+import { useEffect } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { HiOutlineCloudUpload } from "react-icons/hi"
+import { useForm } from "react-hook-form"
 
 // import {} from "api/registration";
-import { Button } from "components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import { Input } from "components/ui/input";
-import { Typography } from "components/ui/Typography";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
-import { Textarea } from "components/ui/textarea";
-import { useToast } from "components/ui/use-toast";
-import { useHydrateStore, useMerchantStore } from "store";
-import { updateMerchantBusinessData } from "api/merchant-management";
+import { Button } from "components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Input } from "components/ui/input"
+import { Typography } from "components/ui/Typography"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { Textarea } from "components/ui/textarea"
+import { useToast } from "components/ui/use-toast"
+import { useHydrateStore, useMerchantStore } from "store"
+import { updateMerchantBusinessData } from "api/merchant-management"
 
 type BusinessInfoFormProps = {
-  prevStep?: () => void;
-  nextStep?: () => void;
-};
+  prevStep?: () => void
+  nextStep?: () => void
+}
 
 const businessInfoFormSchema = zod.object({
   merchantId: zod.number(),
@@ -59,30 +45,21 @@ const businessInfoFormSchema = zod.object({
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
-});
+})
 
-export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
-  let token = "";
+export default function BusinessInformationForm(props: BusinessInfoFormProps) {
+  let token = ""
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    token = localStorage.getItem("token") as string;
+  if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+    token = localStorage.getItem("token") as string
   }
 
   // hideData = true;
-  const { toast } = useToast();
+  const { toast } = useToast()
 
-  const currentMerchant = useHydrateStore(
-    useMerchantStore,
-    (state) => state.currentMerchant,
-  );
+  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
 
-  const currentMerchantDetails = useHydrateStore(
-    useMerchantStore,
-    (state) => state.currentMerchantDetails,
-  );
+  const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
 
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {
@@ -90,62 +67,60 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
       merchantId: currentMerchant?.id,
     } as any,
     resolver: zodResolver(businessInfoFormSchema),
-  });
+  })
 
   const updateBusinessInfoMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) =>
-      updateMerchantBusinessData(values, token),
+    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) => updateMerchantBusinessData(values, token),
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse =
-        (await data.json()) as API.StatusReponse;
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
-        });
+        })
       } else if (responseData?.statusCode === "0" && typeof window) {
-        businessInfoForm.reset();
+        businessInfoForm.reset()
 
         //setEnableEdit(false);
-        props.nextStep && props.nextStep();
+        props.nextStep && props.nextStep()
 
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
-        });
+        })
       } else {
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
-        });
+        })
       }
     },
 
     onError: (e: any) => {
-      console.log({ e });
+      console.log({ e })
       // toast({
       //   variant: "destructive",
       //   title: "",
       //   description: e,
       // });
     },
-  });
+  })
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
     if (typeof values.businessLogoFile === "string") {
-      values.businessLogoFile = undefined;
+      values.businessLogoFile = undefined
     }
 
-    updateBusinessInfoMutation.mutate(values as any);
-  };
+    updateBusinessInfoMutation.mutate(values as any)
+  }
 
   const onErrror = (error: any) => {
-    console.log(error);
-  };
+    console.log(error)
+  }
 
   useEffect(() => {
     if (currentMerchantDetails) {
@@ -159,7 +134,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
         businessState,
         businessWebsite,
         businessLogo: businessLogoFile,
-      } = currentMerchantDetails as API.MerchantDetails;
+      } = currentMerchantDetails as API.MerchantDetails
       return businessInfoForm.reset({
         businessName,
         businessDescription,
@@ -170,42 +145,29 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
         businessState,
         businessWebsite,
         businessLogoFile,
-      } as any);
+      } as any)
     }
-  }, [currentMerchantDetails]);
+  }, [currentMerchantDetails])
 
   useEffect(() => {
     if (currentMerchant?.id) {
-      businessInfoForm.setValue("merchantId", Number(currentMerchant?.id));
+      businessInfoForm.setValue("merchantId", Number(currentMerchant?.id))
     }
-  }, [currentMerchant?.id, currentMerchantDetails]);
+  }, [currentMerchant?.id, currentMerchantDetails])
 
   return (
     <Form {...businessInfoForm}>
-      <form
-        onSubmit={businessInfoForm.handleSubmit(onSubmit, onErrror)}
-        className="flex flex-col space-y-8 border-gray-10"
-      >
+      <form onSubmit={businessInfoForm.handleSubmit(onSubmit, onErrror)} className="flex flex-col space-y-8 border-gray-10">
         {/* merchant id field is hidden but it's value is sent to the api */}
         <FormField
           control={businessInfoForm.control}
-          disabled={true}
           name="merchantId"
           defaultValue={currentMerchant?.id}
           render={({ field }) => (
             <FormItem className="hidden w-full">
-              <FormLabel className="text-sm font-normal text-gray-50">
-                Merchant ID
-              </FormLabel>
+              <FormLabel className="text-sm font-normal text-gray-50">Merchant ID</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  icon="show"
-                  className="min-h-[48px]"
-                  placeholder="Enter phone number"
-                  {...field}
-                  value={currentMerchant?.id}
-                />
+                <Input type="number" icon="show" className="min-h-[48px]" placeholder="Enter phone number" {...field} value={currentMerchant?.id} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -214,7 +176,6 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
 
         <FormField
           name="businessName"
-          disabled
           control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem className="w-full">
@@ -234,10 +195,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
             <FormItem>
               <FormLabel>Business Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  {...field}
-                />
+                <Textarea placeholder="Tell us a little bit about yourself" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -267,11 +225,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
               <FormItem className="w-full">
                 <FormLabel>Business mobile number</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter businesss mobile number"
-                    {...field}
-                    type="number"
-                  />
+                  <Input placeholder="Enter businesss mobile number" {...field} type="number" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -314,10 +268,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
@@ -364,8 +315,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
                     (field.value as any)
                   ) : (
                     <>
-                      Drag file here to upload document or{" "}
-                      <span className="text-[#6B7280]">choose file</span>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
                     </>
                   )}
                 </Typography>
@@ -377,12 +327,9 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
                   name={field.name}
                   className="hidden"
                   onBlur={field.onBlur}
-                  disabled={field.disabled}
                   accept=".jpg, .jpeg, .png, .svg, .gif"
                   placeholder="Please upload identification document"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
               </FormControl>
               <FormMessage />
@@ -440,5 +387,5 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
       </form>
       <DevTool control={businessInfoForm.control} />
     </Form>
-  );
+  )
 }

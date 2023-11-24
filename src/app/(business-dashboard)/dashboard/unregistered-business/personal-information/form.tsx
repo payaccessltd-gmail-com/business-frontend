@@ -1,45 +1,31 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import { DevTool } from "@hookform/devtools";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { format, parseISO } from "date-fns";
-import { useForm } from "react-hook-form";
-import { HiOutlineCloudUpload } from "react-icons/hi";
-import { LuCalendar } from "react-icons/lu";
-import * as zod from "zod";
+import { useEffect } from "react"
+import { DevTool } from "@hookform/devtools"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { format, parseISO } from "date-fns"
+import { useForm } from "react-hook-form"
+import { HiOutlineCloudUpload } from "react-icons/hi"
+import { LuCalendar } from "react-icons/lu"
+import * as zod from "zod"
 
-import { Button } from "components/ui/button";
-import { Calendar } from "components/ui/calendar";
-import { useToast } from "components/ui/use-toast";
-import { Typography } from "components/ui/Typography";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import { Input } from "components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
-import { cn } from "lib/utils";
-import { useHydrateStore, useMerchantStore, useUserStore } from "store";
-import { updateMerchantBioData } from "api/merchant-management";
+import { Button } from "components/ui/button"
+import { Calendar } from "components/ui/calendar"
+import { useToast } from "components/ui/use-toast"
+import { Typography } from "components/ui/Typography"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Input } from "components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { cn } from "lib/utils"
+import { useHydrateStore, useMerchantStore, useUserStore } from "store"
+import { updateMerchantBioData } from "api/merchant-management"
 
 type PersonalInfoFormProps = {
-  prevStep?: () => void;
-  nextStep?: () => void;
-};
+  prevStep?: () => void
+  nextStep?: () => void
+}
 
 const personalInfoFormSchema = zod.object({
   emailAddress: zod.string().email(),
@@ -59,62 +45,53 @@ const personalInfoFormSchema = zod.object({
     zod.literal("INTL_PASSPORT"),
     zod.literal("VOTERS_CARD"),
   ]),
-  identificationDocumentPath:
-    zod.custom<File>().optional() || zod.string().optional(),
-});
+  identificationDocumentPath: zod.custom<File>().optional() || zod.string().optional(),
+})
 
 export default function PersonalInformationForm(props: PersonalInfoFormProps) {
-  let token = "";
+  let token = ""
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    token = localStorage.getItem("token") as string;
+  if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+    token = localStorage.getItem("token") as string
   }
 
-  const { toast } = useToast();
-  const currentMerchant = useHydrateStore(
-    useMerchantStore,
-    (state) => state.currentMerchant,
-  );
+  const { toast } = useToast()
+  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
 
-  const userDetail = useHydrateStore(useUserStore, (state) => state.user);
+  const userDetail = useHydrateStore(useUserStore, (state) => state.user)
 
   const personalInfoForm = useForm<zod.infer<typeof personalInfoFormSchema>>({
     defaultValues: userDetail as any,
     resolver: zodResolver(personalInfoFormSchema),
-  });
+  })
 
   const updatePersonalInfoMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBioDataDTO) =>
-      updateMerchantBioData(values, token),
+    mutationFn: (values: API.UpdateMerchantBioDataDTO) => updateMerchantBioData(values, token),
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse =
-        (await data.json()) as API.StatusReponse;
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
-        });
+        })
       } else if (responseData?.statusCode === "0" && typeof window) {
-        personalInfoForm.reset();
+        personalInfoForm.reset()
 
-        props.nextStep && props.nextStep();
+        props.nextStep && props.nextStep()
 
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
-        });
+        })
       } else {
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
-        });
+        })
       }
     },
 
@@ -123,26 +100,18 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
         variant: "destructive",
         title: "",
         description: e,
-      });
+      })
     },
-  });
+  })
 
   const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
-    updatePersonalInfoMutation.mutate(values as any);
-  };
+    updatePersonalInfoMutation.mutate(values as any)
+  }
 
   useEffect(() => {
     if (userDetail) {
-      const {
-        firstName,
-        lastName,
-        gender,
-        emailAddress,
-        dateOfBirth,
-        identificationDocument,
-        identificationNumber,
-        identificationDocumentPath,
-      } = userDetail as API.UserDetails;
+      const { firstName, lastName, gender, emailAddress, dateOfBirth, identificationDocument, identificationNumber, identificationDocumentPath } =
+        userDetail as API.UserDetails
       return personalInfoForm.reset({
         firstName,
         lastName,
@@ -152,35 +121,27 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
         identificationDocument,
         identificationNumber,
         identificationDocumentPath,
-      } as any);
+      } as any)
     }
-  }, [userDetail]);
+  }, [userDetail])
 
   useEffect(() => {
     if (currentMerchant?.id) {
-      personalInfoForm.setValue("merchantId", Number(currentMerchant?.id));
+      personalInfoForm.setValue("merchantId", Number(currentMerchant?.id))
     }
-  }, [currentMerchant?.id]);
+  }, [currentMerchant?.id])
 
-  return ( 
-    
+  return (
     <Form {...personalInfoForm}>
-      <form
-        id="personalInformation"
-        onSubmit={personalInfoForm.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-8 border-gray-10"
-      >
+      <form id="personalInformation" onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8 border-gray-10">
         {/* merchant id field is hidden but it's value is sent to the api */}
         <FormField
           control={personalInfoForm.control}
-          disabled={true}
           name="merchantId"
           defaultValue={currentMerchant?.id}
           render={({ field }) => (
             <FormItem className="hidden w-full">
-              <FormLabel className="text-sm font-normal text-gray-50">
-                Merchant ID
-              </FormLabel>
+              <FormLabel className="text-sm font-normal text-gray-50">Merchant ID</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -189,6 +150,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                   placeholder="Enter phone number"
                   {...field}
                   value={currentMerchant?.id}
+                  disabled={true}
                 />
               </FormControl>
               <FormMessage />
@@ -199,7 +161,6 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
         <div className="flex flex-row gap-4">
           <FormField
             name="firstName"
-            disabled={true}
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
@@ -214,13 +175,12 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
 
           <FormField
             name="lastName"
-            disabled={true}
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter last name" {...field} />
+                  <Input placeholder="Enter last name" {...field} disabled={true} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -229,7 +189,6 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
         </div>
 
         <FormField
-          disabled
           name="emailAddress"
           control={personalInfoForm.control}
           render={({ field }) => (
@@ -250,7 +209,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Gender</FormLabel>
-                <Select onValueChange={field.onChange} {...field}>
+                <Select onValueChange={field.onChange as any} {...field}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select gender" />
@@ -277,17 +236,10 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                     <FormControl>
                       <Button
                         variant={"outline"}
-                        className={cn(
-                          "flex flex-row items-center justify-start font-normal",
-                          !field?.value && "text-muted-foreground",
-                        )}
+                        className={cn("flex flex-row items-center justify-start font-normal", !field?.value && "text-muted-foreground")}
                       >
                         <LuCalendar className="w-4 h-4 mr-2" />
-                        {field?.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>DD/MM/YY</span>
-                        )}
+                        {field?.value ? format(field.value, "PPP") : <span>DD/MM/YY</span>}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -301,10 +253,8 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                       // toYear={2023}
                       selected={field.value}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
+                      onSelect={field.onChange as any}
+                      disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                     />
                   </PopoverContent>
                 </Popover>
@@ -321,23 +271,17 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Identification Document</FormLabel>
-              <Select onValueChange={field.onChange} {...field}>
+              <Select onValueChange={field.onChange as any} {...field}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select identification document" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="DRIVERS_LICENCE">
-                    Drivers lincenses
-                  </SelectItem>
+                  <SelectItem value="DRIVERS_LICENCE">Drivers lincenses</SelectItem>
                   <SelectItem value="NATIONAL_ID">National ID</SelectItem>
-                  <SelectItem value="INTL_PASSPORT">
-                    International passport
-                  </SelectItem>
-                  <SelectItem value="VOTERS_CARD">
-                    Voter&apos;`s card
-                  </SelectItem>
+                  <SelectItem value="INTL_PASSPORT">International passport</SelectItem>
+                  <SelectItem value="VOTERS_CARD">Voter&apos;`s card</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -350,9 +294,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[#555555]">
-                Identification Number
-              </FormLabel>
+              <FormLabel className="text-[#555555]">Identification Number</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="Enter identification number" />
               </FormControl>
@@ -366,9 +308,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>
-                Please upload identification document.
-              </FormDescription>
+              <FormDescription>Please upload identification document.</FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
@@ -378,8 +318,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                     (field.value as any)
                   ) : (
                     <>
-                      Drag file here to upload document or{" "}
-                      <span className="text-[#6B7280]">choose file</span>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
                     </>
                   )}
                 </Typography>
@@ -391,12 +330,10 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                   name={field.name}
                   className="hidden"
                   onBlur={field.onBlur}
-                  disabled={field.disabled}
+                  disabled={true}
                   accept=".jpg, .jpeg, .png, .svg, .gif"
                   placeholder="Please upload identification document"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
               </FormControl>
               <FormMessage />
@@ -414,5 +351,5 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
       </form>
       <DevTool control={personalInfoForm.control} />
     </Form>
-  );
+  )
 }

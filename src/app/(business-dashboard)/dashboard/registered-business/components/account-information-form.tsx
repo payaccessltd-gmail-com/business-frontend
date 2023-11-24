@@ -1,30 +1,16 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import * as zod from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
+import * as zod from "zod"
 
-import { updateMerchantBusinessBankAccountData } from "api/merchant-management";
-import { Button } from "components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import { Input } from "components/ui/input";
+import { updateMerchantBusinessBankAccountData } from "api/merchant-management"
+import { Button } from "components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Input } from "components/ui/input"
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 
 const accInfoFormSchema = zod.object({
   merchantId: zod.number(),
@@ -40,47 +26,40 @@ const accInfoFormSchema = zod.object({
   businessAccountName: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
-});
+})
 
 export default function AccountInformationForm() {
-  let token = "";
+  let token = ""
   const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(accInfoFormSchema),
-  });
+  })
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    token = localStorage.getItem("token") as string;
+  if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+    token = localStorage.getItem("token") as string
   }
 
   const updateBusinessBankDataMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) =>
-      updateMerchantBusinessBankAccountData(values, token),
+    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) => updateMerchantBusinessBankAccountData(values, token),
     onSuccess: (data, variables, context) => {
-      console.log({ data, variables, context });
+      console.log({ data, variables, context })
     },
 
     onError: (error, variables, context) => {
-      console.log({ error, variables, context });
+      console.log({ error, variables, context })
     },
     onMutate: () => {
-      return null;
+      return null
     },
-  });
+  })
 
   const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-    updateBusinessBankDataMutation.mutate(values);
-  };
+    updateBusinessBankDataMutation.mutate(values as any)
+  }
 
   return (
     <Form {...acctInfoForm}>
-      <form
-        onSubmit={acctInfoForm.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-8"
-      >
+      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8">
         <FormField
           name="merchantId"
           control={acctInfoForm.control}
@@ -91,9 +70,7 @@ export default function AccountInformationForm() {
                 <Input placeholder="Enter BVN" {...field} />
               </FormControl>
 
-              <FormDescription>
-                To get your BVN dial *565*0# on your registered mobile number.
-              </FormDescription>
+              <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -109,9 +86,7 @@ export default function AccountInformationForm() {
                 <Input placeholder="Enter BVN" {...field} />
               </FormControl>
 
-              <FormDescription>
-                To get your BVN dial *565*0# on your registered mobile number.
-              </FormDescription>
+              <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -124,10 +99,7 @@ export default function AccountInformationForm() {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Bank name</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Enter bank" />
@@ -172,14 +144,10 @@ export default function AccountInformationForm() {
           )}
         />
 
-        <Button
-          className="h-[48px] w-[70%] self-center"
-          type="submit"
-          size="default"
-        >
+        <Button className="h-[48px] w-[70%] self-center" type="submit" size="default">
           Save
         </Button>
       </form>
     </Form>
-  );
+  )
 }
