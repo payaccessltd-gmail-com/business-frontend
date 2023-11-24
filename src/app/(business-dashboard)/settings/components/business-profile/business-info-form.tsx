@@ -242,20 +242,12 @@ export default function BusinessInfoForm() {
                         <FormField
                             control={businessInfoForm.control}
                             name="code"
-
-<<<<<<< HEAD
-                <div className="flex flex-row items-center w-full gap-[10px] mt-6">
-                    <FormField control={businessInfoForm.control} name="code"
-                        render={({ field }) => (
-                            <FormItem className="w-full">
-                                <div className="w-full flex flex-row items-center justify-end gap-4">
-                                    <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
-=======
+ 
                             render={({ field }) => (
                                 <FormItem className="w-[30%]">
                                     {/* <div className="w-full flex flex-col gap-2"> */}
                                     {/* <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">
->>>>>>> 7633b2792dacbe290b96a2c68696f6a0bd336626
+ 
                                         Phone Number
                                     </FormLabel> */}
                                     <Select

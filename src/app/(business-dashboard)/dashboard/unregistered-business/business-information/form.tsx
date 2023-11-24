@@ -52,7 +52,7 @@ const businessInfoFormSchema = zod.object({
   businessState: zod.string(),
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
-  businessWebsite: zod.string().url(),
+  businessWebsite: zod.string(),
   businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
   // businessCertificate: zod.string(),
 
@@ -61,7 +61,7 @@ const businessInfoFormSchema = zod.object({
   }),
 });
 
-export default function BusinessInformationForm(props: BusinessInfoFormProps) {
+export default function BusinessInformationForm(props: BusinessInfoFormProps ) {
   let token = "";
 
   if (
@@ -71,6 +71,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     token = localStorage.getItem("token") as string;
   }
 
+  // hideData = true;
   const { toast } = useToast();
 
   const currentMerchant = useHydrateStore(
@@ -107,6 +108,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
       } else if (responseData?.statusCode === "0" && typeof window) {
         businessInfoForm.reset();
 
+        //setEnableEdit(false);
         props.nextStep && props.nextStep();
 
         toast({
