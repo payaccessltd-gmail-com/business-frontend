@@ -162,7 +162,8 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
     }
   }, [currentMerchant?.id]);
 
-  return (
+  return ( 
+    
     <Form {...personalInfoForm}>
       <form
         id="personalInformation"
@@ -278,12 +279,12 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                         variant={"outline"}
                         className={cn(
                           "flex flex-row items-center justify-start font-normal",
-                          !field.value && "text-muted-foreground",
+                          !field?.value && "text-muted-foreground",
                         )}
                       >
                         <LuCalendar className="w-4 h-4 mr-2" />
                         {field?.value ? (
-                          format(field?.value, "PPP")
+                          format(field.value, "PPP")
                         ) : (
                           <span>DD/MM/YY</span>
                         )}

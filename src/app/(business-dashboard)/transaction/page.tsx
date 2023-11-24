@@ -118,233 +118,233 @@ const Transaction = () => {
   const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, token }
   const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllTransaction(GetParameters, request));
 
-  console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data));
   
 
   return(
-    <div className="relative w-full h-full flex flex-col">
-      <Button className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
-      <MdContactSupport className="text-[24px] text-[#fff]" /> Support </Button>
+      <div className="relative w-full h-full flex flex-col">
+        <Button className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
+        <MdContactSupport className="text-[24px] text-[#fff]" /> Support </Button>
+      
+        <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Transactions</p>
     
-      <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Transactions</p>
-   
-      <Form {...form}>
-            <form className="w-full flex flex-col">
-              
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row items-center justify-between w-full gap-[18px]">
+        <Form {...form}>
+              <form className="w-full flex flex-col">
+                
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-between w-full gap-[18px]">
 
-        <div className=" inline-flex  items-center justify-center gap-[10px] ">
-            <FormField
-                control={form.control}
-                name="language"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col"> 
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-[200px] justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value
-                              ? channel.find(
-                                  (language) => language.value === field.value
-                                )?.label
-                              : "Select channel"}
-                            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput
-                            placeholder="Search framework..."
-                            className="h-9"
-                          />
-                          <CommandEmpty>No framework found.</CommandEmpty>
-                          <CommandGroup>
-                            {channel.map((ch) => (
-                              <CommandItem
-                                value={ch.label}
-                                key={ch.value}
-                                onSelect={() => {
-                                  form.setValue("language", ch.value)
-                                }}
-                              >
-                                {ch.label}
-                                <CheckIcon
-                                  className={cn(
-                                    "ml-auto h-4 w-4",
-                                    ch.value === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                     
-                  </FormItem>
-                )}
-              />
-              
-              
-                <FormField
+          <div className=" inline-flex  items-center justify-center gap-[10px] ">
+              <FormField
                   control={form.control}
-                  name="dob"
+                  name="language"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      {/* <FormLabel>Date of birth</FormLabel> */}
+                    <FormItem className="flex flex-col"> 
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
-                              variant={"outline"}
+                              variant="outline"
+                              role="combobox"
                               className={cn(
-                                "w-[240px] pl-3 text-left font-normal",
+                                "w-[200px] justify-between",
                                 !field.value && "text-muted-foreground"
                               )}
                             >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              {field.value
+                                ? channel.find(
+                                    (language) => language.value === field.value
+                                  )?.label
+                                : "Select channel"}
+                              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
-                            initialFocus
-                          />
+                        <PopoverContent className="w-[200px] p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Search framework..."
+                              className="h-9"
+                            />
+                            <CommandEmpty>No framework found.</CommandEmpty>
+                            <CommandGroup>
+                              {channel.map((ch) => (
+                                <CommandItem
+                                  value={ch.label}
+                                  key={ch.value}
+                                  onSelect={() => {
+                                    form.setValue("language", ch.value)
+                                  }}
+                                >
+                                  {ch.label}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto h-4 w-4",
+                                      ch.value === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
                         </PopoverContent>
                       </Popover>
                       
                     </FormItem>
                   )}
-                /> 
+                />
+                
+                
+                  <FormField
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        {/* <FormLabel>Date of birth</FormLabel> */}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[240px] pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        
+                      </FormItem>
+                    )}
+                  /> 
 
-        </div>
-             <div className=" inline-flex flex-right items-center justify-center  ">
-                  <DropdownMenu >
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="outline-[#D3EEF9] border border-[#D3EEF9] border-solid h-[45px] flex flex-row items-center gap-[10px] text-[14px] font-bold text-[#666666] leading-[150%]">
-                        Filter
-                        <LuChevronDown className="mt-[2px] text-[24px] text-[#666666]" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-[298px] p-[22px]">
-                      <form className="w-full flex flex-col">
-
-                        <div className="flex flex-col space-y-1.5 mb-[24px]">
-                          <Label htmlFor="status" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Transaction Status</Label>
-                          <Select>
-                            <SelectTrigger id="status" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]">
-                              <SelectValue placeholder="Show all" />
-                            </SelectTrigger>
-                            <SelectContent position="popper" className="w-[101px] p-[6px]">
-                              <SelectItem value="Draft">Draft</SelectItem>
-                              <SelectItem value="Paid">Paid</SelectItem>
-                              <SelectItem value="Not paid">Not paid</SelectItem>
-                              <SelectItem value="Revoke">Revoke</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-   
-
-                        <div className="flex flex-col items-start mb-[24px]">
-                          <label htmlFor="orderRef" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Order Ref.</label>
-                          <input placeholder="Order Ref." id="orderRef" type="orderRef" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
-                        </div>
-                        <div className="flex flex-col items-start mb-[24px]">
-                          <label htmlFor="switchTransactionRef" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Switch Trans Ref.</label>
-                          <input placeholder="Switch Trans Ref." id="switchTransactionRef" type="switchTransactionRef" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
-                        </div>
-                        <div className="flex flex-col items-start mb-[24px]">
-                          <label htmlFor="terminalCode" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Terminal Code</label>
-                          <input placeholder="Terminal Code" id="terminalCode" type="terminalCode" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
-                        </div>
-                        <div className="flex flex-col items-start mb-[24px]">
-                          <label htmlFor="amount" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Amount</label>
-                          <input placeholder="Amount" id="amount" type="amount" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
-                        </div>
-                        <div className="flex flex-col items-start gap-[8px] w-full">
-                          <label htmlFor="date" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Time range</label>
-                          <div id="date" className="flex flex-row items-center gap-[3px] w-full">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
-                                    !date && "text-muted-foreground"
-                                  )}
-                                >
-
-                                  {date ? format(date, "PPP") : <span className="text-[#000000] text-[16px] leading-normal font-[400]">Start Date</span>}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-                                <div className="rounded-md border">
-                                  <Calendar mode="single" selected={date} onSelect={setDate} />
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
-                                    !date && "text-muted-foreground"
-                                  )}
-                                >
-
-                                  {date1 ? format(date1, "PPP") : <span className="text-[#000000] text-[16px] leading-normal font-[400]">End Date</span>}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-                                <div className="rounded-md border">
-                                  <Calendar mode="single" selected={date1} onSelect={setDate1} />
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-
-                        </div>
-                        <Button
-                          className="mt-[27px] self-center rounded-[8px] w-[85%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
-                        >
+          </div>
+              <div className=" inline-flex flex-right items-center justify-center  ">
+                    <DropdownMenu >
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="outline-[#D3EEF9] border border-[#D3EEF9] border-solid h-[45px] flex flex-row items-center gap-[10px] text-[14px] font-bold text-[#666666] leading-[150%]">
                           Filter
+                          <LuChevronDown className="mt-[2px] text-[24px] text-[#666666]" />
                         </Button>
-                      </form>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-[298px] p-[22px]">
+                        <form className="w-full flex flex-col">
 
-                    
-              </div>
-        
+                          <div className="flex flex-col space-y-1.5 mb-[24px]">
+                            <Label htmlFor="status" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Transaction Status</Label>
+                            <Select>
+                              <SelectTrigger id="status" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]">
+                                <SelectValue placeholder="Show all" />
+                              </SelectTrigger>
+                              <SelectContent position="popper" className="w-[101px] p-[6px]">
+                                <SelectItem value="Draft">Draft</SelectItem>
+                                <SelectItem value="Paid">Paid</SelectItem>
+                                <SelectItem value="Not paid">Not paid</SelectItem>
+                                <SelectItem value="Revoke">Revoke</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+    
+
+                          <div className="flex flex-col items-start mb-[24px]">
+                            <label htmlFor="orderRef" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Order Ref.</label>
+                            <input placeholder="Order Ref." id="orderRef" type="orderRef" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
+                          </div>
+                          <div className="flex flex-col items-start mb-[24px]">
+                            <label htmlFor="switchTransactionRef" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Switch Trans Ref.</label>
+                            <input placeholder="Switch Trans Ref." id="switchTransactionRef" type="switchTransactionRef" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
+                          </div>
+                          <div className="flex flex-col items-start mb-[24px]">
+                            <label htmlFor="terminalCode" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Terminal Code</label>
+                            <input placeholder="Terminal Code" id="terminalCode" type="terminalCode" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
+                          </div>
+                          <div className="flex flex-col items-start mb-[24px]">
+                            <label htmlFor="amount" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Amount</label>
+                            <input placeholder="Amount" id="amount" type="amount" className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]" />
+                          </div>
+                          <div className="flex flex-col items-start gap-[8px] w-full">
+                            <label htmlFor="date" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">Time range</label>
+                            <div id="date" className="flex flex-row items-center gap-[3px] w-full">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
+                                      !date && "text-muted-foreground"
+                                    )}
+                                  >
+
+                                    {date ? format(date, "PPP") : <span className="text-[#000000] text-[16px] leading-normal font-[400]">Start Date</span>}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+                                  <div className="rounded-md border">
+                                    <Calendar mode="single" selected={date} onSelect={setDate} />
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
+                                      !date && "text-muted-foreground"
+                                    )}
+                                  >
+
+                                    {date1 ? format(date1, "PPP") : <span className="text-[#000000] text-[16px] leading-normal font-[400]">End Date</span>}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+                                  <div className="rounded-md border">
+                                    <Calendar mode="single" selected={date1} onSelect={setDate1} />
+                                  </div>
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+
+                          </div>
+                          <Button
+                            className="mt-[27px] self-center rounded-[8px] w-[85%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
+                          >
+                            Filter
+                          </Button>
+                        </form>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                      
+                </div>
+          
+          </div>
+
         </div>
 
-      </div>
-
-      </form>
-  </Form> 
+        </form>
+    </Form> 
  {
        data?.data?.responseObject?.list.length ?
         <div className="w-full mt-[35px] self-center">
