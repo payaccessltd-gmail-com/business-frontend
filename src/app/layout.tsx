@@ -110,7 +110,7 @@ export default function RootLayout({
       lang="en"
       className={`${PlusJakartaSans.variable} ${CenturyGothic.variable} ${poppins.variable} ${dmsans.variable} ${raleway.variable} ${sfpro.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="font-CenturyGothic">
+      <body className="font-CenturyGothic"> 
         <AppSessionProvider>
           <Provider>{children}</Provider>
         </AppSessionProvider>

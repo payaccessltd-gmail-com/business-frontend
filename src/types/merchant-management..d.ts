@@ -40,9 +40,9 @@ declare namespace API {
 
   type UpdateMerchantBankAccountDataDTO = {
     merchantId: number;
-    businessBvn: string;
+    businessBvn: number;
     businessBankName: string;
-    businessAccountNumber: string;
+    businessAccountNumber: number;
     businessAccountName: string;
   };
 
