@@ -94,8 +94,8 @@ export default function SimpleForm() {
         defaultValues: {
             customerName: "",
             email1: "",
-            email2: "example@gmail.com",
-            email3: "example@gmail.com",
+            email2: "",
+            email3: "",
             dueDate: undefined,
             amount: 0,
             invoiceNote: "",

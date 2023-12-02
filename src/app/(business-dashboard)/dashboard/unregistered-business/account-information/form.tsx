@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -111,6 +111,14 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
     },
   });
 
+  const [value, setValue] = useState('');
+
+  const handleChange = (event:any) => {
+    const result = event.target.value.replace(/\D/g, '');
+
+    setValue(result);
+  };
+
   const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
     updateMerchantBusinessBankAccountMutation.mutate(values);
   };
@@ -160,7 +168,7 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
             <FormItem>
               <FormLabel>BVN</FormLabel>
               <FormControl>
-                <Input     
+                <Input                    
                 title="Input is only number"                  
                 pattern="[0-9]*" type="number" 
                 maxLength={11} 

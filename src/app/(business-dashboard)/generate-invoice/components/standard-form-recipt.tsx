@@ -12,7 +12,7 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft }: any) => {
+const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft, handleModalDelete }: any) => {
   const { toast } = useToast();
   // console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
@@ -75,6 +75,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
               className="absolute top-[45px] right-[66px] text-[20px] text-[#F61212] cursor-pointer"
             />
             <div className="flex flex-col items-center gap-6 w-full pb-6 border-b border-dashed border-[#999999]">
+              
               <Image src={defaultLogo} alt="default" />
 
               <p className="text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
@@ -85,7 +86,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
               </p>
 
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`}
+                {`NGN ${modalData?.grandTotal ? modalData?.grandTotal?.toLocaleString() : '00.00'}`}
 
               </p>
             </div>
@@ -113,7 +114,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                 </div>
               </div>
               <div className="flex flex-row items-start gap-2">
-                <Button
+                <Button onClick={() => setReceipt(false)}
                   variant={"outline"}
                   className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                 >
@@ -121,7 +122,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                   Edit
                 </Button>
                 <Button
-                  variant={"outline"}
+                  variant={"outline"} onClick={() => handleModalDelete()}
                   className="min-h-[36px] gap-2 flex items-center font-[700] text-[#808080] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                 >
                   <FiCornerLeftUp className="text-[20px] text-[#808080]" />
@@ -142,7 +143,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Subtotal
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    {`NGN ${modalData.subTotal}`}
+                    {`NGN ${modalData.subTotal.toLocaleString()}`}
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-between w-full">
@@ -150,7 +151,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Discount
                   </p>
                   <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    {`NGN ${modalData.discount}`}
+                    {`NGN ${modalData.discount.toLocaleString()}`}
                   </p>
                 </div>
               </div>
@@ -160,7 +161,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Tax
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    {`NGN ${modalData.tax}`}
+                    {`NGN ${modalData.tax.toLocaleString()}`}
                   </p>
                 </div>
                 {/* <div className="flex flex-row items-center justify-between w-full">
@@ -178,7 +179,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                 Grand Total
               </p>
               <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                {`NGN ${modalData.grandTotal}`}
+                {`NGN ${modalData.grandTotal.toLocaleString()}`}
               </p>
             </div>
 

@@ -52,8 +52,9 @@ const RegistrationSchema = z.object({
     .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
       message: 'Password must contain at least one special character',
     }),
+    comfirmPassword: z.string(),
   agreement: z.boolean(),
-});
+}).refine((data)=> data.password === data.comfirmPassword , {message: 'Password do not match', path:["comfirmPassword"]});
 
 export default function RegistrationForm() {
   const { toast } = useToast();
@@ -234,6 +235,25 @@ export default function RegistrationForm() {
           )}
         />
 
+        <FormField
+          control={registrationForm.control}
+          name="comfirmPassword"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">Confirm password</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  icon="show"
+                  className="min-h-[48px]"
+                  placeholder="confirm Password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={registrationForm.control}
           name="agreement"

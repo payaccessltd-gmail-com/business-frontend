@@ -245,7 +245,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
 
         <div className="flex flex-row items-center gap-4">
           <FormField
-            name="gender"
+            name="gender" 
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
