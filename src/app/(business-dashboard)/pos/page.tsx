@@ -6,12 +6,19 @@ import { Button } from "components/ui/button"
 import { MdContactSupport } from "react-icons/md";
 import { useState } from "react";
 import POSRequestForm from "./components/pos-request-form";
-
+import { z } from "zod"
 // export const metadata: Metadata = {
 //   title: "Get Started",
 //   description: "Business page as it should be",
 // };
 
+const posSchem = z.object({
+  quantity: z.number(),
+  terminalBrand: z.string(),
+  merchantId: z.number(),
+  terminalType: z.string(),
+  iAgree: z.boolean(),
+})
 export default function POS() {
   const [popup, setPopup] = useState(false);  
   const [modalData, setModalData] = useState<any>("");
