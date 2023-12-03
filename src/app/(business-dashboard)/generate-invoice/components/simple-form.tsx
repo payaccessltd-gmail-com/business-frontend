@@ -189,10 +189,10 @@ export default function SimpleForm() {
             amount: values?.amount?.toString(),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
             additionalCustomerEmailAddress: [
-                values?.email1,
                 values?.email2,
                 values?.email3,
             ]?.toString(),
+            customerEmail: values?.email1,
             token: token,
             subject: subject,
             merchantId: merchantId,
@@ -218,16 +218,16 @@ export default function SimpleForm() {
             amount: values?.amount?.toString(),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
             additionalCustomerEmailAddress: [
-                values?.email1,
                 values?.email2,
                 values?.email3,
             ]?.toString(),
+            customerEmail: values?.email1,
             token: token,
             subject: subject,
             merchantId: merchantId,
             invoiceStatus: "DRAFT"
         };
-        // console.log(newValues);
+        console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
 
     }
