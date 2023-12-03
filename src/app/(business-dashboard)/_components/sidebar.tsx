@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
-"use client";
+"use client"
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { LuChevronDown } from "react-icons/lu";
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
+import { LuChevronDown } from "react-icons/lu"
 
-import { Button } from "components/ui/button";
+import { Button } from "components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,63 +14,38 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "components/ui/dropdown-menu";
+} from "components/ui/dropdown-menu"
 
-import { cn } from "lib/utils";
-import { ScrollArea } from "components/ui/scroll-area";
-import { sidebarData, SvgLogoComponent } from "./sidebar-data";
+import { useMerchantStore, useHydrateStore } from "store"
+
+import { cn } from "lib/utils"
+import { ScrollArea } from "components/ui/scroll-area"
+import { sidebarData, SvgLogoComponent } from "./sidebar-data"
+import { Typography } from "components/ui/Typography"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  navArr: typeof sidebarData;
+  navArr: typeof sidebarData
 }
 export function Sidebar({ className }: SidebarProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  let merchangeListJSON;
-  const merchantList: API.MerchantList = merchangeListJSON
-    ? (JSON.parse(merchangeListJSON) as API.MerchantList)
-    : [];
+  const router = useRouter()
+  const pathname = usePathname()
+  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    merchangeListJSON = localStorage.getItem("merchantList");
-  }
   return (
     <nav className={cn("col-span-4 h-full bg-primary-80", className)}>
       <div className="flex justify-center py-6">
         <SvgLogoComponent />
       </div>
       <div className="flex flex-col h-full space-y-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex w-[194px] flex-row items-center gap-[14px] self-center text-center text-[16px] font-normal leading-[24px] text-white">
-            {merchantList?.[0]?.businessName}
-            <LuChevronDown className="text-[28px] " />
-          </DropdownMenuTrigger>
+        <div className="space-y-2">
+          <Typography className="flexflex-row items-center gap-[14px] self-center text-center text-[16px] font-normal leading-[24px] text-white">
+            {currentMerchant?.businessName}
+          </Typography>
 
-          <DropdownMenuContent side="right" sideOffset={20}>
-            <DropdownMenuLabel className="text-base font-bold leading-normal text-neutral-800">
-              Add new business
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-base font-bold leading-normal text-neutral-800">
-              Logout
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-center">
-              <span className="font-['Raleway'] text-xs font-normal text-orange-500">
-                Marchant ID
-              </span>
-              <span className="text-base font-bold leading-normal text-orange-500 ">
-                {" "}
-                :{" "}
-              </span>{" "}
-              <span className="font-['Inter'] text-xs font-normal leading-none text-orange-500">
-                234156098
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          <Typography className="text-center text-orange-500 text-xs font-normal font-['Inter'] leading-none">
+            Merchant ID: {currentMerchant?.merchantCode}
+          </Typography>
+        </div>
 
         <ScrollArea className="h-[70vh]">
           {sidebarData.map(({ list, section }) => {
@@ -86,26 +61,22 @@ export function Sidebar({ className }: SidebarProps) {
                           key={name}
                           size="lg"
                           onClick={() => {
-                            router.push("/login");
-                            localStorage.clear();
+                            router.push("/login")
+                            localStorage.clear()
                           }}
                           className={cn(
                             "w-full justify-start space-x-2 rounded-none text-white text-center",
                             pathname === path
                               ? "bg-white font-semibold hover:bg-primary-50"
-                              : "hover:bg-primary-50 hover:text-white active:text-white",
+                              : "hover:bg-primary-50 hover:text-white active:text-white"
                           )}
                         >
                           <Link key={path} href={path as string}>
-                            <SVGIcon
-                              isActive={pathname === path}
-                              activeColor="#48B8E6"
-                              defaultColor="#FFFFFF"
-                            />
+                            <SVGIcon isActive={pathname === path} activeColor="#48B8E6" defaultColor="#FFFFFF" />
                             <span>{name}</span>
                           </Link>
                         </Button>
-                      );
+                      )
                     }
                     return (
                       <Button
@@ -117,20 +88,12 @@ export function Sidebar({ className }: SidebarProps) {
                           "w-full justify-start space-x-2 rounded-none text-white py-6",
                           pathname === path
                             ? "bg-white font-semibold hover:text-primary-60 text-primary-50"
-                            : "hover:bg-primary-50 hover:text-white active:text-white",
+                            : "hover:bg-primary-50 hover:text-white active:text-white"
                         )}
                       >
-                        <Link
-                          key={path}
-                          href={path as string}
-                          className="flex items-center"
-                        >
+                        <Link key={path} href={path as string} className="flex items-center">
                           <div className="flex items-center space-x-3">
-                            <SVGIcon
-                              isActive={pathname === path}
-                              activeColor="#48B8E6"
-                              defaultColor="#FFFFFF"
-                            />
+                            <SVGIcon isActive={pathname === path} activeColor="#48B8E6" defaultColor="#FFFFFF" />
                             <span>{name}</span>
                           </div>
 
@@ -143,14 +106,14 @@ export function Sidebar({ className }: SidebarProps) {
                           <span></span>
                         </Link>
                       </Button>
-                    );
+                    )
                   })}
                 </div>
               </div>
-            );
+            )
           })}
         </ScrollArea>
       </div>
     </nav>
-  );
+  )
 }

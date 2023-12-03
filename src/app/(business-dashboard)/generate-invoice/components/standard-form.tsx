@@ -1,75 +1,46 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { useState, useRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
-import { Input } from "components/ui/input";
-import { useToast } from "components/ui/use-toast";
-import { Checkbox } from "components/ui/checkbox";
-import Link from "next/link";
-import { LuChevronDown } from "react-icons/lu";
-import { format } from "date-fns";
-import { cn } from "lib/utils";
-import { Calendar } from "components/ui/calendar";
-import { HiOutlineCloudUpload } from "react-icons/hi";
-import { FiPlus, FiMinus } from "react-icons/fi";
-import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
-import { Textarea } from "components/ui/textarea";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "components/ui/collapsible";
-import StandardRecipt from "./standard-form-recipt";
-import ReviewPopup from "./review-popup";
-import { useMutation } from "@tanstack/react-query";
-import { standardInvoice } from "../../../../api/invoice";
-
-
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter, useSearchParams } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { useState, useRef, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import { Button } from "components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { Input } from "components/ui/input"
+import { useToast } from "components/ui/use-toast"
+import { Checkbox } from "components/ui/checkbox"
+import Link from "next/link"
+import { LuChevronDown } from "react-icons/lu"
+import { format } from "date-fns"
+import { cn } from "lib/utils"
+import { Calendar } from "components/ui/calendar"
+import { HiOutlineCloudUpload } from "react-icons/hi"
+import { FiPlus, FiMinus } from "react-icons/fi"
+import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
+import { Textarea } from "components/ui/textarea"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "components/ui/collapsible"
+import StandardRecipt from "./standard-form-recipt"
+import ReviewPopup from "./review-popup"
+import { useMutation } from "@tanstack/react-query"
+import { standardInvoice } from "../../../../api/invoice"
 
 let merchantList: any
 let token = ""
 let subject = ""
 let merchantId: any = ""
 
-
-if (
-  typeof window !== "undefined" &&
-  typeof window.localStorage !== "undefined"
-) {
+if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
   token = window.localStorage.getItem("token") as any
   subject = window.localStorage.getItem("subject") as any
   merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
   merchantId = merchantList[0].id ? merchantList[0]?.id : null
 }
 
-
-
-
 const StandardSchema = z.object({
-  customerName: z
-    .string()
-    .min(2, "first name must contain more than 2 characters"),
+  customerName: z.string().min(2, "first name must contain more than 2 characters"),
   email1: z.string().email(),
   email2: z.string().email().optional(),
   email3: z.string().email().optional(),
@@ -92,27 +63,24 @@ const StandardSchema = z.object({
   taxPercent: z.number().optional(),
   discountAmount: z.number().optional(),
   shipping: z.number().optional(),
-});
+})
 
 export default function StandardForm() {
-  const [receipt, setReceipt] = useState(false);
-  const { toast } = useToast();
-  const router = useRouter();
-  const [popup, setPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [inputField, setInputField] = useState<any[] | undefined>([
-    { label: "Customer Email" },
-  ]);
+  const [receipt, setReceipt] = useState(false)
+  const { toast } = useToast()
+  const router = useRouter()
+  const [popup, setPopup] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [inputField, setInputField] = useState<any[] | undefined>([{ label: "Customer Email" }])
   const [minusField, setMinusField] = useState<any[] | undefined>()
 
-  const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""]);
-  const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl") || "/get-started";
-  const [isInputFocused, setInputFocused] = useState(false);
-  const [date, setDate] = useState<Date>();
-  const [modalData, setModalData] = useState<any>("");
-
+  const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""])
+  const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams?.get("callbackUrl") || "/get-started"
+  const [isInputFocused, setInputFocused] = useState(false)
+  const [date, setDate] = useState<Date>()
+  const [modalData, setModalData] = useState<any>("")
 
   useEffect(() => {
     if (minusField === undefined || minusField.length < 1) {
@@ -122,8 +90,6 @@ export default function StandardForm() {
       setInputField(minusField)
       // console.log(inputField)
     }
-
-
   }, [minusField])
 
   useEffect(() => {
@@ -134,11 +100,7 @@ export default function StandardForm() {
       setInvoiceItem(minusInvoice)
       // console.log(inputField)
     }
-
-
   }, [minusInvoice])
-
-
 
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
@@ -165,11 +127,10 @@ export default function StandardForm() {
       discountAmount: 0,
       shipping: 0,
     },
-  });
-
+  })
 
   const handleModal = (e: any) => {
-    e.preventDefault();
+    e.preventDefault()
     standardForm.clearErrors()
     setModalData(standardForm?.getValues())
     if (standardForm?.getValues()?.customerName?.length == 0) {
@@ -193,58 +154,54 @@ export default function StandardForm() {
       })
       return
     }
-    setReceipt((value) => !value);
-  };
+    setReceipt((value) => !value)
+  }
 
   const addEmail = () => {
     if (inputField?.length === 3) {
-      return;
+      return
     }
-    setInputField([...inputField as any, { label: "" }]);
-  };
+    setInputField([...(inputField as any), { label: "" }])
+  }
 
   const subtractInputField = () => {
     if (inputField?.length === 1) {
       console.log("blocked")
-      return;
+      return
     }
     const newfieldValues = inputField
     // console.log(newfieldValues?.slice(0, -1))
-    setMinusField(newfieldValues?.slice(0, -1));
-  };
-
-
-
+    setMinusField(newfieldValues?.slice(0, -1))
+  }
 
   const addInvoiceItem = () => {
     if (invoiceItem?.length === 3) {
-      return;
+      return
     }
-    setInvoiceItem([...invoiceItem as any, ""]);
-  };
+    setInvoiceItem([...(invoiceItem as any), ""])
+  }
 
   const subtractInvoiceItem = () => {
     if (invoiceItem?.length === 1) {
       console.log("blocked")
-      return;
+      return
     }
     const newfieldValues = invoiceItem
     // console.log(newfieldValues?.slice(0, -1))
-    setMinusInvoice(newfieldValues?.slice(0, -1));
-  };
+    setMinusInvoice(newfieldValues?.slice(0, -1))
+  }
 
   const standardFormMutation = useMutation({
     mutationFn: standardInvoice,
     onSuccess: async (data) => {
-      const responseData: API.InvoiceStatusReponse =
-        (await data.json()) as API.InvoiceStatusReponse;
+      const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
 
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
           title: "",
           description: "Error Creating Invoice",
-        });
+        })
       }
 
       if (responseData?.statusCode === "0") {
@@ -252,32 +209,31 @@ export default function StandardForm() {
           variant: "default",
           title: "",
           description: "Invoice Created",
-          className:
-            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-        });
+          className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        })
 
-        standardForm.reset();
+        standardForm.reset()
         if (typeof window) {
-          router.push(`/invoice`);
+          router.push(`/invoice`)
         }
       }
     },
 
     onError: (e) => {
-      console.log(e);
+      console.log(e)
       toast({
         variant: "destructive",
         title: `${e}`,
         description: "error",
-      });
+      })
     },
-  });
+  })
 
   //----------------Calculations-------------------
   const amountValue =
-    (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
-    (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
-    (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"))
+    standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1") +
+    standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2") +
+    standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3")
   const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
   const subTotal = amountValue - discount
   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
@@ -292,10 +248,7 @@ export default function StandardForm() {
       subject: subject,
       merchantId: merchantId,
       amount: amountValue,
-      additionalCustomerEmailAddress: [
-        values?.email2,
-        values?.email3,
-      ]?.toString(),
+      additionalCustomerEmailAddress: [values?.email2, values?.email3]?.toString(),
       shippingFee: values.shipping,
       customerEmail: values?.email1,
       invoiceStatus: "PENDING",
@@ -316,15 +269,13 @@ export default function StandardForm() {
           costPerUnit: values?.costPerUnit3,
         },
       ],
-    };
+    }
     // console.log("from standard form: ", newValues);
-    standardFormMutation.mutate(newValues as any);
+    standardFormMutation.mutate(newValues as any)
   }
 
-
-
   const handleDraftSubmit = (e: any) => {
-    e.preventDefault();
+    e.preventDefault()
     let values = standardForm.getValues()
     let newValues = {
       ...values,
@@ -332,10 +283,7 @@ export default function StandardForm() {
       token: token,
       subject: subject,
       merchantId: merchantId,
-      additionalCustomerEmailAddress: [
-        values?.email2,
-        values?.email3,
-      ]?.toString(),
+      additionalCustomerEmailAddress: [values?.email2, values?.email3]?.toString(),
       shippingFee: values.shipping,
       customerEmail: values?.email1,
       invoiceStatus: "DRAFT",
@@ -356,14 +304,13 @@ export default function StandardForm() {
           costPerUnit: values?.costPerUnit3,
         },
       ],
-    };
+    }
     // console.log(newValues);
-    standardFormMutation.mutate(newValues as any);
+    standardFormMutation.mutate(newValues as any)
   }
 
-
-  const modalRef2 = useRef<any>();
-  const modalRef3 = useRef<any>();
+  const modalRef2 = useRef<any>()
+  const modalRef3 = useRef<any>()
   const handleModalSubmit = () => {
     modalRef2.current.click()
   }
@@ -373,32 +320,22 @@ export default function StandardForm() {
 
   return (
     <Form {...standardForm}>
-      <form
-        onSubmit={standardForm.handleSubmit(onSubmit)}
-        className="w-full rounded-lg pb-[50px] space-y-6 flex flex-col items-center"
-      >
+      <form onSubmit={standardForm.handleSubmit(onSubmit)} className="w-full rounded-lg pb-[50px] space-y-6 flex flex-col items-center">
         <FormField
           control={standardForm.control}
           name="customerName"
           render={({ field }) => (
             <FormItem className="w-full ">
-              <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                Customer Name
-              </FormLabel>
+              <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Customer Name</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                  placeholder="Enter customer name"
-                  {...field}
-                />
+                <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Enter customer name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         {inputField?.map(({ label }, id) => {
-          const nameString: any = `email${id + 1}`;
+          const nameString: any = `email${id + 1}`
           return (
             <FormField
               key={id}
@@ -406,9 +343,7 @@ export default function StandardForm() {
               name={nameString}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                    {label}
-                  </FormLabel>
+                  <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">{label}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
@@ -416,18 +351,17 @@ export default function StandardForm() {
                       placeholder="Enter customer Email address"
                       {...field}
                       onChange={(event) => {
-                        field.onChange(event);
+                        field.onChange(event)
                       }}
-                    // value={field.value ?? ''}
+                      // value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          );
+          )
         })}
-
 
         <div className="flex flex-row items-center justify-between w-full">
           <p
@@ -438,37 +372,27 @@ export default function StandardForm() {
             Add additional email address
           </p>
 
-          {inputField?.length === 1 ? "" : <FiMinus
-            onClick={() => subtractInputField()}
-            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
-          />}
-
+          {inputField?.length === 1 ? (
+            ""
+          ) : (
+            <FiMinus onClick={() => subtractInputField()} className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2" />
+          )}
         </div>
 
         {invoiceItem?.map((value, id) => {
-          let invoiceItemNameString: any = `invoiceItem${id + 1}`;
-          let qtyNameString: any = `qty${id + 1}`;
-          let costPerUnitNameString: any = `costPerUnit${id + 1}`;
+          let invoiceItemNameString: any = `invoiceItem${id + 1}`
+          let qtyNameString: any = `qty${id + 1}`
+          let costPerUnitNameString: any = `costPerUnit${id + 1}`
           return (
-            <div
-              key={id}
-              className="flex flex-row items-start w-full gap-[13px]"
-            >
+            <div key={id} className="flex flex-row items-start w-full gap-[13px]">
               <FormField
                 control={standardForm.control}
                 name={invoiceItemNameString}
                 render={({ field }) => (
                   <FormItem className="w-[40%] ">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Invoice item
-                    </FormLabel>
+                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice item</FormLabel>
                     <FormControl>
-                      <Input
-                        type="text"
-                        className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder="Product or service name"
-                        {...field}
-                      />
+                      <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Product or service name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -479,19 +403,15 @@ export default function StandardForm() {
                 name={qtyNameString}
                 render={({ field }) => (
                   <FormItem className="w-[20%] ">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Qty
-                    </FormLabel>
+                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0"
                         {...field}
-                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                        onChange={(event) =>
-                          field.onChange(Number(event.target.value))
-                        }
+                        onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
+                        onChange={(event) => field.onChange(Number(event.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -503,19 +423,15 @@ export default function StandardForm() {
                 name={costPerUnitNameString}
                 render={({ field }) => (
                   <FormItem className="w-[40%] ">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Cost per unit
-                    </FormLabel>
+                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Cost per unit</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0.00"
                         {...field}
-                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                        onChange={(event) =>
-                          field.onChange(Number(event.target.value))
-                        }
+                        onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
+                        onChange={(event) => field.onChange(Number(event.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -523,10 +439,8 @@ export default function StandardForm() {
                 )}
               />
             </div>
-          );
+          )
         })}
-
-
 
         <div className="flex flex-row items-center justify-between w-full">
           <p
@@ -537,11 +451,11 @@ export default function StandardForm() {
             Add additional items
           </p>
 
-          {invoiceItem?.length === 1 ? "" : <FiMinus
-            onClick={() => subtractInvoiceItem()}
-            className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2"
-          />}
-
+          {invoiceItem?.length === 1 ? (
+            ""
+          ) : (
+            <FiMinus onClick={() => subtractInvoiceItem()} className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2" />
+          )}
         </div>
 
         {/* <FormField
@@ -573,9 +487,7 @@ export default function StandardForm() {
           name="dueDate"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                Due Date
-              </FormLabel>
+              <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Due Date</FormLabel>
               <Popover>
                 <FormControl>
                   <PopoverTrigger asChild>
@@ -583,14 +495,10 @@ export default function StandardForm() {
                       variant={"outline"}
                       className={cn(
                         "border-[#A1CBDE] min-h-[48px] bg-transparent w-full flex flex-row items-center justify-between font-normal",
-                        !field.value && "text-muted-foreground",
+                        !field.value && "text-muted-foreground"
                       )}
                     >
-                      {field.value ? (
-                        format(field.value, "PPP")
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
+                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                       <LuChevronDown className="text-[24px] text-[#2F3437]" />
                     </Button>
                   </PopoverTrigger>
@@ -600,7 +508,7 @@ export default function StandardForm() {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={field.onChange as any}
                     disabled={(date) => date < new Date("1900-01-01")}
                     initialFocus
                   />
@@ -616,9 +524,7 @@ export default function StandardForm() {
           name="invoiceNote"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                Invoice note (optional)
-              </FormLabel>
+              <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice note (optional)</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Say something about the invoice"
@@ -664,19 +570,15 @@ export default function StandardForm() {
               name="taxPercent"
               render={({ field }) => (
                 <FormItem className="mt-[31px] w-full">
-                  <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                    Tax payment(%)
-                  </FormLabel>
+                  <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Tax payment(%)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0"
                       {...field}
-                      onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                      onChange={(event) =>
-                        field.onChange(Number(event.target.value))
-                      }
+                      onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
+                      onChange={(event) => field.onChange(Number(event.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -690,19 +592,11 @@ export default function StandardForm() {
                 name="discountType"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Discount
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Discount</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger className="border-[#A1CBDE] min-h-[48px] bg-transparent">
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Percentage"
-                          />
+                          <SelectValue defaultValue={field.value} placeholder="Percentage" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -729,10 +623,8 @@ export default function StandardForm() {
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0.00"
                         {...field}
-                        onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                        onChange={(event) =>
-                          field.onChange(Number(event.target.value))
-                        }
+                        onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
+                        onChange={(event) => field.onChange(Number(event.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -756,19 +648,15 @@ export default function StandardForm() {
               name="shipping"
               render={({ field }) => (
                 <FormItem className="mt-[31px] w-full">
-                  <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                    Shipping fee (optional)
-                  </FormLabel>
+                  <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Shipping fee (optional)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0.00"
                       {...field}
-                      onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                      onChange={(event) =>
-                        field.onChange(Number(event.target.value))
-                      }
+                      onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
+                      onChange={(event) => field.onChange(Number(event.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
@@ -779,20 +667,12 @@ export default function StandardForm() {
         </Collapsible>
 
         <div className="flex flex-row items-center justify-between w-full">
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            Subtotal
-          </p>
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            {subTotal}
-          </p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">Subtotal</p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">{subTotal}</p>
         </div>
         <div className="flex flex-row items-center justify-between w-full">
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            Grand Total
-          </p>
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            {grandTotal}
-          </p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">Grand Total</p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">{grandTotal}</p>
         </div>
 
         <Button
@@ -803,21 +683,10 @@ export default function StandardForm() {
         >
           Preview
         </Button>
-        <Button
-          disabled={loading}
-          className="hidden"
-          type="submit"
-          ref={modalRef2}
-        >
+        <Button disabled={loading} className="hidden" type="submit" ref={modalRef2}>
           Preview
         </Button>
-        <Button
-          disabled={loading}
-          className="hidden"
-          type="submit"
-          onClick={(e) => handleDraftSubmit(e)}
-          ref={modalRef3}
-        >
+        <Button disabled={loading} className="hidden" type="submit" onClick={(e) => handleDraftSubmit(e)} ref={modalRef3}>
           Preview
         </Button>
         {/* <Button
@@ -841,14 +710,12 @@ export default function StandardForm() {
       ) : (
         ""
       )}
-      {popup ? <ReviewPopup
-        value={`NGN ${grandTotal?.toLocaleString()}`}
-        setPopup={setPopup}
-        handleSubmit={handleModalSubmit}
-        modalData={modalData}
-      /> : ""}
+
+      {popup ? (
+        <ReviewPopup value={`NGN ${grandTotal?.toLocaleString()}`} setPopup={setPopup} handleSubmit={handleModalSubmit} modalData={modalData} />
+      ) : (
+        ""
+      )}
     </Form>
-  );
+  )
 }
-
-
