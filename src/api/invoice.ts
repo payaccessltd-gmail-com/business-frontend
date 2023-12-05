@@ -10,6 +10,7 @@ export const simpleInvoice = async ({
   businessLogo,
   invoiceStatus,
   token,
+  customerEmail,
   subject,
   merchantId
 }: API.SimpleInvoice) => {
@@ -24,7 +25,7 @@ export const simpleInvoice = async ({
   formdata.append("invoiceNote", invoiceNote);
   formdata.append("businessLogo", businessLogo, businessLogo.name);
   formdata.append("merchantId", merchantId);
-  formdata.append("customerEmail", subject);
+  formdata.append("customerEmail", customerEmail);
   formdata.append("invoiceStatus", invoiceStatus);
 
   return await fetch(`${baseUrl}/api/v1/invoice/create-simple-invoice`, {
