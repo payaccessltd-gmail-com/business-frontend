@@ -34,6 +34,7 @@ import { useToast } from "components/ui/use-toast";
 import { useHydrateStore, useMerchantStore } from "store";
 
 import { logoPath } from "lib/constants";
+import { countryList } from "utils/countrylist";
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -45,7 +46,7 @@ const locationRegFormSchema = zod.object({
   merchantId: zod.number()
 });
 
-const prefill:any =[]
+const prefill: any = []
 
 export default function RegistrationPage() {
   let token = "";
@@ -62,7 +63,7 @@ export default function RegistrationPage() {
   ) {
     token = localStorage.getItem("token") as string;
   }
- 
+
   const locationRegForm = useForm<zod.infer<typeof locationRegFormSchema>>({
     defaultValues: { merchantId: 0, country: "" },
     resolver: zodResolver(locationRegFormSchema),
@@ -147,18 +148,10 @@ export default function RegistrationPage() {
                       </FormControl>
 
                       <SelectContent>
-                        <SelectItem className="py-3 " value="AFGHANISTAN">
-                          Afghanistan
-                        </SelectItem>
-                        <SelectItem className="py-3 " value="BELARUS">
-                          Belarus
-                        </SelectItem>
-                        <SelectItem className="py-3 " value="SPAIN">
-                          Spain
-                        </SelectItem>
-                        <SelectItem className="py-3 " value="NIGERIA">
-                          Nigeria
-                        </SelectItem>
+                        {countryList.map(country => <SelectItem key={country} className="py-3 " value={country}>
+                          {country}
+                        </SelectItem>)}
+
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -166,7 +159,7 @@ export default function RegistrationPage() {
                 )}
               />
 
-              
+
               {/* <div className="flex flex-row items-center w-full gap-[10px] mt-6">
               
                      <FormField
