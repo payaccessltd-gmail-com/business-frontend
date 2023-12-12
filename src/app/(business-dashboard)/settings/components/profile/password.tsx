@@ -35,9 +35,9 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 
 const PasswordSchema = z
   .object({
-    currentPassword: z.string().min(2, "Password must contain more than 2 characters").max(8, "Password must not be above 8 characters"),
-    newPassword: z.string().min(2, "Password must contain more than 2 characters").max(8, "Password must not be above 8 characters"),
-    confirmPassword: z.string().min(2, "Password must contain more than 2 characters").max(8, "Password must not be above 8 characters"),
+    currentPassword: z.string().min(6, "Password must contain more than 6 characters").max(8, "Password must not be above 8 characters"),
+    newPassword: z.string().min(6, "Password must contain more than 6 characters").max(8, "Password must not be above 8 characters"),
+    confirmPassword: z.string().min(6, "Password must contain more than 6 characters").max(8, "Password must not be above 8 characters"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     path: ["confirmPassword"],

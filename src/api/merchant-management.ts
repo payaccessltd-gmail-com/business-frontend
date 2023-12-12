@@ -23,7 +23,7 @@ export const updateAboutBusiness = async (
   updateAboutBusiness: API.UpdateAboutBusinessDTO,
   token: string,
 ) => {
-  return await fetch(`${baseUrl}/api/v1/merchant/update-about-business`, {
+  return await fetch(`${baseUrl}/api/v1/merchant/add-new-merchant-to-existing-user`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
