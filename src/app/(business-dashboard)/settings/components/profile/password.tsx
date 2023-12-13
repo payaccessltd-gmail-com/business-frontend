@@ -73,6 +73,7 @@ export default function PasswordForm() {
           title: "",
           description: "Error Updating Password",
         })
+        return
       }
       if (responseData?.statusCode === "00" || "0") {
         toast({
