@@ -98,12 +98,13 @@ export default function RegistrationForm() {
           description: responseData?.message,
         });
         if (typeof window) {
+
+          var linkArr :any = responseData?.responseObject?.split("/");
+
+          console.log(linkArr[3]);          
+          
           router.push(
-            `/email-verification?email=${registrationForm.getValues(
-              "emailAddress",
-            )}&verification-link=${responseData?.responseObject
-              ?.split("/")
-              .pop()}`,
+            `/${linkArr[3]}`,
           );
         }
 

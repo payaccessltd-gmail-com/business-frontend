@@ -70,7 +70,7 @@ export default function GenerateInvoice() {
   const taxPercent = detailData?.data?.responseObject?.taxAmount
   const discountPercent = detailData?.data?.responseObject?.discount
 
-
+  // console.log(fillData)
   let [amountValue, setAmountValue] = useState<any>()
   let [discount, setDiscount] = useState<any>()
   let [subTotal, setSubTotal] = useState<any>()

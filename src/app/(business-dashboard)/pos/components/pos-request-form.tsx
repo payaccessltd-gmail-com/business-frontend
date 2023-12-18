@@ -1,53 +1,121 @@
 "use client"
 
 import { ScrollArea } from "components/ui/scroll-area"
-import React from "react"
+import React, { useState } from "react"
 import { MdClose } from "react-icons/md"
-// import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button"
 import { useToast } from "components/ui/use-toast"
-import { z } from "zod"
-import { useForm } from "react-hook-form" 
-
+import { number, z } from "zod"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form" 
-import { Input } from "components/ui/input" 
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { NumericFormat, PatternFormat } from "react-number-format"
+import { Input } from "components/ui/input"
+import { numberFormat } from "utils/numberFormater"
+import { useMutation } from "@tanstack/react-query"
+import { terminalRequest } from "api/pos"
+import { useRouter } from "next/navigation";
+
+const terminalTypes = [
+  {
+    cost: 20000,
+    terminalName: "PAX A910",
+  },
+  { cost: 20000, terminalName: "PAX A910S" },
+  { cost: 0, terminalName: "INDECO" },
+  { cost: 10000, terminalName: "TPO900" },
+]
 
 const posSchem = z.object({
   quantity: z.number(),
-  terminalBrand: z.string(),
-  merchantId: z.number(),
-  terminalType: z.string(),
-  iAgree: z.boolean(),
+  headerName: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  // iAgree: z.boolean(),
 })
-
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const
 
 const POSRequestForm = ({ handleModalPOSpopup }: any) => {
   const { toast } = useToast()
-
+  const [merchantId, setMerchantId] = useState<number>(0)
+  const [business, setBusiness] = useState("")
+  const [terminal, setTerminal] = useState("")
+  const [cost, setCost] = useState<number>()
+  const router = useRouter();
   const posForm = useForm<z.infer<typeof posSchem>>({
     resolver: zodResolver(posSchem),
   })
 
+  // terminalBrand: z.string(),
+  const merchantLst = JSON.parse(localStorage.getItem("merchantList") as any) as API.MerchantList
+
+  console.log(JSON.stringify(merchantLst))
+
+  const onBusinessChange = (e: any) => {
+    const bname = e.target.value
+    setBusiness(bname)
+    const id = merchantLst.find((l) => l.businessName === bname)?.id || 0
+    setMerchantId(id)
+  }
+
+  const posFormMutation = useMutation({
+    mutationFn: terminalRequest,
+    onSuccess: async (data) => {
+      const responseData: API.Reponse = (await data.json()) as API.Reponse
+
+      if(responseData?.statusCode === "403"){
+        localStorage.clear()
+        router.push("/login");
+      }
+
+      if (responseData?.statusCode === "0") {
+        toast({
+          variant: "default",
+          title: "",
+          description: "Invoice Created",
+          className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        })
+        posForm.reset()
+        setTerminal("")
+        setCost(0)
+        //setMerchantId(0)
+        //setBusiness("")
+        handleModalPOSpopup()
+      }
+
+    },
+    onError: (e) => {
+      console.log(e)
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      })
+    },
+  })
+
+  const handleSubmitClick = (value: any) => {
+    const data: API.TerminalsRequest = {
+      ...value,
+      merchantId: merchantId,
+      terminalBrand: terminal,
+      terminalType: "POS"      
+    }
+    posFormMutation.mutate(data)
+  }
+
+  const onTerminalChange = (e: any) => {
+    const term = terminalTypes.find((l) => l.terminalName === e.target.value)
+    setCost(term?.cost)
+    setTerminal(term?.terminalName || "")
+  }
+
   return (
     <div className="z-10 w-full h-full  fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85] ">
       <ScrollArea className="w-full h-full ">
-        <div className="flex flex-col items-center w-full  h-full pb-6 mt-[50px]">
-          <div className="relative rounded-[25px] w-[550px] bg-[#fff] px-[25px] pt-[28px] pb-[119px] flex flex-col ">
-            <div className="w-full mt-0">
-              <div className="flex flex-col    w-full pb-6  ">
+        <div className="flex flex-col items-center w-full  h-full pb-0 mt-[50px]">
+          <div className="relative rounded-[25px] w-[650px] bg-[#fff] px-[25px] pt-[28px] pb-[30px] flex flex-col ">
+            <div className="w-full mt-0 mb-3">
+              <div className="flex flex-col    w-full pb-3  ">
                 <MdClose
                   onClick={() => handleModalPOSpopup()}
                   className="absolute top-[24px] right-[26px] text-[20px] text-[#F61212] cursor-pointer"
@@ -59,136 +127,103 @@ const POSRequestForm = ({ handleModalPOSpopup }: any) => {
                 </div>
               </div>
             </div>
-            
-            <div className="w-full py-1 flex flex-col relative items-center">
-              <Form {...posForm}>
-                <form className="w-full rounded-lg pb-[50px] space-y-3 flex flex-col items-center">
-                  <FormField
-                    name="merchantId"
-                    control={posForm.control}
-                    disabled={true}
-                    // defaultValue={currentMerchant?.id}
-                    render={({ field }) => (
-                      <FormItem className="hidden w-full">
-                        <FormLabel className="text-sm font-normal text-gray-50">Merchant ID</FormLabel>
-                        <FormControl>
-                          <Input type="number" icon="show" className="min-h-[48px]" placeholder="Enter phone number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
-   
-<div className="flex flex-row items-end w-full gap-6">
-              <FormField
-                control={posForm.control}
-                name="merchantId"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                      Discount
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+            {JSON.stringify(posForm.getValues)}
+            <Form {...posForm}>
+              <div className=" w-full  items-center z-20 mb-6 gap-5">
+                <form>
+                  {/* <FormField   /> */}
+
+                  <div className="mb-6">
+                    <div>
+                      <label className=".text-gray-400 ">Business Name</label>
+                    </div>
+                    <select
+                      className="w-full p-3 border   border-blue-400 rounded-[5px] focus-visible:border-blue-400 "
+                      onChange={(event: any) => onBusinessChange(event)}
                     >
-                      <FormControl>
-                        <SelectTrigger className="border-[#A1CBDE] min-h-[48px] bg-transparent">
-                          <SelectValue
-                            defaultValue={field.value}
-                            placeholder="Percentage"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Percentage">Percentage</SelectItem>
-                        <SelectItem value="wholeValue">Value</SelectItem> 
-                      </SelectContent>
-                    </Select>
+                      <option value="">Select Business...</option>
+                      {merchantLst?.map((item) => {
+                        return (
+                          <option value={item.businessName} key={item.id}>
+                            {item.businessName}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </div>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-</div>
-                  <FormField
-                    name="merchantId"
-                    control={posForm.control}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>BVN</FormLabel>
-                        <FormControl>
-                          <Input title="Input is only number" pattern="[0-9]*" type="number" maxLength={11} placeholder="Enter BVN" {...field} />
-                        </FormControl>
+                  <div className="mb-6">
+                    <div>
+                      <label className="">Terminals Type</label>
+                    </div>
+                    <select
+                      onChange={(event: any) => onTerminalChange(event)}
+                      className="w-full p-3 border   border-blue-400 rounded-[5px] focus-visible:border-blue-400 "
+                    >
+                      <option value="">Select Terminals...</option>
+                      {terminalTypes.map((item) => {
+                        return <option value={item.terminalName}>{item.terminalName}</option>
+                      })}
+                    </select>
+                  </div>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  <div className="mb-6">
+                    <FormField
+                      name="headerName"
+                      control={posForm.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel> Slip Header Name</FormLabel>
+                          <FormControl>
+                            <Input title="Input is only number" placeholder="Enter  Header Name" value={business} />
+                          </FormControl>
+
+                          {/* <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription> */}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* <PatternFormat format="+234 (####) ### ####" allowEmptyFormatting mask="_" />; */}
+                  <div>
+                    <label className="">Cost</label>
+                  </div>
+                  <NumericFormat
+                    className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400  "
+                    value={cost}
+                    allowLeadingZeros
+                    thousandSeparator=","
                   />
 
                   <FormField
-                    name="merchantId"
+                    name="quantity"
                     control={posForm.control}
                     render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Account Number</FormLabel>
+                      <FormItem>
+                        <FormLabel> Quantity</FormLabel>
                         <FormControl>
-                          <Input type="number" pattern="[0-9]*" maxLength={11} placeholder="Enter account number" {...field} />
+                          <Input title="Input is only number" onInput={(event) => numberFormat(event)} placeholder="Enter Quantity" {...field} />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
-                  <FormField
-                    name="merchantId"
-                    control={posForm.control}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Account Number</FormLabel>
-                        <FormControl>
-                          <Input type="number" pattern="[0-9]*" maxLength={11} placeholder="Enter account number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name="merchantId"
-                    control={posForm.control}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Account Number</FormLabel>
-                        <FormControl>
-                          <Input type="number" pattern="[0-9]*" maxLength={11} placeholder="Enter account number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name="merchantId"
-                    control={posForm.control}
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Account name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter account name" {...field} />
-                        </FormControl>
+                        {/* <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription> */}
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </form>
-              </Form>
+              </div>
 
-              <div className="flex flex-col items-center w-full gap-3 pt-10">
-                <Button onClick={() => handleModalPOSpopup()} className="min-h-[48px] font-[700] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]">
-                  Continue
+              <div className="flex flex-col items-center w-full gap-3 pt-1">
+                <Button
+                  onClick={() => handleSubmitClick(posForm.getValues())}
+                  className="min-h-[48px] font-[700] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+                >
+                  Submit
                 </Button>
               </div>
-            </div>
+            </Form>
           </div>
         </div>
       </ScrollArea>

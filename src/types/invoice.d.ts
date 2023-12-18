@@ -1,6 +1,7 @@
 declare namespace API {
     type SimpleInvoice = {
         customerName: string,
+        customerEmail: string,
         additionalCustomerEmailAddress: string,
         dueDate: string,
         amount: string,

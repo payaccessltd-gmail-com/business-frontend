@@ -7,6 +7,14 @@ declare namespace API {
     merchantId: number;
   };
 
+  type UpdateAboutBusinessRequest = {
+    businessCategory: string;
+    businessType: string;
+    softwareDeveloper: string;
+    mobileNumber: string;
+    merchantId: number;
+  };
+
   type UpdateLocationDTO = {
     country: string;
     merchantId: number;

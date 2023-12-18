@@ -12,6 +12,9 @@ import { z } from "zod"
 //   description: "Business page as it should be",
 // };
 
+
+
+
 const posSchem = z.object({
   quantity: z.number(),
   terminalBrand: z.string(),
@@ -41,6 +44,8 @@ export default function POS() {
     
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">POS Terminals</p>
    
+      
+
       
     <EmptyState handleModalPOSpopup={handleModalPOSpopup} />
         {popup ?  <POSRequestForm handleModalPOSpopup={handleModalPOSpopup} /> :

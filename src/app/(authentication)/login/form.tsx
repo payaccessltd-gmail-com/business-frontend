@@ -56,6 +56,9 @@ export default function LoginForm() {
       const responseData: API.LoginResponse =
         (await data.json()) as API.LoginResponse;
 
+        console.log("LoginRes ", JSON.stringify(responseData)); 
+        
+
       if (!responseData?.subject && !responseData?.token) {
         setLoading(false)
         toast({
