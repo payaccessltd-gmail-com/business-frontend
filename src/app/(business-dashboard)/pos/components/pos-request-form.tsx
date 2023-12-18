@@ -9,7 +9,7 @@ import { number, z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
-import { NumericFormat, PatternFormat } from "react-number-format"
+// import { NumericFormat, PatternFormat } from "react-number-format"
 import { Input } from "components/ui/input"
 import { numberFormat } from "utils/numberFormater"
 import { useMutation } from "@tanstack/react-query"
@@ -190,12 +190,12 @@ const POSRequestForm = ({ handleModalPOSpopup }: any) => {
                   <div>
                     <label className="">Cost</label>
                   </div>
-                  <NumericFormat
+                  {/* <NumericFormat
                     className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400  "
                     value={cost}
                     allowLeadingZeros
                     thousandSeparator=","
-                  />
+                  /> */}
 
                   <FormField
                     name="quantity"
