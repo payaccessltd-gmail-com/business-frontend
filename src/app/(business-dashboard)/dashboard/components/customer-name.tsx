@@ -33,6 +33,9 @@ export default function CustomerName({}: Props) {
     },
   });
 
+  console.log(data,'data');
+  
+
   const currentMerchant = useHydrateStore(
     useMerchantStore,
     (state) => state.currentMerchant,

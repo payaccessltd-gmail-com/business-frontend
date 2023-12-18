@@ -42,7 +42,7 @@ export function Sidebar({ className }: SidebarProps) {
             {currentMerchant?.businessName}
           </Typography>
 
-          <Typography className="text-center text-orange-500 text-xs font-normal font-['Inter'] leading-none">
+          <Typography className="text-center text-cyan-100 text-xs font-normal font-['Inter'] leading-none">
             Merchant ID: {currentMerchant?.merchantCode}
           </Typography>
         </div>

@@ -35,7 +35,9 @@ const businessProfileFormSchema = zod.object({
   softwareDeveloper: zod.string(),
  
   merchantId: zod.number(),
-  policy: zod.boolean(),
+  policy: zod.boolean().refine(value => value === true, {
+    message: "You must consent to the policy.",
+  }),
 })
 
 export default function BusinessProfileUpdate() {
@@ -50,8 +52,8 @@ export default function BusinessProfileUpdate() {
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
-      softwareDeveloper: "",
       merchantId: 0,
+      policy: false,
     },
     resolver: zodResolver(businessProfileFormSchema),
   })
@@ -275,19 +277,22 @@ export default function BusinessProfileUpdate() {
                 control={businessProfileForm.control}
                 name="policy"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-4 space-y-0">
-                    <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange as any} />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormDescription className="text-sm font-normal text-gray-50 ">
-                        I consent to the collection and processing of my personal data in line with data regulations as described in{" "}
-                        <Link href="/examples/forms" className="text-base font-bold underline active:text-secondary-60 text-primary-50">
-                          Pay Access Policy
-                        </Link>
-                      </FormDescription>
-                    </div>
-                  </FormItem>
+                  <>
+                    <FormItem className="flex flex-row items-start space-x-4 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange as any} />
+                      </FormControl>
+                      <div className=" leading-none">
+                        <FormDescription className="text-sm font-normal text-gray-50 ">
+                          I consent to the collection and processing of my personal data in line with data regulations as described in{" "}
+                          <Link href="/examples/forms" className="text-base font-bold underline active:text-secondary-60 text-primary-50">
+                            Pay Access Policy
+                          </Link>
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                    <FormMessage />
+                  </>
                 )}
               />
             </div>
