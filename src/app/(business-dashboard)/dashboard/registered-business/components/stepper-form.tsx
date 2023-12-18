@@ -95,7 +95,7 @@ function Stepper() {
               </div>
             </div>
           ) : state.currentStep === 1 ? (
-            <div className="flex items-center h-screen my-20">
+            <div className="flex items-center h-screen my-32">
               <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
                 <BusinessInformationForm />
               </div>

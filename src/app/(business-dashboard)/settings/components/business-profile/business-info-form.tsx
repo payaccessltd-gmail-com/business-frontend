@@ -22,6 +22,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { getMerchantDetails } from "api/settings"
 import { updateBusinessInfo } from "api/settings"
+import { countryList } from "utils/countrylist"
 
 let merchantList: any
 let token = ""
@@ -269,9 +270,9 @@ export default function BusinessInfoForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="NIGERIA">Nigeria</SelectItem>
-                  <SelectItem value="GHANA">Ghana</SelectItem>
-                  <SelectItem value="MOROCO">Moroco</SelectItem>
+                  {countryList.map(country => <SelectItem key={country} className="py-3 " value={country}>
+                    {country}
+                  </SelectItem>)}
                 </SelectContent>
               </Select>
               {/* </div> */}
@@ -355,7 +356,7 @@ export default function BusinessInfoForm() {
           disabled={loading}
           className="my-[32px] min-h-[48px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4] self-center"
           type="submit"
-          // onClick={(e) => console.log(loading)}
+        // onClick={(e) => console.log(loading)}
         >
           Save Changes
         </Button>

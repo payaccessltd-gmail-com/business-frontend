@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "components/ui/select";
 import { Textarea } from "components/ui/textarea";
+import { countryList } from "utils/countrylist";
 
 const businessInfoFormSchema = zod.object({
   merchantId: zod.number(),
@@ -180,7 +181,9 @@ export default function BusinessInformationForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="w-full">
-                    <SelectItem value="ABUJA">Nigeria</SelectItem>
+                    {countryList.map(country => <SelectItem key={country} className="py-3 " value={country}>
+                      {country}
+                    </SelectItem>)}
                   </SelectContent>
                 </Select>
                 <FormMessage />
