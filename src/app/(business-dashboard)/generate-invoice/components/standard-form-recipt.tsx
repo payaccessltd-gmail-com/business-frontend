@@ -13,6 +13,7 @@ import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
 const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft }: any) => {
+  console.log(modalData)
   const { toast } = useToast();
   // console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
@@ -50,7 +51,9 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
     {
       id: 1,
       title: "Amount",
-      value: `NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`,
+      value: `NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      }) : '00.00'}`,
 
     },
     {
@@ -78,15 +81,17 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
               <Image src={defaultLogo} alt="default" />
 
               <p className="text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
-                A request has been sent out to{" "}
+                A request will be sent out to{" "}
                 <span className="text-[16px] text-[#177196] font-[700] leading-normal">
                   {modalData?.customerName || "Undefined"}
                 </span>
               </p>
 
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`}
-
+                {/* {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`} */}
+                {`NGN ${modalData.grandTotal ? modalData.grandTotal?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) : '00.00'}`}
               </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-start gap-8">
@@ -142,15 +147,19 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Subtotal
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    {`NGN ${modalData.subTotal}`}
+                    {`NGN ${modalData.subTotal?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    }) }`}
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#115570] text-[16px] leading-normal font-[400]">
+                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
                     Discount
                   </p>
-                  <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    {`NGN ${modalData.discount}`}
+                  <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                    {`- NGN ${modalData.discount?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}`}
                   </p>
                 </div>
               </div>
@@ -160,7 +169,19 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Tax
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    {`NGN ${modalData.tax}`}
+                    {`NGN ${modalData.tax?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}`}
+                  </p>
+                </div>
+                <div className="flex flex-row items-center justify-between w-full">
+                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                    Shipping
+                  </p>
+                  <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                    {`NGN ${modalData.shipping?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}`}
                   </p>
                 </div>
                 {/* <div className="flex flex-row items-center justify-between w-full">
@@ -178,7 +199,9 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                 Grand Total
               </p>
               <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                {`NGN ${modalData.grandTotal}`}
+                {`NGN ${modalData.grandTotal?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) }`}
               </p>
             </div>
 

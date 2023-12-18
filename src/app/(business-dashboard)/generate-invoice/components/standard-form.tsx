@@ -281,7 +281,7 @@ export default function StandardForm() {
   const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
   const subTotal = amountValue - discount
   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
-  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+  const grandTotal = subTotal + tax + (standardForm.getValues("shipping") || 0)
   //----------------Calculations Ends-------------------
 
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
@@ -783,7 +783,9 @@ export default function StandardForm() {
             Subtotal
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            {subTotal}
+            {subTotal?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </p>
         </div>
         <div className="flex flex-row items-center justify-between w-full">
@@ -791,7 +793,9 @@ export default function StandardForm() {
             Grand Total
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            {grandTotal}
+            {grandTotal?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </p>
         </div>
 
