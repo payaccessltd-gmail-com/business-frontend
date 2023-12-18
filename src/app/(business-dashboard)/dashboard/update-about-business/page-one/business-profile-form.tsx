@@ -18,6 +18,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "c
 
 import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
+import { numberFormat } from "utils/numberFormater"
+
+import { NumericFormat, PatternFormat } from "react-number-format"
+import { Label } from "@radix-ui/react-label"
+import { ChangeEvent, useState } from "react"
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -28,7 +33,7 @@ const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
   businessType: zod.string(),
   softwareDeveloper: zod.string(),
-  mobileNumber: zod.string(),
+ 
   merchantId: zod.number(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
@@ -37,7 +42,7 @@ const businessProfileFormSchema = zod.object({
 
 export default function BusinessProfileUpdate() {
   let token = ""
-
+  const [mobileNumber, setMobileNumber] = useState('');
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
@@ -54,7 +59,7 @@ export default function BusinessProfileUpdate() {
   })
 
   const businessProfileMutation = useMutation({
-    mutationFn: (values: API.UpdateAboutBusinessDTO) => updateAboutBusiness(values, token),
+    mutationFn: (values: API.UpdateAboutBusinessRequest) => updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
@@ -92,7 +97,17 @@ export default function BusinessProfileUpdate() {
   })
 
   function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
-    businessProfileMutation.mutate(values)
+   let data:  API.UpdateAboutBusinessRequest ={
+    ...values,
+     mobileNumber : mobileNumber
+   }
+    businessProfileMutation.mutate(data)
+  }
+
+  function setPhoneNumber(event: ChangeEvent<HTMLInputElement>): void {
+    let phonrMob = event.target.value;
+    setMobileNumber(phonrMob);
+    
   }
 
   return (
@@ -130,7 +145,26 @@ export default function BusinessProfileUpdate() {
                 )}
               />
 
-              <FormField
+              {/* <Label className="text-sm font-normal text-gray-50">Phone Number</Label>
+
+              <PatternFormat
+                format="+234 (####) ###-####"
+                className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
+                valueIsNumericString={true}
+              /> */}
+              <div className="mb-6">
+                <div>
+                  <label className="">Phone Number</label>
+                </div>
+                <PatternFormat
+                onChange={(event) => setPhoneNumber(event)}
+                  format="+234 (####) ###-####"
+                  className="w-full p-3 border mt-3 mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
+                  valueIsNumericString={true}
+                />
+              </div>
+
+              {/* <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
                 render={({ field }) => (
@@ -142,7 +176,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={businessProfileForm.control}

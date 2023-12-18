@@ -5,7 +5,7 @@ import { Button } from "components/ui/button"
 import Link from "next/link"
 
 
-const EmptyState = () => {
+const EmptyState = ({handleModalPOSpopup}:any) => {
     return (
         <div className='flex flex-col items-center w-full pt-10'>
             <div className='mb-[18px] bg-[#BFEFFF33] rounded-[11px] w-[114] h-[109] flex flex-row items-center justify-center'>
@@ -18,10 +18,10 @@ const EmptyState = () => {
             You will be able to request for pos when your account has been actived.
             </p>
             <Button
-                asChild
+                 onClick={() => handleModalPOSpopup()} 
                 className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
             >
-                <Link href={"/generate-invoice"}>Request POS</Link>
+               Request POS 
 
             </Button>
         </div>

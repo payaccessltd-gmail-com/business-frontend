@@ -139,6 +139,7 @@ export default function CardPayment({ amount, email }: any) {
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
         input.value = value;
     }
+    
     const formatPin = (event: any) => {
         const input = event.target;
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters

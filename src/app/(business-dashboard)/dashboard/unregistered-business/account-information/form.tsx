@@ -1,9 +1,10 @@
+
 "use client"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
-import * as zod from "zod"
+import * as zod from "zod" 
 
 // import { updateBusinessBankData } from "api/registration";
 import { Button } from "components/ui/button"
@@ -13,6 +14,7 @@ import { useToast } from "components/ui/use-toast"
 import { updateMerchantBusinessBankAccountData } from "api/merchant-management"
 import { useHydrateStore, useMerchantStore, useUserStore } from "store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { numberFormat } from "utils/numberFormater"
 
 type AccountInfoFormProps = {
   prevStep?: () => void
@@ -87,6 +89,14 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
     },
   })
 
+  const [value, setValue] = useState('');
+
+  const handleChange = (event:any) => {
+    const result = event.target.value.replace(/\D/g, '');
+
+    setValue(result);
+  };
+
   const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
     updateMerchantBusinessBankAccountMutation.mutate(values as any)
   }
@@ -123,7 +133,13 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
             <FormItem>
               <FormLabel>BVN</FormLabel>
               <FormControl>
-                <Input title="Input is only number" pattern="[0-9]*" type="number" maxLength={11} placeholder="Enter BVN" {...field} />
+ 
+                <Input                    
+                title="Input is only number"                  
+                pattern="[0-9]*"  
+                maxLength={11}    onInput={(event) => numberFormat(event)}
+                placeholder="Enter BVN" {...field} />
+           
               </FormControl>
 
               <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
@@ -162,7 +178,8 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
-                  <Input type="number" pattern="[0-9]*" maxLength={11} placeholder="Enter account number" {...field} />
+                  <Input    onInput={(event) => numberFormat(event)} pattern="[0-9]*" 
+                  maxLength={11} placeholder="Enter account number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

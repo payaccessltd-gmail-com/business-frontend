@@ -1,4 +1,4 @@
-import { baseUrl } from "./baseUrl";
+import { ISWToken, baseUrl } from "./baseUrl";
 
 
 export const getMerchantDetailGuest = async ({ invoiceNumber, merchantCode }: any) => {
@@ -47,7 +47,7 @@ export const payWithCard = async ({
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic NDUyNUtMUDQ6c2tfbGl2ZV93aXp6b2Rhanl6Y21wbTV4ZGdnZm9xZzFsd2RydnVkZW0wcXYxNW9j`,
+            Authorization: `Basic ${ISWToken}`,
         },
         body: JSON.stringify(newData),
     });
@@ -68,7 +68,7 @@ export const authorizePayment = async ({
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic NDUyNUtMUDQ6c2tfbGl2ZV93aXp6b2Rhanl6Y21wbTV4ZGdnZm9xZzFsd2RydnVkZW0wcXYxNW9j`,
+            Authorization: `Basic ${ISWToken}`,
         },
         body: JSON.stringify(newData),
     });
