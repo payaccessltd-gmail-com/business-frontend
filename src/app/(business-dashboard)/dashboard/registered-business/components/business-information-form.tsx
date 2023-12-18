@@ -78,10 +78,10 @@ export default function BusinessInformationForm() {
   };
 
   return (
-    <Form {...businessInfoForm}>
+    <Form {...businessInfoForm} >
       <form
         onSubmit={businessInfoForm.handleSubmit(onSubmit)}
-        className="space-y-8 border-gray-10"
+        className="space-y-2 border-gray-10 w-full"
       >
         <FormField
           name="businessName"
@@ -165,14 +165,24 @@ export default function BusinessInformationForm() {
 
         <div className="flex flex-row items-center gap-4">
           <FormField
-            name="businessCity"
+            name="businessState"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter city" {...field} />
-                </FormControl>
+                <FormLabel>Country</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Country" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="w-full">
+                    <SelectItem value="ABUJA">Nigeria</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -203,7 +213,19 @@ export default function BusinessInformationForm() {
             )}
           />
         </div>
-
+        <FormField
+          name="businessCity"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>City</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter city" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           name="businessWebsite"
           control={businessInfoForm.control}
@@ -254,9 +276,16 @@ export default function BusinessInformationForm() {
           )}
         />
 
-        <Button className="w-full" type="submit" size="default">
-          Save
-        </Button>
+        <div className="flex items-center  justify-center my-20">
+          <Button
+            // disabled={updateMerchantBioDataMutation.isLoading}
+            className="h-[48px] w-[50%]"
+            type="submit"
+            size="default"
+          >
+            Save and Continue
+          </Button>
+        </div>
       </form>
     </Form>
   );

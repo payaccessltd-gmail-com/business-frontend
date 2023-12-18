@@ -58,8 +58,9 @@ export default function AccountInformationForm() {
   }
 
   return (
+
     <Form {...acctInfoForm}>
-      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8">
+      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="space-y-2 border-gray-10 w-full">
         <FormField
           name="merchantId"
           control={acctInfoForm.control}
@@ -144,10 +145,18 @@ export default function AccountInformationForm() {
           )}
         />
 
-        <Button className="h-[48px] w-[70%] self-center" type="submit" size="default">
-          Save
-        </Button>
+        <div className="flex items-center  justify-center my-20">
+          <Button
+            // disabled={updateMerchantBioDataMutation.isLoading}
+            className="h-[48px] w-[50%]"
+            type="submit"
+            size="default"
+          >
+            Save and Continue
+          </Button>
+        </div>
       </form>
     </Form>
+
   )
 }

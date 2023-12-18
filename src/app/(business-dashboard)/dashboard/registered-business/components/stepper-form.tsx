@@ -54,11 +54,10 @@ function Stepper() {
               >
                 <div className="flex flex-row items-center space-x-4">
                   <span
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-none bg-primary-50 font-CenturyGothic text-base text-white transition-colors ease-in-out group-focus:ring-2 group-focus:ring-primary-50 group-focus:ring-offset-2  ${
-                      state?.currentStep === index
-                        ? "bg-white text-white ring-2 ring-primary-50 ring-offset-2 group-focus:ring-primary-50 "
-                        : ""
-                    }`}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-none bg-primary-50 font-CenturyGothic text-base text-white transition-colors ease-in-out group-focus:ring-2 group-focus:ring-primary-50 group-focus:ring-offset-2  ${state?.currentStep === index
+                      ? "bg-white text-white ring-2 ring-primary-50 ring-offset-2 group-focus:ring-primary-50 "
+                      : ""
+                      }`}
                   >
                     {index + 1}
                   </span>
@@ -90,19 +89,35 @@ function Stepper() {
       <div className="bg-white">
         <div className="max-w-[1100px] px-4 py-6">
           {state.currentStep === 0 ? (
-            <PersonalInformationForm />
+            <div className="flex items-center h-screen">
+              <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
+                <PersonalInformationForm />
+              </div>
+            </div>
           ) : state.currentStep === 1 ? (
-            <BusinessInformationForm />
+            <div className="flex items-center h-screen my-20">
+              <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
+                <BusinessInformationForm />
+              </div>
+            </div>
           ) : state.currentStep === 2 ? (
-            <AccountInformationForm />
+            <div className="flex items-center ">
+              <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
+                <AccountInformationForm />
+              </div>
+            </div>
           ) : state.currentStep === 3 ? (
-            <ApprovalForm />
+            <div className="flex items-center  ">
+              <div className="">
+                <ApprovalForm />
+              </div>
+            </div>
           ) : (
             <></>
           )}
         </div>
       </div>
-      <p>state: </p>
+
       <pre style={{ backgroundColor: "#f2f2f2" }}>
         {/* {JSON.stringify(state, null, 2)} */}
         {/* {JSON.stringify(progressProps, null, 2)} */}

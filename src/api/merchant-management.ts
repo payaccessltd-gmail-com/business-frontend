@@ -29,7 +29,7 @@ export const updateAboutBusiness = async (
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(updateAboutBusiness),
+    body: JSON.stringify({...updateAboutBusiness, business_name:"Coptco"}),
   });
 };
 

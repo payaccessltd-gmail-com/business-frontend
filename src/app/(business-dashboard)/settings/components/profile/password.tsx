@@ -33,11 +33,13 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
   merchantId = merchantList[0].id ? merchantList[0]?.id : null
 }
 
+
+
 const PasswordSchema = z
   .object({
-    currentPassword: z.string().min(6, "Password must contain more than 6 characters").max(8, "Password must not be above 8 characters"),
-    newPassword: z.string().min(6, "Password must contain more than 6 characters").max(8, "Password must not be above 8 characters"),
-    confirmPassword: z.string().min(6, "Password must contain more than 6 characters").max(8, "Password must not be above 8 characters"),
+    currentPassword: z.string().min(6, "Password must contain more than 8 characters").max(50, "Password must not be above 50 characters"),
+    newPassword: z.string().min(8, "Password must contain more than 8 characters").max(50, "Password must not be above 50 characters"),
+    confirmPassword: z.string().min(8, "Password must contain more than 8 characters").max(50, "Password must not be above 50 characters"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     path: ["confirmPassword"],

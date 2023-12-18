@@ -25,14 +25,14 @@ import { useHydrateStore, useMerchantStore } from "store"
 // }
 
 const businessProfileFormSchema = zod.object({
-  // businessCategory: zod.string(),
+  businessCategory: zod.string(),
   businessType: zod.string(),
-  // softwareDeveloper: zod.string(),
-  // mobileNumber: zod.string(),
-  businessName: zod.string(),
-  // policy: zod.boolean().refine(value => value === true, {
-  //   message: "You must consent to the policy.",
-  // }),
+  softwareDeveloper: zod.string(),
+  mobileNumber: zod.string(),
+  merchantId: zod.number(),
+  policy: zod.boolean().refine(value => value === true, {
+    message: "You must consent to the policy.",
+  }),
 })
 
 export default function BusinessProfileUpdate() {
@@ -46,11 +46,16 @@ export default function BusinessProfileUpdate() {
   const { toast } = useToast()
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
+    defaultValues: {
+      merchantId: 0,
+      policy: false,
+    },
     resolver: zodResolver(businessProfileFormSchema),
   })
+  console.log(businessProfileForm.getValues('businessType'), 'useForm');
 
   const businessProfileMutation = useMutation({
-    mutationFn: (values: any) => updateAboutBusiness(values, token),
+    mutationFn: (values: API.UpdateAboutBusinessDTO) => updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
@@ -61,8 +66,13 @@ export default function BusinessProfileUpdate() {
           description: responseData?.message,
         })
       } else if (responseData?.statusCode === "0" && typeof window) {
-        businessProfileForm.reset()
+        if (businessProfileForm.getValues('businessType') === 'INDIVIDUAL' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
+          router.push("/dashboard/registered-business")
+          businessProfileForm.reset()
+          return
+        }
         router.push("/dashboard/update-about-business/page-two")
+        businessProfileForm.reset()
 
         toast({
           variant: "default",
@@ -98,24 +108,6 @@ export default function BusinessProfileUpdate() {
           <form onSubmit={businessProfileForm.handleSubmit(onSubmit)} className="space-y-12 bg-white">
             <div className="space-y-8">
               <FormField
-                control={businessProfileForm.control}
-                name="businessName"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-[#777777] ">Business Name</FormLabel>
-
-                    <FormControl>
-                      <Input
-                        className="min-h-[48px]"
-                        placeholder="Enter business name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* <FormField
                 name="businessCategory"
                 control={businessProfileForm.control}
                 render={({ field }) => (
@@ -142,9 +134,9 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
-              {/* <FormField
+              <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
                 render={({ field }) => (
@@ -156,9 +148,9 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
-              {/* <FormField
+              <FormField
                 control={businessProfileForm.control}
                 name="merchantId"
                 defaultValue={currentMerchant?.id}
@@ -171,7 +163,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
               <FormField
                 name="businessType"
@@ -194,9 +186,9 @@ export default function BusinessProfileUpdate() {
                           </div>
                         </FormItem>
 
-                        {/* <FormItem className="flex items-baseline space-x-4 space-y-0">
+                        <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="NGO_BUSINESS" />
+                            <RadioGroupItem value="REGISTERED_BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">NGO Business</FormLabel>
@@ -204,11 +196,11 @@ export default function BusinessProfileUpdate() {
                               I'm testing my ideas with real customers, and preparing to <br /> register my company
                             </FormDescription>
                           </div>
-                        </FormItem> */}
+                        </FormItem>
 
                         <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="REGISTERED_BUSINESS  " />
+                            <RadioGroupItem value="BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">Registered business</FormLabel>
@@ -225,7 +217,7 @@ export default function BusinessProfileUpdate() {
                 )}
               />
 
-              {/* <FormField
+              <FormField
                 control={businessProfileForm.control}
                 name="softwareDeveloper"
                 render={({ field }) => (
@@ -251,9 +243,9 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
-              {/* <FormField
+              <FormField
                 control={businessProfileForm.control}
                 name="policy"
                 render={({ field }) => (
@@ -274,7 +266,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </>
                 )}
-              /> */}
+              />
             </div>
 
             <Button disabled={businessProfileMutation.isLoading} className="flex self-center w-56 mx-auto font-bold" type="submit" size="lg">
