@@ -714,7 +714,9 @@ export default function StandardForm() {
             Subtotal
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            {subTotal.toLocaleString()}
+            {subTotal?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </p>
         </div>
         <div className="flex flex-row items-center justify-between w-full">
@@ -722,7 +724,9 @@ export default function StandardForm() {
             Grand Total
           </p>
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
-            {grandTotal.toLocaleString()}
+            {grandTotal?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+            })}
           </p>
  
         </div>
