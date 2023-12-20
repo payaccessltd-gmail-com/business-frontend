@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "c
 import { cn } from "lib/utils"
 import { useHydrateStore, useMerchantStore, useUserStore } from "store"
 import { updateMerchantBioData } from "api/merchant-management"
+import { numberFormat } from "utils/numberFormater"
 
 type PersonalInfoFormProps = {
   prevStep?: () => void
@@ -204,7 +205,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
 
         <div className="flex flex-row items-center gap-4">
           <FormField
-            name="gender"
+            name="gender" 
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
@@ -296,7 +297,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             <FormItem>
               <FormLabel className="text-[#555555]">Identification Number</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Enter identification number" />
+                <Input {...field}  onInput={(event) => numberFormat(event)} max="11"  placeholder="Enter identification number" />
               </FormControl>
               <FormMessage />
             </FormItem>

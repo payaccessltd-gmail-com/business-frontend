@@ -66,6 +66,7 @@ const StandardSchema = z.object({
 })
 
 export default function StandardForm() {
+ 
   const [receipt, setReceipt] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
@@ -73,6 +74,7 @@ export default function StandardForm() {
   const [loading, setLoading] = useState(false)
   const [inputField, setInputField] = useState<any[] | undefined>([{ label: "Customer Email" }])
   const [minusField, setMinusField] = useState<any[] | undefined>()
+
 
   const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""])
   const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>()
@@ -84,23 +86,25 @@ export default function StandardForm() {
 
   useEffect(() => {
     if (minusField === undefined || minusField.length < 1) {
-      console.log("blocked at use effect")
-      return
+      console.log("blocked at use effect");
+      return;
     } else {
-      setInputField(minusField)
+      setInputField(minusField);
       // console.log(inputField)
     }
-  }, [minusField])
+
+  }, [minusField]) 
 
   useEffect(() => {
     if (minusInvoice === undefined || minusInvoice.length < 1) {
-      console.log("blocked at use effect")
-      return
+      console.log("blocked at use effect");
+      return;
     } else {
-      setInvoiceItem(minusInvoice)
+      setInvoiceItem(minusInvoice);
       // console.log(inputField)
     }
-  }, [minusInvoice])
+ 
+  }, [minusInvoice]); 
 
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
@@ -166,10 +170,11 @@ export default function StandardForm() {
 
   const subtractInputField = () => {
     if (inputField?.length === 1) {
-      console.log("blocked")
-      return
+ 
+      console.log("blocked");
+      return; 
     }
-    const newfieldValues = inputField
+    const newfieldValues = inputField;
     // console.log(newfieldValues?.slice(0, -1))
     setMinusField(newfieldValues?.slice(0, -1))
   }
@@ -183,10 +188,11 @@ export default function StandardForm() {
 
   const subtractInvoiceItem = () => {
     if (invoiceItem?.length === 1) {
+ 
       console.log("blocked")
-      return
+      return 
     }
-    const newfieldValues = invoiceItem
+    const newfieldValues = invoiceItem;
     // console.log(newfieldValues?.slice(0, -1))
     setMinusInvoice(newfieldValues?.slice(0, -1))
   }
@@ -229,15 +235,44 @@ export default function StandardForm() {
     },
   })
 
+  console.log("discountAmount",standardForm.getValues("discountAmount") );
+  
+
   //----------------Calculations-------------------
   const amountValue =
+// <<<<<<< HEAD
+//     (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+//     (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+//     (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"));
+ 
+//      let discount = 0;
+//     if(standardForm.getValues("discountType") ==="Percentage" ){
+//     discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue ;
+//     }
+//   if (standardForm.getValues("discountType") ==="wholeValue")
+//     discount = (standardForm.getValues("discountAmount") || 0);
+    
+//     console.log("discount", discount);
+    
+
+//     const subTotal = amountValue - discount;
+
+//    // const discountedAmount = amountValue - discount
+
+//     const shipping =  (standardForm.getValues("shipping") || 0);
+
+//   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100);
+
+//   const grandTotal = (subTotal - tax) + shipping;
+
+// =======
     standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1") +
     standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2") +
     standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3")
   const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
   const subTotal = amountValue - discount
   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
-  const grandTotal = subTotal - tax + (standardForm.getValues("shipping") || 0)
+  const grandTotal = subTotal + tax + (standardForm.getValues("shipping") || 0)
   //----------------Calculations Ends-------------------
 
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
@@ -312,11 +347,17 @@ export default function StandardForm() {
   const modalRef2 = useRef<any>()
   const modalRef3 = useRef<any>()
   const handleModalSubmit = () => {
-    modalRef2.current.click()
-  }
+ 
+    modalRef2.current.click();
+  };
+
+  const handleModalDelete = () => {
+    standardForm.reset();
+    setReceipt(false);
+  }; 
   const handleModalSubmitDraft = () => {
-    modalRef3.current.click()
-  }
+    modalRef3.current.click();
+  };
 
   return (
     <Form {...standardForm}>
@@ -600,9 +641,8 @@ export default function StandardForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="PERCENTAGE">Percentage</SelectItem>
-                        <SelectItem value="percentage2">Percentage</SelectItem>
-                        <SelectItem value="percentage3">Percentage</SelectItem>
+                        <SelectItem value="Percentage">Percentage</SelectItem>
+                        <SelectItem value="wholeValue">Value</SelectItem> 
                       </SelectContent>
                     </Select>
 
@@ -610,6 +650,8 @@ export default function StandardForm() {
                   </FormItem>
                 )}
               />
+
+
 
               <FormField
                 control={standardForm.control}
@@ -667,12 +709,22 @@ export default function StandardForm() {
         </Collapsible>
 
         <div className="flex flex-row items-center justify-between w-full">
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">Subtotal</p>
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">{subTotal}</p>
+ 
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+            Subtotal
+          </p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+            {subTotal.toLocaleString()}
+          </p>
         </div>
         <div className="flex flex-row items-center justify-between w-full">
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">Grand Total</p>
-          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">{grandTotal}</p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+            Grand Total
+          </p>
+          <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
+            {grandTotal.toLocaleString()}
+          </p>
+ 
         </div>
 
         <Button
@@ -706,6 +758,7 @@ export default function StandardForm() {
           setPopup={setPopup}
           modalData={{ ...modalData, grandTotal, tax, subTotal, discount, amountValue }}
           handleModalSubmitDraft={handleModalSubmitDraft}
+          handleModalDelete={handleModalDelete}
         />
       ) : (
         ""

@@ -1,5 +1,6 @@
 "use client"
 
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import Link from "next/link"
@@ -18,6 +19,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "c
 
 import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
+import { numberFormat } from "utils/numberFormater"
+// import PatternFormat from "react-number-format"
+import { Label } from "@radix-ui/react-label"
+import { ChangeEvent, useState } from "react"
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -29,7 +34,7 @@ const businessProfileFormSchema = zod.object({
   businessType: zod.string(),
   business_name: zod.string(),
   softwareDeveloper: zod.string(),
-  mobileNumber: zod.string(),
+
   merchantId: zod.number(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
@@ -38,7 +43,7 @@ const businessProfileFormSchema = zod.object({
 
 export default function BusinessProfileUpdate() {
   let token = ""
-
+  const [mobileNumber, setMobileNumber] = useState('');
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
@@ -56,7 +61,7 @@ export default function BusinessProfileUpdate() {
   console.log(businessProfileForm.getValues('businessType'), 'useForm');
 
   const businessProfileMutation = useMutation({
-    mutationFn: (values: API.UpdateAboutBusinessDTO) => updateAboutBusiness(values, token),
+    mutationFn: (values: API.UpdateAboutBusinessRequest) => updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
@@ -99,7 +104,17 @@ export default function BusinessProfileUpdate() {
   })
 
   function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
-    businessProfileMutation.mutate(values)
+    let data: API.UpdateAboutBusinessRequest = {
+      ...values,
+      mobileNumber: mobileNumber
+    }
+    businessProfileMutation.mutate(data)
+  }
+
+  function setPhoneNumber(event: ChangeEvent<HTMLInputElement>): void {
+    let phonrMob = event.target.value;
+    setMobileNumber(phonrMob);
+
   }
 
   return (
@@ -116,7 +131,7 @@ export default function BusinessProfileUpdate() {
                     <FormLabel className="text-sm font-normal text-gray-50">Business category</FormLabel>
                     <Select
                       defaultValue={field.value}
-                      onValueChange={(value) => {
+                      onValueChange={(value: any) => {
                         field.onChange(value)
                         businessProfileForm.setValue("merchantId", currentMerchant?.id as number, { shouldDirty: true })
                       }}
@@ -137,7 +152,26 @@ export default function BusinessProfileUpdate() {
                 )}
               />
 
-              <FormField
+              {/* <Label className="text-sm font-normal text-gray-50">Phone Number</Label>
+
+              <PatternFormat
+                format="+234 (####) ###-####"
+                className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
+                valueIsNumericString={true}
+              /> */}
+              <div className="mb-6">
+                <div>
+                  <label className="">Phone Number</label>
+                </div>
+                {/* <PatternFormat
+                  onChange={(event) => setPhoneNumber(event as any)}
+                  format="+234 (####) ###-####"
+                  className="w-full p-3 border mt-3 mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
+                  isNumericString={true}
+                /> */}
+              </div>
+
+              {/* <FormField
                 control={businessProfileForm.control}
                 name="business_name"
                 render={({ field }) => (
@@ -162,7 +196,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={businessProfileForm.control}
@@ -283,7 +317,7 @@ export default function BusinessProfileUpdate() {
               />
             </div>
 
-            <Button disabled={businessProfileMutation.isLoading} className="flex self-center w-56 mx-auto font-bold" type="submit" size="lg">
+            <Button disabled={businessProfileMutation.isLoading} className="flex self-center w-56 mx-auto font-bold" type="submit">
               Continue
             </Button>
           </form>

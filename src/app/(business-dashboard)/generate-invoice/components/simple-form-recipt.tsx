@@ -88,7 +88,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
                 </p>
               </div>
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`}
+                {`NGN ${modalData?.grandTotal ? modalData?.grandTotal?.toLocaleString() : '00.00'}`}
               </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">
