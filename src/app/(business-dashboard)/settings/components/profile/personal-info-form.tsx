@@ -57,6 +57,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
   const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
 
   const data: any = useQuery(["getMerchantSetting", token], () => getUserInfo(token))
+  console.log(data, 'data');
 
   const prefill = data?.data?.responseObject
 
@@ -71,7 +72,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
       code: "+234",
     },
   })
-  const handleModal = (e: any) => {}
+  const handleModal = (e: any) => { }
 
   // const personalFormMutation = useMutation({
   //     mutationFn: ,

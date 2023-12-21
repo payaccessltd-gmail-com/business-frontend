@@ -96,7 +96,7 @@ export default function OTPForm() {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
 
-      if (responseData?.statusCode === "01") {
+      if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
           title: "",
@@ -104,7 +104,7 @@ export default function OTPForm() {
         });
       }
 
-      if (responseData?.statusCode === "00") {
+      if (responseData?.statusCode === "0") {
         toast({
           variant: "default",
           title: "",

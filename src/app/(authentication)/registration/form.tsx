@@ -40,8 +40,8 @@ const RegistrationSchema = z.object({
     .string()
     .min(2, "business name must contain more than 2 characters"),
   password: z
-    .string().refine((value) => value.length >= 6 && value.length <= 40, {
-      message: 'Password must be between 6 and 40 characters',
+    .string().refine((value) => value.length >= 8 && value.length <= 50, {
+      message: 'Password must be between 8 and 50 characters',
     })
     .refine((value) => /[0-9]/.test(value), {
       message: 'Password must contain at least one number',
