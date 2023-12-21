@@ -22,6 +22,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
 import { getMerchantDetails } from "api/settings"
 import { updateBusinessInfo } from "api/settings"
+import { countryList } from "utils/countrylist"
 
 let merchantList: any
 let token = ""
@@ -54,7 +55,7 @@ export default function BusinessInfoForm() {
   const [receipt, setReceipt] = useState(false)
   const [popup, setPopup] = useState(false)
   const [modalData, setModalData] = useState<any>("")
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
   const getParameters = {
     token,
@@ -79,13 +80,14 @@ export default function BusinessInfoForm() {
       businessWebsite: "",
     },
   })
-  const handleModal = (e: any) => {}
+  const handleModal = (e: any) => { }
 
   const businessInfoFormMutation = useMutation({
     mutationFn: updateBusinessInfo,
     onSuccess: async (data) => {
       const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
       if (responseData?.statusCode === "1") {
+        setLoading(false)
         toast({
           variant: "destructive",
           title: "",
@@ -93,6 +95,7 @@ export default function BusinessInfoForm() {
         })
       }
       if (responseData?.statusCode === "0") {
+        setLoading(false)
         toast({
           variant: "default",
           title: "",
@@ -103,7 +106,7 @@ export default function BusinessInfoForm() {
       }
     },
     onError: (e) => {
-      console.log(e)
+      setLoading(false)
       toast({
         variant: "destructive",
         title: `${e}`,
@@ -113,7 +116,8 @@ export default function BusinessInfoForm() {
   })
 
   async function onSubmit(values: z.infer<typeof BusinessInfoSchema>) {
-    console.log(values)
+    console.log(123)
+    setLoading(true)
     let newValues = {
       ...values,
       token: token,
@@ -266,9 +270,9 @@ export default function BusinessInfoForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="NIGERIA">Nigeria</SelectItem>
-                  <SelectItem value="GHANA">Ghana</SelectItem>
-                  <SelectItem value="MOROCO">Moroco</SelectItem>
+                  {countryList.map(country => <SelectItem key={country} className="py-3 " value={country}>
+                    {country}
+                  </SelectItem>)}
                 </SelectContent>
               </Select>
               {/* </div> */}
@@ -349,10 +353,10 @@ export default function BusinessInfoForm() {
           )}
         />
         <Button
-          // disabled={loading}
+          disabled={loading}
           className="my-[32px] min-h-[48px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4] self-center"
           type="submit"
-          // onClick={(e) => handleModal(e)}
+        // onClick={(e) => console.log(loading)}
         >
           Save Changes
         </Button>

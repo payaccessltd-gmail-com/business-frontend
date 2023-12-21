@@ -64,7 +64,8 @@ export default function LoginForm() {
         toast({
           variant: "destructive",
           title: "",
-          description: "Error Signin in",
+          //@ts-ig
+          description: `${responseData?.message}`,
         });
       } else if (responseData?.token && responseData?.token) {
         setLoading(false)
@@ -96,7 +97,7 @@ export default function LoginForm() {
         toast({
           variant: "destructive",
           title: "",
-          description: "Error Signin in",
+          description: `${responseData?.message}`,
         });
       }
     },

@@ -109,215 +109,137 @@ export default function PersonalInformationForm() {
   };
 
   return (
-    <Form {...personalInfoForm}>
-      <form
-        id="personalInformation"
-        onSubmit={personalInfoForm.handleSubmit(onSubmit)}
-        className="space-y-8 border-gray-10"
-      >
-        <FormField
-          name="emailAddress"
-          control={personalInfoForm.control}
-          render={({ field }) => (
-            <FormItem className="hidden">
-              <FormLabel>Email address</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter email address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <div className="flex flex-row gap-4">
-          <FormField
-            name="firstName"
-            control={personalInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel className="text-[#555555]">First name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter first name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            name="lastName"
-            control={personalInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel className="text-[#555555]">Last name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter last name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex flex-row items-center gap-4">
-          <FormField
-            name="gender"
-            control={personalInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel className="text-[#555555]">Gender</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="w-full">
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={personalInfoForm.control}
-            name="dateOfBirth"
-            render={({ field }) => (
-              <FormItem className="flex flex-col w-full">
-                <FormLabel className="w-full text-[#555555]">
-                  Date of birth
-                </FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild className="w-full">
+        <Form {...personalInfoForm}>
+          <form
+            id="personalInformation"
+            onSubmit={personalInfoForm.handleSubmit(onSubmit)}
+            className="space-y-2 border-gray-10 w-full"
+          >
+            <FormField
+              name="identificationDocumentPath"
+              control={personalInfoForm.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormDescription>
+                    Goverment approved document.
+                  </FormDescription>
+                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
+                      Drag file here to upload document or{" "}
+                      <span className="text-[#6B7280]">choose file</span>
+                    </Typography>
                     <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "flex flex-row items-center justify-start font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        <LuCalendar className="mr-2" />
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>DD/MM/YY</span>
-                        )}
-                      </Button>
+                      <Input
+                        className="hidden"
+                        placeholder="Enter identification number"
+                        {...field}
+                        type="file"
+                      />
                     </FormControl>
-                  </PopoverTrigger>
+                  </FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="identificationDocumentPath"
+              control={personalInfoForm.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormDescription>
+                    Proof of identity and address for directors of goodness oil&gas.
+                  </FormDescription>
+                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
+                      Drag file here to upload document or{" "}
+                      <span className="text-[#6B7280]">choose file</span>
+                    </Typography>
+                    <FormControl>
+                      <Input
+                        className="hidden"
+                        placeholder="Enter identification number"
+                        {...field}
+                        type="file"
+                      />
+                    </FormControl>
+                  </FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="identificationDocumentPath"
+              control={personalInfoForm.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormDescription>
+                    Document showing business owners.
+                  </FormDescription>
+                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
+                      Drag file here to upload document or{" "}
+                      <span className="text-[#6B7280]">choose file</span>
+                    </Typography>
+                    <FormControl>
+                      <Input
+                        className="hidden"
+                        placeholder="Enter identification number"
+                        {...field}
+                        type="file"
+                      />
+                    </FormControl>
+                  </FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="identificationDocumentPath"
+              control={personalInfoForm.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormDescription>
+                  Proof of identity and address for shareholders that own up to 51% of goodness oil&gas.
+                  </FormDescription>
+                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
+                      Drag file here to upload document or{" "}
+                      <span className="text-[#6B7280]">choose file</span>
+                    </Typography>
+                    <FormControl>
+                      <Input
+                        className="hidden"
+                        placeholder="Enter identification number"
+                        {...field}
+                        type="file"
+                      />
+                    </FormControl>
+                  </FormLabel>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+      
 
-                  <PopoverContent className="w-full p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      onSelect={field.onChange as any}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+            <div className="flex items-center py-5 justify-center ">
+              <Button
+                // disabled={updateMerchantBioDataMutation.isLoading}
+                className="h-[48px] w-[50%]"
+                type="submit"
+                size="default"
+              >
+                Save and Continue
+              </Button>
+            </div>
 
-        <FormField
-          name="identificationDocument"
-          control={personalInfoForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[#555555]">
-                Identification Document
-              </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select identification document" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="driversLicenses">
-                    Drivers lincenses
-                  </SelectItem>
-                  <SelectItem value="NATIONAL_ID">National ID</SelectItem>
-                  <SelectItem value="INTL_PASSPORT">
-                    International passport
-                  </SelectItem>
-                  <SelectItem value="VOTERS_CARD">
-                    Voter&apos;`s card
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          name="identificationNumber"
-          control={personalInfoForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[#555555]">
-                Identification Number
-              </FormLabel>
-              <FormControl>
-                <Input placeholder="Enter identification number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          name="identificationDocumentPath"
-          control={personalInfoForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormDescription>
-                Please upload identification document.
-              </FormDescription>
-              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
-                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
-                  Drag file here to upload document or{" "}
-                  <span className="text-[#6B7280]">choose file</span>
-                </Typography>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  className="hidden"
-                  placeholder="Enter identification number"
-                  {...field}
-                  type="file"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          // disabled={updateMerchantBioDataMutation.isLoading}
-          className="h-[48px] w-[70%] self-center"
-          type="submit"
-          size="default"
-        >
-          Save
-        </Button>
-      </form>
-      <DevTool control={personalInfoForm.control} />
-    </Form>
+          </form>
+          <DevTool control={personalInfoForm.control} />
+        </Form>
   );
 }

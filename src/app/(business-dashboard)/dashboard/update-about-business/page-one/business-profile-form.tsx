@@ -32,6 +32,7 @@ import { ChangeEvent, useState } from "react"
 const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
   businessType: zod.string(),
+  business_name: zod.string(),
   softwareDeveloper: zod.string(),
 
   merchantId: zod.number(),
@@ -57,6 +58,7 @@ export default function BusinessProfileUpdate() {
     },
     resolver: zodResolver(businessProfileFormSchema),
   })
+  console.log(businessProfileForm.getValues('businessType'), 'useForm');
 
   const businessProfileMutation = useMutation({
     mutationFn: (values: API.UpdateAboutBusinessRequest) => updateAboutBusiness(values, token),
@@ -70,8 +72,13 @@ export default function BusinessProfileUpdate() {
           description: responseData?.message,
         })
       } else if (responseData?.statusCode === "0" && typeof window) {
-        businessProfileForm.reset()
+        if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
+          router.push("/dashboard/registered-business")
+          businessProfileForm.reset()
+          return
+        }
         router.push("/dashboard/update-about-business/page-two")
+        businessProfileForm.reset()
 
         toast({
           variant: "default",
@@ -165,6 +172,19 @@ export default function BusinessProfileUpdate() {
               </div>
 
               {/* <FormField
+                control={businessProfileForm.control}
+                name="business_name"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm font-normal text-gray-50">Business Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" icon="show" className="min-h-[48px]" placeholder="Enter business name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
                 render={({ field }) => (
