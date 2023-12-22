@@ -15,7 +15,7 @@ import { useToast } from "components/ui/use-toast";
 
 const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit }: any) => {
   const { toast } = useToast();
-  console.log("modalData: ", modalData)
+  // console.log("modalData: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");

@@ -42,7 +42,8 @@ declare namespace API {
         currentPageNumber: string
         token: string
         rowPerPage: string
-        merchantId: string
+        merchantId: string,
+        emptyObject: {}
 
     }
 }

@@ -12,7 +12,7 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
+const ReviewPopup = ({ value, setPopup, handleModalSubmit, modalData }: any) => {
   const { toast } = useToast();
 
   // console.log("popup: ", modalData)
@@ -35,7 +35,7 @@ const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
             </p>
             <div className="flex flex-col items-center w-full gap-3 mt-8">
               <Button
-                onClick={() => handleSubmit()}
+                onClick={() => handleModalSubmit()}
                 className="min-h-[44px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
               >
                 Send Invoice

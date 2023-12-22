@@ -198,6 +198,7 @@ export default function SimpleForm() {
             invoiceStatus: "PENDING"
         };
         console.log(newValues);
+
         simpleFormMutation.mutate(newValues as any);
     }
 
@@ -477,7 +478,7 @@ export default function SimpleForm() {
                     <ReviewPopup
                         value={"open"}
                         setPopup={setPopup}
-                        handleSubmit={handleModalSubmit}
+                        handleModalSubmit={handleModalSubmit}
                         modalData={modalData}
 
                     />
