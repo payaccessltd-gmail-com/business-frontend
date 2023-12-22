@@ -46,8 +46,14 @@ const RegistrationSchema = z.object({
     .refine((value) => /[0-9]/.test(value), {
       message: 'Password must contain at least one number',
     })
-    .refine((value) => /[a-zA-Z]/.test(value), {
-      message: 'Password must contain at least one alphabet character',
+    .refine((value) => !/123/.test(value), {
+      message: 'Password should not contain the sequence "123"',
+    })   
+    .refine((value) => /[A-Z]/.test(value), {
+      message: 'Password must contain at least one uppercase character',
+    })
+    .refine((value) => /[a-z]/.test(value), {
+      message: 'Password must contain at least one lowercase character',
     })
     .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
       message: 'Password must contain at least one special character',
@@ -80,7 +86,7 @@ export default function RegistrationForm() {
       const responseData: API.CreateAccountResponse =
         (await data.json()) as API.CreateAccountResponse;
 
-      if (responseData?.statusCode === "1") {
+      if (responseData?.statusCode === "701" || "1") {
         setLoading(false)
 
         toast({
