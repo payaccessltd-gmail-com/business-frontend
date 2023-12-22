@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Link from "next/link";
@@ -44,6 +44,23 @@ export default function EmailVerificationForm() {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [success, setSuccess] = useState(0);
 
+  const [countdown, setCountdown] = useState(60);
+  const [showResendLink, setShowResendLink] = useState(false);
+
+  useEffect(() => {
+    let timer: string | number | NodeJS.Timeout | undefined;
+
+    if (countdown > 0) {
+      timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    } else {
+      setShowResendLink(true);
+    }
+
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   const handleChange = (index: any, event: any) => {
     const value = event.target.value;
 
@@ -83,15 +100,19 @@ export default function EmailVerificationForm() {
   const OTPMutation = useMutation({
     mutationFn: activateAccount,
     onSuccess: async (data) => {
+      console.log(123);
+      
       const responseData: API.VerifyAccountResponse =
         (await data.json()) as API.VerifyAccountResponse;
 
-      if (responseData?.statusCode === "1") {
+      if (true) {
+        setCountdown(60)
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
         });
+        
       }
 
       if (responseData?.statusCode === "0") {
@@ -227,7 +248,7 @@ export default function EmailVerificationForm() {
                       onChange={(event) => handleChange(index, event)}
                       onPaste={(event) => handlePaste(event)}
                       className="outline-[#D3EEF9] shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)] bg-[#FFFFFF] rounded-sm border border-[#46727033] border-solid h-12 w-12 text-center"
-                      // {...field}
+                    // {...field}
                     />
                   ))}
                 </div>
@@ -244,22 +265,21 @@ export default function EmailVerificationForm() {
         >
           Continue
         </Button>
-        <p className="text-[#1A1A1A] mb-4 mt-6 text-[14px] text-center font-[400] leading-[145%]">
-          Didn’t get the mail?{" "}
-          <span
-            className="text-[#1D8EBB] font-[700] leading-normal cursor-pointer"
-            onClick={(event) => handleResend(event)}
-          >
-            click here to resend.
-          </span>
-        </p>
-
-        <p className="text-[14px] font-[400] leading-[145%] text-[#000000]">
-          Resend code in{" "}
-          <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">
-            2:00sec
-          </span>
-        </p>
+        {showResendLink ? (
+          <p className="text-[#1A1A1A] mb-4 mt-6 text-[14px] text-center font-[400] leading-[145%]">
+            Didn’t get the mail?{" "}
+            <span className="text-[#1D8EBB] font-[700] leading-normal cursor-pointer" onClick={(event) => handleResend(event)}>
+              Click here to resend.
+            </span>
+          </p>
+        ) : (
+          <p className="text-[14px] font-[400] leading-[145%] text-[#000000]">
+            Resend code in{' '}
+            <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">
+              {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}sec
+            </span>
+          </p>
+        )}
         {success ? <SuccessPopOver /> : ""}
       </form>
     </Form>
