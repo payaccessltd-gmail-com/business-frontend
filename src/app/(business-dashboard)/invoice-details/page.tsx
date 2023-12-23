@@ -60,17 +60,19 @@ export default function GenerateInvoice() {
   const detailData: any = useQuery(['getMerchantSetting', requestData], () => getInvoiceDetails(requestData));
   const breakDownData: any = useQuery(['getInvoiceBreakdown', requestData], () => getInvoiceBreakdown(requestData));
 
-  console.log(detailData?.data?.responseObject)
+  // console.log(detailData?.data?.responseObject)
   // console.log(breakDownData?.data?.responseObject)
   const breakDown = breakDownData?.data?.responseObject
-  const fillData = detailData?.data?.responseObject
+  const fillData = detailData?.data?.responseObject?.invoiceDetails
   const sendDate = new Date(fillData?.createdAt).toDateString().split(" ");
   const dueDate = new Date(fillData?.dueDate).toDateString().split(" ");
   const shipping = detailData?.data?.responseObject?.shippingFee
   const taxPercent = detailData?.data?.responseObject?.taxAmount
   const discountPercent = detailData?.data?.responseObject?.discount
 
-  // console.log(fillData)
+  // console.log("testing properties: ", fillData?.businessLogo, fillData)
+  // console.log("breakDownData: ", breakDown)
+
   let [amountValue, setAmountValue] = useState<any>()
   let [discount, setDiscount] = useState<any>()
   let [subTotal, setSubTotal] = useState<any>()
@@ -92,6 +94,8 @@ export default function GenerateInvoice() {
   }, [amountValue, discountPercent])
 
   useEffect(() => {
+    console.log("discount:", discount)
+
     if (breakDown) {
       setSubTotal(amountValue - discount)
     }

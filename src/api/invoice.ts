@@ -10,11 +10,10 @@ export const simpleInvoice = async ({
   invoiceNote,
   businessLogo,
   invoiceStatus,
-
   customerEmail,
   subject,
   merchantId
-}: API.SimpleInvoice) => {
+}: any) => {
   let formdata = new FormData();
   formdata.append("customerName", customerName);
   formdata.append(
@@ -31,9 +30,9 @@ export const simpleInvoice = async ({
 
   return await fetch(`${baseUrl}/api/v1/invoice/create-simple-invoice`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`
+    // },
     body: formdata,
   });
 };
@@ -75,7 +74,7 @@ export const standardInvoice = async ({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(newData),
   });
@@ -105,7 +104,7 @@ export const getInvoiceDetails = async ({ merchantId, invoiceId }: any) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
     },
   });
   if (!response.ok) {
@@ -120,7 +119,7 @@ export const getInvoiceBreakdown = async ({ merchantId, invoiceId }: any) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
     },
   });
   if (!response.ok) {

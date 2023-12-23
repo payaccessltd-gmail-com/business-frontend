@@ -94,8 +94,8 @@ export default function SimpleForm() {
         defaultValues: {
             customerName: "",
             email1: "",
-            email2: "",
-            email3: "",
+            email2: "example@gmail.com",
+            email3: "example@gmail.com",
             dueDate: undefined,
             amount: 0,
             invoiceNote: "",
@@ -149,7 +149,8 @@ export default function SimpleForm() {
     const simpleFormMutation = useMutation({
         mutationFn: simpleInvoice,
         onSuccess: async (data) => {
-            const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse;
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
             if (responseData?.statusCode === "1") {
                 toast({
                     variant: "destructive",
@@ -157,7 +158,7 @@ export default function SimpleForm() {
                     description: "Error Creating Invoice",
                 });
             }
-            if (responseData?.statusCode === "0") {
+            if (responseData?.statusCode === "0" || "ACCEPTED") {
                 toast({
                     variant: "default",
                     title: "",
@@ -182,10 +183,11 @@ export default function SimpleForm() {
     });
 
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
-        console.log(values);
+        // console.log(values);
         let newValues = {
             ...values,
-            amount: values?.amount?.toString(),
+            // amount: values?.amount?.toString(),
+            amount: values?.amount,
             dueDate: values?.dueDate?.toISOString().split("T")[0],
             additionalCustomerEmailAddress: [
                 values?.email2,
@@ -198,7 +200,6 @@ export default function SimpleForm() {
             invoiceStatus: "PENDING"
         };
         console.log(newValues);
-
         simpleFormMutation.mutate(newValues as any);
     }
 
@@ -478,7 +479,7 @@ export default function SimpleForm() {
                     <ReviewPopup
                         value={"open"}
                         setPopup={setPopup}
-                        handleModalSubmit={handleModalSubmit}
+                        handleSubmit={handleModalSubmit}
                         modalData={modalData}
 
                     />

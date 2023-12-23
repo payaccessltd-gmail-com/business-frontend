@@ -66,7 +66,7 @@ const StandardSchema = z.object({
 })
 
 export default function StandardForm() {
- 
+
   const [receipt, setReceipt] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
@@ -93,7 +93,7 @@ export default function StandardForm() {
       // console.log(inputField)
     }
 
-  }, [minusField]) 
+  }, [minusField])
 
   useEffect(() => {
     if (minusInvoice === undefined || minusInvoice.length < 1) {
@@ -103,8 +103,8 @@ export default function StandardForm() {
       setInvoiceItem(minusInvoice);
       // console.log(inputField)
     }
- 
-  }, [minusInvoice]); 
+
+  }, [minusInvoice]);
 
   const standardForm = useForm<z.infer<typeof StandardSchema>>({
     resolver: zodResolver(StandardSchema),
@@ -170,9 +170,9 @@ export default function StandardForm() {
 
   const subtractInputField = () => {
     if (inputField?.length === 1) {
- 
+
       console.log("blocked");
-      return; 
+      return;
     }
     const newfieldValues = inputField;
     // console.log(newfieldValues?.slice(0, -1))
@@ -188,9 +188,9 @@ export default function StandardForm() {
 
   const subtractInvoiceItem = () => {
     if (invoiceItem?.length === 1) {
- 
+
       console.log("blocked")
-      return 
+      return
     }
     const newfieldValues = invoiceItem;
     // console.log(newfieldValues?.slice(0, -1))
@@ -201,16 +201,14 @@ export default function StandardForm() {
     mutationFn: standardInvoice,
     onSuccess: async (data) => {
       const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
-
-      if (responseData?.statusCode === "1") {
+      console.log("standard invoice status code: ", responseData?.statusCode)
+      if (responseData?.statusCode === "701") {
         toast({
           variant: "destructive",
           title: "",
           description: "Error Creating Invoice",
         })
-      }
-
-      if (responseData?.statusCode === "0") {
+      } else if (responseData?.statusCode === "0") {
         toast({
           variant: "default",
           title: "",
@@ -223,6 +221,7 @@ export default function StandardForm() {
           router.push(`/invoice`)
         }
       }
+
     },
 
     onError: (e) => {
@@ -235,37 +234,37 @@ export default function StandardForm() {
     },
   })
 
-  console.log("discountAmount",standardForm.getValues("discountAmount") );
-  
+  console.log("discountAmount", standardForm.getValues("discountAmount"));
+
 
   //----------------Calculations-------------------
   const amountValue =
-// <<<<<<< HEAD
-//     (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
-//     (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
-//     (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"));
- 
-//      let discount = 0;
-//     if(standardForm.getValues("discountType") ==="Percentage" ){
-//     discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue ;
-//     }
-//   if (standardForm.getValues("discountType") ==="wholeValue")
-//     discount = (standardForm.getValues("discountAmount") || 0);
-    
-//     console.log("discount", discount);
-    
+    // <<<<<<< HEAD
+    //     (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+    //     (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+    //     (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"));
 
-//     const subTotal = amountValue - discount;
+    //      let discount = 0;
+    //     if(standardForm.getValues("discountType") ==="Percentage" ){
+    //     discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue ;
+    //     }
+    //   if (standardForm.getValues("discountType") ==="wholeValue")
+    //     discount = (standardForm.getValues("discountAmount") || 0);
 
-//    // const discountedAmount = amountValue - discount
+    //     console.log("discount", discount);
 
-//     const shipping =  (standardForm.getValues("shipping") || 0);
 
-//   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100);
+    //     const subTotal = amountValue - discount;
 
-//   const grandTotal = (subTotal - tax) + shipping;
+    //    // const discountedAmount = amountValue - discount
 
-// =======
+    //     const shipping =  (standardForm.getValues("shipping") || 0);
+
+    //   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100);
+
+    //   const grandTotal = (subTotal - tax) + shipping;
+
+    // =======
     standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1") +
     standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2") +
     standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3")
@@ -347,14 +346,14 @@ export default function StandardForm() {
   const modalRef2 = useRef<any>()
   const modalRef3 = useRef<any>()
   const handleModalSubmit = () => {
- 
+
     modalRef2.current.click();
   };
 
   const handleModalDelete = () => {
     standardForm.reset();
     setReceipt(false);
-  }; 
+  };
   const handleModalSubmitDraft = () => {
     modalRef3.current.click();
   };
@@ -394,7 +393,7 @@ export default function StandardForm() {
                       onChange={(event) => {
                         field.onChange(event)
                       }}
-                      // value={field.value ?? ''}
+                    // value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -641,8 +640,8 @@ export default function StandardForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Percentage">Percentage</SelectItem>
-                        <SelectItem value="wholeValue">Value</SelectItem> 
+                        <SelectItem value="PERCENTAGE">Percentage</SelectItem>
+                        <SelectItem value="VALUE1">Value</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -709,7 +708,7 @@ export default function StandardForm() {
         </Collapsible>
 
         <div className="flex flex-row items-center justify-between w-full">
- 
+
           <p className="text-[#07222D] text-[16px] leading-normal font-[700]">
             Subtotal
           </p>
@@ -728,7 +727,7 @@ export default function StandardForm() {
               minimumFractionDigits: 2,
             })}
           </p>
- 
+
         </div>
 
         <Button
@@ -769,7 +768,10 @@ export default function StandardForm() {
       )}
 
       {popup ? (
-        <ReviewPopup value={`NGN ${grandTotal?.toLocaleString()}`} setPopup={setPopup} handleSubmit={handleModalSubmit} modalData={modalData} />
+        <ReviewPopup value={`NGN ${grandTotal?.toLocaleString()}`}
+          setPopup={setPopup}
+          handleSubmit={handleModalSubmit}
+          modalData={modalData} />
       ) : (
         ""
       )}

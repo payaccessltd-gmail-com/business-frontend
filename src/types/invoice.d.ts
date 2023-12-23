@@ -4,12 +4,12 @@ declare namespace API {
         customerEmail: string,
         additionalCustomerEmailAddress: string,
         dueDate: string,
-        amount: string,
+        amount: number,
         invoiceNote: string,
         businessLogo: File,
         token: string,
         subject: string,
-        merchantId: string
+        merchantId: any,
         invoiceStatus: string
     };
     type InvoiceStatusReponse = {
