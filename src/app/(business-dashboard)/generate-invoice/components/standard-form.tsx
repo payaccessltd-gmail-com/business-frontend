@@ -26,6 +26,8 @@ import StandardRecipt from "./standard-form-recipt"
 import ReviewPopup from "./review-popup"
 import { useMutation } from "@tanstack/react-query"
 import { standardInvoice } from "../../../../api/invoice"
+import { formatMoneyAmount, formatQuantity } from "./amount-formatter"
+
 
 let merchantList: any
 let token = ""
@@ -44,15 +46,15 @@ const StandardSchema = z.object({
   email1: z.string().email(),
   email2: z.string().email().optional(),
   email3: z.string().email().optional(),
-  invoiceItem1: z.string(),
-  qty1: z.number(),
-  costPerUnit1: z.number(),
-  invoiceItem2: z.string(),
-  qty2: z.number(),
-  costPerUnit2: z.number(),
-  invoiceItem3: z.string(),
-  qty3: z.number(),
-  costPerUnit3: z.number(),
+  invoiceItem: z.string(),
+  qty: z.string(),
+  costPerUnit: z.string(),
+  // invoiceItem2: z.string(),
+  // qty2: z.number(),
+  // costPerUnit2: z.number(),
+  // invoiceItem3: z.string(),
+  // qty3: z.number(),
+  // costPerUnit3: z.number(),
   // amount: z.number().optional(),
   dueDate: z.date({
     required_error: "Due date is required.",
@@ -60,9 +62,9 @@ const StandardSchema = z.object({
   invoiceNote: z.string().optional(),
   // logo: z.string().optional(),
   discountType: z.string().optional(),
-  taxPercent: z.number().optional(),
-  discountAmount: z.number().optional(),
-  shipping: z.number().optional(),
+  taxPercent: z.string().optional(),
+  discountAmount: z.string().optional(),
+  shipping: z.string().optional(),
 })
 
 export default function StandardForm() {
@@ -76,13 +78,31 @@ export default function StandardForm() {
   const [minusField, setMinusField] = useState<any[] | undefined>()
 
 
-  const [invoiceItem, setInvoiceItem] = useState<any[] | undefined>([""])
+  // interface InvoiceItemType {
+  //   // Define the structure of your invoice item here
+  // }
+
+
+
+
   const [minusInvoice, setMinusInvoice] = useState<any[] | undefined>()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams?.get("callbackUrl") || "/get-started"
   const [isInputFocused, setInputFocused] = useState(false)
   const [date, setDate] = useState<Date>()
   const [modalData, setModalData] = useState<any>("")
+  const [invoiceItem, setInvoiceItem] = useState<any[]>([])
+  console.log("check this out: ", invoiceItem)
+  // const [item, setItem] = useState<any>(
+  //   [
+  //     {
+  //       id: "",
+  //       invoiceItem: "",
+  //       quantity: "",
+  //       costPerUnit: "",
+  //     },
+  //   ]
+  // )
 
   useEffect(() => {
     if (minusField === undefined || minusField.length < 1) {
@@ -96,7 +116,7 @@ export default function StandardForm() {
   }, [minusField])
 
   useEffect(() => {
-    if (minusInvoice === undefined || minusInvoice.length < 1) {
+    if (minusInvoice === undefined || (minusInvoice as any[]).length < 0) {
       console.log("blocked at use effect");
       return;
     } else {
@@ -113,23 +133,23 @@ export default function StandardForm() {
       email1: "example@gmail.com",
       email2: "example@gmail.com",
       email3: "example@gmail.com",
-      invoiceItem1: "",
-      qty1: 0,
-      costPerUnit1: 0,
-      invoiceItem2: "",
-      qty2: 0,
-      costPerUnit2: 0,
-      invoiceItem3: "",
-      qty3: 0,
-      costPerUnit3: 0,
+      invoiceItem: "",
+      qty: "",
+      costPerUnit: "",
+      // invoiceItem2: "",
+      // qty2: 0,
+      // costPerUnit2: 0,
+      // invoiceItem3: "",
+      // qty3: 0,
+      // costPerUnit3: 0,
       dueDate: undefined,
       // amount: 0,
       invoiceNote: "",
       // logo: "",
-      taxPercent: 0,
+      taxPercent: "",
       discountType: "PERCENTAGE",
-      discountAmount: 0,
-      shipping: 0,
+      discountAmount: "",
+      shipping: "",
     },
   })
 
@@ -180,15 +200,26 @@ export default function StandardForm() {
   }
 
   const addInvoiceItem = () => {
-    if (invoiceItem?.length === 3) {
+    if (invoiceItem?.length === 10) {
       return
     }
-    setInvoiceItem([...(invoiceItem as any), ""])
+    if (invoiceItem?.length >= 0 && invoiceItem?.length < 10) {
+      setInvoiceItem(
+        [
+          ...invoiceItem,
+          {
+            id: invoiceItem?.length,
+            invoiceItem: "",
+            quantity: "",
+            costPerUnit: "",
+          },
+        ]
+      )
+    }
   }
 
   const subtractInvoiceItem = () => {
-    if (invoiceItem?.length === 1) {
-
+    if (invoiceItem?.length === 0) {
       console.log("blocked")
       return
     }
@@ -196,6 +227,35 @@ export default function StandardForm() {
     // console.log(newfieldValues?.slice(0, -1))
     setMinusInvoice(newfieldValues?.slice(0, -1))
   }
+
+  // --------------------Additional Item update----------------------
+
+  const handleItemValues = (event: any, id: any, propertyName: string) => {
+
+    let input = event.target.value;
+    const newItems: any = [...invoiceItem];
+    const updatedItem = { ...newItems[id] as any };
+    if (propertyName === "costPerUnit") {
+      let quantityValue = input.replace(/\D/g, ''); // Remove non-numeric characters
+      const formattedValue = quantityValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      input = formattedValue;
+      updatedItem[propertyName] = formattedValue;
+    } else if (propertyName === "quantity") {
+      let quantityValue = input.replace(/\D/g, ''); // Remove non-numeric characters
+      input = quantityValue;
+      updatedItem[propertyName] = quantityValue;
+    } else {
+      updatedItem[propertyName] = input;
+    }
+    newItems[id] = updatedItem;
+    setInvoiceItem(newItems);
+
+  }
+
+  // --------------------Additional Item update ends----------------------
+
+
+
 
   const standardFormMutation = useMutation({
     mutationFn: standardInvoice,
@@ -234,45 +294,61 @@ export default function StandardForm() {
     },
   })
 
-  console.log("discountAmount", standardForm.getValues("discountAmount"));
-
-
+  // console.log("discountAmount", standardForm.getValues("discountAmount"));
   //----------------Calculations-------------------
-  const amountValue =
-    // <<<<<<< HEAD
-    //     (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
-    //     (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
-    //     (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"));
+  // <<<<<<< HEAD
+  //     (standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1")) +
+  //     (standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2")) +
+  //     (standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3"));
 
-    //      let discount = 0;
-    //     if(standardForm.getValues("discountType") ==="Percentage" ){
-    //     discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue ;
-    //     }
-    //   if (standardForm.getValues("discountType") ==="wholeValue")
-    //     discount = (standardForm.getValues("discountAmount") || 0);
+  //      let discount = 0;
+  //     if(standardForm.getValues("discountType") ==="Percentage" ){
+  //     discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue ;
+  //     }
+  //   if (standardForm.getValues("discountType") ==="wholeValue")
+  //     discount = (standardForm.getValues("discountAmount") || 0);
 
-    //     console.log("discount", discount);
+  //     console.log("discount", discount);
 
 
-    //     const subTotal = amountValue - discount;
+  //     const subTotal = amountValue - discount;
 
-    //    // const discountedAmount = amountValue - discount
+  //    // const discountedAmount = amountValue - discount
 
-    //     const shipping =  (standardForm.getValues("shipping") || 0);
+  //     const shipping =  (standardForm.getValues("shipping") || 0);
 
-    //   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100);
+  //   const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100);
 
-    //   const grandTotal = (subTotal - tax) + shipping;
+  //   const grandTotal = (subTotal - tax) + shipping;
 
-    // =======
-    standardForm.getValues("qty1") * standardForm.getValues("costPerUnit1") +
-    standardForm.getValues("qty2") * standardForm.getValues("costPerUnit2") +
-    standardForm.getValues("qty3") * standardForm.getValues("costPerUnit3")
-  const discount = ((standardForm.getValues("discountAmount") || 0) / 100) * amountValue
+  // =======
+  const calculateTotalAmount = () => {
+    let totalAmount = 0;
+    if (invoiceItem?.length === 0) {
+      return totalAmount
+    } else {
+      invoiceItem.forEach(({ quantity, costPerUnit }) => {
+        console.log(quantity, costPerUnit)
+        const itemAmount = quantity * Number(costPerUnit?.replace(/,/g, ''));
+        totalAmount += itemAmount;
+      });
+      return totalAmount;
+    }
+
+  };
+
+
+  const firstAmountValue = Number(standardForm.getValues("qty")?.replace(/,/g, '')) * Number(standardForm.getValues("costPerUnit")?.replace(/,/g, ''))
+  const amountValue = firstAmountValue + calculateTotalAmount()
+  const discount = ((Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0) / 100) * amountValue
   const subTotal = amountValue - discount
-  const tax = subTotal * ((standardForm.getValues("taxPercent") || 0) / 100)
-  const grandTotal = subTotal + tax + (standardForm.getValues("shipping") || 0)
+  const tax = subTotal * ((Number(standardForm.getValues("taxPercent")?.replace(/,/g, '')) || 0) / 100)
+  const grandTotal = subTotal + tax + (Number(standardForm.getValues("shipping")?.replace(/,/g, '')) || 0)
   //----------------Calculations Ends-------------------
+
+
+
+
 
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
     let newValues = {
@@ -283,28 +359,23 @@ export default function StandardForm() {
       merchantId: merchantId,
       amount: amountValue,
       additionalCustomerEmailAddress: [values?.email2, values?.email3]?.toString(),
-      shippingFee: values.shipping,
+      shippingFee: Number(values?.shipping?.replace(/,/g, '')),
       customerEmail: values?.email1,
       invoiceStatus: "PENDING",
       invoiceBreakdownList: [
         {
-          invoiceItem: values?.invoiceItem1,
-          quantity: values?.qty1,
-          costPerUnit: values?.costPerUnit1,
+          invoiceItem: values?.invoiceItem,
+          quantity: Number(values?.qty?.replace(/,/g, '')),
+          costPerUnit: Number(values?.costPerUnit?.replace(/,/g, ''))
         },
-        {
-          invoiceItem: values?.invoiceItem2,
-          quantity: values?.qty2,
-          costPerUnit: values?.costPerUnit2,
-        },
-        {
-          invoiceItem: values?.invoiceItem3,
-          quantity: values?.qty3,
-          costPerUnit: values?.costPerUnit3,
-        },
+        ...invoiceItem.map((item) => ({
+          ...item,
+          quantity: Number(item.quantity),
+          costPerUnit: Number(item.costPerUnit.replace(/,/g, '')), // Remove commas and convert to number
+        }))
       ],
     }
-    // console.log("from standard form: ", newValues);
+    console.log("from standard form: ", newValues);
     standardFormMutation.mutate(newValues as any)
   }
 
@@ -323,20 +394,11 @@ export default function StandardForm() {
       invoiceStatus: "DRAFT",
       invoiceBreakdownList: [
         {
-          invoiceItem: values?.invoiceItem1,
-          quantity: values?.qty1,
-          costPerUnit: values?.costPerUnit1,
+          invoiceItem: values?.invoiceItem,
+          quantity: values?.qty,
+          costPerUnit: values?.costPerUnit,
         },
-        {
-          invoiceItem: values?.invoiceItem2,
-          quantity: values?.qty2,
-          costPerUnit: values?.costPerUnit2,
-        },
-        {
-          invoiceItem: values?.invoiceItem3,
-          quantity: values?.qty3,
-          costPerUnit: values?.costPerUnit3,
-        },
+        ...invoiceItem
       ],
     }
     // console.log(newValues);
@@ -419,65 +481,81 @@ export default function StandardForm() {
           )}
         </div>
 
-        {invoiceItem?.map((value, id) => {
-          let invoiceItemNameString: any = `invoiceItem${id + 1}`
-          let qtyNameString: any = `qty${id + 1}`
-          let costPerUnitNameString: any = `costPerUnit${id + 1}`
+
+        <div className="flex flex-row items-start w-full gap-[13px]">
+          <FormField
+            control={standardForm.control}
+            name="invoiceItem"
+            render={({ field }) => (
+              <FormItem className="w-[40%] ">
+                <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice item</FormLabel>
+                <FormControl>
+                  <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Product or service name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={standardForm.control}
+            name="qty"
+            render={({ field }) => (
+              <FormItem className="w-[20%] ">
+                <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="border-[#A1CBDE] min-h-[48px] bg-transparent"
+                    placeholder="0"
+                    {...field}
+                    onInput={(event) => formatQuantity(event)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={standardForm.control}
+            name="costPerUnit"
+            render={({ field }) => (
+              <FormItem className="w-[40%] ">
+                <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Cost per unit</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="border-[#A1CBDE] min-h-[48px] bg-transparent"
+                    placeholder="0.00"
+                    {...field}
+                    onInput={(event) => formatMoneyAmount(event)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+
+        {invoiceItem?.map(({ costPerUnit, quantity, invoiceItem, id }) => {
+          // let invoiceItemNameString: any = `invoiceItem${id + 1}`
+          // let qtyNameString: any = `qty${id + 1}`
+          // let costPerUnitNameString: any = `costPerUnit${id + 1}`
           return (
             <div key={id} className="flex flex-row items-start w-full gap-[13px]">
-              <FormField
-                control={standardForm.control}
-                name={invoiceItemNameString}
-                render={({ field }) => (
-                  <FormItem className="w-[40%] ">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Invoice item</FormLabel>
-                    <FormControl>
-                      <Input type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent" placeholder="Product or service name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={standardForm.control}
-                name={qtyNameString}
-                render={({ field }) => (
-                  <FormItem className="w-[20%] ">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder="0"
-                        {...field}
-                        onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
-                        onChange={(event) => field.onChange(Number(event.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={standardForm.control}
-                name={costPerUnitNameString}
-                render={({ field }) => (
-                  <FormItem className="w-[40%] ">
-                    <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Cost per unit</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        className="border-[#A1CBDE] min-h-[48px] bg-transparent"
-                        placeholder="0.00"
-                        {...field}
-                        onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
-                        onChange={(event) => field.onChange(Number(event.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="w-[40%] flex flex-col items-start gap-2">
+                <label className="text-[#0C394B] text-[16px] leading-normal font-[400]" htmlFor={`item${id}`}>Invoice item</label>
+                <input value={invoiceItem} onChange={(event: any) => { handleItemValues(event, id, "invoiceItem") }} id={`item${id}`} type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent px-3 shadow-sm transition-colors focus-visible:outline-none placeholder:text-neutral-300 focus-visible:ring-1 focus-visible:border-blue-300 text-sm font-medium leading-snug w-full rounded-lg border justify-start items-center  inline-flex py-3 text-cyan-800" placeholder="Product or service name" />
+              </div>
+              <div className="w-[20%] flex flex-col items-start gap-2">
+                <label className="text-[#0C394B] text-[16px] leading-normal font-[400]" htmlFor={`qty${id}`}>Qty</label>
+                <input value={quantity} onChange={(event: any) => { handleItemValues(event, id, "quantity") }} id={`qty${id}`} type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent px-3 shadow-sm transition-colors focus-visible:outline-none placeholder:text-neutral-300 focus-visible:ring-1 focus-visible:border-blue-300 text-sm font-medium leading-snug w-full rounded-lg border justify-start items-center  inline-flex py-3 text-cyan-800" placeholder="0" />
+              </div>
+              <div className="w-[40%] flex flex-col items-start gap-2">
+                <label className="text-[#0C394B] text-[16px] leading-normal font-[400]" htmlFor={`cpu${id}`}>Cost per unit</label>
+                <input value={costPerUnit} onChange={(event: any) => { handleItemValues(event, id, "costPerUnit") }} id={`cpu${id}`} type="text" className="border-[#A1CBDE] min-h-[48px] bg-transparent px-3 shadow-sm transition-colors focus-visible:outline-none placeholder:text-neutral-300 focus-visible:ring-1 focus-visible:border-blue-300 text-sm font-medium leading-snug w-full rounded-lg border justify-start items-center  inline-flex py-3 text-cyan-800" placeholder="0.00" />
+              </div>
+
             </div>
           )
         })}
@@ -491,7 +569,7 @@ export default function StandardForm() {
             Add additional items
           </p>
 
-          {invoiceItem?.length === 1 ? (
+          {invoiceItem?.length === 0 ? (
             ""
           ) : (
             <FiMinus onClick={() => subtractInvoiceItem()} className="text-[#1D8EBB] text-[24px] cursor-pointer mr-2" />
@@ -613,12 +691,11 @@ export default function StandardForm() {
                   <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Tax payment(%)</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0"
                       {...field}
-                      onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
-                      onChange={(event) => field.onChange(Number(event.target.value))}
+                      onInput={(event) => formatQuantity(event)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -660,12 +737,11 @@ export default function StandardForm() {
                     {/* <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Qty</FormLabel> */}
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0.00"
                         {...field}
-                        onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
-                        onChange={(event) => field.onChange(Number(event.target.value))}
+                        onInput={(event) => formatQuantity(event)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -692,12 +768,11 @@ export default function StandardForm() {
                   <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">Shipping fee (optional)</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
+                      type="text"
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0.00"
                       {...field}
-                      onFocusCapture={(e) => e.target.value === "0" && (e.target.value = "")}
-                      onChange={(event) => field.onChange(Number(event.target.value))}
+                      onInput={(event) => formatMoneyAmount(event)}
                     />
                   </FormControl>
                   <FormMessage />

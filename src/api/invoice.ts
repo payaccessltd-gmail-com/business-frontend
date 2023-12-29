@@ -47,7 +47,6 @@ export const standardInvoice = async ({
   discountType,
   discountAmount,
   invoiceBreakdownList,
-
   subject,
   merchantId,
   invoiceStatus,
