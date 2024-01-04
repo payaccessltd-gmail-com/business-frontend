@@ -46,6 +46,8 @@ import { getAllInvoice } from "api/invoice"
 import InvoiceTable from "../generate-invoice/components/table"
 import SettlementTable from "./components/settlement-table"
 import { getAllTransaction } from "api/transaction"
+import { formatMoneyAmount } from "utils/numberFormater"
+
 
 const dropOptions: any[] = [
   { name: "All Channels", value: "All Channels" },
@@ -205,6 +207,7 @@ const Settlement = () => {
                   id="amount"
                   type="amount"
                   className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
+                  onChange={(event) => formatMoneyAmount(event)}
                 />
               </div>
               <div className="flex flex-col items-start gap-[8px] w-full">
@@ -266,8 +269,10 @@ const Settlement = () => {
         </DropdownMenu>
       </div>
 
-
-      {data?.data?.responseObject?.list.length ? (
+      <div className="w-full mt-[35px] self-center">
+        <SettlementTable setPage={setPage} page={page} row={row} setRow={setRow} invoiceTableData={data?.data?.responseObject} />
+      </div>
+      {/* {data?.data?.responseObject?.list.length ? (
         <div className="w-full mt-[35px] self-center">
           <SettlementTable setPage={setPage} page={page} row={row} setRow={setRow} invoiceTableData={data?.data?.responseObject} />
         </div>
@@ -275,7 +280,7 @@ const Settlement = () => {
         <div className="w-[602px] mt-[132px] self-center">
           <EmptyState />
         </div>
-      )}
+      )} */}
     </div>
   )
 }

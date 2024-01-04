@@ -26,7 +26,8 @@ import StandardRecipt from "./standard-form-recipt"
 import ReviewPopup from "./review-popup"
 import { useMutation } from "@tanstack/react-query"
 import { standardInvoice } from "../../../../api/invoice"
-import { formatMoneyAmount, formatQuantity } from "./amount-formatter"
+import { formatMoneyAmount, formatQuantity } from "utils/numberFormater"
+
 
 
 let merchantList: any

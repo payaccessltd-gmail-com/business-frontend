@@ -41,7 +41,7 @@ export function TransferNotification({ data, Notification, setNotification }: an
       transferNotificationByEmailForDebit: form.getValues("debitMail"),
     })
   }
-
+console.log(data, "notfication")
   return (
     <Form {...form}>
       <form

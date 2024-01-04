@@ -29,7 +29,7 @@ import SimpleRecipt from "./simple-form-recipt";
 import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice";
-import { formatMoneyAmount } from "./amount-formatter"
+import { formatMoneyAmount } from "utils/numberFormater"
 
 let merchantList: any
 let token = ""
