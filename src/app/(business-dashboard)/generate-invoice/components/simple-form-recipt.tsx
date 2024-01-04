@@ -15,7 +15,7 @@ import { useToast } from "components/ui/use-toast";
 
 const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit }: any) => {
   const { toast } = useToast();
-  console.log("modalData: ", modalData)
+  // console.log("modalData: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");
@@ -81,14 +81,16 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
               }
               <div className="flex flex-col items-center w-full">
                 <p className="text-[16px] text-[#555] font-[400] leading-normal">
-                  A request has been sent out to
+                  A request will be sent out to
                 </p>
                 <p className="text-[20px] text-[#177196] font-[700] leading-normal">
                   {modalData?.customerName || "Undefined"}
                 </p>
               </div>
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.grandTotal ? modalData?.grandTotal?.toLocaleString() : '00.00'}`}
+                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) : '00.00'}`}
               </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">

@@ -29,6 +29,7 @@ import SimpleRecipt from "./simple-form-recipt";
 import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice";
+import { formatMoneyAmount } from "utils/numberFormater"
 
 let merchantList: any
 let token = ""
@@ -58,7 +59,7 @@ const SimpleSchema = z.object({
     dueDate: z.date({
         required_error: "Due date is required.",
     }),
-    amount: z.number().optional(),
+    amount: z.string().optional(),
     invoiceNote: z.string().optional(),
     // businessLogo: z.instanceof(File).optional(),
     // businessLogo: z.any().optional(),
@@ -94,10 +95,10 @@ export default function SimpleForm() {
         defaultValues: {
             customerName: "",
             email1: "",
-            email2: "",
-            email3: "",
+            email2: "example@gmail.com",
+            email3: "example@gmail.com",
             dueDate: undefined,
-            amount: 0,
+            amount: "",
             invoiceNote: "",
             // businessLogo: new File([], ""),
         },
@@ -146,10 +147,32 @@ export default function SimpleForm() {
         console.log(newfieldValues?.slice(0, -1))
         setMinusField(newfieldValues?.slice(0, -1));
     };
+
+
+
+    // // ------------------amount input formatter--------------------
+    // const formatMoneyAmount = (event: any) => {
+    //     const input = event.target;
+    //     let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+
+    //     // Add commas for every three digits from the right
+    //     const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    //     input.value = formattedValue;
+    // }
+
+    // // ------------------amount input formatter end--------------------
+
+
+
+
+
+
     const simpleFormMutation = useMutation({
         mutationFn: simpleInvoice,
         onSuccess: async (data) => {
-            const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse;
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
             if (responseData?.statusCode === "1") {
                 toast({
                     variant: "destructive",
@@ -157,7 +180,7 @@ export default function SimpleForm() {
                     description: "Error Creating Invoice",
                 });
             }
-            if (responseData?.statusCode === "0") {
+            if (responseData?.statusCode === "0" || "ACCEPTED") {
                 toast({
                     variant: "default",
                     title: "",
@@ -182,10 +205,11 @@ export default function SimpleForm() {
     });
 
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
-        console.log(values);
+        // console.log(values);
         let newValues = {
             ...values,
-            amount: values?.amount?.toString(),
+            // amount: values?.amount?.toString(),
+            amount: Number(values?.amount?.replace(/,/g, '')),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
             additionalCustomerEmailAddress: [
                 values?.email2,
@@ -362,14 +386,11 @@ export default function SimpleForm() {
                             </FormLabel>
                             <FormControl>
                                 <Input
-                                    type="number"
+                                    type="text"
                                     className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                                     placeholder="0.00"
                                     {...field}
-                                    onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                                    onChange={(event) =>
-                                        field.onChange(Number(event.target.value))
-                                    }
+                                    onInput={(event) => formatMoneyAmount(event)}
                                 />
                             </FormControl>
                             <FormMessage />
