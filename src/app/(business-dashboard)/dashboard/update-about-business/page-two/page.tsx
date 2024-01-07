@@ -22,7 +22,7 @@ export default function SelectBusinessProfilePage() {
           </Typography>
 
           <Typography className="text-sm font-normal text-gray-40" level="p">
-            You can add another account letter own too.
+            You can add another account subsequently.
           </Typography>
         </div>
 

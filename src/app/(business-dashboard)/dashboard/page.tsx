@@ -22,6 +22,7 @@ import ReportOverview from "./components/report-overview";
 import TransactionSuccessRate from "./components/transaction-success-rate";
 
 export default function Dashboard() {
+  // const merchantList = JSON.parse(localStorage.getItem("merchantList") as any) || null;
   return (
     <div className="pb-5 space-y-5">
       <div className="relative flex flex-col w-full h-full space-y-5">

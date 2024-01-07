@@ -56,12 +56,16 @@ export default function LoginForm() {
       const responseData: API.LoginResponse =
         (await data.json()) as API.LoginResponse;
 
+        console.log("LoginRes ", JSON.stringify(responseData)); 
+        
+
       if (!responseData?.subject && !responseData?.token) {
         setLoading(false)
         toast({
           variant: "destructive",
           title: "",
-          description: "Error Signin in",
+          //@ts-ig
+          description: `${responseData?.message}`,
         });
       } else if (responseData?.token && responseData?.token) {
         setLoading(false)
@@ -93,7 +97,7 @@ export default function LoginForm() {
         toast({
           variant: "destructive",
           title: "",
-          description: "Error Signin in",
+          description: `${responseData?.message}`,
         });
       }
     },

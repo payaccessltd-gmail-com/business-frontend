@@ -34,7 +34,7 @@ import {
 import { useToast } from "components/ui/use-toast";
 import EmptyState from "./components/empty-state"
 import InvoiceTable from "../generate-invoice/components/table"
-import { getAllInvoice } from "../../../api/invoice"
+import { getAllInvoice } from "api/invoice"
 import { useQuery } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query";
 import { filterInvoices } from "api/invoice";
@@ -71,11 +71,12 @@ export default function Invoice() {
   const { toast } = useToast();
   const [filter, setFilter] = useState<any>()
   // const [tableDataResponse, setTable] = useState<any>()
-  const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, token }
+  const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, emptyObject: {}, token }
   const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllInvoice(GetParameters));
 
   const [searchResults, setSearchResults] = useState<any>(() => filter ? filter : data?.data?.responseObject);
 
+  console.log(data)
   useEffect(() => {
     setSearchResults(() => filter ? filter : data?.data?.responseObject)
   }, [data?.data?.responseObject, filter])

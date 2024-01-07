@@ -38,9 +38,12 @@ export default function BusinessType() {
         token,
         merchantCode: merchantList[0]?.merchantCode
     }
+
+    // console.log("mercahant Code: ", merchantList[0]?.merchantCode)
+
     const data: any = useQuery(['getMerchantDetails', getParameters], () => getMerchantDetails(getParameters));
 
-    // console.log(data?.data?.responseObject[0]?.businessType)
+    console.log("business type data: ", data?.data?.responseObject[0]?.businessType)
 
     const { toast } = useToast();
 

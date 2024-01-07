@@ -4,7 +4,8 @@ declare namespace API {
     password: string
   }
   type LoginResponse = {
-    subject?: string
+    subject?: string,
+    message?: string,
     merchantList?: {
       id: any
       businessName: string,

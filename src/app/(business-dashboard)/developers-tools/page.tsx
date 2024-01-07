@@ -17,6 +17,8 @@ import { ScrollArea } from "components/ui/scroll-area";
 import ApiConfiguration from "./components/api-config";
 import MerchantCredentials from "./components/merchant-credentials";
 import WebHook from "./components/web-hook";
+import DeveloperAuth from "./components/auth-modal"
+import { useState } from "react"
 
 
 
@@ -43,6 +45,8 @@ export default function DevelopersTools() {
   const dropOptions = ["Contact us", "Share feedback", "Resolve a complain"]
   const GetParameters = { merchantCode, token }
   const data: any = useQuery(['getMerchantByCode', GetParameters], () => getMerchantByCode(GetParameters));
+  const [authenticate, setAuthenticate] = useState<boolean>(false)
+  const [isKeyOpen, setKey] = useState<boolean>(false)
 
   // console.log(data?.data?.responseObject[0])
 
@@ -73,11 +77,11 @@ export default function DevelopersTools() {
     <p className="text-[#177196] text-[36px] font-[600] leading-normal mb-[40px] mt-[24px]">Developers Tools</p>
     <ScrollArea className="w-full pr-2">
       <div className="w-full flex flex-col items-center gap-4 pb-20 ">
-        <ApiConfiguration />
+        <ApiConfiguration isKeyOpen={isKeyOpen} setAuthenticate={setAuthenticate} />
         <MerchantCredentials data={data?.data?.responseObject[0]} />
         <WebHook data={data?.data?.responseObject[0]} />
       </div>
     </ScrollArea>
-
+    {authenticate ? <DeveloperAuth isOpen={authenticate} setOpen={setAuthenticate} setKey={setKey} /> : ""}
   </main>;
 }

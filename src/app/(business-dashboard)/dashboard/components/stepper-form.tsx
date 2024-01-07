@@ -30,7 +30,7 @@ function Stepper() {
       {
         label: "Step 4",
         title: "Approval",
-        description: "Review and approval of your KYC documents",
+        description: "Review and Submit Your KYC Documents",
       },
     ],
     []

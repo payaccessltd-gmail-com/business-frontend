@@ -10,7 +10,7 @@ const InformationFrame = (props: Props) => {
   return (
     <div className="flex flex-col items-start justify-start w-full ">
       <div className="justify-start items-center gap-3.5 inline-flex  w-full">
-        <Typography className="text-gray-400 text-lg font-bold font-['Century Gothic'] leading-relaxed">
+        <Typography className=" text-lg font-bold font-['Century Gothic'] leading-relaxed">
           {props.title}
         </Typography>
         <div className="w-28 pl-1.5 py-2.5 justify-start items-center gap-1 flex">

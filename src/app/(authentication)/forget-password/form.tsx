@@ -57,7 +57,7 @@ export default function ForgetForm() {
         });
       }
 
-      if (responseData?.statusCode === "00") {
+      if (responseData?.statusCode === "0") {
         toast({
           variant: "default",
           title: "",

@@ -14,9 +14,9 @@ export function Notification() {
     <DropdownMenu>
       <DropdownMenuTrigger className="relative">
         <IoNotificationsOutline className="text-[28px] text-neutral-400" />
-        <span className="absolute flex items-center space-x-1 -right-2 -top-2">
+        <span className="abso lute flex items-center space-x-1 -right-2 -top-2">
           <span className="w-3 h-3 bg-red-700 rounded-full"></span>
-          <span className="text-[12px] text-primary">2</span>
+          <span className="text-[12px] text-primary">0</span>
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="bottom" sideOffset={5}>

@@ -237,11 +237,11 @@ export default function Settings() {
                   <Link href={"/dashboard/update-about-business/page-one"}>Add new business</Link>
                 </Button>
               </div>
-              <div className="self-center flex flex-col items-center gap-4 mt-[45px]">
+              <div className="self-center flex flex-col items-center gap-4 mt-[45px] w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Business information</p>
                 <BusinessInfoForm />
               </div>
-              <div className="self-center flex flex-col items-center gap-4 mt-[51px]">
+              <div className="self-center flex flex-col items-center gap-4 mt-[51px] w-full">
                 <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">Account information</p>
                 <AccountInfoForm />
               </div>
@@ -306,7 +306,12 @@ export default function Settings() {
         {
           tab === 5 ?         //----------------------Device
             <div className="flex flex-col items-start w-full gap-8">
+              <div className="flex flex-col items-center gap-4 w-full">
+                <p className="text-[#0C394B] text-[16px] leading-[150%] font-[600]">
+                  Comming Soon!
+                </p>
 
+              </div>
 
             </div> : ""
         }

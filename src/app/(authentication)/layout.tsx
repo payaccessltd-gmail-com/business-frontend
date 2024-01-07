@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
+import Preloader from "./loading";
 
 export const metadata: Metadata = {
   title: "Registration",
@@ -90,7 +92,10 @@ export default function RegistrationLayout({
           </filter>
         </defs>
       </svg> */}
-      {children}
+      <Suspense fallback={<Preloader />}>
+        {children}
+      </Suspense>
+
     </div>
   );
 }

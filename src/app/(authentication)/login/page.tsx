@@ -101,7 +101,7 @@ export default function AuthenticationPage() {
             href="/registration"
             className="text-sm font-semibold text-primary-70"
           >
-            Signup
+            Sign Up
           </Link>
         </div>
       </div>

@@ -87,7 +87,7 @@ export default function ResetForm() {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
 
-      if (responseData?.statusCode === "01") {
+      if (responseData?.statusCode === "2") {
         toast({
           variant: "destructive",
           title: "",
@@ -95,7 +95,7 @@ export default function ResetForm() {
         });
       }
 
-      if (responseData?.statusCode === "00") {
+      if (responseData?.statusCode === "0") {
         toast({
           variant: "default",
           title: "",
