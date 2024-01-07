@@ -184,4 +184,3 @@ export const filterInvoices = async ({
     body: JSON.stringify(newData),
   });
 };
-//eric
