@@ -6,8 +6,9 @@ import { ScrollArea } from "components/ui/scroll-area";
 import { Header } from "./_components/header";
 import { Sidebar } from "./_components/sidebar";
 import { sidebarData } from "./_components/sidebar-data";
-import { useEffect, useState } from "react";
-import Preloader from "./preloader";
+import { useState } from "react";
+import { Suspense } from "react";
+import Preloader from "./loading";
 
 export default function DashboardLayout({
   children,
@@ -30,23 +31,6 @@ export default function DashboardLayout({
     router.push("/login");
   }
   const [isOpen, setOpen] = useState<boolean>(true)
-  // const [loading, setLoading] = useState<boolean>(false);
-
-  //---------------------Setting Preloader Listeners
-  // useEffect(() => {
-  //   const handleStart = (url: any) => (url !== router.asPath) && setLoading(true);
-  //   const handleComplete = (url: any) => (url === router.asPath) && setTimeout(() => setLoading(false), 5000);
-
-  //   router.events.on('routeChangeStart', handleStart);
-  //   router.events.on('routeChangeComplete', handleComplete);
-  //   router.events.on('routeChangeError', handleComplete);
-
-  //   return () => {
-  //     router.events.off('routeChangeStart', handleStart);
-  //     router.events.off('routeChangeComplete', handleComplete);
-  //     router.events.off('routeChangeError', handleComplete);
-  //   };
-  // }, [router]);
 
 
 
@@ -61,8 +45,9 @@ export default function DashboardLayout({
         <Header />
         <ScrollArea>
           <main className="h-[calc(100vh-84px)] overflow-visible bg-sky-50 bg-opacity-30 px-12 py-4">
-            {/* {loading && <Preloader />} */}
-            {children}
+            <Suspense fallback={<Preloader />}>
+              {children}
+            </Suspense>
           </main>
         </ScrollArea>
       </div>

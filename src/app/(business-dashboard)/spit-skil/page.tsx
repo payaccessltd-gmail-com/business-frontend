@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import EmptyState from "./components/EmptyState";
 
 export const metadata: Metadata = {
   title: "Get Started",
@@ -6,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function SpitSkil() {
-  return <main>coming soon</main>;
+  return <main className="flex flex-col items-center">
+    <div className="w-[60%] flex flex-col items-center mt-[10%]">
+      <EmptyState />
+    </div>
+  </main>;
 }
