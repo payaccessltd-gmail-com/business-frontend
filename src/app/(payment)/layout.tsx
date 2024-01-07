@@ -1,4 +1,7 @@
 import { Metadata } from "next"
+import { Suspense } from "react";
+import Preloader from "./loading";
+
 
 export const metadata: Metadata = {
     title: "Payment",
@@ -14,7 +17,9 @@ export default function PaymentLayout({
 }) {
     return (
         <div className="relative w-full">
-            {children}
+            <Suspense fallback={<Preloader />}>
+                {children}
+            </Suspense>
         </div>
     )
 }

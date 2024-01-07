@@ -228,37 +228,37 @@ export const sidebarData = [
   {
     section: "forth section",
     list: [
-      {
-        name: "Customer",
-        path: "/customer",
-        tagText: "",
-        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={24}
-            height={24}
-            fill="none"
-          >
-            <g clipPath="url(#a)">
-              <path
-                stroke={isActive ? activeColor : defaultColor}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5.143 12V7.49A6.737 6.737 0 0 1 12 .857a6.737 6.737 0 0 1 6.857 6.634V12m-3.428 9a3.428 3.428 0 0 0 3.428-3.429v-3.857M15.43 21a2.143 2.143 0 0 1-2.143 2.143h-2.571a2.143 2.143 0 1 1 0-4.286h2.571A2.143 2.143 0 0 1 15.429 21ZM2.572 9.428h1.714a.857.857 0 0 1 .857.858v5.143a.857.857 0 0 1-.857.857H2.572A1.714 1.714 0 0 1 .857 14.57v-3.428a1.714 1.714 0 0 1 1.715-1.715Zm18.857 6.858h-1.714a.857.857 0 0 1-.858-.858v-5.142a.857.857 0 0 1 .858-.858h1.714a1.714 1.714 0 0 1 1.714 1.715v3.428a1.714 1.714 0 0 1-1.714 1.715Z"
-              />
-            </g>
-            <defs>
-              <clipPath id="a">
-                <path
-                  fill={isActive ? activeColor : defaultColor}
-                  d="M0 0h24v24H0z"
-                />
-              </clipPath>
-            </defs>
-          </svg>
-        ),
-      },
+      // {
+      //   name: "Customer",
+      //   path: "/customer",
+      //   tagText: "",
+      //   SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
+      //     <svg
+      //       xmlns="http://www.w3.org/2000/svg"
+      //       width={24}
+      //       height={24}
+      //       fill="none"
+      //     >
+      //       <g clipPath="url(#a)">
+      //         <path
+      //           stroke={isActive ? activeColor : defaultColor}
+      //           strokeLinecap="round"
+      //           strokeLinejoin="round"
+      //           strokeWidth={2}
+      //           d="M5.143 12V7.49A6.737 6.737 0 0 1 12 .857a6.737 6.737 0 0 1 6.857 6.634V12m-3.428 9a3.428 3.428 0 0 0 3.428-3.429v-3.857M15.43 21a2.143 2.143 0 0 1-2.143 2.143h-2.571a2.143 2.143 0 1 1 0-4.286h2.571A2.143 2.143 0 0 1 15.429 21ZM2.572 9.428h1.714a.857.857 0 0 1 .857.858v5.143a.857.857 0 0 1-.857.857H2.572A1.714 1.714 0 0 1 .857 14.57v-3.428a1.714 1.714 0 0 1 1.715-1.715Zm18.857 6.858h-1.714a.857.857 0 0 1-.858-.858v-5.142a.857.857 0 0 1 .858-.858h1.714a1.714 1.714 0 0 1 1.714 1.715v3.428a1.714 1.714 0 0 1-1.714 1.715Z"
+      //         />
+      //       </g>
+      //       <defs>
+      //         <clipPath id="a">
+      //           <path
+      //             fill={isActive ? activeColor : defaultColor}
+      //             d="M0 0h24v24H0z"
+      //           />
+      //         </clipPath>
+      //       </defs>
+      //     </svg>
+      //   ),
+      // },
       {
         name: "Settings",
         path: "/settings",

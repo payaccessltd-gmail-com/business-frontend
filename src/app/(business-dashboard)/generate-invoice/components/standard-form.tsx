@@ -26,7 +26,7 @@ import StandardRecipt from "./standard-form-recipt"
 import ReviewPopup from "./review-popup"
 import { useMutation } from "@tanstack/react-query"
 import { standardInvoice } from "../../../../api/invoice"
-import { formatMoneyAmount, formatQuantity } from "utils/numberFormater"
+import { formatMoneyAmount, formatPercentValue, formatQuantity } from "utils/numberFormater"
 
 
 
@@ -696,7 +696,7 @@ export default function StandardForm() {
                       className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                       placeholder="0"
                       {...field}
-                      onInput={(event) => formatQuantity(event)}
+                      onInput={(event) => formatPercentValue(event)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -742,7 +742,7 @@ export default function StandardForm() {
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0.00"
                         {...field}
-                        onInput={(event) => formatQuantity(event)}
+                        onInput={(event) => formatPercentValue(event)}
                       />
                     </FormControl>
                     <FormMessage />
