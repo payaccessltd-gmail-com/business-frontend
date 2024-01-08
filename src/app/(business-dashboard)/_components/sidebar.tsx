@@ -43,8 +43,14 @@ export function Sidebar({ className }: SidebarProps) {
           </Typography>
 
           <Typography className="text-center text-cyan-100 text-xs font-normal font-['Inter'] leading-none">
-            Merchant ID: {currentMerchant?.merchantCode}
+            Merchant ID: {currentMerchant?.merchantCode}    <button
+        className=" absolute top-1.5 cursor-pointer"
+        // onClick={toggleSidebar}
+      >
+        <LuChevronDown size={24} />
+      </button>
           </Typography>
+      
         </div>
 
         <ScrollArea className="h-[70vh]">
