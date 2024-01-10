@@ -26,9 +26,12 @@ import {
 } from "components/ui/select";
 import { Textarea } from "components/ui/textarea";
 import { countryList } from "utils/countrylist";
+import { useHydrateStore, useMerchantStore } from "store";
+import { HiOutlineCloudUpload } from "react-icons/hi";
+import { Typography } from "components/ui/Typography";
 
 const businessInfoFormSchema = zod.object({
-  merchantId: zod.number(),
+  // merchantId: zod.number(),
   businessName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
   }),
@@ -39,7 +42,7 @@ const businessInfoFormSchema = zod.object({
   businessEmail: zod.string().email(),
   businessWebsite: zod.string().url(),
   businessLogo: zod.string(),
-  businessCertificate: zod.string(),
+  businessCertificate: zod.custom<File>(),
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
@@ -51,6 +54,8 @@ export default function BusinessInformationForm() {
     defaultValues: {},
     resolver: zodResolver(businessInfoFormSchema),
   });
+  const merchantId = useHydrateStore(useMerchantStore, (state) => state.currentMerchant.id)
+
 
   if (
     typeof window !== "undefined" &&
@@ -71,10 +76,11 @@ export default function BusinessInformationForm() {
   });
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
-    // const emailAddress = localStorage.getItem("emailAddress") as string
-    const emailAddress = "user.user@gmail.com";
-
-    const updatedValue = { emailAddress, ...values };
+    const emailAddress = localStorage.getItem("emailAddress") as string
+    // const emailAddress = "user.user@gmail.com";
+    console.log(values);
+    
+    const updatedValue = { emailAddress,merchantId, ...values };
     updateMerchantBusinessDataMutation.mutate(updatedValue as any);
   };
 
@@ -242,7 +248,42 @@ export default function BusinessInformationForm() {
             </FormItem>
           )}
         />
-
+    <FormField
+          name="businessCertificate"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Business Certificate</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           name="businessLogo"
           control={businessInfoForm.control}
@@ -261,12 +302,12 @@ export default function BusinessInformationForm() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           name="businessCertificate"
           control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Business Certificate</FormDescription>
+              <FormDescription>Business logo (optional)</FormDescription>
               <FormControl>
                 <Input
                   placeholder="Drag file here to upload document or choose file"
@@ -277,7 +318,7 @@ export default function BusinessInformationForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <div className="flex items-center  justify-center my-20">
           <Button

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getUserInfo } from "api/user-management";
@@ -12,66 +12,51 @@ import Link from "next/link";
 type Props = {};
 
 export default function CustomerName({ }: Props) {
-    // let token: string = "";
-    // const { setUser } = useUserStore();
-    // const { setCurrentMerchantDetails } = useMerchantStore();
+    const [shouldUpdateBusiness, setShouldUpdateBusiness] = useState<boolean | undefined>()
+    const [businessLink, setBusinessLink] = useState<string>()
+    // @ts-ignore
+    const state = useHydrateStore(useMerchantStore, (state) => state);
+    const { user } = useUserStore();
+    console.log(user,'eee');
+    
 
-    // if (
-    //     typeof window !== "undefined" &&
-    //     typeof window.localStorage !== "undefined"
-    // ) {
-    //     token = localStorage.getItem("token") as string;
+    // function checkInfoSet(obj: API.MerchantDetails) {
+
+    //     console.log(obj,'obj');
+
+    //     return res;
     // }
+    // console.log(state?.currentMerchantDetails, state?.merchants);
 
-    // const { isLoading, error, data } = useQuery({
-    //     queryKey: ["user-details"],
-    //     queryFn: async () => {
-    //         const res = await getUserInfo(token);
+    useEffect(() => {
+        if (!state?.currentMerchantDetails?.accountInfoSet || !state?.currentMerchantDetails?.businessInfoSet || !state?.currentMerchantDetails?.personalInfoSet) {
+            setShouldUpdateBusiness(true)
+        }
+        if (state?.currentMerchantDetails?.businessType === 'INDIVIDUAL') {
+            setBusinessLink('/dashboard/unregistered-business')
+        } else {
+            setBusinessLink('/dashboard/registered-business')
+        }
+    }, [])
 
-    //         const userRes = (await res.json()) as API.UserDetailsResponse;
-    //         setUser(userRes.responseObject);
-
-    //         return userRes;
-    //     },
-    // });
-
-    // console.log(data, 'frooooo');
-
-
-    // const currentMerchant = useHydrateStore(
-    //     useMerchantStore,
-    //     (state) => state.currentMerchant,
-    // );
-
-    // const merchantDetails = useQuery({
-    //     queryKey: ["merchant-details", currentMerchant?.merchantCode],
-    //     queryFn: () =>
-    //         getMerchantByMerchantCode(currentMerchant?.merchantCode as string, token),
-    //     enabled: currentMerchant?.merchantCode ? true : false,
-    //     onSuccess: async (data) => {
-    //         const res = (await data.json()) as API.GetMerchantByMerchantCodeDTO;
-
-    //         if (res.statusCode === "0") {
-    //             setCurrentMerchantDetails(res.responseObject[0]);
-    //         }
-    //     },
-    // });
-
-    // if (isLoading) return <div></div>;
-    // if (error) return "An error has occurred: " as string;
 
 
     return (
-        <Button
-            asChild
-            variant="ghost"
-            key={"get-started"}
-            size="lg"
-            className="rounded-lg bg-secondary-60 py-2.5 font-bold text-white"
-        >
-            <Link key={"/"} href="/dashboard/update-about-business/page-one">
-                Get started
-            </Link>
-        </Button>
+        <>
+            {
+                //@ts-ignore
+                state?.merchants?.length < 2 && <Button
+                    asChild
+                    variant="ghost"
+                    key={"get-started"}
+                    size="lg"
+                    className="rounded-lg bg-secondary-60 py-2 font-bold text-white"
+                >
+                    <Link key={"/"} href={`${shouldUpdateBusiness && user?.softwareDeveloper ? businessLink : '/dashboard/update-about-business/page-one'}`}>
+                        {shouldUpdateBusiness && user?.softwareDeveloper ? 'Continue business update' : 'Get started'}
+                    </Link>
+                </Button>
+            }
+        </>
     );
 }

@@ -32,8 +32,6 @@ export default function CustomerName({}: Props) {
       return userRes;
     },
   });
-
-  console.log(data,'data');
   
 
   const currentMerchant = useHydrateStore(

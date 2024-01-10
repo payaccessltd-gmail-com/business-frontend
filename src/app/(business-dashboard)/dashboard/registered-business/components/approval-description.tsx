@@ -10,10 +10,10 @@ import BusinessInformation from "./business-information";
 import AccountInformation from "./account-information";
 type Props = {};
 
-export default function ApprovalDescription({}: Props) {
+export default function ApprovalDescription(props: any) {
   return (
     <div>
-      <ReviewDetails />
+      <ReviewDetails props={props}/>
 
       {/* form display section */}
       <div className=" w-full inline-flex flex-col items-start justify-start gap-6 px-10 pt-6 pb-10 bg-white border rounded-lg border-slate-200">

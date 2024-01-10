@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -10,7 +10,7 @@ import * as zod from "zod"
 // import { Button } from "components/ui/Button/Button"
 import { Button } from "components/ui/button"
 import { Checkbox } from "components/ui/checkbox"
-import { updateAboutBusiness } from "api/merchant-management"
+import { getMerchantByMerchantCode, updateAboutBusiness } from "api/merchant-management"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "c
 
 import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
+import { useState } from "react"
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -28,7 +29,7 @@ const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
   businessType: zod.string(),
   softwareDeveloper: zod.string(),
-  // mobileNumber: zod.string(),
+  mobileNumber: zod.string(),
   merchantId: zod.number(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
@@ -41,10 +42,11 @@ export default function BusinessProfileUpdate() {
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
-
   const router = useRouter()
   const { toast } = useToast()
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
+  const { setCurrentMerchantDetails } = useMerchantStore();
+
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
       merchantId: 0,
@@ -65,8 +67,29 @@ export default function BusinessProfileUpdate() {
           description: responseData?.message,
         })
       } else if (responseData?.statusCode === "0" && typeof window) {
+        // useQuery({
+        //   queryKey: ["merchant-details", currentMerchant?.merchantCode],
+        //   queryFn: () =>
+        //     getMerchantByMerchantCode(currentMerchant?.merchantCode as string, token),
+        //   enabled: currentMerchant?.merchantCode ? true : false,
+        //   onSuccess: async (data) => {
+        //     const res = (await data.json()) as API.GetMerchantByMerchantCodeDTO;
+        //     console.log(res, 'Youz');
+
+        //     if (res.statusCode === "0") {
+        //       setCurrentMerchantDetails(res.responseObject[0]);
+        //       if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
+          
+        //         router.push("/dashboard/registered-business")
+        //         businessProfileForm.reset()
+        //         return
+        //       }
+        //     }
+        //   },
+        // });
+      
         businessProfileForm.reset()
-        router.push("/dashboard/update-about-business/page-two")
+        router.push("/dashboard/registered-business")
 
         toast({
           variant: "default",
@@ -130,7 +153,7 @@ export default function BusinessProfileUpdate() {
                 )}
               />
 
-              {/* <FormField
+              <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
                 render={({ field }) => (
@@ -142,7 +165,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
               <FormField
                 control={businessProfileForm.control}
@@ -182,7 +205,7 @@ export default function BusinessProfileUpdate() {
 
                         <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="REGISTERED_BUSINESS" />
+                            <RadioGroupItem value="NGO_BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">NGO Business</FormLabel>
@@ -194,7 +217,7 @@ export default function BusinessProfileUpdate() {
 
                         <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="BUSINESS" />
+                            <RadioGroupItem value="REGISTERED_BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">Registered business</FormLabel>

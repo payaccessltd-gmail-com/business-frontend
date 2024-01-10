@@ -38,7 +38,7 @@ function Stepper() {
     [],
   );
 
-  const { state, stepperProps, stepsProps } = useStepper({
+  const { state, stepperProps, stepsProps,prevStep, nextStep } = useStepper({
     steps,
   });
 
@@ -91,25 +91,25 @@ function Stepper() {
           {state.currentStep === 0 ? (
             <div className="flex items-center h-screen">
               <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
-                <PersonalInformationForm />
+                <PersonalInformationForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
           ) : state.currentStep === 1 ? (
             <div className="flex items-center h-screen my-32">
               <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
-                <BusinessInformationForm />
+                <BusinessInformationForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
           ) : state.currentStep === 2 ? (
             <div className="flex items-center ">
               <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
-                <AccountInformationForm />
+                <AccountInformationForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
           ) : state.currentStep === 3 ? (
             <div className="flex items-center  ">
               <div className="">
-                <ApprovalForm />
+                <ApprovalForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
           ) : (
