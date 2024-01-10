@@ -1,7 +1,7 @@
 import { baseUrl } from "./baseUrl";
 import { token } from "./http";
 
-
+// console.log(token)
 export const simpleInvoice = async ({
   customerName,
   additionalCustomerEmailAddress,
@@ -10,11 +10,11 @@ export const simpleInvoice = async ({
   invoiceNote,
   businessLogo,
   invoiceStatus,
-   
   customerEmail,
   subject,
-  merchantId
-}: API.SimpleInvoice) => {
+  merchantId,
+  token
+}: any) => {
   let formdata = new FormData();
   formdata.append("customerName", customerName);
   formdata.append(
@@ -32,7 +32,7 @@ export const simpleInvoice = async ({
   return await fetch(`${baseUrl}/api/v1/invoice/create-simple-invoice`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`
     },
     body: formdata,
   });
@@ -48,11 +48,11 @@ export const standardInvoice = async ({
   discountType,
   discountAmount,
   invoiceBreakdownList,
-  
   subject,
   merchantId,
   invoiceStatus,
   shippingFee,
+  token,
   customerEmail,
 }: any) => {
   const newData = {
@@ -81,13 +81,15 @@ export const standardInvoice = async ({
   });
 };
 
-export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage, token }: API.GetAllInovice) => {
+export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage, token, emptyObject }: API.GetAllInovice) => {
   // console.log(merchantId)
   const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoices/${merchantId}/${rowPerPage}/${currentPageNumber}`, {
-    method: "GET",
+    method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-    }
+    },
+    body: JSON.stringify(emptyObject)
   });
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -98,7 +100,7 @@ export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage,
 };
 
 
-export const getInvoiceDetails = async ({  merchantId, invoiceId }: any) => {
+export const getInvoiceDetails = async ({ merchantId, invoiceId, token }: any) => {
   const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-details/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -113,7 +115,7 @@ export const getInvoiceDetails = async ({  merchantId, invoiceId }: any) => {
   const data = JSON.parse(responseText);
   return data;
 };
-export const getInvoiceBreakdown = async ({  merchantId, invoiceId }: any) => {
+export const getInvoiceBreakdown = async ({ merchantId, invoiceId, token }: any) => {
   const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-breakdown/${merchantId}/${invoiceId}`, {
     method: "GET",
     headers: {
@@ -128,7 +130,7 @@ export const getInvoiceBreakdown = async ({  merchantId, invoiceId }: any) => {
   const data = JSON.parse(responseText);
   return data;
 };
-export const deleteInvoice = async ({  merchantId, invoiceId }: any) => {
+export const deleteInvoice = async ({ merchantId, invoiceId }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/delete-invoice/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -137,7 +139,7 @@ export const deleteInvoice = async ({  merchantId, invoiceId }: any) => {
     },
   });
 };
-export const markAsPaid = async ({  merchantId, invoiceId }: any) => {
+export const markAsPaid = async ({ merchantId, invoiceId, token }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/mark-invoice-paid/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -146,7 +148,7 @@ export const markAsPaid = async ({  merchantId, invoiceId }: any) => {
     },
   });
 };
-export const sendReminder = async ({  merchantId, invoiceId }: any) => {
+export const sendReminder = async ({ merchantId, invoiceId, token }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/resend-invoice-email/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -163,7 +165,8 @@ export const filterInvoices = async ({
   startDate,
   endDate,
   merchantId,
-   
+  token
+
 }: any) => {
   const newData = {
     invoiceStatus,

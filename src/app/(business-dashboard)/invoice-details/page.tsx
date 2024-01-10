@@ -61,16 +61,18 @@ export default function GenerateInvoice() {
   const breakDownData: any = useQuery(['getInvoiceBreakdown', requestData], () => getInvoiceBreakdown(requestData));
 
   console.log(detailData?.data?.responseObject)
-  // console.log(breakDownData?.data?.responseObject)
-  const breakDown = breakDownData?.data?.responseObject
-  const fillData = detailData?.data?.responseObject
+  console.log(breakDownData?.data?.responseObject)
+  const breakDown: any[] = breakDownData?.data?.responseObject
+  const fillData = detailData?.data?.responseObject?.invoiceDetails
   const sendDate = new Date(fillData?.createdAt).toDateString().split(" ");
   const dueDate = new Date(fillData?.dueDate).toDateString().split(" ");
-  const shipping = detailData?.data?.responseObject?.shippingFee
-  const taxPercent = detailData?.data?.responseObject?.taxAmount
-  const discountPercent = detailData?.data?.responseObject?.discount
+  const shipping = detailData?.data?.responseObject?.invoiceDetails?.shippingFee
+  const taxPercent = detailData?.data?.responseObject?.invoiceDetails?.taxAmount
+  const discountPercent = detailData?.data?.responseObject?.invoiceDetails?.discount
 
-  // console.log(fillData)
+  // console.log("testing properties: ", fillData?.businessLogo, fillData)
+  // console.log("breakDownData: ", breakDown)
+
   let [amountValue, setAmountValue] = useState<any>()
   let [discount, setDiscount] = useState<any>()
   let [subTotal, setSubTotal] = useState<any>()
@@ -79,19 +81,26 @@ export default function GenerateInvoice() {
 
   useEffect(() => {
     if (breakDown) {
-      setAmountValue((breakDown[0]?.quantity * breakDown[0]?.costPerUnit) +
-        (breakDown[1]?.quantity * breakDown[1]?.costPerUnit) +
-        (breakDown[2]?.quantity * breakDown[2]?.costPerUnit))
-
+      const calculateTotalAmount = () => {
+        let totalAmount = 0;
+        breakDown?.forEach(({ quantity, costPerUnit }) => {
+          // console.log(quantity, costPerUnit)
+          const itemAmount = quantity * costPerUnit;
+          totalAmount += itemAmount;
+        });
+        return totalAmount;
+      }
+      setAmountValue(calculateTotalAmount())
     }
   }, [breakDown])
   useEffect(() => {
     if (breakDown) {
-      setDiscount(((discountPercent) / 100) * amountValue)
+      setDiscount((discountPercent / 100) * amountValue)
     }
   }, [amountValue, discountPercent])
 
   useEffect(() => {
+
     if (breakDown) {
       setSubTotal(amountValue - discount)
     }
@@ -103,7 +112,7 @@ export default function GenerateInvoice() {
   }, [subTotal, taxPercent])
   useEffect(() => {
     if (breakDown) {
-      setGrandTotal(subTotal - tax + (shipping))
+      setGrandTotal(subTotal + tax + (shipping))
     }
   }, [tax, subTotal, shipping])
 
@@ -499,7 +508,11 @@ export default function GenerateInvoice() {
                   Receive payments from your clients using our invoice.
                 </p>
                 <p className="text-[#0C394B] text-[20px] leading-[22px] font-[600]">
-                  ₦ {fillData?.invoiceType === "STANDARD" ? amountValue : fillData?.amount}
+                  ₦ {fillData?.invoiceType === "STANDARD" ? amountValue?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  }) : fillData?.amount?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
               </div>
             </div>
@@ -515,7 +528,9 @@ export default function GenerateInvoice() {
                       Subtotal
                     </p>
                     <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                      NGN {subTotal}
+                      NGN {subTotal?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
 
@@ -526,7 +541,9 @@ export default function GenerateInvoice() {
                       Tax
                     </p>
                     <p className="text-[#D92D20] text-[20px] leading-normal font-[700]">
-                      -NGN {tax}
+                      -NGN {tax?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
                   <div className="flex flex-row items-center justify-between w-full">
@@ -534,7 +551,9 @@ export default function GenerateInvoice() {
                       Discount
                     </p>
                     <p className="text-[#25AF36] text-[20px] leading-normal font-[400]">
-                      +NGN {discount}
+                      +NGN {discount?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -546,7 +565,9 @@ export default function GenerateInvoice() {
                   Grand Total
                 </p>
                 <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                  NGN {grandTotal}
+                  NGN {grandTotal?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
               </div>
               : ""}

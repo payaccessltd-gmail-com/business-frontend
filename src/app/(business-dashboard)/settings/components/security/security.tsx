@@ -41,6 +41,7 @@ export default function Security({ data, security, setSecurity }: any) {
   const data2: any = useQuery(["getUserInfo", token], () => getUserInfo(token))
 
   // console.log(data2?.data?.responseObject?.twoFactorAuthForLogin)
+  console.log(data2?.data?.responseObject, "data2 security")
 
   // console.log(data?.twoFactorAuthForPaymentAndTransfer)
 

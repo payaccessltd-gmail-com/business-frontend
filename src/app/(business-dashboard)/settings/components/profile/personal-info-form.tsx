@@ -139,7 +139,11 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
         onSubmit={personalForm.handleSubmit(onSubmit)}
         className="w-[550px] p-[40px] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
       >
+
+
+
         <FormField
+          disabled
           control={personalForm.control}
           name="firstName"
           render={({ field }) => (
@@ -161,6 +165,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
           )}
         />
         <FormField
+          disabled
           control={personalForm.control}
           name="lastName"
           render={({ field }) => (
@@ -211,6 +216,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
         />
 
         <FormField
+          disabled
           control={personalForm.control}
           name="email"
           render={({ field }) => (
@@ -262,6 +268,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
           />
 
           <FormField
+            disabled
             control={personalForm.control}
             name="phone"
             render={({ field }) => (

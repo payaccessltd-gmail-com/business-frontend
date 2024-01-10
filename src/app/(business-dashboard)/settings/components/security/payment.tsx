@@ -27,12 +27,12 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 }
 
 const FormSchema = z.object({
-  enableAcceptBankTransfers: z.boolean(),
-  enableAcceptPOSChannel: z.boolean(),
-  enableAcceptCardPayment: z.boolean(),
-  enableAcceptMobileMoneyTransfer: z.boolean(),
-  enableUSSDTransfer: z.boolean(),
-  defaultCurrency: z.string(),
+  enableAcceptBankTransfers: z.boolean().optional(),
+  enableAcceptPOSChannel: z.boolean().optional(),
+  enableAcceptCardPayment: z.boolean().optional(),
+  enableAcceptMobileMoneyTransfer: z.boolean().optional(),
+  enableUSSDTransfer: z.boolean().optional(),
+  defaultCurrency: z.string().optional(),
 })
 
 export default function Payment({ data, security, setSecurity }: any) {
@@ -99,7 +99,7 @@ export default function Payment({ data, security, setSecurity }: any) {
       token: token,
       merchantId: merchantId,
     }
-    // console.log(newValues);
+    console.log(newValues);
     paymentSettingsMutation.mutate(newValues as any)
   }
 
