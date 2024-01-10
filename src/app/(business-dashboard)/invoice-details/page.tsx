@@ -279,8 +279,8 @@ export default function GenerateInvoice() {
       merchantId,
       invoiceId: fillData?.id?.toString()
     }
-    // console.log(typeof requestData.invoiceId)
-    markAsPaidMutation.mutate(requestData as any);
+    console.log(typeof requestData.invoiceId)
+    // markAsPaidMutation.mutate(requestData as any);
 
   }
 

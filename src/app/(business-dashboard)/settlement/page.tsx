@@ -95,8 +95,8 @@ const Settlement = () => {
   const [row, setRow] = useState<string>("5")
   const [page, setPage] = useState<string>("0")
 
-  const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, token }
-  const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllTransaction(GetParameters, form as any))
+  const GetParameters = { currentPageNumber: page, request: {}, merchantId: merchantId, rowPerPage: row, token }
+  const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllTransaction(GetParameters))
 
   return (
     <div className="relative flex flex-col w-full h-full">

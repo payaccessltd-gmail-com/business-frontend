@@ -1,14 +1,14 @@
 
 declare namespace API {
     type TSearchRequest = {
-        transactionStatus: string;
-        merchantCode: string;
-        startDate: string;
-        endDate: string;
-        orderRef: string;
-        switchTransactionRef: string;
-        terminalCode: string;
-        
+        transactionStatus?: string;
+        merchantCode?: string;
+        startDate?: string;
+        endDate?: string;
+        orderRef?: string;
+        switchTransactionRef?: string;
+        terminalCode?: string;
+
     }
 
     type Pager = {
@@ -16,6 +16,6 @@ declare namespace API {
         token: string
         rowPerPage: string
         merchantId: string
-
+        request: TSearchRequest
     }
 }

@@ -8,6 +8,15 @@ declare namespace API {
   type CreateAccountResponse = StatusReponse & {
     responseObject?: string;
   }
+  // type VerifyAccountResponse = StatusReponse & {
+  //   responseObject: {
+  //     firstName: string;
+  //     lastName: string;
+  //     emailAddress: string;
+  //     userStatus: string;
+  //     softwareDeveloper: boolean;
+  //   }
+  // }
   type VerifyAccountResponse = StatusReponse & {
     responseObject: {
       firstName: string;
@@ -15,7 +24,12 @@ declare namespace API {
       emailAddress: string;
       userStatus: string;
       softwareDeveloper: boolean;
+      customData: string;
     }
+  }
+  type MarkedPaidValues = {
+    merchantCode: string;
+    invoiceNumber: string
   }
 
   type UserDTO = {
