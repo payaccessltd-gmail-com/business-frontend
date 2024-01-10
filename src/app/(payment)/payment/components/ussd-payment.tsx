@@ -37,21 +37,21 @@ import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 
-let merchantList: any
-let token = ""
-let subject = ""
-let merchantId: any = ""
+// let merchantList: any
+// let token = ""
+// let subject = ""
+// let merchantId: any = ""
 
 
-if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-) {
-    token = window.localStorage.getItem("token") as any
-    subject = window.localStorage.getItem("subject") as any
-    merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
-    merchantId = merchantList[0].id ? merchantList[0]?.id : null
-}
+// if (
+//     typeof window !== "undefined" &&
+//     typeof window.localStorage !== "undefined"
+// ) {
+//     token = window.localStorage.getItem("token") as any
+//     subject = window.localStorage.getItem("subject") as any
+//     merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+//     merchantId = merchantList[0].id ? merchantList[0]?.id : null
+// }
 
 
 

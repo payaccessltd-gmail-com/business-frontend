@@ -7,11 +7,32 @@ import { MdContactSupport } from "react-icons/md";
 import { useState } from "react";
 import POSRequestForm from "./components/pos-request-form";
 import { z } from "zod"
+import TerminalForm from "./components/request-pos";
+import POSTable from "./components/table";
+import { useQuery } from "@tanstack/react-query"
+import { getTerminalRequests } from "api/POS-terminal"
 // export const metadata: Metadata = {
 //   title: "Get Started",
 //   description: "Business page as it should be",
 // };
 
+
+
+
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+
+if (
+  typeof window !== "undefined" &&
+  typeof window.localStorage !== "undefined"
+) {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
 
 
 
@@ -24,14 +45,25 @@ const posSchem = z.object({
 })
 export default function POS() {
   const [popup, setPopup] = useState(false);
-  const [modalData, setModalData] = useState<any>("");
+  const [date, setDate] = useState<Date>()
+  const [date1, setDate1] = useState<Date>()
+  const [row, setRow] = useState<string>("5")
+  const [page, setPage] = useState<string>("0")
+  const [search, setSearch] = useState<string>("")
+  const [invoiceStatus, setInvoiceStatus] = useState<string>("")
+  const [emailAddress, setEmailAddress] = useState<string>("")
+  const [startDate, setStartDate] = useState<Date>()
+  const [endDate, setEndDate] = useState<Date>()
+  const [filter, setFilter] = useState<any>()
 
 
+  const GetParameters = { currentPageNumber: page, rowCount: row, token }
+  const data: any = useQuery(['getTerminalRequest', GetParameters], () => getTerminalRequests(GetParameters));
 
+  console.log("terminal request: ", data?.data?.responseObject)
 
   const handleModalPOSpopup = () => {
     console.log("testing");
-
     setPopup((value) => !value);
   }
 
@@ -40,17 +72,38 @@ export default function POS() {
   return (
     <div className="relative w-full h-full flex flex-col">
       <Button className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
-        <MdContactSupport className="text-[24px] text-[#fff]" /> Support </Button>
+        <MdContactSupport className="text-[24px] text-[#fff]" /> Support
+      </Button>
 
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">POS Terminals</p>
 
 
+      <div className="flex flex-row items-start justify-end w-full">
+        {
+          data?.data?.responseObject?.list.length ?
+            <Button
+              onClick={() => setPopup(true)}
+              className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
+            >
+              Request POS Terminal
+            </Button> : ""
+        }
+      </div>
 
 
-      <EmptyState handleModalPOSpopup={handleModalPOSpopup} />
-      {/* {popup ? <POSRequestForm handleModalPOSpopup={handleModalPOSpopup} /> :
-        ""} */}
-
+      {popup ?
+        <TerminalForm handleModalPOSpopup={setPopup} />
+        :
+        ""}
+      {
+        data?.data?.responseObject?.list.length ?
+          <div className="w-full mt-[35px] self-center">
+            <POSTable setPage={setPage} page={page} row={row} setRow={setRow} terminalTableData={data?.data?.responseObject} />
+          </div> :
+          <div className="w-[602px] mt-[132px] self-center">
+            <EmptyState handleModalPOSpopup={handleModalPOSpopup} />
+          </div>
+      }
 
     </div>
   )

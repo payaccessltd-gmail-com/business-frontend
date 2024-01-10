@@ -39,21 +39,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import VerifyModal from "./email-verification-modal/modal";
 
 
-let merchantList: any
-let token = ""
-let subject = ""
-let merchantId: any = ""
+// let merchantList: any
+// let token = ""
+// let subject = ""
+// let merchantId: any = ""
 
 
-if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-) {
-    token = window.localStorage.getItem("token") as any
-    subject = window.localStorage.getItem("subject") as any
-    merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
-    merchantId = merchantList[0].id ? merchantList[0]?.id : null
-}
+// if (
+//     typeof window !== "undefined" &&
+//     typeof window.localStorage !== "undefined"
+// ) {
+//     token = window.localStorage.getItem("token") as any
+//     subject = window.localStorage.getItem("subject") as any
+//     merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+//     merchantId = merchantList[0].id ? merchantList[0]?.id : null
+// }
 
 
 
@@ -75,6 +75,7 @@ function getDateFormatted() {
 export default function CardPayment({ amount, email }: any) {
 
     const [verifyModal, setVerifyModal] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [orderRef1, setOrderRef] = useState("")
     const { toast } = useToast();
     const router = useRouter();
@@ -139,7 +140,7 @@ export default function CardPayment({ amount, email }: any) {
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
         input.value = value;
     }
-    
+
     const formatPin = (event: any) => {
         const input = event.target;
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
@@ -152,6 +153,8 @@ export default function CardPayment({ amount, email }: any) {
             const responseData: API.PaymentStatusReponse = (await data.json()) as API.PaymentStatusReponse;
             console.log("response: ", responseData)
             if (responseData?.statusCode === "1") {
+                setLoading(false)
+
                 toast({
                     variant: "destructive",
                     title: "",
@@ -159,6 +162,8 @@ export default function CardPayment({ amount, email }: any) {
                 });
             }
             if (responseData?.statusCode === "00" || "0") {
+                setLoading(false)
+
                 toast({
                     variant: "default",
                     title: "",
@@ -172,6 +177,7 @@ export default function CardPayment({ amount, email }: any) {
             }
         },
         onError: (e) => {
+            setLoading(false)
             console.log(e);
             toast({
                 variant: "destructive",
@@ -182,9 +188,14 @@ export default function CardPayment({ amount, email }: any) {
     });
 
     async function onSubmit(values: z.infer<typeof PasswordSchema>) {
+        setLoading(true)
         // console.log(values);
         let newValues = {
             // orderRef: `${getRandomNumber()}${invoiceNumber}${getDateFormatted()}`,
+            customData: {
+                merchantCode,
+                invoiceNumber
+            },
             orderRef: `${getRandomNumber()}`,
             merchantCode,
             redirectUrl: "http://test.com",
@@ -318,12 +329,12 @@ export default function CardPayment({ amount, email }: any) {
 
 
                 <Button
-                    // disabled={loading}
+                    disabled={loading}
                     className="mt-[52px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     type="submit"
                 // onClick={(e) => handleModal(e)}
                 >
-                    Pay now
+                    {loading ? "Loading..." : "Pay now"}
                 </Button>
                 {
                     verifyModal ? <VerifyModal setVerifyModal={setVerifyModal} email={email} orderRef={orderRef1} merchantCode={merchantCode} /> : ""

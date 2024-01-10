@@ -20,7 +20,7 @@ export const getMerchantDetailGuest = async ({ invoiceNumber, merchantCode }: an
 
 
 export const payWithCard = async ({
-
+    customData,
     orderRef,
     merchantCode,
     redirectUrl,
@@ -42,7 +42,9 @@ export const payWithCard = async ({
         channel,
         cardDetails,
         customerId,
+        customData: JSON.stringify(customData)
     };
+    console.log("newData from payment fetch", newData)
     return await fetch(`${baseUrl}/api/v1/transactions/debit-card`, {
         method: "POST",
         headers: {
@@ -61,10 +63,11 @@ export const authorizePayment = async ({
     const newData = {
         orderRef,
         merchantCode,
-        otp
+        otp,
+        terminalCode: "6H39FUDB"
 
     };
-    return await fetch(`${baseUrl}/api/v1/transactions/authenticate-card-payment-otp`, {
+    return await fetch(`${baseUrl}/api/v1/transactions/authorize-card-payment-otp`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

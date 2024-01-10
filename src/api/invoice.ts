@@ -130,7 +130,7 @@ export const getInvoiceBreakdown = async ({ merchantId, invoiceId, token }: any)
   const data = JSON.parse(responseText);
   return data;
 };
-export const deleteInvoice = async ({ merchantId, invoiceId }: any) => {
+export const deleteInvoice = async ({ merchantId, invoiceId, token }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/delete-invoice/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -139,12 +139,12 @@ export const deleteInvoice = async ({ merchantId, invoiceId }: any) => {
     },
   });
 };
-export const markAsPaid = async ({ merchantId, invoiceId, token }: any) => {
-  return await fetch(`${baseUrl}/api/v1/invoice/mark-invoice-paid/${invoiceId}/${merchantId}`, {
+export const markAsPaid = async ({ merchantCode, invoiceNumber }: any) => {
+  return await fetch(`${baseUrl}/api/v1/invoice/mark-invoice-paid/${invoiceNumber}/${merchantCode}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
     },
   });
 };
