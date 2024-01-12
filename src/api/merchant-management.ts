@@ -83,6 +83,8 @@ export const updateMerchantBusinessData = async (
     businessLogoFile,
     merchantId,
     businessCertificate,
+    businessAddress,
+    businessCountry
   }: any,
   token: string
 ) => {
@@ -94,7 +96,11 @@ export const updateMerchantBusinessData = async (
   formdata.append("businessCity", businessCity)
   formdata.append("businessState", businessState)
   formdata.append("businessWebsite", businessWebsite)
-  formdata.append("businessCertificate", businessCertificate)
+  // formdata.append("businessCertificate", businessCertificate)
+  formdata.append("businessCountry", businessCountry)
+  formdata.append("businessAddress", businessAddress)
+  // formdata.append("businessLogoFile", businessLogoFile)
+  // formdata.append("businessCertificate", businessAddress)
 
   if (merchantId) {
     formdata.append("merchantId", merchantId.toString())
@@ -106,9 +112,9 @@ export const updateMerchantBusinessData = async (
     formdata.append("businessLogoFile", new Blob(["", " ", "world"], { type: "text/plain" }))
   }
   if (businessCertificate) {
-    formdata.append("businessCertificate", businessCertificate, businessCertificate.name)
+    formdata.append("businessCertificateFile", businessCertificate, businessCertificate.name)
   } else {
-    formdata.append("businessCertificate", new Blob(["", " ", "world"], { type: "text/plain" }))
+    formdata.append("businessCertificateFile", new Blob(["", " ", "world"], { type: "text/plain" }))
   }
 
   return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-business-data`, {

@@ -22,9 +22,9 @@ export default function ApprovalDescription(props: any) {
             Review Information
           </Typography>
 
-          <Button className="text-center text-white text-sm font-bold font-['Century Gothic'] self-stretch px-8 py-2.5 bg-sky-400 rounded justify-center items-center inline-flex">
+          {/* <Button className="text-center text-white text-sm font-bold font-['Century Gothic'] self-stretch px-8 py-2.5 bg-sky-400 rounded justify-center items-center inline-flex">
             Edit records
-          </Button>
+          </Button> */}
         </div>
         <div className="self-stretch h-px border border-gray-200"></div>
         <div className="flex flex-col items-start justify-start space-y-3 ">

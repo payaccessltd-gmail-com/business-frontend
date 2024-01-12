@@ -12,32 +12,40 @@ import Link from "next/link";
 type Props = {};
 
 export default function CustomerName({ }: Props) {
-    const [shouldUpdateBusiness, setShouldUpdateBusiness] = useState<boolean | undefined>()
+    const [shouldUpdateBusiness, setShouldUpdateBusiness] = useState<boolean | undefined>(true)
     const [businessLink, setBusinessLink] = useState<string>()
     // @ts-ignore
     const state = useHydrateStore(useMerchantStore, (state) => state);
+    const data = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
+
     const { user } = useUserStore();
-    console.log(user,'eee');
-    
+    // console.log(user, 'eee');
 
-    // function checkInfoSet(obj: API.MerchantDetails) {
 
-    //     console.log(obj,'obj');
+    function checkInfoSet(obj: any) {
+        if (!obj?.kycSet || !obj?.businessInfoSet || !obj?.accountInfoSet) {
+            return true
+        }
 
-    //     return res;
-    // }
-    // console.log(state?.currentMerchantDetails, state?.merchants);
+        return true
+    }
 
     useEffect(() => {
-        if (!state?.currentMerchantDetails?.accountInfoSet || !state?.currentMerchantDetails?.businessInfoSet || !state?.currentMerchantDetails?.personalInfoSet) {
-            setShouldUpdateBusiness(true)
+        if (data) {
+            if (checkInfoSet(data) === false) {
+                setShouldUpdateBusiness(false)
+                console.log(checkInfoSet(data,'yyu'));
+            }
+            console.log(state?.currentMerchantDetails, 'here');
+
         }
         if (state?.currentMerchantDetails?.businessType === 'INDIVIDUAL') {
             setBusinessLink('/dashboard/unregistered-business')
         } else {
             setBusinessLink('/dashboard/registered-business')
         }
-    }, [])
+    }, [data, checkInfoSet(data)])
+    console.log(shouldUpdateBusiness, 'setShouldUpdateBusiness');
 
 
 
@@ -45,7 +53,7 @@ export default function CustomerName({ }: Props) {
         <>
             {
                 //@ts-ignore
-                state?.merchants?.length < 2 && <Button
+                (user?.softwareDeveloper === undefined || user?.softwareDeveloper && shouldUpdateBusiness === false)   && <Button
                     asChild
                     variant="ghost"
                     key={"get-started"}

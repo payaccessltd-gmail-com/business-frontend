@@ -29,6 +29,8 @@ import { countryList } from "utils/countrylist";
 import { useHydrateStore, useMerchantStore } from "store";
 import { HiOutlineCloudUpload } from "react-icons/hi";
 import { Typography } from "components/ui/Typography";
+import { useToast } from "components/ui/use-toast";
+import { useEffect } from "react";
 
 const businessInfoFormSchema = zod.object({
   // merchantId: zod.number(),
@@ -37,6 +39,7 @@ const businessInfoFormSchema = zod.object({
   }),
   primaryMobile: zod.string(),
   supportContact: zod.string(),
+  businessCountry: zod.string(),
   businessState: zod.string(),
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
@@ -46,9 +49,16 @@ const businessInfoFormSchema = zod.object({
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
+  businessAddress: zod.string().min(2, {
+    message: "Last name must be at least 2 characters.",
+  }),
 });
 
-export default function BusinessInformationForm() {
+export default function BusinessInformationForm(props: any) {
+  const data = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
+  const { toast } = useToast();
+ 
+
   let token = "";
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {},
@@ -64,14 +74,66 @@ export default function BusinessInformationForm() {
     token = localStorage.getItem("token") as string;
   }
 
+  useEffect(() => {
+    if (data) {
+      const fieldsToUpdate = {
+        businessName: data.businessName,
+        primaryMobile: data.primaryMobile,
+        supportContact: data.supportContact,
+        businessCountry: data.businessCountry,
+        businessState: data.businessState,
+        businessCity: data.businessCity,
+        businessEmail: data.businessEmail,
+        businessWebsite: data.businessWebsite,
+        // businessLogo: data.businessLogo,
+        // businessCertificate: data.businessCertificateFile,
+        businessDescription: data.businessDescription,
+        businessAddress: data.businessAddress,
+        // Add more fields as needed
+      };
+      Object.entries(fieldsToUpdate).forEach(([fieldName, value]) => {
+        businessInfoForm.setValue(fieldName, value);
+      });
+    }
+  }, [data, businessInfoForm]);
+
   const updateMerchantBusinessDataMutation = useMutation({
     mutationFn: (values: API.UpdateMerchantBusinessDataDTO) =>
       updateMerchantBusinessData(values, token),
-    onSuccess: () => {
-      return null;
+    onSuccess: async (data) => {
+      const res: { statusCode: string; message: string } =
+        (await data.json()) as {
+          statusCode: string;
+          message: string;
+        };
+      console.log(res, 're');
+
+      if (res.statusCode === "0") {
+
+
+        props.nextStep && props.nextStep()
+
+        toast({
+          variant: "default",
+          title: "",
+          description: res?.message,
+        })
+      }
+      if (res.statusCode === "403") {
+        toast({
+          variant: "destructive",
+          title: res.statusCode,
+          description: res.message,
+        });
+      }
     },
-    onMutate: () => {
-      return null;
+
+    onError: (e: any) => {
+      toast({
+        variant: "destructive",
+        title: "",
+        description: e,
+      })
     },
   });
 
@@ -79,10 +141,11 @@ export default function BusinessInformationForm() {
     const emailAddress = localStorage.getItem("emailAddress") as string
     // const emailAddress = "user.user@gmail.com";
     console.log(values);
-    
-    const updatedValue = { emailAddress,merchantId, ...values };
+
+    const updatedValue = { emailAddress, merchantId, ...values };
     updateMerchantBusinessDataMutation.mutate(updatedValue as any);
   };
+
 
   return (
     <Form {...businessInfoForm} >
@@ -172,7 +235,7 @@ export default function BusinessInformationForm() {
 
         <div className="flex flex-row items-center gap-4">
           <FormField
-            name="businessState"
+            name="businessCountry"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
@@ -187,9 +250,7 @@ export default function BusinessInformationForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="w-full">
-                    {countryList.map(country => <SelectItem key={country} className="py-3 " value={country}>
-                      {country}
-                    </SelectItem>)}
+                    <SelectItem value="NIGERIA">NIGERIA</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -248,7 +309,7 @@ export default function BusinessInformationForm() {
             </FormItem>
           )}
         />
-    <FormField
+        <FormField
           name="businessCertificate"
           control={businessInfoForm.control}
           render={({ field }) => (
@@ -280,6 +341,8 @@ export default function BusinessInformationForm() {
                   onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
               </FormControl>
+              {data?.businessCertificateFile &&
+                    <p style={{fontSize:"13px"}}>Current certificate uploaded: {data.businessCertificateFile}</p>}
               <FormMessage />
             </FormItem>
           )}
@@ -297,6 +360,25 @@ export default function BusinessInformationForm() {
                   type="file"
                 />
               </FormControl>
+              {data?.businessLogo &&
+                    <p style={{fontSize:"13px"}}>Current logo uploaded: {data.businessLogo}</p>}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={businessInfoForm.control}
+          name="businessAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Business Address</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="The address of business"
+                  {...field}
+                />
+              </FormControl>
+
               <FormMessage />
             </FormItem>
           )}

@@ -40,6 +40,7 @@ import { useEffect } from "react";
 
 const MAX_FILE_SIZE_BYTES = 1048576; // 1 megabyte
 
+// @ts-ignore
 const isFileWithinSizeLimit = (file) => file && file.size && file.size <= MAX_FILE_SIZE_BYTES;
 
 const personalInfoFormSchema = zod.object({
