@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "components/ui/form";
 import { Input } from "components/ui/input";
+
 import {
   Select,
   SelectContent,
@@ -33,6 +34,7 @@ import { useToast } from "components/ui/use-toast";
 import { useHydrateStore, useMerchantStore } from "store";
 
 import { logoPath } from "lib/constants";
+import { countryList } from "utils/countrylist";
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -41,8 +43,10 @@ import { logoPath } from "lib/constants";
 
 const locationRegFormSchema = zod.object({
   country: zod.string(),
-  merchantId: zod.number(),
+  merchantId: zod.number()
 });
+
+const prefill: any = []
 
 export default function RegistrationPage() {
   let token = "";
@@ -137,25 +141,17 @@ export default function RegistrationPage() {
                         );
                       }}
                     >
-                      <FormControl className="px-3 py-6 mt-20 shadow-none border-gray-20">
+                      <FormControl className="px-3 py-3 mt-20 shadow-none border-gray-20">
                         <SelectTrigger>
                           <SelectValue placeholder="Select Country" />
                         </SelectTrigger>
                       </FormControl>
 
                       <SelectContent>
-                        <SelectItem className="py-3 " value="AFGHANISTAN">
-                          Afghanistan
-                        </SelectItem>
-                        <SelectItem className="py-3 " value="BELARUS">
-                          Belarus
-                        </SelectItem>
-                        <SelectItem className="py-3 " value="SPAIN">
-                          Spain
-                        </SelectItem>
-                        <SelectItem className="py-3 " value="NIGERIA">
-                          Nigeria
-                        </SelectItem>
+                        {countryList.map(country => <SelectItem key={country} className="py-3 " value={country}>
+                          {country}
+                        </SelectItem>)}
+
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -163,6 +159,33 @@ export default function RegistrationPage() {
                 )}
               />
 
+
+              {/* <div className="flex flex-row items-center w-full gap-[10px] mt-6">
+              
+                     <FormField
+                        control={locationRegForm.control}
+                        name="phoneNo"
+                        render={({ field }) => (
+                            <FormItem className="w-full "> 
+                                <FormLabel className="text-sm font-normal text-gray-50">
+                      Phone Number
+                    </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="tel"
+                                        pattern="[0-9]*"
+                                        maxLength={11}
+                                        title="Input is only number"
+                                        className="border-[#D6D6D6] rounded-[10px] min-h-[56px] shadow-none bg-white w-full p-2 "
+                                        placeholder="08123456789"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+</div> */}
               <FormField
                 control={locationRegForm.control}
                 name="merchantId"

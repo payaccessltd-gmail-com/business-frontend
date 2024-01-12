@@ -1,102 +1,82 @@
-"use client";
-import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import * as zod from "zod";
+
+"use client"
+import { useEffect, useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
+import * as zod from "zod" 
 
 // import { updateBusinessBankData } from "api/registration";
-import { Button } from "components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import { Input } from "components/ui/input";
-import { useToast } from "components/ui/use-toast";
-import { updateMerchantBusinessBankAccountData } from "api/merchant-management";
-import { useHydrateStore, useMerchantStore, useUserStore } from "store";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
+import { Button } from "components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+import { Input } from "components/ui/input"
+import { useToast } from "components/ui/use-toast"
+import { updateMerchantBusinessBankAccountData } from "api/merchant-management"
+import { useHydrateStore, useMerchantStore, useUserStore } from "store"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+import { numberFormat } from "utils/numberFormater"
 
 type AccountInfoFormProps = {
-  prevStep?: () => void;
-  nextStep?: () => void;
-};
+  prevStep?: () => void
+  nextStep?: () => void
+}
 
 const accInfoFormSchema = zod.object({
   merchantId: zod.number(),
   businessBvn: zod.string(),
-  businessBankName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
+  businessBankName: zod.string().min(3, {
+    message: "First name must be at least 3 characters.",
   }),
-  businessAccountNumber: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
+  businessAccountNumber: zod.string().min(11, {
+    message: "Account number should be at least 11 characters.",
   }),
 
-  businessAccountName: zod.string().min(2, {
+  businessAccountName: zod.string().min(6, {
     message: "Last name must be at least 2 characters.",
   }),
-});
+})
 
 export default function AccountInformationForm(props: AccountInfoFormProps) {
-  let token = "";
+  let token = ""
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    token = localStorage.getItem("token") as string;
+  if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+    token = localStorage.getItem("token") as string
   }
-  const { toast } = useToast();
-  const currentMerchant = useHydrateStore(
-    useMerchantStore,
-    (state) => state.currentMerchant,
-  );
+  const { toast } = useToast()
+  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
 
   const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(accInfoFormSchema),
-  });
+  })
 
   const updateMerchantBusinessBankAccountMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) =>
-      updateMerchantBusinessBankAccountData(values, token),
+    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) => updateMerchantBusinessBankAccountData(values, token),
     onSuccess: async (data) => {
-      const responseData: API.StatusReponse =
-        (await data.json()) as API.StatusReponse;
+      const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
-        });
+        })
       } else if (responseData?.statusCode === "0" && typeof window) {
-        acctInfoForm.reset();
+        acctInfoForm.reset()
 
-        props.nextStep && props.nextStep();
+        props.nextStep && props.nextStep()
 
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
-        });
+        })
       } else {
         toast({
           variant: "destructive",
           title: "",
           description: responseData?.message,
-        });
+        })
       }
     },
 
@@ -105,46 +85,41 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
         variant: "destructive",
         title: "",
         description: e,
-      });
+      })
     },
-  });
+  })
+
+  const [value, setValue] = useState('');
+
+  const handleChange = (event:any) => {
+    const result = event.target.value.replace(/\D/g, '');
+
+    setValue(result);
+  };
 
   const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-    updateMerchantBusinessBankAccountMutation.mutate(values);
-  };
+    updateMerchantBusinessBankAccountMutation.mutate(values as any)
+  }
 
   useEffect(() => {
     if (currentMerchant?.id) {
-      acctInfoForm.setValue("merchantId", currentMerchant?.id);
+      acctInfoForm.setValue("merchantId", currentMerchant?.id)
     }
-  }, [currentMerchant?.id]);
+  }, [currentMerchant?.id])
 
   return (
     <Form {...acctInfoForm}>
-      <form
-        onSubmit={acctInfoForm.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-8"
-      >
+      <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8">
         {/* merchant id field is hidden but it's value is sent to the api */}
         <FormField
           control={acctInfoForm.control}
-          disabled={true}
           name="merchantId"
           defaultValue={currentMerchant?.id}
           render={({ field }) => (
             <FormItem className="hidden w-full">
-              <FormLabel className="text-sm font-normal text-gray-50">
-                Merchant ID
-              </FormLabel>
+              <FormLabel className="text-sm font-normal text-gray-50">Merchant ID</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  icon="show"
-                  className="min-h-[48px]"
-                  placeholder="Enter phone number"
-                  {...field}
-                  value={currentMerchant?.id}
-                />
+                <Input type="number" icon="show" className="min-h-[48px]" placeholder="Enter phone number" {...field} value={currentMerchant?.id} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -158,12 +133,16 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
             <FormItem>
               <FormLabel>BVN</FormLabel>
               <FormControl>
-                <Input placeholder="Enter BVN" {...field} />
+ 
+                <Input                    
+                title="Input is only number"                  
+                pattern="[0-9]*"  
+                maxLength={11}    onInput={(event) => numberFormat(event)}
+                placeholder="Enter BVN" {...field} />
+           
               </FormControl>
 
-              <FormDescription>
-                To get your BVN dial *565*0# on your registered mobile number.
-              </FormDescription>
+              <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -176,10 +155,7 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Bank name</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Enter bank" />
@@ -202,7 +178,8 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter account number" {...field} />
+                  <Input    onInput={(event) => numberFormat(event)} pattern="[0-9]*" 
+                  maxLength={11} placeholder="Enter account number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -234,5 +211,5 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

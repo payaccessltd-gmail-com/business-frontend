@@ -16,9 +16,9 @@ export default function ApprovalDescription({}: Props) {
       <ReviewDetails />
 
       {/* form display section */}
-      <div className="inline-flex flex-col items-start justify-start gap-6 px-10 pt-6 pb-10 bg-white border rounded-lg border-slate-200">
+      <div className=" w-full inline-flex flex-col items-start justify-start gap-6 px-10 pt-6 pb-10 bg-white border rounded-lg border-slate-200">
         <div className="flex flex-row items-center justify-between w-full">
-          <Typography className="text-2xl font-bold leading-normal grow shrink basis-0 font-CenturyGothic">
+          <Typography className="text-2xl text-black font-bold leading-normal grow shrink basis-0 font-CenturyGothic">
             Review Information
           </Typography>
 
@@ -28,17 +28,11 @@ export default function ApprovalDescription({}: Props) {
         </div>
         <div className="self-stretch h-px border border-gray-200"></div>
         <div className="flex flex-col items-start justify-start space-y-3 ">
-          <InformationFrame title="Personal Information">
-            <PersonalInformation />
-          </InformationFrame>
 
           <InformationFrame title="Business Information">
             <BusinessInformation />
           </InformationFrame>
 
-          <InformationFrame title="Account Information">
-            <AccountInformation />
-          </InformationFrame>
         </div>
       </div>
     </div>

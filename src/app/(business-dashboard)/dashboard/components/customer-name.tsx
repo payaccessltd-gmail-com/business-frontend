@@ -10,7 +10,7 @@ import { getMerchantByMerchantCode } from "api/merchant-management";
 type Props = {};
 
 export default function CustomerName({}: Props) {
-  let token = "";
+  let token: string = "";
   const { setUser } = useUserStore();
   const { setCurrentMerchantDetails } = useMerchantStore();
 
@@ -24,7 +24,7 @@ export default function CustomerName({}: Props) {
   const { isLoading, error, data } = useQuery({
     queryKey: ["user-details"],
     queryFn: async () => {
-      const res = await getUserInfo(token as string);
+      const res = await getUserInfo(token );
 
       const userRes = (await res.json()) as API.UserDetailsResponse;
       setUser(userRes.responseObject);
@@ -32,6 +32,9 @@ export default function CustomerName({}: Props) {
       return userRes;
     },
   });
+
+  console.log(data,'data');
+  
 
   const currentMerchant = useHydrateStore(
     useMerchantStore,

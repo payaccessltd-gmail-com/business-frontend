@@ -1,7 +1,5 @@
-import Image from "next/image";
 import React from "react";
 
-import avatar from "assets/img/dashboard-header/avatar.png";
 import { Avatar, AvatarFallback, AvatarImage } from "components/ui/avatar";
 import { Label } from "components/ui/label";
 import { Switch } from "components/ui/switch";
@@ -9,7 +7,14 @@ import { Switch } from "components/ui/switch";
 import { Notification } from "./notification";
 import { SearchInput } from "./search-input";
 
+import { useHydrateStore, useUserStore } from "store"
+import { extractInitials } from "utils/extractInitials";
+
+
 export function Header() {
+
+  const userDetail = useHydrateStore(useUserStore, (state) => state.user);
+
   return (
     <header className="bg-white border-b border-gray-200 ">
       <div className="flex flex-row justify-between mx-10 my-5">
@@ -35,7 +40,7 @@ export function Header() {
               <AvatarImage width="36" height="36" alt="avatar-image" />
 
               <AvatarFallback>
-                <Image src={avatar} width="36" height="36" alt="avatar-image" />
+                <span>{extractInitials(`${userDetail?.firstName} ${userDetail?.lastName}`)}</span>
               </AvatarFallback>
             </Avatar>
           </div>

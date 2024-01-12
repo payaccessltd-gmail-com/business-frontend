@@ -1,4 +1,5 @@
 import { baseUrl } from "./baseUrl";
+import { token } from "./http";
 
 
 export const simpleInvoice = async ({
@@ -9,7 +10,8 @@ export const simpleInvoice = async ({
   invoiceNote,
   businessLogo,
   invoiceStatus,
-  token,
+   
+  customerEmail,
   subject,
   merchantId
 }: API.SimpleInvoice) => {
@@ -24,7 +26,7 @@ export const simpleInvoice = async ({
   formdata.append("invoiceNote", invoiceNote);
   formdata.append("businessLogo", businessLogo, businessLogo.name);
   formdata.append("merchantId", merchantId);
-  formdata.append("customerEmail", subject);
+  formdata.append("customerEmail", customerEmail);
   formdata.append("invoiceStatus", invoiceStatus);
 
   return await fetch(`${baseUrl}/api/v1/invoice/create-simple-invoice`, {
@@ -46,7 +48,7 @@ export const standardInvoice = async ({
   discountType,
   discountAmount,
   invoiceBreakdownList,
-  token,
+  
   subject,
   merchantId,
   invoiceStatus,
@@ -96,7 +98,7 @@ export const getAllInvoice = async ({ currentPageNumber, merchantId, rowPerPage,
 };
 
 
-export const getInvoiceDetails = async ({ token, merchantId, invoiceId }: any) => {
+export const getInvoiceDetails = async ({  merchantId, invoiceId }: any) => {
   const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-details/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -111,7 +113,7 @@ export const getInvoiceDetails = async ({ token, merchantId, invoiceId }: any) =
   const data = JSON.parse(responseText);
   return data;
 };
-export const getInvoiceBreakdown = async ({ token, merchantId, invoiceId }: any) => {
+export const getInvoiceBreakdown = async ({  merchantId, invoiceId }: any) => {
   const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-breakdown/${merchantId}/${invoiceId}`, {
     method: "GET",
     headers: {
@@ -126,7 +128,7 @@ export const getInvoiceBreakdown = async ({ token, merchantId, invoiceId }: any)
   const data = JSON.parse(responseText);
   return data;
 };
-export const deleteInvoice = async ({ token, merchantId, invoiceId }: any) => {
+export const deleteInvoice = async ({  merchantId, invoiceId }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/delete-invoice/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
@@ -135,8 +137,17 @@ export const deleteInvoice = async ({ token, merchantId, invoiceId }: any) => {
     },
   });
 };
-export const markAsPaid = async ({ token, merchantId, invoiceId }: any) => {
+export const markAsPaid = async ({  merchantId, invoiceId }: any) => {
   return await fetch(`${baseUrl}/api/v1/invoice/mark-invoice-paid/${invoiceId}/${merchantId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export const sendReminder = async ({  merchantId, invoiceId }: any) => {
+  return await fetch(`${baseUrl}/api/v1/invoice/resend-invoice-email/${invoiceId}/${merchantId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -152,7 +163,7 @@ export const filterInvoices = async ({
   startDate,
   endDate,
   merchantId,
-  token
+   
 }: any) => {
   const newData = {
     invoiceStatus,
