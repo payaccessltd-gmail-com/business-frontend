@@ -45,6 +45,7 @@ export default function BusinessProfileUpdate() {
   const router = useRouter()
   const { toast } = useToast()
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
+  //@ts-expect-error
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.user)
   const { setCurrentMerchantDetails } = useMerchantStore();
 console.log(currentMerchantDetails,'jk');
