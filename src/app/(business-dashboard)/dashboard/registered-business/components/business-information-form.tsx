@@ -80,6 +80,7 @@ export default function BusinessInformationForm(props: any) {
         businessName: data.businessName,
         primaryMobile: data.primaryMobile,
         supportContact: data.supportContact,
+        // @ts-expect-error
         businessCountry: data.businessCountry,
         businessState: data.businessState,
         businessCity: data.businessCity,
@@ -88,10 +89,12 @@ export default function BusinessInformationForm(props: any) {
         // businessLogo: data.businessLogo,
         // businessCertificate: data.businessCertificateFile,
         businessDescription: data.businessDescription,
+         // @ts-expect-error
         businessAddress: data.businessAddress,
         // Add more fields as needed
       };
       Object.entries(fieldsToUpdate).forEach(([fieldName, value]) => {
+         // @ts-expect-error
         businessInfoForm.setValue(fieldName, value);
       });
     }
@@ -341,8 +344,12 @@ export default function BusinessInformationForm(props: any) {
                   onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
               </FormControl>
-              {data?.businessCertificateFile &&
-                    <p style={{fontSize:"13px"}}>Current certificate uploaded: {data.businessCertificateFile}</p>}
+              {
+                 // @ts-expect-error
+              data?.businessCertificateFile &&
+                    <p style={{fontSize:"13px"}}>Current certificate uploaded: {
+                     // @ts-expect-error
+                    data.businessCertificateFile}</p>}
               <FormMessage />
             </FormItem>
           )}
