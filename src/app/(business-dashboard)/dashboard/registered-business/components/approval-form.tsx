@@ -10,7 +10,7 @@ import AccountInformationForm from "./account-information-form";
 import BusinessInformationForm from "./business-information-form";
 type Props = {};
 
-export default function ApprovalDescription(props) {
+export default function ApprovalDescription(props: any) {
   return (
     <div>
       <ReviewDetails />
