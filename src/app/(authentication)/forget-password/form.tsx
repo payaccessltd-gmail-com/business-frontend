@@ -49,6 +49,8 @@ export default function ForgetForm() {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
 
+        console.log("responseData", responseData);
+        
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
@@ -57,7 +59,7 @@ export default function ForgetForm() {
         });
       }
 
-      if (responseData?.statusCode === "0") {
+      if (responseData?.statusCode === "00") {
         toast({
           variant: "default",
           title: "",

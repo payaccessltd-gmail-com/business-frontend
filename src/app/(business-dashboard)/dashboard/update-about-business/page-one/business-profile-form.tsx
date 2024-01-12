@@ -31,11 +31,10 @@ import { ChangeEvent, useState } from "react"
 
 const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
-  businessType: zod.string(),
-  business_name: zod.string(),
-  softwareDeveloper: zod.string(),
-
+  businessType: zod.string(), 
+  softwareDeveloper: zod.string(),  
   merchantId: zod.number(),
+  mobileNumber: zod.string(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
   }),
@@ -43,7 +42,7 @@ const businessProfileFormSchema = zod.object({
 
 export default function BusinessProfileUpdate() {
   let token = ""
-  const [mobileNumber, setMobileNumber] = useState('');
+  // const [mobileNumber, setMobileNumber] = useState('');
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
@@ -51,6 +50,7 @@ export default function BusinessProfileUpdate() {
   const router = useRouter()
   const { toast } = useToast()
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
+
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
       merchantId: 0,
@@ -58,12 +58,15 @@ export default function BusinessProfileUpdate() {
     },
     resolver: zodResolver(businessProfileFormSchema),
   })
-  console.log(businessProfileForm.getValues('businessType'), 'useForm');
+
+  console.log(businessProfileForm.getValues('merchantId'), 'useForm');
 
   const businessProfileMutation = useMutation({
+
     mutationFn: (values: API.UpdateAboutBusinessRequest) => updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      console.log("data", data);
 
       if (responseData?.statusCode === "1") {
         toast({
@@ -106,23 +109,27 @@ export default function BusinessProfileUpdate() {
   function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
     let data: API.UpdateAboutBusinessRequest = {
       ...values,
-      mobileNumber: mobileNumber
+          
     }
+    console.log('data', data);
+    
     businessProfileMutation.mutate(data)
   }
 
-  function setPhoneNumber(event: ChangeEvent<HTMLInputElement>): void {
-    let phonrMob = event.target.value;
-    setMobileNumber(phonrMob);
+  // function setPhoneNumber(event: ChangeEvent<HTMLInputElement>): void {
+  //   let phonrMob = event.target.value;
+  //   setMobileNumber(phonrMob);
 
-  }
+  // }
 
   return (
     <main className="flex flex-col items-center justify-center bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent ">
+   
         <Form {...businessProfileForm}>
           <form onSubmit={businessProfileForm.handleSubmit(onSubmit)} className="space-y-12 bg-white">
             <div className="space-y-8">
+              
               <FormField
                 name="businessCategory"
                 control={businessProfileForm.control}
@@ -159,17 +166,17 @@ export default function BusinessProfileUpdate() {
                 className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
                 valueIsNumericString={true}
               /> */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <div>
                   <label className="">Phone Number</label>
                 </div>
-                {/* <PatternFormat
+                <PatternFormat
                   onChange={(event) => setPhoneNumber(event as any)}
                   format="+234 (####) ###-####"
                   className="w-full p-3 border mt-3 mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
                   isNumericString={true}
-                /> */}
-              </div>
+                />
+              </div> */}
 
               {/* <FormField
                 control={businessProfileForm.control}
@@ -183,7 +190,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
@@ -196,7 +203,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
               <FormField
                 control={businessProfileForm.control}

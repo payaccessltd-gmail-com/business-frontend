@@ -4,7 +4,7 @@ import { DevTool } from "@hookform/devtools"
 import * as zod from "zod"
 import { useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { HiOutlineCloudUpload } from "react-icons/hi"
 import { useForm } from "react-hook-form"
 
@@ -18,6 +18,7 @@ import { Textarea } from "components/ui/textarea"
 import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
 import { updateMerchantBusinessData } from "api/merchant-management"
+import { getAllState, getCountry } from "api/location"
 
 type BusinessInfoFormProps = {
   prevStep?: () => void
@@ -39,7 +40,10 @@ const businessInfoFormSchema = zod.object({
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
   businessWebsite: zod.string(),
+  businessCountry: zod.string(),
   businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
+  
+  businessCertificateFile: zod.custom<File>().optional() || zod.string().optional(),
   // businessCertificate: zod.string(),
 
   businessDescription: zod.string().min(2, {
@@ -61,6 +65,16 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
 
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
 
+    const dataCountry: any = useQuery(['getCountry'], () => {
+      return getCountry()
+    });
+
+    const countries : API.CountryResponse   = dataCountry?.data;
+
+
+    console.log("dataCountry", countries?.data);
+    
+
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {
       ...currentMerchantDetails,
@@ -68,6 +82,27 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     } as any,
     resolver: zodResolver(businessInfoFormSchema),
   })
+
+  
+  const getState = useMutation({
+    mutationFn: getAllState,
+    onSuccess: async (data: any) => {
+        const response: API.CountryResponse = 
+            (await data.json()) as API.CountryResponse;
+           
+            console.log("Location ", response.data.length);
+
+            
+
+    }, onError: (e: any) => {
+      console.log({ e })
+      // toast({
+      //   variant: "destructive",
+      //   title: "",
+      //   description: e,
+      // });
+    },
+    });
 
   const updateBusinessInfoMutation = useMutation({
     mutationFn: (values: API.UpdateMerchantBusinessDataDTO) => updateMerchantBusinessData(values, token),
@@ -115,7 +150,8 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
       values.businessLogoFile = undefined
     }
 
-    updateBusinessInfoMutation.mutate(values as any)
+   // getAllCountry.mutate();
+    updateBusinessInfoMutation.mutate(values as any);
   }
 
   const onErrror = (error: any) => {
@@ -248,19 +284,66 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
         </div>
 
         <div className="flex flex-row items-center gap-4">
-          <FormField
-            name="businessCity"
+        <FormField
+            name="businessState"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter city" {...field} />
-                </FormControl>
+                <FormLabel>Country</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Country" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent   >
+                  <SelectItem value=""></SelectItem>
+                        {countries?.data.map( ctr  => <SelectItem key={ctr.name} className="py-3 " value={ctr.name}>
+                        {ctr.name}
+                        </SelectItem>)}
+                      </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+
+          {/* <FormField
+                name="businessCountry"
+                control={businessInfoForm.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-normal text-gray-50">
+                      Country
+                    </FormLabel>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        businessInfoForm.setValue(
+                          "merchantId",
+                          currentMerchant?.id as number,
+                          { shouldDirty: true },
+                        );
+                      }}
+                    >
+                      <FormControl className="px-3 py-3 mt-20 shadow-none border-gray-20">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Country" />
+                        </SelectTrigger>
+                      </FormControl>
+
+                      <SelectContent>
+                        {countries?.data?.map( ctr  => <SelectItem key={ctr.name} className="py-3 " value={ctr.name}>
+                        {ctr.name}
+                        </SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
 
           <FormField
             name="businessState"
@@ -285,7 +368,19 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             )}
           />
         </div>
-
+        <FormField
+            name="businessCity"
+            control={businessInfoForm.control}
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter city" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         <FormField
           name="businessWebsite"
           control={businessInfoForm.control}

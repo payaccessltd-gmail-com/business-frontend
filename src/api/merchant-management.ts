@@ -22,14 +22,28 @@ export const getMerchantByMerchantCode = async (
 export const updateAboutBusiness = async (
   updateAboutBusiness: API.UpdateAboutBusinessDTO,
   token: string,
-) => {
-  return await fetch(`${baseUrl}/api/v1/merchant/add-new-merchant-to-existing-user`, {
+) => {  
+  let sft = updateAboutBusiness.softwareDeveloper === 'true' ? true : false;
+
+ const payload={
+    "businessCategory":  updateAboutBusiness.businessCategory,
+    "businessType": updateAboutBusiness.businessType,
+    "merchantId": updateAboutBusiness.merchantId,
+    "mobileNumber": updateAboutBusiness.mobileNumber,
+    "softwareDeveloper": sft
+  }
+
+  console.log("updateAboutBusiness", updateAboutBusiness);
+  console.log("token", token);
+  
+
+  return await fetch(`${baseUrl}/api/v1/merchant/update-about-business`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({...updateAboutBusiness, business_name:"Coptco"}),
+    body: JSON.stringify({...payload, business_name:"Coptco"}),
   });
 };
 

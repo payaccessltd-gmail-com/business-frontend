@@ -110,15 +110,16 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
   }
 
   useEffect(() => {
+   // console.log('userDetail',userDetail?.dateOfBirth == undefined ? Date(): parseISO(dateOfBirth));
+    
     if (userDetail) {
-      const { firstName, lastName, gender, emailAddress, dateOfBirth, identificationDocument, identificationNumber, identificationDocumentPath } =
+      const { firstName, lastName, gender, emailAddress,  identificationDocument, identificationNumber, identificationDocumentPath } =
         userDetail as API.UserDetails
       return personalInfoForm.reset({
         firstName,
         lastName,
         gender,
-        emailAddress,
-        dateOfBirth: parseISO(dateOfBirth),
+        emailAddress,    
         identificationDocument,
         identificationNumber,
         identificationDocumentPath,
@@ -133,7 +134,9 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
   }, [currentMerchant?.id])
 
   return (
+   
     <Form {...personalInfoForm}>
+      
       <form id="personalInformation" onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8 border-gray-10">
         {/* merchant id field is hidden but it's value is sent to the api */}
         <FormField
@@ -225,7 +228,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               </FormItem>
             )}
           />
-
+ 
           <FormField
             control={personalInfoForm.control}
             name="dateOfBirth"
@@ -240,7 +243,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                         className={cn("flex flex-row items-center justify-start font-normal", !field?.value && "text-muted-foreground")}
                       >
                         <LuCalendar className="w-4 h-4 mr-2" />
-                        {field?.value ? format(field.value, "PPP") : <span>DD/MM/YY</span>}
+                        {field?.value ? format(field?.value, "PPP") : <span>DD/MM/YY</span>}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -304,7 +307,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           )}
         />
 
-        <FormField
+        {/* <FormField
           name="identificationDocumentPath"
           control={personalInfoForm.control}
           render={({ field }) => (
@@ -340,7 +343,45 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               <FormMessage />
             </FormItem>
           )}
+        /> */}
+
+<FormField
+          name="identificationDocumentPath"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Business Logo (Optional)</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
+
         <Button
           disabled={updatePersonalInfoMutation.isLoading}
           className="w-56 h-12 p-2.5 rounded-lg justify-center items-center gap-2.5 inline-flex text-white text-sm font-bold mx-auto"

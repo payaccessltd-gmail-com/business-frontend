@@ -84,10 +84,11 @@ const TransactionTable =({ invoiceTableData, row, setRow, setPage, page }: any)=
         }
     }
 
+    
 
 
     const deleteInvoiceMutation = useMutation({
-        mutationFn: deleteInvoice,
+    mutationFn: getCounry,
         onSuccess: async (data: any) => {
             const responseData: API.InvoiceStatusReponse =
                 (await data.json()) as API.InvoiceStatusReponse;
