@@ -34,7 +34,6 @@ export default function CustomerName({ }: Props) {
         if (data) {
             if (checkInfoSet(data) === false) {
                 setShouldUpdateBusiness(false)
-                console.log(checkInfoSet(data,'yyu'));
             }
             console.log(state?.currentMerchantDetails, 'here');
 
