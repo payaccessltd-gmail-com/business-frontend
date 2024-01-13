@@ -80,7 +80,7 @@ export default function BusinessProfileUpdate() {
           businessProfileForm.reset()
           return
         }
-        router.push("/dashboard/update-about-business/page-two")
+        router.push("/dashboard/update-about-business/page-three")
         businessProfileForm.reset()
 
         toast({

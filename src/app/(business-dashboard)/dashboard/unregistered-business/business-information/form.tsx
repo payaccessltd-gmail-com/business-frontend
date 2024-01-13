@@ -41,11 +41,12 @@ const businessInfoFormSchema = zod.object({
   businessEmail: zod.string().email(),
   businessWebsite: zod.string(),
   businessCountry: zod.string(),
+  businessAddress: zod.string(),
   businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
   
   businessCertificateFile: zod.custom<File>().optional() || zod.string().optional(),
   // businessCertificate: zod.string(),
-
+ 
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
@@ -145,6 +146,8 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     },
   })
 
+   
+
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
     if (typeof values.businessLogoFile === "string") {
       values.businessLogoFile = undefined
@@ -239,6 +242,8 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           )}
         />
 
+         
+
         <FormField
           name="businessEmail"
           control={businessInfoForm.control}
@@ -285,7 +290,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
 
         <div className="flex flex-row items-center gap-4">
         <FormField
-            name="businessState"
+            name="businessCountry"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
@@ -308,56 +313,24 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             )}
           />
 
-
-          {/* <FormField
-                name="businessCountry"
-                control={businessInfoForm.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-normal text-gray-50">
-                      Country
-                    </FormLabel>
-                    <Select
-                      defaultValue={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        businessInfoForm.setValue(
-                          "merchantId",
-                          currentMerchant?.id as number,
-                          { shouldDirty: true },
-                        );
-                      }}
-                    >
-                      <FormControl className="px-3 py-3 mt-20 shadow-none border-gray-20">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Country" />
-                        </SelectTrigger>
-                      </FormControl>
-
-                      <SelectContent>
-                        {countries?.data?.map( ctr  => <SelectItem key={ctr.name} className="py-3 " value={ctr.name}>
-                        {ctr.name}
-                        </SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
+ 
           <FormField
             name="businessState"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} 
+                defaultValue={field.value}
+                 
+                
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="w-full">
+                  <SelectContent className="w-full" onSelect={(target)=> {console.log("working");}} >
                     <SelectItem value="ABUJA">Abuja</SelectItem>
                     <SelectItem value="LAGOS">Lagos</SelectItem>
                     <SelectItem value="Minna">MInna</SelectItem>
@@ -381,6 +354,20 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
               </FormItem>
             )}
           />
+           <FormField
+            name="businessAddress"
+            control={businessInfoForm.control}
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Business Address</FormLabel>
+                <FormControl>                  
+                <Textarea placeholder="Business Address" {...field} /> 
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+      
         <FormField
           name="businessWebsite"
           control={businessInfoForm.control}
@@ -401,6 +388,43 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormDescription>Business Logo (Optional)</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+<FormField
+          name="businessCertificateFile"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Business Certificate (Optional)</FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">

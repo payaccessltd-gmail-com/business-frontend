@@ -112,6 +112,8 @@ export const updateMerchantBusinessData = async (
     businessWebsite,
     businessLogoFile,
     merchantId,
+    businessAddress,
+    businessCountry, businessCertificateFile
   }: API.UpdateMerchantBusinessDataDTO,
   token: string,
 ) => {
@@ -123,11 +125,24 @@ export const updateMerchantBusinessData = async (
   formdata.append("businessCity", businessCity);
   formdata.append("businessState", businessState);
   formdata.append("businessWebsite", businessWebsite);
-
+  formdata.append("businessCountry", businessCountry);
+  formdata.append("businessAddress", businessAddress);
   if (merchantId) {
     formdata.append("merchantId", merchantId.toString());
   }
 
+  if (businessLogoFile) {
+    formdata.append(
+      "businessCertificateFile",
+      businessCertificateFile,
+      businessCertificateFile.name,
+    );
+  } else {
+    formdata.append(
+      "businessCertificateFile",
+      new Blob(["", " ", "world"], { type: "text/plain" }),
+    );
+  }
   if (businessLogoFile) {
     formdata.append(
       "businessLogoFile",
@@ -140,6 +155,7 @@ export const updateMerchantBusinessData = async (
       new Blob(["", " ", "world"], { type: "text/plain" }),
     );
   }
+
 
   return await fetch(
     `${baseUrl}/api/v1/merchant/update-merchant-business-data`,

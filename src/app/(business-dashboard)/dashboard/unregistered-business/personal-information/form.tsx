@@ -137,7 +137,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
    
     <Form {...personalInfoForm}>
       
-      <form id="personalInformation" onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="flex flex-col space-y-8 border-gray-10">
+      <form id="personalInformation" onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="flex flex-col w-full space-y-8 border-gray-10">
         {/* merchant id field is hidden but it's value is sent to the api */}
         <FormField
           control={personalInfoForm.control}
