@@ -100,7 +100,9 @@ export default function SimpleForm() {
             dueDate: undefined,
             amount: "",
             invoiceNote: "",
+            // businessLogo: undefined,
             // businessLogo: new File([], ""),
+
         },
     });
     const handleModal = (e: any) => {
@@ -126,6 +128,20 @@ export default function SimpleForm() {
             simpleForm.setError("dueDate", {
                 type: "manual",
                 message: "Due date required",
+            })
+            return
+        }
+        if (!simpleForm?.getValues()?.businessLogo) {
+            simpleForm.setError("businessLogo", {
+                type: "manual",
+                message: "Business logo required",
+            })
+            return
+        }
+        if (simpleForm?.getValues()?.amount?.length == 0) {
+            simpleForm.setError("amount", {
+                type: "manual",
+                message: "Amount required",
             })
             return
         }
@@ -382,7 +398,7 @@ export default function SimpleForm() {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                                Amount (optional)
+                                Amount
                             </FormLabel>
                             <FormControl>
                                 <Input
@@ -423,7 +439,7 @@ export default function SimpleForm() {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormDescription className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                                Business Logo (optional)
+                                Business Logo
                             </FormDescription>
                             <FormLabel className="bg-[white] border-[#115570] rounded-[10px] flex h-[77px] w-full cursor-pointer flex-row items-center justify-center gap-3 border-[2px] border-dotted">
                                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />

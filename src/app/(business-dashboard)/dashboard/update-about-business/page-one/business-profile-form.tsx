@@ -34,7 +34,6 @@ const businessProfileFormSchema = zod.object({
   businessType: zod.string(),
   business_name: zod.string(),
   softwareDeveloper: zod.string(),
-
   merchantId: zod.number(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",

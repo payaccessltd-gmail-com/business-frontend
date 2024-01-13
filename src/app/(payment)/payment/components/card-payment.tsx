@@ -131,7 +131,9 @@ export default function CardPayment({ amount, email }: any) {
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
 
         // Add hyphens after every four digits
-        const formattedValue = value.replace(/(\d{4})(\d{0,4})(\d{0,4})(\d{0,4})/, '$1-$2-$3-$4');
+        // const formattedValue = value.replace(/(\d{4})(\d{0,4})(\d{0,4})(\d{0,4})/, '$1-$2-$3-$4'); 
+
+        const formattedValue = value.replace(/(\d{4})(\d{0,4})(\d{0,4})(\d{0,4})(\d{0,4})/, '$1-$2-$3-$4-$5');
 
         input.value = formattedValue;
     }
@@ -201,10 +203,11 @@ export default function CardPayment({ amount, email }: any) {
             redirectUrl: "http://test.com",
             currencyCode: "NGN",
             amount,
-            terminalCode: "BGH",
+            terminalCode: "6H39FUDB",
             channel: "WEB",
             cardDetails: {
                 pan: values?.cardNumber.split("-").join(""),
+                // pan: "5060990580000217499",
                 expDate: values?.expiringDate.split("/").reverse().join(""),
                 // expDate: "5003",
                 cvv: values?.cvv,
@@ -259,7 +262,7 @@ export default function CardPayment({ amount, email }: any) {
                             <FormItem className="w-full mt-6">
                                 {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[400]">
-                                    Expiring data
+                                    Expiring date
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input

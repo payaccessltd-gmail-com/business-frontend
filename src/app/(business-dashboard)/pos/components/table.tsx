@@ -56,6 +56,7 @@ const POSTable = ({ terminalTableData, row, setRow, setPage, page }: any) => {
     console.log("rowperpage: ", row)
     console.log("page: ", page)
     console.log("available row per page: ", terminalTableData?.list?.length)
+    console.log("POS data: ", terminalTableData?.list)
     // console.log(terminalTableData)
 
     const { toast } = useToast();
