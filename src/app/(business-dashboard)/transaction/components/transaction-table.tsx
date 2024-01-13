@@ -1,4 +1,11 @@
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "components/ui/dropdown-menu"
 // import { ScrollArea, ScrollBar } from "@radix-ui/react-scroll-area";
 import { ScrollArea, ScrollBar } from "components/ui/scroll-area"
 import {
@@ -59,7 +66,7 @@ if (
 }
 
 
-export default function TransactionTable({ setModalOpen, invoiceTableData, row, setRow, setPage, page }: any) {
+export default function TransactionTable({ setModalData, setModalOpen, transactionTableData, row, setRow, setPage, page }: any) {
 
     const { toast } = useToast();
 
@@ -69,7 +76,7 @@ export default function TransactionTable({ setModalOpen, invoiceTableData, row, 
     // const router = useRouter();
     const handlePageNumber = (option: any) => {
         if (option === "next") {
-            if (page < Math.ceil(invoiceTableData?.totalCount / row) - 1) {
+            if (page < Math.ceil(transactionTableData?.totalCount / row) - 1) {
                 // console.log("next: ", page)
                 setPage(Number(page) + 1)
             } else {
@@ -137,7 +144,7 @@ export default function TransactionTable({ setModalOpen, invoiceTableData, row, 
     });
 
 
-    // console.log(invoiceTableData?.list)
+    // console.log(transactionTableData?.list)
     const handleDelete = (id: string) => {
         const requestData = {
             token,
@@ -189,7 +196,8 @@ export default function TransactionTable({ setModalOpen, invoiceTableData, row, 
 
     }
 
-    const handleModalState = (id: any) => {
+    const handleModalState = (orderRef: any) => {
+        setModalData(orderRef)
         setModalOpen((value: any) => !value)
     }
 
@@ -211,7 +219,7 @@ export default function TransactionTable({ setModalOpen, invoiceTableData, row, 
                         </div>
                         <ScrollArea className='w-full h-[400px]'>
                             <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                                {invoiceTableData?.list?.map(({ id, channel, amount, merchantCode, transactionStatus, updatedAt, serviceType, payAccessCurrency, merchantName, orderRef }: any, idx: React.Key | null | undefined) => {
+                                {transactionTableData?.list?.map(({ id, channel, amount, merchantCode, transactionStatus, updatedAt, serviceType, payAccessCurrency, merchantName, orderRef }: any, idx: React.Key | null | undefined) => {
                                     return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
 
                                         <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{merchantCode}</p>
@@ -265,14 +273,14 @@ export default function TransactionTable({ setModalOpen, invoiceTableData, row, 
                                                     </Button>
 
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align='end' className="w-[206px] p-[8px] bg-white shadow-lg rounded-lg">
+                                                <DropdownMenuContent align='end' className="w-[206px] p-[8px]">
                                                     <div className='w-full flex flex-col items-center'>
                                                         {
                                                             transactionStatus === "DELETED"
                                                                 ?
                                                                 ""
                                                                 :
-                                                                <p onClick={() => handleModalState(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                                <p onClick={() => handleModalState(orderRef)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                                     View
                                                                 </p>
                                                         }
@@ -320,7 +328,9 @@ export default function TransactionTable({ setModalOpen, invoiceTableData, row, 
                         </SelectContent>
                     </Select>
                 </div>
-                <p className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-[70px] flex flex-row items-center'>{`${invoiceTableData?.list[0]?.id}-${invoiceTableData?.list[invoiceTableData?.list.length - 1]?.id} of ${invoiceTableData?.totalCount}`}</p>
+                <p className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-[70px] flex flex-row items-center'>
+                    {`${(((Number(page) + 1) - 1) * Number(row)) + 1}-${(Number(page) + 1) * Number(transactionTableData?.list?.length)} of ${transactionTableData?.totalCount}`}
+                </p>
                 <div className='flex flex-row items-center gap-12 w-[90px]'>
                     <LuChevronLeft onClick={() => handlePageNumber("prev")} className="text-[24px] text-[#AAB7C6] cursor-pointer" />
                     <LuChevronRight onClick={() => handlePageNumber("next")} className="text-[24px] text-[#AAB7C6] cursor-pointer" />

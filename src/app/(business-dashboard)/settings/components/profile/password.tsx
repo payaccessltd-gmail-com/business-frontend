@@ -63,7 +63,7 @@ export default function PasswordForm() {
       confirmPassword: "",
     },
   })
-  const handleModal = (e: any) => {}
+  const handleModal = (e: any) => { }
 
   const passwordFormMutation = useMutation({
     mutationFn: updateUserPassword,
@@ -98,12 +98,12 @@ export default function PasswordForm() {
   })
 
   async function onSubmit(values: z.infer<typeof PasswordSchema>) {
-    console.log(values)
     let newValues = {
       password: passwordForm.getValues("currentPassword"),
       newPassword: passwordForm.getValues("newPassword"),
       token,
     }
+    console.log(newValues)
 
     passwordFormMutation.mutate(newValues as any)
   }
@@ -184,7 +184,7 @@ export default function PasswordForm() {
           // disabled={loading}
           className="mt-[32px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
           type="submit"
-          // onClick={(e) => handleModal(e)}
+        // onClick={(e) => handleModal(e)}
         >
           Change Password
         </Button>

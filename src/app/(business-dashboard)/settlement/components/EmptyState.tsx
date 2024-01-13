@@ -17,13 +17,12 @@ const EmptyState = () => {
             <p className='text-[#555555] w-[418px] text-center text-[16px] leading-[136.5%] font-[400] mb-[18px]'>
                 When you start receiving payment, you will have your settlement record here
             </p>
-            {/* <Button
-                asChild
+            <Button
                 className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
             >
-                <Link href={"/generate-invoice"}>Generate Invoice</Link>
+                Run Settlements
 
-            </Button> */}
+            </Button>
         </div>
     )
 }

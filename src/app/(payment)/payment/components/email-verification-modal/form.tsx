@@ -95,7 +95,6 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
       }
 
       if (responseData?.statusCode === "0") {
-
         console.log("response Data from Authorization", responseData)
         toast({
           variant: "default",

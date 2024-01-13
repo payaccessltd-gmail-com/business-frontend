@@ -35,3 +35,22 @@ export const getAllTransaction = async ({ currentPageNumber, merchantId, request
   const data = JSON.parse(responseText);
   return data;
 };
+export const getTransactionDetails = async ({ orderRef, merchantCode, token }: any) => {
+
+  const response = await fetch(`${baseUrl}/api/v1/transactions/get-transaction-details/${merchantCode}/${orderRef}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
+};
+
+
+
