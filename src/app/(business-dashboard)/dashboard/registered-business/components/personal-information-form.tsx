@@ -33,213 +33,312 @@ import {
 import { Typography } from "components/ui/Typography";
 import { useToast } from "components/ui/use-toast";
 import { cn } from "lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useHydrateStore, useMerchantStore } from "store";
+import { upLoadKycDocuments } from "api/merchant-management";
+import { useEffect } from "react";
+
+const MAX_FILE_SIZE_BYTES = 1048576; // 1 megabyte
+
+// @ts-ignore
+const isFileWithinSizeLimit = (file) => file && file.size && file.size <= MAX_FILE_SIZE_BYTES;
 
 const personalInfoFormSchema = zod.object({
-  emailAddress: zod.string().email(),
-  country: zod.string(),
-  firstName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-
-  gender: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-
-  dateOfBirth: zod.date({
-    required_error: "A date of birth is required.",
-  }),
-
-  identificationNumber: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-
-  identificationDocument: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-
-  identificationDocumentPath: zod.string(),
+  governmentApprovedDocument: zod.custom<File>((value) => isFileWithinSizeLimit(value)),
+  businessOwnersDocument: zod.custom<File>((value) => isFileWithinSizeLimit(value)),
+  directorsProofOfIdentity: zod.custom<File>((value) => isFileWithinSizeLimit(value)),
+  shareholdersDocument: zod.custom<File>((value) => isFileWithinSizeLimit(value)),
+  // ... other fields
 });
 
-export default function PersonalInformationForm() {
+
+export default function PersonalInformationForm(props: any) {
+  const data = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
+  const personalInfoForm = useForm({
+    resolver: zodResolver(personalInfoFormSchema),
+  })
+
   const { toast } = useToast();
-  const personalInfoForm = useForm<zod.infer<typeof personalInfoFormSchema>>({
-    // resolver: zodResolver(personalInfoFormSchema),
-    defaultValues: {
-      // emailAddress: localStorage.getItem("email") || (localStorage.getItem("email") as string),
-      emailAddress: "user.user@gmail.com",
+  const { register, formState, setValue, watch, reset } = personalInfoForm;
+
+
+  const showToast = () => {
+    // toast({
+    //   variant: "destructive",
+    //   title: 'file size should be less than 1 mb',
+    //   description: ''
+    // });
+    personalInfoForm.reset()
+  };
+
+  const watchedFiles = watch(['governmentApprovedDocument', 'businessOwnersDocument', 'directorsProofOfIdentity', 'shareholdersDocument']);
+
+  useEffect(() => {
+    // Check file sizes when they change
+    watchedFiles.forEach((file, index) => {
+      if (file && !isFileWithinSizeLimit(file)) {
+        showToast(
+           // @ts-expect-error
+          Object.keys(personalInfoFormSchema.shape)[index], "File size exceeds the allowed limit.");
+        // Optionally, you can clear the file input value
+        setValue(Object.keys(personalInfoFormSchema.shape)[index], null);
+      }
+    });
+  }, [watchedFiles, setValue, personalInfoFormSchema.shape]);
+  let token = "";
+  if (
+    typeof window !== "undefined" &&
+    typeof window.localStorage !== "undefined"
+  ) {
+    token = localStorage.getItem("token") as string;
+  }
+
+  const merchantId = useHydrateStore(useMerchantStore, (state) => state.currentMerchant.id)
+
+
+  const upLoadKycDocs = useMutation({
+    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) =>
+      upLoadKycDocuments(values, token),
+    onSuccess: async (data) => {
+      const res: { statusCode: string; message: string } =
+        (await data.json()) as {
+          statusCode: string;
+          message: string;
+        };
+
+      if (res.statusCode === "0") {
+
+
+        props.nextStep && props.nextStep()
+
+        toast({
+          variant: "default",
+          title: "",
+          description: res?.message,
+        })
+      }
+      if (res.statusCode === "403") {
+        toast({
+          variant: "destructive",
+          title: res.statusCode,
+          description: res.message,
+        });
+      }
+    },
+
+    onError: (error, variables, context) => {
+      console.log({ error, variables, context });
+    },
+    onMutate: () => {
+      return null;
     },
   });
 
-  // const updateMerchantBioDataMutation = useMutation({
-  //   mutationFn: updateMerchantBioData,
-  //   onSuccess: async (data) => {
-  //     const res: { statusCode: string; message: string } =
-  //       (await data.json()) as {
-  //         statusCode: string;
-  //         message: string;
-  //       };
-
-  //     if (res.statusCode === "403") {
-  //       toast({
-  //         variant: "destructive",
-  //         title: res.statusCode,
-  //         description: res.message,
-  //       });
-  //     }
-  //   },
-
-  //   onError: (error, variables, context) => {
-  //     console.log({ error, variables, context });
-  //   },
-  //   onMutate: () => {
-  //     return null;
-  //   },
-  // });
+  const { errors } = personalInfoForm.formState;
+  console.log(errors, 'errors');
 
   const onSubmit = (values: zod.infer<typeof personalInfoFormSchema>) => {
-    // const emailAddress =
-    //   localStorage.getItem("email") ||
-    //   (localStorage.getItem("email") as string);
-    const emailAddress = "user.user@gmail.com";
-    const updatedData = { ...values, emailAddress: emailAddress };
-    // updateMerchantBioDataMutation.mutate(updatedData);
+    console.log(values);
+
+    const modData = { ...values, merchantId }
+    upLoadKycDocs.mutate(modData as any);
   };
 
   return (
 
-        <Form {...personalInfoForm}>
-          <form
-            id="personalInformation"
-            onSubmit={personalInfoForm.handleSubmit(onSubmit)}
-            className="space-y-2 border-gray-10 w-full"
+    <Form {...personalInfoForm}>
+      <form
+        id="personalInformation"
+        onSubmit={
+           // @ts-expect-error
+          personalInfoForm.handleSubmit(onSubmit)}
+        className="space-y-2 border-gray-10 w-full"
+      >
+        <FormField
+          name="governmentApprovedDocument"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Government approved Document</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                  <Input
+                    type="file"
+                    ref={field.ref}
+                    name={field.name}
+                    className="hidden"
+                    onBlur={field.onBlur}
+                    accept=".jpg, .jpeg, .png, .svg, .gif"
+                    placeholder="Please upload identification document"
+                    onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                  />
+              </FormControl>
+              {
+               // @ts-expect-error
+              data?.governmentApprovedDocumentFileName &&
+                    <p style={{fontSize:"13px"}}>Current uploaded file: {
+                     // @ts-expect-error
+                    data.governmentApprovedDocumentFileName}</p>}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="businessOwnersDocument"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>  Proof of Identity and Address for Directors of {data?.businessName}</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              {
+               // @ts-expect-error
+              data?.directorsProofOfIdentityFileName &&
+                    <p style={{fontSize:"13px"}}>Current uploaded file: {
+                     // @ts-expect-error
+                    data.directorsProofOfIdentityFileName}</p>}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="shareholdersDocument"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Document showing business owners</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              {
+               // @ts-expect-error
+              data?.businessOwnersDocumentFileName &&
+                    <p style={{fontSize:"13px"}}>Current uploaded file: {
+                     // @ts-expect-error
+                    data.businessOwnersDocumentFileName}</p>}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="directorsProofOfIdentity"
+          control={personalInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Proof of Identity and Address for Shareholders that own up to
+                51% of {data?.businessName}</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              {
+               // @ts-expect-error
+              data?.shareholdersDocumentFileName &&
+                    <p style={{fontSize:"13px"}}>Current uploaded file: {
+                     // @ts-expect-error
+                    data.shareholdersDocumentFileName}</p>}
+              
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+
+        <div className="flex items-center py-5 justify-center ">
+          <Button
+            // disabled={updateMerchantBioDataMutation.isLoading}
+            className="h-[48px] w-[50%]"
+            type="submit"
+            size="default"
           >
-            <FormField
-              name="identificationDocumentPath"
-              control={personalInfoForm.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormDescription>
-                    Goverment approved document.
-                  </FormDescription>
-                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
-                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
-                      Drag file here to upload document or{" "}
-                      <span className="text-[#6B7280]">choose file</span>
-                    </Typography>
-                    <FormControl>
-                      <Input
-                        className="hidden"
-                        placeholder="Enter identification number"
-                        {...field}
-                        type="file"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="identificationDocumentPath"
-              control={personalInfoForm.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormDescription>
-                    Proof of identity and address for directors of goodness oil&gas.
-                  </FormDescription>
-                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
-                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
-                      Drag file here to upload document or{" "}
-                      <span className="text-[#6B7280]">choose file</span>
-                    </Typography>
-                    <FormControl>
-                      <Input
-                        className="hidden"
-                        placeholder="Enter identification number"
-                        {...field}
-                        type="file"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="identificationDocumentPath"
-              control={personalInfoForm.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormDescription>
-                    Document showing business owners.
-                  </FormDescription>
-                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
-                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
-                      Drag file here to upload document or{" "}
-                      <span className="text-[#6B7280]">choose file</span>
-                    </Typography>
-                    <FormControl>
-                      <Input
-                        className="hidden"
-                        placeholder="Enter identification number"
-                        {...field}
-                        type="file"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="identificationDocumentPath"
-              control={personalInfoForm.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormDescription>
-                  Proof of identity and address for shareholders that own up to 51% of goodness oil&gas.
-                  </FormDescription>
-                  <FormLabel className="flex h-[100px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
-                    <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                    <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
-                      Drag file here to upload document or{" "}
-                      <span className="text-[#6B7280]">choose file</span>
-                    </Typography>
-                    <FormControl>
-                      <Input
-                        className="hidden"
-                        placeholder="Enter identification number"
-                        {...field}
-                        type="file"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-      
+            Save and Continue
+          </Button>
+        </div>
 
-
-            <div className="flex items-center py-5 justify-center ">
-              <Button
-                // disabled={updateMerchantBioDataMutation.isLoading}
-                className="h-[48px] w-[50%]"
-                type="submit"
-                size="default"
-              >
-                Save and Continue
-              </Button>
-            </div>
-
-          </form>
-          <DevTool control={personalInfoForm.control} />
-        </Form>
+      </form>
+      <DevTool control={personalInfoForm.control} />
+    </Form>
   );
 }
