@@ -110,16 +110,16 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
   }
 
   useEffect(() => {
-   // console.log('userDetail',userDetail?.dateOfBirth == undefined ? Date(): parseISO(dateOfBirth));
-    
+    // console.log('userDetail',userDetail?.dateOfBirth == undefined ? Date(): parseISO(dateOfBirth));
+
     if (userDetail) {
-      const { firstName, lastName, gender, emailAddress,  identificationDocument, identificationNumber, identificationDocumentPath } =
+      const { firstName, lastName, gender, emailAddress, identificationDocument, identificationNumber, identificationDocumentPath } =
         userDetail as API.UserDetails
       return personalInfoForm.reset({
         firstName,
         lastName,
         gender,
-        emailAddress,    
+        emailAddress,
         identificationDocument,
         identificationNumber,
         identificationDocumentPath,
@@ -134,9 +134,9 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
   }, [currentMerchant?.id])
 
   return (
-   
+
     <Form {...personalInfoForm}>
-      
+
       <form id="personalInformation" onSubmit={personalInfoForm.handleSubmit(onSubmit)} className="flex flex-col w-full space-y-8 border-gray-10">
         {/* merchant id field is hidden but it's value is sent to the api */}
         <FormField
@@ -208,7 +208,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
 
         <div className="flex flex-row items-center gap-4">
           <FormField
-            name="gender" 
+            name="gender"
             control={personalInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
@@ -228,7 +228,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               </FormItem>
             )}
           />
- 
+
           <FormField
             control={personalInfoForm.control}
             name="dateOfBirth"
@@ -243,9 +243,9 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                         className={cn("flex flex-row items-center justify-start font-normal", !field?.value && "text-muted-foreground")}
                       >
                         <LuCalendar className="w-4 h-4 mr-2" />
- 
+
                         {field?.value ? format(field?.value, "PPP") : <span>DD/MM/YY</span>}
- 
+
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -302,7 +302,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             <FormItem>
               <FormLabel className="text-[#555555]">Identification Number</FormLabel>
               <FormControl>
-                <Input {...field}  onInput={(event) => numberFormat(event)} max="11"  placeholder="Enter identification number" />
+                <Input {...field} onInput={(event) => numberFormat(event)} max="11" placeholder="Enter identification number" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -347,7 +347,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           )}
         /> */}
 
-<FormField
+        <FormField
           name="identificationDocumentPath"
           control={personalInfoForm.control}
           render={({ field }) => (
