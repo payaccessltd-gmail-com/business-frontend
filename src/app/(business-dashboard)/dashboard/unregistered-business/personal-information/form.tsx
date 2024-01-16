@@ -243,7 +243,9 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
                         className={cn("flex flex-row items-center justify-start font-normal", !field?.value && "text-muted-foreground")}
                       >
                         <LuCalendar className="w-4 h-4 mr-2" />
+ 
                         {field?.value ? format(field?.value, "PPP") : <span>DD/MM/YY</span>}
+ 
                       </Button>
                     </FormControl>
                   </PopoverTrigger>

@@ -94,6 +94,16 @@
       "clig" off,
       "liga" off;
   }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
 .s-hidden {
   visibility: hidden;
@@ -104,7 +114,9 @@
   cursor: pointer;
   display: inline-block;
   position: relative;
-  font: normal 11px/22px Arial, Sans-Serif;
+  font:
+    normal 11px/22px Arial,
+    Sans-Serif;
   color: black;
   border: 1px solid #ccc;
 }

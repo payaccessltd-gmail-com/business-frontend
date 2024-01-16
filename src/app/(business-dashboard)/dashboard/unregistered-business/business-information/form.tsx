@@ -2,7 +2,7 @@
 
 import { DevTool } from "@hookform/devtools"
 import * as zod from "zod"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { HiOutlineCloudUpload } from "react-icons/hi"
@@ -25,7 +25,11 @@ type BusinessInfoFormProps = {
   nextStep?: () => void
 }
 
+
+
 const businessInfoFormSchema = zod.object({
+
+
   merchantId: zod.number(),
   businessName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -51,6 +55,8 @@ const businessInfoFormSchema = zod.object({
     message: "Last name must be at least 2 characters.",
   }),
 })
+
+const [stateData , setStateData] =useState<any>([]);
 
 export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   let token = ""
@@ -83,27 +89,11 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     } as any,
     resolver: zodResolver(businessInfoFormSchema),
   })
-
-  
-  const getState = useMutation({
-    mutationFn: getAllState,
-    onSuccess: async (data: any) => {
-        const response: API.CountryResponse = 
-            (await data.json()) as API.CountryResponse;
-           
-            console.log("Location ", response.data.length);
-
-            
-
-    }, onError: (e: any) => {
-      console.log({ e })
-      // toast({
-      //   variant: "destructive",
-      //   title: "",
-      //   description: e,
-      // });
-    },
-    });
+ 
+  function allState(id: number){
+  let data =  useQuery(['getMerchantDetails', id], () => getAllState(id));
+    setStateData(data);
+  }
 
   const updateBusinessInfoMutation = useMutation({
     mutationFn: (values: API.UpdateMerchantBusinessDataDTO) => updateMerchantBusinessData(values, token),
@@ -145,8 +135,6 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
       // });
     },
   })
-
-   
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
     if (typeof values.businessLogoFile === "string") {
@@ -303,7 +291,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
                   </FormControl>
                   <SelectContent   >
                   <SelectItem value=""></SelectItem>
-                        {countries?.data.map( ctr  => <SelectItem key={ctr.name} className="py-3 " value={ctr.name}>
+                        {countries?.data.map( ctr  => <SelectItem onChange={()=> allState(ctr.id)} key={ctr.name} className="py-3 " value={ctr.name}>
                         {ctr.name}
                         </SelectItem>)}
                       </SelectContent>

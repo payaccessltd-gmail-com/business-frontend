@@ -13,6 +13,7 @@ declare namespace API {
         }
     };
     type InitiatePayment = {
+        customData: string,
         orderRef: string,
         merchantCode: string,
         redirectUrl: string,

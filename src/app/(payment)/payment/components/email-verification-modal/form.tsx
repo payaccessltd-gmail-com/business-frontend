@@ -22,6 +22,7 @@ import { useToast } from "components/ui/use-toast";
 // import { resendOTP } from "../../../api/registration";
 import { useMutation } from "@tanstack/react-query";
 import { authorizePayment } from "api/payment";
+import { markAsPaid } from "api/invoice";
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -94,6 +95,7 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
       }
 
       if (responseData?.statusCode === "0") {
+        console.log("response Data from Authorization", responseData)
         toast({
           variant: "default",
           title: "",
@@ -104,6 +106,12 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
         setOtp(Array(6).fill(""));
         // setSuccess(1);
         setVerifyModal(false)
+        const residue: API.MarkedPaidValues = JSON.parse(responseData?.responseObject?.customData) as any
+
+        const markedMessage = await markAsPaid({ merchantCode: residue?.merchantCode, invoiceNumber: residue?.invoiceNumber })
+
+        console.log("markAsPaid from authorization Success: ", markedMessage)
+
       }
     },
 

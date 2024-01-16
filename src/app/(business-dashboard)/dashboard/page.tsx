@@ -20,6 +20,7 @@ import CustomerName from "./components/customer-name";
 import PaymentIssues from "./components/payment-issues";
 import ReportOverview from "./components/report-overview";
 import TransactionSuccessRate from "./components/transaction-success-rate";
+import GetStarted from "./components/get-started";
 
 export default function Dashboard() {
   // const merchantList = JSON.parse(localStorage.getItem("merchantList") as any) || null;
@@ -100,17 +101,7 @@ export default function Dashboard() {
               account.
             </Typography>
 
-            <Button
-              asChild
-              variant="ghost"
-              key={"get-started"}
-              size="lg"
-              className="rounded-lg bg-secondary-60 py-2.5 font-bold text-white"
-            >
-              <Link key={"/"} href="/dashboard/update-about-business/page-one">
-                Get started
-              </Link>
-            </Button>
+           <GetStarted />
           </div>
 
           <div className="pr-5">

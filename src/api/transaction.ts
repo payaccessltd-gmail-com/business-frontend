@@ -17,21 +17,40 @@ import { baseUrl } from "./baseUrl";
 //     return data;
 //   };
 
-  export const getAllTransaction = async ({ currentPageNumber, merchantId, rowPerPage, token }: API.Pager, searchQuery: API.TSearchRequest) => {
-     console.log("searchQuery" + JSON.stringify(searchQuery))
-    //  merchantId = '1'
-    const response = await fetch(`${baseUrl}/api/v1/transactions/get-transactions-by-merchant-id/${merchantId}/${rowPerPage}/${currentPageNumber}`, {
-      method: "POST",
-      body: JSON.stringify(searchQuery),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      }
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+export const getAllTransaction = async ({ currentPageNumber, merchantId, request, rowPerPage, token }: API.Pager) => {
+  // console.log("searchQuery" + JSON.stringify(request))
+  //  merchantId = '1'
+  const response = await fetch(`${baseUrl}/api/v1/transactions/get-transactions-by-merchant-id/${merchantId}/${rowPerPage}/${currentPageNumber}`, {
+    method: "POST",
+    body: JSON.stringify(request),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     }
-    const responseText = await response.text();
-    const data = JSON.parse(responseText);
-    return data;
-  };
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
+};
+export const getTransactionDetails = async ({ orderRef, merchantCode, token }: any) => {
+
+  const response = await fetch(`${baseUrl}/api/v1/transactions/get-transaction-details/${merchantCode}/${orderRef}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const responseText = await response.text();
+  const data = JSON.parse(responseText);
+  return data;
+};
+
+
+
