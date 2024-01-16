@@ -4,7 +4,7 @@ import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
+import { useEffect, useState } from "react"
 import { Button } from "components/ui/button"
 import { Checkbox } from "components/ui/checkbox"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "components/ui/form"
@@ -18,16 +18,42 @@ const FormSchema = z.object({
 })
 
 export function EnableNotification({ data, Notification, setNotification }: any) {
+
+  const [scrub, setStrub] = useState<number>(0)
+
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      settlement: data?.enableNotificationForSettlement,
-      paymentLink: data?.enableNotificationForPaymentLink,
-      invoice: data?.enableNotificationForInvoicing,
-      transfer: data?.enableNotificationServicesForTransfer,
-    },
   })
   // console.log(data)
+
+  useEffect(() => {
+    form.setValue("settlement", data?.enableNotificationForSettlement || false)
+    form.setValue("paymentLink", data?.enableNotificationForPaymentLink || false)
+    form.setValue("invoice", data?.enableNotificationForInvoicing || false)
+    form.setValue("transfer", data?.enableNotificationServicesForTransfer || false)
+  }, [data])
+
+
+  // useEffect(() => {
+  //   console.log("Notification data update: ", Notification)
+  // }, [Notification])
+
+
+  useEffect(() => {
+
+    setNotification({
+      ...Notification,
+      enableNotificationForSettlement: form.getValues("settlement"),
+      enableNotificationForPaymentLink: form.getValues("paymentLink"),
+      enableNotificationForInvoicing: form.getValues("invoice"),
+      enableNotificationForTransfer: form.getValues("transfer"),
+    })
+
+  }, [scrub])
+
+
+
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -47,6 +73,8 @@ export function EnableNotification({ data, Notification, setNotification }: any)
       enableNotificationForInvoicing: form.getValues("invoice"),
       enableNotificationForTransfer: form.getValues("transfer"),
     })
+    setStrub(scrub + 1)
+
   }
 
   return (

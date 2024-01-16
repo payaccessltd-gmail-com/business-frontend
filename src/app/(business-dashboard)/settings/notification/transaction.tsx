@@ -4,11 +4,11 @@ import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
 import { Button } from "components/ui/button"
 import { Checkbox } from "components/ui/checkbox"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "components/ui/form"
 import { toast } from "components/ui/use-toast"
+import { useEffect, useState } from "react"
 
 const FormSchema = z.object({
   mail: z.boolean(),
@@ -16,13 +16,31 @@ const FormSchema = z.object({
 })
 
 export function TransactionNotification({ data, Notification, setNotification }: any) {
+
+  const [scrub, setStrub] = useState<number>(0)
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      mail: data?.transactionNotificationByEmail,
-      receipt: data?.customerNotificationByEmail,
-    },
   })
+
+  useEffect(() => {
+    form.setValue("mail", data?.transactionNotificationByEmail || false)
+    form.setValue("receipt", data?.customerNotificationByEmail || false)
+  }, [data])
+
+
+
+
+  useEffect(() => {
+
+    setNotification({
+      ...Notification,
+      transactionNotificationByEmail: form.getValues("mail"),
+      customerNotificationByEmail: form.getValues("receipt"),
+    })
+
+  }, [scrub])
+  
 
   // console.log(data?.customerNotificationByEmail)
 
@@ -36,6 +54,7 @@ export function TransactionNotification({ data, Notification, setNotification }:
       transactionNotificationByEmail: form.getValues("mail"),
       customerNotificationByEmail: form.getValues("receipt"),
     })
+    setStrub(scrub + 1)
   }
 
   return (
