@@ -34,6 +34,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
 import { Textarea } from "components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import { updateAccountData } from "api/settings"
+import { formatQuantity, formatLetters } from "utils/numberFormater";
 
 
 let merchantList: any
@@ -55,8 +56,8 @@ if (
 
 
 const BusinessInfoSchema = z.object({
-    businessBvn: z.number(),
-    businessAccountNumber: z.number(),
+    businessBvn: z.string(),
+    businessAccountNumber: z.string(),
     businessBankName: z.string(),
     businessAccountName: z.string(),
 
@@ -157,13 +158,14 @@ export default function AccountInfoForm() {
                             </FormLabel>
                             <FormControl className="w-full bg-[red]">
                                 <Input
-                                    type="number"
+                                    type="text"
                                     className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                     placeholder="Enter BVN"
                                     {...field}
-                                    onChange={(event) =>
-                                        field.onChange(Number(event.target.value))
-                                    }
+                                    // onChange={(event) =>
+                                    //     field.onChange(Number(event.target.value))
+                                    // }
+                                    onInput={(event) => formatQuantity(event)}
                                 />
                             </FormControl>
                             {/* </div> */}
@@ -185,13 +187,14 @@ export default function AccountInfoForm() {
                             </FormLabel>
                             <FormControl className="w-full bg-[red]">
                                 <Input
-                                    type="number"
+                                    type="text"
                                     className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                     placeholder="Enter account number"
                                     {...field}
-                                    onChange={(event) =>
-                                        field.onChange(Number(event.target.value))
-                                    }
+                                    // onChange={(event) =>
+                                    //     field.onChange(Number(event.target.value))
+                                    // }
+                                    onInput={(event) => formatQuantity(event)}
                                 />
                             </FormControl>
                             {/* </div> */}
@@ -214,6 +217,7 @@ export default function AccountInfoForm() {
                                     className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                     placeholder="Enter Bank Name"
                                     {...field}
+                                    onInput={(event) => formatLetters(event)}
                                 />
                             </FormControl>
                             {/* </div> */}
@@ -236,6 +240,7 @@ export default function AccountInfoForm() {
                                     className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                                     placeholder="Enter Account Name"
                                     {...field}
+                                    onInput={(event) => formatLetters(event)}
                                 />
                             </FormControl>
                             {/* </div> */}

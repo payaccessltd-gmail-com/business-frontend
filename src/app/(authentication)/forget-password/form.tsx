@@ -70,7 +70,7 @@ export default function ForgetForm() {
         if (typeof window) {
 
           router.push(
-            `/otp?email=${forgetForm.getValues("emailAddress")}&forgotPasswordLink=${responseData?.responseObject}`
+            `/otp?email=${forgetForm.getValues("emailAddress")}&link=${responseData?.responseObject}`
           )
 
         }

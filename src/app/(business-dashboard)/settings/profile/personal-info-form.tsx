@@ -154,7 +154,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                 <Input
                   // disabled
                   type="text"
-                  className="disabled:opacity-100 border-[#D6D6D6] placeholder:text-black rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                  className="disabled:opacity-100 border-[#D6D6D6] placeholder:text-black rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2"
                   {...field}
                   value={prefill?.firstName}
                 />
@@ -176,7 +176,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
                 <Input
                   // disabled
                   type="text"
-                  className="border-[#D6D6D6] placeholder:text-black disabled:opacity-100 rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                  className="border-[#D6D6D6] placeholder:text-black disabled:opacity-100 rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2"
                   placeholder={prefill?.lastName}
                   {...field}
                 />

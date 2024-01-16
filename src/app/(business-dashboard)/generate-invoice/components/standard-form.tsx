@@ -131,7 +131,7 @@ export default function StandardForm() {
     resolver: zodResolver(StandardSchema),
     defaultValues: {
       customerName: "",
-      email1: "example@gmail.com",
+      email1: "",
       email2: "example@gmail.com",
       email3: "example@gmail.com",
       invoiceItem: "",

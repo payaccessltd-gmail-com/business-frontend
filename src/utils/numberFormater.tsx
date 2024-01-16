@@ -70,6 +70,11 @@ export const formatPercentValue = (event: any) => {
 };
 
 
+export const formatLetters = (event: any) => {
+    const input = event.target;
+    let value = input.value.replace(/[^a-zA-Z]/g, ''); // Remove non-alphabetic characters
+    input.value = value;
+}
 
 
 export const formatQuantity = (event: any) => {

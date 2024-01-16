@@ -86,7 +86,7 @@ export default function ResetForm() {
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
-
+      setLoading(false)
       if (responseData?.statusCode === "2") {
         toast({
           variant: "destructive",
@@ -115,6 +115,7 @@ export default function ResetForm() {
 
     onError: (e) => {
       console.log(e);
+      setLoading(false)
       toast({
         variant: "destructive",
         title: `${e}`,
@@ -124,6 +125,7 @@ export default function ResetForm() {
   });
 
   async function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
+    setLoading(true)
     const requestValue = {
       emailAddress: email,
       newPassword: resetPasswordForm.getValues("password"),
@@ -202,7 +204,7 @@ export default function ResetForm() {
           className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
-          Continue
+          {loading ? "Resetting..." : "Continue"}
         </Button>
         {isOpen ? <ResetSuccessModal /> : ""}
       </form>
