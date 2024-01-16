@@ -9,6 +9,7 @@ import { Button } from "components/ui/button"
 import { Checkbox } from "components/ui/checkbox"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "components/ui/form"
 import { toast } from "components/ui/use-toast"
+import { useEffect, useState } from "react"
 
 const FormSchema = z.object({
   debitMail: z.boolean().default(false).optional(),
@@ -16,23 +17,35 @@ const FormSchema = z.object({
 })
 
 export function TransferNotification({ data, Notification, setNotification }: any) {
+
+  const [scrub, setStrub] = useState<number>(0)
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      creditMail: data?.transferNotificationByEmailForCredit,
-      debitMail: data?.transferNotificationByEmailForDebit,
-    },
   })
+
+  useEffect(() => {
+    form.setValue("debitMail", data?.transferNotificationByEmailForDebit || false)
+    form.setValue("creditMail", data?.transferNotificationByEmailForCredit || false)
+  }, [data])
+
+
+
+
+  useEffect(() => {
+
+    setNotification({
+      ...Notification,
+      transferNotificationByEmailForCredit: form.getValues("creditMail"),
+      transferNotificationByEmailForDebit: form.getValues("debitMail"),
+    })
+
+  }, [scrub])
+
+
   // console.log(data)
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+    console.log("transfer data: ", data)
   }
   const handleUpdate = () => {
     setNotification({
@@ -40,8 +53,10 @@ export function TransferNotification({ data, Notification, setNotification }: an
       transferNotificationByEmailForCredit: form.getValues("creditMail"),
       transferNotificationByEmailForDebit: form.getValues("debitMail"),
     })
+    setStrub(scrub + 1)
+
   }
-console.log(data, "notfication")
+  // console.log(data, "notfication")
   return (
     <Form {...form}>
       <form

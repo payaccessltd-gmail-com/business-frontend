@@ -9,6 +9,8 @@ import { getMerchantDetails } from "api/settings";
 import { updateBusinessType } from "api/settings";
 import { useToast } from "components/ui/use-toast";
 import React, { useEffect, useState } from 'react'
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
+
 
 
 
@@ -32,10 +34,11 @@ if (
 
 
 export default function BusinessType() {
-
+    const merchantDetailStore = useHydrateStore(useMerchantStore, (state) => state.currentMerchant); //getting merchant name from store
+    // console.log(merchantDetailStore)
     const getParameters = {
         token,
-        merchantCode: merchantList[0]?.merchantCode
+        merchantCode: merchantDetailStore?.merchantCode
     }
 
     // console.log("mercahant Code: ", merchantList[0]?.merchantCode)
@@ -94,13 +97,14 @@ export default function BusinessType() {
         // console.log(newValues);
         businessTypeMutation.mutate(newValues as any);
     }
-    console.log(prefill)
+    console.log("prefill: ", prefill)
 
     return (
         <div className="flex flex-col items-start gap-4 w-[55%]">
             <p className="self-center text-[#0C394B] text-[16px] leading-[150%] font-[600]">Business type</p>
             <RadioGroup
-                defaultValue={prefill || data?.data?.responseObject[0]?.businessType}
+                // defaultValue={"INDIVIDUAL"}
+                value={prefill}
                 className='p-9 w-full flex flex-col items-start gap-6 rounded-[10px] bg-white shadow-[0px_4px_8px_0px_rgba(241,241,241,0.99)]'
             >
                 <div className='flex flex-row items-start gap-2'>
