@@ -27,28 +27,29 @@ import { useState } from "react"
 
 const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
+ 
   businessType: zod.string(),
   softwareDeveloper: zod.string(),
-  mobileNumber: zod.string(),
+  mobileNumber: zod.string(), 
   merchantId: zod.number(),
+  mobileNumber: zod.string(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
   }),
 })
 
 export default function BusinessProfileUpdate() {
-  let token = ""
-
+  let token = "" 
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
   const router = useRouter()
   const { toast } = useToast()
-  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
+  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant) 
   //@ts-expect-error
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.user)
   const { setCurrentMerchantDetails } = useMerchantStore();
-console.log(currentMerchantDetails,'jk');
+console.log(currentMerchantDetails,'jk'); 
 
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
@@ -57,11 +58,13 @@ console.log(currentMerchantDetails,'jk');
     },
     resolver: zodResolver(businessProfileFormSchema),
   })
+ 
 
   const businessProfileMutation = useMutation({
     mutationFn: (values: API.UpdateAboutBusinessDTO) => updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      console.log("data", data);
 
       if (responseData?.statusCode === "1") {
         toast({
@@ -70,6 +73,14 @@ console.log(currentMerchantDetails,'jk');
           description: responseData?.message,
         })
       } else if (responseData?.statusCode === "0" && typeof window) {
+ 
+        if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
+          router.push("/dashboard/registered-business")
+          businessProfileForm.reset()
+          return
+        }
+      //  router.push("/dashboard/update-about-business/page-three")
+ 
         // useQuery({
         //   queryKey: ["merchant-details", currentMerchant?.merchantCode],
         //   queryFn: () =>
@@ -90,7 +101,7 @@ console.log(currentMerchantDetails,'jk');
         //     }
         //   },
         // });
-      
+       
         businessProfileForm.reset()
         router.push("/dashboard/registered-business")
 
@@ -118,15 +129,25 @@ console.log(currentMerchantDetails,'jk');
   })
 
   function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
-    businessProfileMutation.mutate(values)
+
+    let data: API.UpdateAboutBusinessRequest = {
+      ...values,
+          
+    }
+    console.log('data', data);
+    
+    businessProfileMutation.mutate(data)
   }
+
 
   return (
     <main className="flex flex-col items-center justify-center bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent ">
+   
         <Form {...businessProfileForm}>
           <form onSubmit={businessProfileForm.handleSubmit(onSubmit)} className="space-y-12 bg-white">
             <div className="space-y-8">
+              
               <FormField
                 name="businessCategory"
                 control={businessProfileForm.control}
@@ -155,7 +176,40 @@ console.log(currentMerchantDetails,'jk');
                   </FormItem>
                 )}
               />
+ 
+              {/* <Label className="text-sm font-normal text-gray-50">Phone Number</Label>
 
+              <PatternFormat
+                format="+234 (####) ###-####"
+                className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
+                valueIsNumericString={true}
+              /> */}
+              {/* <div className="mb-6">
+                <div>
+                  <label className="">Phone Number</label>
+                </div>
+                <PatternFormat
+                  onChange={(event) => setPhoneNumber(event as any)}
+                  format="+234 (####) ###-####"
+                  className="w-full p-3 border mt-3 mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
+                  isNumericString={true}
+                />
+              </div> */}
+
+              {/* <FormField
+                control={businessProfileForm.control}
+                name="business_name"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="text-sm font-normal text-gray-50">Business Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" icon="show" className="min-h-[48px]" placeholder="Enter business name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
+ 
               <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"

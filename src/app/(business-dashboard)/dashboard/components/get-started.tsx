@@ -20,7 +20,7 @@ export default function CustomerName({ }: Props) {
 
     const { user } = useUserStore();
     // console.log(user, 'eee');
-
+    const {currentMerchantDetails} = useMerchantStore();
 
     function checkInfoSet(obj: any) {
         if (!obj?.kycSet || !obj?.businessInfoSet || !obj?.accountInfoSet) {
@@ -52,15 +52,15 @@ export default function CustomerName({ }: Props) {
         <>
             {
                 //@ts-ignore
-                (user?.softwareDeveloper === undefined || user?.softwareDeveloper && shouldUpdateBusiness === false)   && <Button
+                (state?.currentMerchantDetails?.businessCategory)   && <Button
                     asChild
                     variant="ghost"
                     key={"get-started"}
                     size="lg"
                     className="rounded-lg bg-secondary-60 py-2 font-bold text-white"
                 >
-                    <Link key={"/"} href={`${shouldUpdateBusiness && user?.softwareDeveloper ? businessLink : '/dashboard/update-about-business/page-one'}`}>
-                        {shouldUpdateBusiness && user?.softwareDeveloper ? 'Continue business update' : 'Get started'}
+                    <Link key={"/"} href={`${state?.currentMerchantDetails?.businessCategory ? businessLink : '/dashboard/update-about-business/page-one'}`}>
+                        {state?.currentMerchantDetails?.businessCategory ? 'Continue business update' : 'Get started'}
                     </Link>
                 </Button>
             }

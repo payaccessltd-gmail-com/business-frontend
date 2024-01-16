@@ -12,18 +12,35 @@ export const getMerchantByMerchantCode = async (merchantCode: string, token: str
     body: JSON.stringify(updateAboutBusiness),
   })
 }
+ 
+export const updateAboutBusiness = async (
+  updateAboutBusiness: API.UpdateAboutBusinessDTO,
+  token: string,
+) => {  
+  let sft = updateAboutBusiness.softwareDeveloper === 'true' ? true : false;
 
-export const updateAboutBusiness = async (updateAboutBusiness: API.UpdateAboutBusinessDTO, token: string) => {
+ const payload={
+    "businessCategory":  updateAboutBusiness.businessCategory,
+    "businessType": updateAboutBusiness.businessType,
+    "merchantId": updateAboutBusiness.merchantId,
+    "mobileNumber": updateAboutBusiness.mobileNumber,
+    "softwareDeveloper": sft
+  }
+
+  console.log("updateAboutBusiness", updateAboutBusiness);
+  console.log("token", token);
+  
+ 
   return await fetch(`${baseUrl}/api/v1/merchant/update-about-business`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ ...updateAboutBusiness }),
-  })
-}
-
+    }, 
+    body: JSON.stringify({...payload, business_name:"Coptco"}),
+  });
+};
+ 
 export const updateMerchantLocation = async (updateMerchantLocation: API.UpdateLocationDTO, token: string) => {
   return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-country`, {
     method: "POST",
@@ -82,47 +99,59 @@ export const updateMerchantBusinessData = async (
     businessWebsite,
     businessLogoFile,
     merchantId,
-    businessCertificate,
     businessAddress,
-    businessCountry
-  }: any,
-  token: string
+    businessCountry, 
+    businessCertificateFile
+  }: API.UpdateMerchantBusinessDataDTO,
+  token: string,
 ) => {
-  let formdata = new FormData()
-  formdata.append("businessDescription", businessDescription)
-  formdata.append("businessEmail", businessEmail)
-  formdata.append("primaryMobile", primaryMobile)
-  formdata.append("supportContact", supportContact)
-  formdata.append("businessCity", businessCity)
-  formdata.append("businessState", businessState)
-  formdata.append("businessWebsite", businessWebsite)
-  // formdata.append("businessCertificate", businessCertificate)
-  formdata.append("businessCountry", businessCountry)
-  formdata.append("businessAddress", businessAddress)
-  // formdata.append("businessLogoFile", businessLogoFile)
-  // formdata.append("businessCertificate", businessAddress)
+  let formdata = new FormData();
+  formdata.append("businessDescription", businessDescription);
+  formdata.append("businessEmail", businessEmail);
+  formdata.append("primaryMobile", primaryMobile);
+  formdata.append("supportContact", supportContact);
+  formdata.append("businessCity", businessCity);
+  formdata.append("businessState", businessState);
+  formdata.append("businessWebsite", businessWebsite);
+  formdata.append("businessCountry", businessCountry);
+  formdata.append("businessAddress", businessAddress);
 
   if (merchantId) {
     formdata.append("merchantId", merchantId.toString())
   }
 
   if (businessLogoFile) {
-    formdata.append("businessLogoFile", businessLogoFile, businessLogoFile.name)
+    formdata.append(
+      "businessCertificateFile",
+      businessCertificateFile,
+      businessCertificateFile.name,
+    );
   } else {
-    formdata.append("businessLogoFile", new Blob(["", " ", "world"], { type: "text/plain" }))
+    formdata.append(
+      "businessCertificateFile",
+      new Blob(["", " ", "world"], { type: "text/plain" }),
+    );
   }
-  if (businessCertificate) {
-    formdata.append("businessCertificateFile", businessCertificate, businessCertificate.name)
+  if (businessLogoFile) {
+    formdata.append(
+      "businessLogoFile",
+      businessLogoFile,
+      businessLogoFile.name,
+    );
+ 
   } else {
     formdata.append("businessCertificateFile", new Blob(["", " ", "world"], { type: "text/plain" }))
   }
+ 
 
-  return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-business-data`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: formdata,
+  return await fetch(
+    `${baseUrl}/api/v1/merchant/update-merchant-business-data`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formdata, 
   })
 }
 

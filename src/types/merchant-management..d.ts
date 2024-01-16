@@ -5,6 +5,7 @@ declare namespace API {
     softwareDeveloper: string;
     mobileNumber: string;
     merchantId: number;
+
   };
 
   type UpdateAboutBusinessRequest = {
@@ -44,6 +45,10 @@ declare namespace API {
     businessWebsite: string;
     businessLogoFile: File;
     merchantId: number;
+    businessCountry: string,
+    businessCertificateFile:File
+    businessAddress:string
+
   };
 
   type UpdateMerchantBankAccountDataDTO = {

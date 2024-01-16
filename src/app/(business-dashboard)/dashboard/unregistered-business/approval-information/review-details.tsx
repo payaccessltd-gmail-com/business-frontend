@@ -1,8 +1,11 @@
 import React from "react";
 
-import { Typography } from "components/ui/Typography";
+import { Typography } from "components/ui/Typography"; 
+import { Progress } from "components/ui/progress";
 
-type Props = {};
+type Props = {
+  persent: number
+};
 
 const ReviewDetails = (props: Props) => {
   return (
@@ -24,12 +27,15 @@ const ReviewDetails = (props: Props) => {
               Individual Business
             </Typography>
             <div className="text-2xl font-semibold leading-normal text-sky-400">
-              100%
+              {props.persent.toFixed(2)}%
             </div>
+           
           </div>
-          <div className="inline-flex items-center justify-center h-1 bg-white w-80">
+          <Progress className=" "  value={props.persent} />
+          {/* <div className="inline-flex items-center justify-center h-1 bg-white w-80">
+          
             <div className="h-1 w-80 bg-sky-400" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
