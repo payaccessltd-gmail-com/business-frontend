@@ -23,6 +23,8 @@ import { useQuery } from "@tanstack/react-query"
 import { getMerchantDetails } from "api/settings"
 import { updateBusinessInfo } from "api/settings"
 import { countryList } from "utils/countrylist"
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
+
 
 let merchantList: any
 let token = ""
@@ -35,6 +37,7 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
   merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
   merchantId = merchantList[0].id ? merchantList[0]?.id : null
 }
+
 
 // console.log(merchantList[0]?.merchantCode)
 
@@ -50,6 +53,9 @@ const BusinessInfoSchema = z.object({
   businessLogoFile: z.custom<File>().optional(),
 })
 export default function BusinessInfoForm() {
+  const userDetail = useHydrateStore(useUserStore, (state) => state.user); //getting merchant name from store
+  const merchantDetailStore = useHydrateStore(useMerchantStore, (state) => state.currentMerchant); //getting merchant name from store
+  // console.log(merchantDetailStore)
   const { toast } = useToast()
   const router = useRouter()
   const [receipt, setReceipt] = useState(false)
@@ -59,7 +65,7 @@ export default function BusinessInfoForm() {
   const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
   const getParameters = {
     token,
-    merchantCode: merchantList[0]?.merchantCode,
+    merchantCode: merchantDetailStore?.merchantCode,
   }
   const data: any = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
 
@@ -151,7 +157,7 @@ export default function BusinessInfoForm() {
                   disabled
                   type="text"
                   className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
-                  placeholder={merchantList[0]?.businessName}
+                  placeholder={prefill?.businessName}
                   {...field}
                 />
               </FormControl>
