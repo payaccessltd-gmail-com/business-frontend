@@ -152,7 +152,7 @@ export default function PersonalInformationForm(props: any) {
         onSubmit={
            // @ts-expect-error
           personalInfoForm.handleSubmit(onSubmit)}
-        className="space-y-2 border-gray-10 w-full"
+        className="space-y-0 border-gray-10 w-full"
       >
         <FormField
           name="governmentApprovedDocument"

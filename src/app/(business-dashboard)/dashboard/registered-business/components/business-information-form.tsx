@@ -31,6 +31,7 @@ import { HiOutlineCloudUpload } from "react-icons/hi";
 import { Typography } from "components/ui/Typography";
 import { useToast } from "components/ui/use-toast";
 import { useEffect } from "react";
+import { numberFormat } from "utils/numberFormater";
 
 const businessInfoFormSchema = zod.object({
   // merchantId: zod.number(),
@@ -43,7 +44,7 @@ const businessInfoFormSchema = zod.object({
   businessState: zod.string(),
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
-  businessWebsite: zod.string().url(),
+  businessWebsite: zod.string().optional(),
   businessLogo: zod.string(),
   businessCertificate: zod.custom<File>(),
   businessDescription: zod.string().min(2, {
@@ -154,7 +155,7 @@ export default function BusinessInformationForm(props: any) {
     <Form {...businessInfoForm} >
       <form
         onSubmit={businessInfoForm.handleSubmit(onSubmit)}
-        className="space-y-2 border-gray-10 w-full"
+        className="space-y-0 mt-0 border-gray-10 w-full"
       >
         <FormField
           name="businessName"
@@ -212,8 +213,9 @@ export default function BusinessInformationForm(props: any) {
                 <FormControl>
                   <Input
                     placeholder="Enter businesss mobile number"
-                    {...field}
-                    type="number"
+                    {...field} 
+                    max={13}
+                    onInput={(event) => numberFormat(event)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -299,6 +301,23 @@ export default function BusinessInformationForm(props: any) {
             </FormItem>
           )}
         />
+          <FormField
+          control={businessInfoForm.control}
+          name="businessAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Business Address</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="The address of business"
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           name="businessWebsite"
           control={businessInfoForm.control}
@@ -373,23 +392,7 @@ export default function BusinessInformationForm(props: any) {
             </FormItem>
           )}
         />
-        <FormField
-          control={businessInfoForm.control}
-          name="businessAddress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Business Address</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="The address of business"
-                  {...field}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      
 
         {/* <FormField
           name="businessCertificate"

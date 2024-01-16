@@ -99,10 +99,11 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
         }
     }
 
+    
 
 
     const deleteInvoiceMutation = useMutation({
-        mutationFn: deleteInvoice,
+    mutationFn: getCounry,
         onSuccess: async (data: any) => {
             const responseData: API.InvoiceStatusReponse =
                 (await data.json()) as API.InvoiceStatusReponse;

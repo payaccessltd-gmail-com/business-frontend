@@ -5,6 +5,8 @@ export const baseUrlAuth = "http://137.184.47.182:8081/payaccess-0.0.1-SNAPSHOT/
 export const baseImgUrl = "http://137.184.47.182:8081/fileuploads"
 
 
+export const locationUrl = "http://payproadmin-001-site2.itempurl.com/"
+
 
 // export const merchantList = JSON.parse(localStorage.getItem("merchantList") as any) || null;
 // export const token = localStorage.getItem("token") as any || null;

@@ -43,7 +43,7 @@ function Stepper() {
   });
 
   return (
-    <div className="pb-5 space-y-10">
+    <div className="pb-5 space-y-1">
       <nav className="w-full" {...stepperProps}>
         <ol className="flex flex-row px-4 py-6 space-x-10 bg-white">
           {stepsProps?.map((step, index) => (
@@ -87,22 +87,22 @@ function Stepper() {
       </nav>
 
       <div className="bg-white">
-        <div className="max-w-[1100px] px-4 py-6">
+        <div className="max-w-[1100px] px-4 ">
           {state.currentStep === 0 ? (
             <div className="flex items-center h-screen">
-              <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
+              <div className="w-full p-8 border border-gray-300 rounded-lg">
                 <PersonalInformationForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
           ) : state.currentStep === 1 ? (
             <div className="flex items-center h-screen my-32">
-              <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
+              <div className="w-full p-8 border border-gray-300 rounded-lg">
                 <BusinessInformationForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
           ) : state.currentStep === 2 ? (
             <div className="flex items-center ">
-              <div className="w-3/5 p-8 border border-gray-300 rounded-lg">
+              <div className="w-full p-8 border border-gray-300 rounded-lg">
                 <AccountInformationForm prevStep={prevStep} nextStep={nextStep}/>
               </div>
             </div>
