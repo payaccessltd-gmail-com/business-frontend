@@ -393,14 +393,14 @@ export default function GenerateInvoice() {
                   <FiEdit className="text-[20px] text-[#555555]" />
                   Edit
                 </Button> : ""}
-                {fillData?.invoiceStatus === "PENDING" || fillData?.invoiceStatus === "NOTPAID" ? <Button
+                {/* {fillData?.invoiceStatus === "PENDING" || fillData?.invoiceStatus === "NOTPAID" ? <Button
                   onClick={() => setPaidPopup(true)}
                   variant={"outline"}
                   className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                 >
                   <LuTrendingDown className="text-[20px] text-[#555555]" />
                   Mark as paid
-                </Button> : ""}
+                </Button> : ""} */}
                 <Button
                   onClick={() => setPopup(true)}
                   variant={"outline"}

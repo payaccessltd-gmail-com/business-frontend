@@ -189,14 +189,15 @@ export default function SimpleForm() {
         onSuccess: async (data) => {
             const responseData: API.InvoiceStatusReponse =
                 (await data.json()) as API.InvoiceStatusReponse;
-            if (responseData?.statusCode === "1") {
+            console.log("simple invoice status: ", responseData?.statusCode)
+            if ((responseData?.statusCode === "1") || (responseData?.statusCode === "701")) {
                 toast({
                     variant: "destructive",
                     title: "",
                     description: "Error Creating Invoice",
                 });
             }
-            if (responseData?.statusCode === "0" || "ACCEPTED") {
+            else if (responseData?.statusCode === "0" || "ACCEPTED") {
                 toast({
                     variant: "default",
                     title: "",

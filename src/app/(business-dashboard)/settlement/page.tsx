@@ -276,7 +276,7 @@ const Settlement = () => {
               </form>
             </DropdownMenuContent>
           </DropdownMenu>
-          {data?.data?.responseObject?.list.length ?
+          {/* {data?.data?.responseObject?.list.length ?
             <Button
               onClick={() => setPopup(true)}
               className="rounded-[8px] w-[225px] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
@@ -284,7 +284,7 @@ const Settlement = () => {
               Run Settlements
 
             </Button>
-            : ""}
+            : ""} */}
         </div>
       </div>
 
