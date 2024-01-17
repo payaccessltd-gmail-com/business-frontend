@@ -50,9 +50,10 @@ export default function CustomerName({ }: Props) {
 
     return (
         <>
+        {/* {"testing"  + state?.currentMerchantDetails?.businessCategory?.length } */}
             {
                 //@ts-ignore
-                (state?.currentMerchantDetails?.businessCategory)   && <Button
+                (state?.currentMerchantDetails?.businessCategory?.length > 0 || state?.currentMerchantDetails?.businessCategory == undefined)   && <Button
                     asChild
                     variant="ghost"
                     key={"get-started"}

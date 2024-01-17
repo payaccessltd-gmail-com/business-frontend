@@ -29,8 +29,7 @@ const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
  
   businessType: zod.string(),
-  softwareDeveloper: zod.string(),
-  mobileNumber: zod.string(), 
+  softwareDeveloper: zod.string(), 
   merchantId: zod.number(),
   // mobileNumber: zod.string(),
   policy: zod.boolean().refine(value => value === true, {
