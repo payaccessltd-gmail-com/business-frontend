@@ -48,7 +48,23 @@ const dropOptions: any[] = [
 ]
 
 
-
+const transactionFilterNames: any[] = [
+  {
+    title: "Pending",
+    value: "PENDING",
+    id: "0"
+  },
+  {
+    title: "Sucessful",
+    value: "SUCCESSFUL",
+    id: "1"
+  },
+  {
+    title: "Failed",
+    value: "FAILED",
+    id: "2"
+  },
+]
 
 let merchantList: any
 let token = ""
@@ -172,10 +188,11 @@ const Transaction = () => {
                     <SelectValue placeholder="Show all" />
                   </SelectTrigger>
                   <SelectContent position="popper" className="p-[6px]">
-                    <SelectItem value="Draft">Draft</SelectItem>
-                    <SelectItem value="Paid">Paid</SelectItem>
-                    <SelectItem value="Not paid">Not paid</SelectItem>
-                    <SelectItem value="Revoke">Revoke</SelectItem>
+                    {transactionFilterNames.map(({ title, value, id }) => {
+                      return (
+                        <SelectItem className="cursor-pointer hover:text-[#48B8E6]" key={id} value={value}>{title}</SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               </div>
