@@ -100,10 +100,10 @@ const POSTable = ({ terminalTableData, row, setRow, setPage, page }: any) => {
             </div>
             <ScrollArea className='w-full h-[400px]'>
                 <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                    {terminalTableData?.list?.map(({ id, quantity, terminalBrand, terminalRequestStatus, terminalType, customerName }: any, idx: React.Key | null | undefined) => {
+                    {terminalTableData?.list?.map(({ id, quantity, terminalBrand, terminalRequestStatus, terminalType, businessName }: any, idx: React.Key | null | undefined) => {
                         return (
                             <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
-                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] w-[20%] text-center font-raleway'>Tunde</p>
+                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] w-[20%] text-center font-raleway'>{businessName}</p>
                                 <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{terminalBrand}</p>
                                 <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{terminalType}</p>
                                 <div className='w-[20%] flex flex-col items-center'>

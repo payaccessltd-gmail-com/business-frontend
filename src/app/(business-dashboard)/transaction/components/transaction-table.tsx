@@ -26,7 +26,6 @@ import { IoMdCheckmark } from "react-icons/io";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { LuChevronsRight, LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { SlOptions } from "react-icons/sl";
-
 import * as z from "zod"
 
 
@@ -102,60 +101,60 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
     
 
 
-    const deleteInvoiceMutation = useMutation({
-    mutationFn: getCounry,
-        onSuccess: async (data: any) => {
-            const responseData: API.InvoiceStatusReponse =
-                (await data.json()) as API.InvoiceStatusReponse;
+    // const deleteInvoiceMutation = useMutation({
+    // mutationFn: getCounry,
+    //     onSuccess: async (data: any) => {
+    //         const responseData: API.InvoiceStatusReponse =
+    //             (await data.json()) as API.InvoiceStatusReponse;
 
-            if (responseData?.statusCode === "1") {
-                setPopup(false)
-                toast({
-                    variant: "destructive",
-                    title: "",
-                    description: "Error Deleting Invoice",
-                });
-            }
+    //         if (responseData?.statusCode === "1") {
+    //             setPopup(false)
+    //             toast({
+    //                 variant: "destructive",
+    //                 title: "",
+    //                 description: "Error Deleting Invoice",
+    //             });
+    //         }
 
-            if (responseData?.statusCode === "0") {
-                setPopup(false)
-                toast({
-                    variant: "default",
-                    title: "",
-                    description: "Invoice Deleted",
-                    className:
-                        "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-                });
+    //         if (responseData?.statusCode === "0") {
+    //             setPopup(false)
+    //             toast({
+    //                 variant: "default",
+    //                 title: "",
+    //                 description: "Invoice Deleted",
+    //                 className:
+    //                     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+    //             });
 
-                if (typeof window) {
-                    //  router.push(`/invoice`);
-                }
-            }
-        },
+    //             if (typeof window) {
+    //                 //  router.push(`/invoice`);
+    //             }
+    //         }
+    //     },
 
-        onError: (e) => {
-            setPopup(false)
-            console.log(e);
-            toast({
-                variant: "destructive",
-                title: `${e}`,
-                description: "error",
-            });
-        },
-    });
+    //     onError: (e) => {
+    //         setPopup(false)
+    //         console.log(e);
+    //         toast({
+    //             variant: "destructive",
+    //             title: `${e}`,
+    //             description: "error",
+    //         });
+    //     },
+    // });
 
 
     // console.log(transactionTableData?.list)
-    const handleDelete = (id: string) => {
-        const requestData = {
-            token,
-            merchantId,
-            invoiceId: id
-        }
-        // console.log(requestData)
-        deleteInvoiceMutation.mutate(requestData as any);
+    // const handleDelete = (id: string) => {
+    //     const requestData = {
+    //         token,
+    //         merchantId,
+    //         invoiceId: id
+    //     }
+    //     // console.log(requestData)
+    //     deleteInvoiceMutation.mutate(requestData as any);
 
-    }
+    // }
 
     const handleDeletePopup = (id: string) => {
         setDeleteId(id)
@@ -339,9 +338,9 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
 
 
             </div>
-            {
+            {/* {
                 deletePopup ? <DeletePopup setPopup={setPopup} deleteId={deleteId} handleDelete={handleDelete} /> : ""
-            }
+            } */}
 
 
         </div >

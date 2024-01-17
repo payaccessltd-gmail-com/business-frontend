@@ -48,9 +48,9 @@ export default function ForgetForm() {
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
+      setLoading(false)
+      console.log("responseData", responseData);
 
-        console.log("responseData", responseData);
-        
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
@@ -59,10 +59,10 @@ export default function ForgetForm() {
         });
       }
 
-      if (responseData?.statusCode === "00") {
+      if ((responseData?.statusCode === "00") || (responseData?.statusCode === "0")) {
         toast({
           variant: "default",
-          title: "",
+          title: "Success...",
           description: responseData?.message,
           className:
             "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
@@ -70,7 +70,7 @@ export default function ForgetForm() {
         if (typeof window) {
 
           router.push(
-            `/otp?email=${forgetForm.getValues("emailAddress")}&forgotPasswordLink=${responseData?.responseObject}`
+            `/otp?email=${forgetForm.getValues("emailAddress")}&link=${responseData?.responseObject}`
           )
 
         }
@@ -78,6 +78,7 @@ export default function ForgetForm() {
     },
 
     onError: (e) => {
+      setLoading(false)
       console.log(e);
       toast({
         variant: "destructive",
@@ -88,7 +89,7 @@ export default function ForgetForm() {
   });
 
   async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
-
+    setLoading(true)
     forgetPasswordMutation.mutate(values as any)
 
   }
@@ -121,7 +122,7 @@ export default function ForgetForm() {
           className="mt-[42px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
-          Continue
+          {loading ? "Loading..." : "Continue"}
         </Button>
       </form>
     </Form>

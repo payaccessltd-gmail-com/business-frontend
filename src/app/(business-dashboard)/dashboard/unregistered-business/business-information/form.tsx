@@ -47,19 +47,19 @@ const businessInfoFormSchema = zod.object({
   businessCountry: zod.string(),
   businessAddress: zod.string(),
   businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
-  
+
   businessCertificateFile: zod.custom<File>().optional() || zod.string().optional(),
   // businessCertificate: zod.string(),
- 
+
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
 })
 
-const [stateData , setStateData] =useState<any>([]);
 
 export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   let token = ""
+  const [stateData, setStateData] = useState<any>([]);
 
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
@@ -72,15 +72,15 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
 
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
 
-    const dataCountry: any = useQuery(['getCountry'], () => {
-      return getCountry()
-    });
+  const dataCountry: any = useQuery(['getCountry'], () => {
+    return getCountry()
+  });
 
-    const countries : API.CountryResponse   = dataCountry?.data;
+  const countries: API.CountryResponse = dataCountry?.data;
 
 
-    console.log("dataCountry", countries?.data);
-    
+  console.log("dataCountry", countries?.data);
+
 
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {
@@ -89,9 +89,9 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     } as any,
     resolver: zodResolver(businessInfoFormSchema),
   })
- 
-  function allState(id: number){
-  let data =  useQuery(['getMerchantDetails', id], () => getAllState(id));
+
+  function allState(id: number) {
+    let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
     setStateData(data);
   }
 
@@ -141,7 +141,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
       values.businessLogoFile = undefined
     }
 
-   // getAllCountry.mutate();
+    // getAllCountry.mutate();
     updateBusinessInfoMutation.mutate(values as any);
   }
 
@@ -230,7 +230,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           )}
         />
 
-         
+
 
         <FormField
           name="businessEmail"
@@ -277,7 +277,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
         </div>
 
         <div className="flex flex-row items-center gap-4">
-        <FormField
+          <FormField
             name="businessCountry"
             control={businessInfoForm.control}
             render={({ field }) => (
@@ -290,35 +290,35 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent   >
-                  <SelectItem value=""></SelectItem>
-                        {countries?.data.map( ctr  => <SelectItem onChange={()=> allState(ctr.id)} key={ctr.name} className="py-3 " value={ctr.name}>
-                        {ctr.name}
-                        </SelectItem>)}
-                      </SelectContent>
+                    <SelectItem value=""></SelectItem>
+                    {countries?.data.map(ctr => <SelectItem onChange={() => allState(ctr.id)} key={ctr.name} className="py-3 " value={ctr.name}>
+                      {ctr.name}
+                    </SelectItem>)}
+                  </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
 
- 
+
           <FormField
             name="businessState"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
-                <Select onValueChange={field.onChange} 
-                defaultValue={field.value}
-                 
-                
+                <Select onValueChange={field.onChange}
+                  defaultValue={field.value}
+
+
                 >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="w-full" onSelect={(target)=> {console.log("working");}} >
+                  <SelectContent className="w-full" onSelect={(target) => { console.log("working"); }} >
                     <SelectItem value="ABUJA">Abuja</SelectItem>
                     <SelectItem value="LAGOS">Lagos</SelectItem>
                     <SelectItem value="Minna">MInna</SelectItem>
@@ -330,32 +330,32 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           />
         </div>
         <FormField
-            name="businessCity"
-            control={businessInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter city" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-           <FormField
-            name="businessAddress"
-            control={businessInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Business Address</FormLabel>
-                <FormControl>                  
-                <Textarea placeholder="Business Address" {...field} /> 
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-      
+          name="businessCity"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>City</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter city" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="businessAddress"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Business Address</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Business Address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           name="businessWebsite"
           control={businessInfoForm.control}
@@ -407,7 +407,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           )}
         />
 
-<FormField
+        <FormField
           name="businessCertificateFile"
           control={businessInfoForm.control}
           render={({ field }) => (

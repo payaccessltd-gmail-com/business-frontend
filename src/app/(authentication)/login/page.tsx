@@ -88,7 +88,7 @@ export default function AuthenticationPage() {
         {/* logic and control for form signin is located here */}
         <LoginForm />
         <Link href="/forget-password" className="text-sm font-semibold text-primary-70">
-          Forget Password
+          Forgot Password
         </Link>
         <div className="flex flex-row items-center gap-2 mt-4">
           <Typography
