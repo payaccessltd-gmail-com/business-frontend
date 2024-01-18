@@ -224,7 +224,7 @@ export default function Invoice() {
                     <SelectItem value="PAID">Paid</SelectItem>
                     <SelectItem value="NOTPAID">Not paid</SelectItem>
                     <SelectItem value="REVOKE">Revoke</SelectItem>
-                    <SelectItem value="DELETED">Deleted</SelectItem>
+                    <SelectItem value="PENDING">Pending</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
