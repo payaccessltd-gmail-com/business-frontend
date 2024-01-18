@@ -471,19 +471,31 @@ export default function GenerateInvoice() {
               </div>
             </div>
             <div className="w-full bg-[#F2FBFE] rounded-[7px] px-4 py-5 flex flex-col items-start">
-              <p className="text-[#0C394B] text-[20px] font-[700] leading-normal mb-2">Reminder</p>
-              <p className="text-[#0C394B] text-[16px] font-[400] leading-normal mb-6">A mail has been sent to you
+              <p className="text-[#0C394B] text-[20px] font-[700] leading-normal mb-2">
+                {fillData?.invoiceStatus === "PAID" ? "Paid" : ""}
+                {fillData?.invoiceStatus === "PENDING" ? "Reminder" : ""}
+                {fillData?.invoiceStatus === "DRAFT" ? "Draft" : ""}
+              </p>
+              <p className="text-[#0C394B] text-[16px] font-[400] leading-normal mb-6">
+                {fillData?.invoiceStatus === "PAID" ? "Invoice has been paid" : ""}
+                {fillData?.invoiceStatus === "DRAFT" ? "Complete invoice to get paid" : ""}
+                {fillData?.invoiceStatus === "PENDING" ? "Send a reminder to " : ""}
+
                 <span className="text-[#0C394B] text-[16px] font-[700] leading-normal">
-                  {" "}{fillData?.customerEmail}{" "}
+                  {" "}{fillData?.invoiceStatus === "PENDING" ? fillData?.customerEmail : ""}{" "}
                 </span>
                 {/* 20min ago. */}
               </p>
-              <Button
-                onClick={() => setReminder(true)}
-                className="min-h-[48px] font-[700] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
-              >
-                Send another reminder
-              </Button>
+              {
+                fillData?.invoiceStatus === "PENDING" ?
+                  <Button
+                    onClick={() => setReminder(true)}
+                    className="min-h-[48px] font-[700] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
+                  >
+                    Send another reminder
+                  </Button> : ""
+              }
+
             </div>
           </div>
 
