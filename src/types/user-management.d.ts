@@ -22,5 +22,6 @@ declare namespace API {
     primaryMerchantId: number;
     twoFactorAuthForLogin: true;
     businessCategory:string;
+    apiMode:string;
   }
 }
