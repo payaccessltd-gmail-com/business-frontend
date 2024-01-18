@@ -76,9 +76,9 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
             <MdClose onClick={() => setReceipt(false)} className="absolute top-[45px] right-[66px] text-[20px] text-[#F61212] cursor-pointer" />
             <div className="flex flex-col items-center gap-6 w-full pb-6 border-b border-dashed border-[#999999]">
               
-              <Image src={defaultLogo} alt="default" />
+              {/* <Image src={defaultLogo} alt="default" /> */}
 
-              <p className="text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
+              <p className="mt-10 text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
                 A request will be sent out to{" "}
                 <span className="text-[16px] text-[#177196] font-[700] leading-normal">
                   {modalData?.customerName || "Undefined"}
