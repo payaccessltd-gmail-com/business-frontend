@@ -27,28 +27,27 @@ import { useState } from "react"
 
 const businessProfileFormSchema = zod.object({
   businessCategory: zod.string(),
- 
   businessType: zod.string(),
-  softwareDeveloper: zod.string(), 
+  softwareDeveloper: zod.string(),
   merchantId: zod.number(),
-  // mobileNumber: zod.string(),
+  mobileNumber: zod.string(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
   }),
 })
 
 export default function BusinessProfileUpdate() {
-  let token = "" 
+  let token = ""
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
   const router = useRouter()
   const { toast } = useToast()
-  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant) 
+  const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
   //@ts-expect-error
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.user)
   const { setCurrentMerchantDetails } = useMerchantStore();
-console.log(currentMerchantDetails,'jk'); 
+  console.log(currentMerchantDetails, 'jk');
 
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
@@ -57,7 +56,7 @@ console.log(currentMerchantDetails,'jk');
     },
     resolver: zodResolver(businessProfileFormSchema),
   })
- 
+
 
   const businessProfileMutation = useMutation({
     mutationFn: (values: API.UpdateAboutBusinessDTO) => updateAboutBusiness(values, token),
@@ -72,14 +71,14 @@ console.log(currentMerchantDetails,'jk');
           description: responseData?.message,
         })
       } else if (responseData?.statusCode === "0" && typeof window) {
- 
+
         if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
           router.push("/dashboard/registered-business")
           businessProfileForm.reset()
           return
         }
-      //  router.push("/dashboard/update-about-business/page-three")
- 
+        //  router.push("/dashboard/update-about-business/page-three")
+
         // useQuery({
         //   queryKey: ["merchant-details", currentMerchant?.merchantCode],
         //   queryFn: () =>
@@ -92,7 +91,7 @@ console.log(currentMerchantDetails,'jk');
         //     if (res.statusCode === "0") {
         //       setCurrentMerchantDetails(res.responseObject[0]);
         //       if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
-          
+
         //         router.push("/dashboard/registered-business")
         //         businessProfileForm.reset()
         //         return
@@ -100,7 +99,7 @@ console.log(currentMerchantDetails,'jk');
         //     }
         //   },
         // });
-       
+
         businessProfileForm.reset()
         router.push("/dashboard/registered-business")
 
@@ -129,12 +128,16 @@ console.log(currentMerchantDetails,'jk');
 
   function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
 
-    let data: API.UpdateAboutBusinessRequest = {
+    // let data: API.UpdateAboutBusinessRequest = {
+    //   ...values,
+
+    // }
+    let data: any = {
       ...values,
-          
+
     }
     console.log('data', data);
-    
+
     businessProfileMutation.mutate(data)
   }
 
@@ -142,11 +145,11 @@ console.log(currentMerchantDetails,'jk');
   return (
     <main className="flex flex-col items-center justify-center bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent ">
-   
+
         <Form {...businessProfileForm}>
           <form onSubmit={businessProfileForm.handleSubmit(onSubmit)} className="space-y-12 bg-white">
             <div className="space-y-8">
-              
+
               <FormField
                 name="businessCategory"
                 control={businessProfileForm.control}
@@ -175,7 +178,7 @@ console.log(currentMerchantDetails,'jk');
                   </FormItem>
                 )}
               />
- 
+
               {/* <Label className="text-sm font-normal text-gray-50">Phone Number</Label>
 
               <PatternFormat
@@ -208,7 +211,7 @@ console.log(currentMerchantDetails,'jk');
                   </FormItem>
                 )}
               /> */}
- 
+
               <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
