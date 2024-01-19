@@ -228,10 +228,7 @@ export default function SimpleForm() {
             // amount: values?.amount?.toString(),
             amount: Number(values?.amount?.replace(/,/g, '')),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
-            additionalCustomerEmailAddress: [
-                values?.email2,
-                values?.email3,
-            ]?.toString(),
+            additionalCustomerEmailAddress: `${values?.email2},${values?.email3}`,
             customerEmail: values?.email1,
             token: token,
             subject: subject,

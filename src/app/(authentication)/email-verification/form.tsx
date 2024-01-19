@@ -102,7 +102,6 @@ export default function EmailVerificationForm() {
     mutationFn: activateAccount,
     onSuccess: async (data) => {
       // console.log(123);
-
       const responseData: API.VerifyAccountResponse =
         (await data.json()) as API.VerifyAccountResponse;
       setLoading(false)
@@ -183,6 +182,7 @@ export default function EmailVerificationForm() {
       emailAddress: email,
       otp: otp.join(""),
       verificationLink: verificationLink,
+      otpSize: 6
     };
     OTPMutation.mutate(userOTP as any);
   };
@@ -192,6 +192,7 @@ export default function EmailVerificationForm() {
     setLoading1(true)
     const value = {
       emailAddress: email,
+      otpSize: 6
     };
     resendMutation.mutate(value as any);
   };
