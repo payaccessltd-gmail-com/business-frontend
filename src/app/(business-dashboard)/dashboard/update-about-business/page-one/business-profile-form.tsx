@@ -31,7 +31,7 @@ const businessProfileFormSchema = zod.object({
   businessType: zod.string(),
   softwareDeveloper: zod.string(), 
   merchantId: zod.number(),
-  // mobileNumber: zod.string(),
+   mobileNumber: zod.string(),
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
   }),
@@ -102,7 +102,7 @@ console.log(currentMerchantDetails,'jk');
         // });
        
         businessProfileForm.reset()
-        router.push("/dashboard/registered-business")
+        router.push("/dashboard/unregistered-business")
 
         toast({
           variant: "default",

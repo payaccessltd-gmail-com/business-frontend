@@ -155,7 +155,7 @@ export default function BusinessInformationForm(props: any) {
     <Form {...businessInfoForm} >
       <form
         onSubmit={businessInfoForm.handleSubmit(onSubmit)}
-        className="space-y-0 mt-0 border-gray-10 w-full"
+        className="space-y-4  relative border-gray-10 w-full"
       >
         <FormField
           name="businessName"
