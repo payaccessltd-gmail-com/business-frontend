@@ -58,7 +58,7 @@ const businessInfoFormSchema = zod.object({
 
 
 export default function BusinessInformationForm(props: BusinessInfoFormProps) {
-  let token = ""
+  let token: any = ""
   const [stateData, setStateData] = useState<any>([]);
 
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
@@ -96,7 +96,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   }
 
   const updateBusinessInfoMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) => updateMerchantBusinessData(values, token),
+    mutationFn: updateMerchantBusinessData,
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
@@ -140,13 +140,19 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     if (typeof values.businessLogoFile === "string") {
       values.businessLogoFile = undefined
     }
-
+    let newValues = { ...values, token }
+    console.log(newValues)
     // getAllCountry.mutate();
-    updateBusinessInfoMutation.mutate(values as any);
+    updateBusinessInfoMutation.mutate(newValues as any);
   }
 
   const onErrror = (error: any) => {
     console.log(error)
+    toast({
+      variant: "destructive",
+      title: "error",
+      description: `${error}`,
+    })
   }
 
   useEffect(() => {
