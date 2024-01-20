@@ -60,7 +60,7 @@ export default function GenerateInvoice() {
   const detailData: any = useQuery(['getMerchantSetting', requestData], () => getInvoiceDetails(requestData));
   const breakDownData: any = useQuery(['getInvoiceBreakdown', requestData], () => getInvoiceBreakdown(requestData));
 
-  console.log(detailData?.data?.responseObject)
+  console.log("deatil Data: ", detailData?.data?.responseObject)
   console.log(breakDownData?.data?.responseObject)
   const breakDown: any[] = breakDownData?.data?.responseObject
   const fillData = detailData?.data?.responseObject?.invoiceDetails
@@ -72,7 +72,6 @@ export default function GenerateInvoice() {
 
   // console.log("testing properties: ", fillData?.businessLogo, fillData)
   // console.log("breakDownData: ", breakDown)
-
   let [amountValue, setAmountValue] = useState<any>()
   let [discount, setDiscount] = useState<any>()
   let [subTotal, setSubTotal] = useState<any>()

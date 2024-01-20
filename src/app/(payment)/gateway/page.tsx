@@ -32,7 +32,9 @@ import StandardModal from "./components/standard-modal";
 // }
 
 
+
 export default function PaymentForm() {
+    const router = useRouter();
     const [toggle, setToggle] = useState(0);
     const searchParams = useSearchParams();
     const invoiceNumber = searchParams?.get("invoiceNumber");
@@ -40,7 +42,14 @@ export default function PaymentForm() {
     // console.log(invoiceNumber, merchantCode)
     const GetParameters = { invoiceNumber, merchantCode }
     const data: any = useQuery(['getMerchantDetailGuest', GetParameters], () => getMerchantDetailGuest(GetParameters));
-    // console.log("data: ", data?.data?.responseObject)
+    console.log("data: ", data?.data?.responseObject)
+    const handlePaymentPage = () => {
+        if (typeof window) {
+            router.push(
+                `/payment?invoiceNumber=${invoiceNumber}&merchantCode=${merchantCode}`
+            )
+        }
+    }
 
 
     return (
@@ -52,19 +61,26 @@ export default function PaymentForm() {
                         <Image src={defaultLogo} alt="default" />
 
                         <p className="text-center text-[20px] text-[#CA6B1B] font-[600] leading-normal w-full">
-                            Invoice No: WE1234567890000
+                            Invoice No: {invoiceNumber}
                         </p>
 
                         <p className="text-center text-[24px] text-[#115570] font-[600] leading-[28px] w-full">
-                            Goodness Oil& Gas requested for payment
+                            {data?.data?.responseObject?.businessName} requested for payment
                         </p>
 
                     </div>
 
-                    {/* <SimpleModal /> */}
-                    <StandardModal />
+                    {
+                        data?.data?.responseObject?.invoiceType === "STANDARD" ?
+                            <StandardModal data={data?.data?.responseObject} />
+                            :
+                            <SimpleModal data={data?.data?.responseObject} />
+                    }
+
+
 
                     <Button
+                        onClick={() => handlePaymentPage()}
                         className="mt-14 min-h-[48px] p-3 font-[700] 2xl:w-[15%] w-[20%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     >
                         Proceed to payment
@@ -78,7 +94,7 @@ export default function PaymentForm() {
                         </p>
                     </div>
                     <p className="text-[#177196] text-center text-[14px] leading-normal font-[600] mt-8 w-[60%]">
-                        If you have any issue about this invoice pls reach out to Goodness oil & gas with this mail goodnessoil&gas@gmail.com
+                        If you have any issue about this invoice pls reach out to {data?.data?.responseObject?.businessName} with this mail {data?.data?.responseObject?.businessEmail}
                     </p>
 
                 </div>
