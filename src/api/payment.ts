@@ -16,8 +16,21 @@ export const getMerchantDetailGuest = async ({ invoiceNumber, merchantCode }: an
     const data = JSON.parse(responseText);
     return data;
 };
+export const getMerchantBreakDownGuest = async ({ invoiceId, merchantId }: any) => {
 
-
+    const response = await fetch(`${baseUrl}/api/v1/invoice/get-invoice-breakdown-for-guest/${invoiceId}/${merchantId}`, {
+        method: "GET",
+        // headers: {
+        //     Authorization: `Bearer ${token}`,
+        // }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const responseText = await response.text();
+    const data = JSON.parse(responseText);
+    return data;
+};
 
 export const payWithCard = async ({
     customData,

@@ -176,26 +176,26 @@ export const sidebarData = [
           </svg>
         ),
       },
-      {
-        name: "Audit Log",
-        path: "/audit-log",
-        tagText: "",
-        SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={24}
-            height={25}
-            fill="none"
-          >
-            <path
-              fill={isActive ? activeColor : defaultColor}
-              fillRule="evenodd"
-              d="M3.6 4.1a1.2 1.2 0 0 0-1.2 1.2v14.4a1.2 1.2 0 1 0 2.4 0V5.3a1.2 1.2 0 0 0-1.2-1.2Zm12.352 11.152a1.2 1.2 0 0 0 1.697 1.696l3.6-3.6a1.2 1.2 0 0 0 0-1.696l-3.6-3.6a1.2 1.2 0 1 0-1.697 1.697l1.552 1.551H8.4a1.2 1.2 0 1 0 0 2.4h9.104l-1.552 1.552Z"
-              clipRule="evenodd"
-            />
-          </svg>
-        ),
-      },
+      // {
+      //   name: "Audit Log",
+      //   path: "/audit-log",
+      //   tagText: "",
+      //   SVGIcon: ({ isActive, defaultColor, activeColor }: SVGIconProps) => (
+      //     <svg
+      //       xmlns="http://www.w3.org/2000/svg"
+      //       width={24}
+      //       height={25}
+      //       fill="none"
+      //     >
+      //       <path
+      //         fill={isActive ? activeColor : defaultColor}
+      //         fillRule="evenodd"
+      //         d="M3.6 4.1a1.2 1.2 0 0 0-1.2 1.2v14.4a1.2 1.2 0 1 0 2.4 0V5.3a1.2 1.2 0 0 0-1.2-1.2Zm12.352 11.152a1.2 1.2 0 0 0 1.697 1.696l3.6-3.6a1.2 1.2 0 0 0 0-1.696l-3.6-3.6a1.2 1.2 0 1 0-1.697 1.697l1.552 1.551H8.4a1.2 1.2 0 1 0 0 2.4h9.104l-1.552 1.552Z"
+      //         clipRule="evenodd"
+      //       />
+      //     </svg>
+      //   ),
+      // },
       {
         name: "POS",
         path: "/pos",

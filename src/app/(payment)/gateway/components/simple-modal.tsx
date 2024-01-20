@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function SimpleModal() {
+export default function SimpleModal({ data }: any) {
     return (
         <div className="2xl:w-[55%] w-[70%] flex flex-col items-center py-20 px-[24px] self-center bg-white rounded-[10px] border-[#D6D6D6] border">
             <div className="flex flex-row items-center justify-between w-full">
@@ -17,7 +17,11 @@ export default function SimpleModal() {
                     Receive payments from your clients using our invoice.
                 </p>
                 <p className="text-[#0C394B] text-[24px] leading-normal font-[600]">
-                    NGN 00.00
+                    {
+                        `NGN ${data?.amount?.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                        })}`
+                    }
                 </p>
             </div>
             <div className="flex flex-row items-start justify-between w-full pt-6">
@@ -25,7 +29,11 @@ export default function SimpleModal() {
                     Total
                 </p>
                 <p className="text-[#555555] 2xl:text-[32px] text-[24px] leading-normal font-[600]">
-                    NGN 00.00
+                    {
+                        `NGN ${data?.amount?.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                        })}`
+                    }
                 </p>
             </div>
         </div>
