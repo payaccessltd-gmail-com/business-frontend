@@ -26,10 +26,10 @@ declare namespace API {
     gender: "MALE" | "FEMALE";
     dateOfBirth: Date;
     identificationDocument:
-      | "DRIVERS_LICENCE"
-      | "NATIONAL_ID"
-      | "INTL_PASSPORT"
-      | "VOTERS_CARD";
+    | "DRIVERS_LICENCE"
+    | "NATIONAL_ID"
+    | "INTL_PASSPORT"
+    | "VOTERS_CARD";
     identificationNumber: string;
     merchantId: number;
     identificationDocumentPath?: File | undefined;
@@ -46,9 +46,8 @@ declare namespace API {
     businessLogoFile: File;
     merchantId: number;
     businessCountry: string,
-    businessCertificateFile:File
-    businessAddress:string
-
+    businessCertificateFile: File
+    businessAddress: string
   };
 
   type UpdateMerchantBankAccountDataDTO = {

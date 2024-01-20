@@ -380,7 +380,7 @@ export default function SimpleForm() {
                                     <Calendar
                                         mode="single"
                                         selected={field.value}
-                                        onSelect={field.onChange}
+                                        onSelect={field.onChange as any}
                                         disabled={(date) => date < new Date("1900-01-01")}
                                         initialFocus
                                     />
@@ -453,9 +453,9 @@ export default function SimpleForm() {
                                     className="hidden"
                                     placeholder="Enter identification number"
                                     // {...field}
-                                    onChange={(e) =>
-                                        field.onChange(e.target.files ? e.target.files[0] : null)
-                                    }
+                                    
+                                    onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                  
                                 />
                             </FormControl>
                             <FormMessage />

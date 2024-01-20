@@ -16,6 +16,7 @@ export default function CustomerName({ }: Props) {
     const [businessLink, setBusinessLink] = useState<string>()
     // @ts-ignore
     const state = useHydrateStore(useMerchantStore, (state) => state);
+    
     const data = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
 
     const { user } = useUserStore();
@@ -43,7 +44,7 @@ export default function CustomerName({ }: Props) {
         } else {
             setBusinessLink('/dashboard/registered-business')
         }
-    }, [data, checkInfoSet(data)])
+    }, [data, state?.currentMerchantDetails])
     console.log(shouldUpdateBusiness, 'setShouldUpdateBusiness');
 
 

@@ -66,7 +66,7 @@ export function EarningNotification({ data, Notification, setNotification }: any
           name="type"
           render={({ field }) => (
             <RadioGroup
-              onValueChange={field.onChange}
+              onValueChange={field.onChange as any}
               value={field.value}
             >
               <FormItem className="flex flex-row items-center gap-2 space-y-0">

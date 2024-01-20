@@ -45,7 +45,8 @@ const businessInfoFormSchema = zod.object({
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
   businessWebsite: zod.string().optional(),
-  businessLogo: zod.string(),
+  businessLogo: zod.custom<File>(),
+  // businessLogo: zod.string(),
   businessCertificate: zod.custom<File>(),
   businessDescription: zod.string().min(2, {
     message: "Last name must be at least 2 characters.",
@@ -57,8 +58,11 @@ const businessInfoFormSchema = zod.object({
 
 export default function BusinessInformationForm(props: any) {
   const data = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
+
+  console.log(data)
+
   const { toast } = useToast();
- 
+
 
   let token = "";
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
@@ -90,33 +94,28 @@ export default function BusinessInformationForm(props: any) {
         // businessLogo: data.businessLogo,
         // businessCertificate: data.businessCertificateFile,
         businessDescription: data.businessDescription,
-         // @ts-expect-error
+        // @ts-expect-error
         businessAddress: data.businessAddress,
         // Add more fields as needed
       };
       Object.entries(fieldsToUpdate).forEach(([fieldName, value]) => {
-         // @ts-expect-error
+        // @ts-expect-error
         businessInfoForm.setValue(fieldName, value);
       });
     }
   }, [data, businessInfoForm]);
 
   const updateMerchantBusinessDataMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) =>
-      updateMerchantBusinessData(values, token),
-    onSuccess: async (data) => {
+    mutationFn: updateMerchantBusinessData as any,
+    onSuccess: async (data: any) => {
       const res: { statusCode: string; message: string } =
         (await data.json()) as {
           statusCode: string;
           message: string;
         };
       console.log(res, 're');
-
       if (res.statusCode === "0") {
-
-
         props.nextStep && props.nextStep()
-
         toast({
           variant: "default",
           title: "",
@@ -133,29 +132,33 @@ export default function BusinessInformationForm(props: any) {
     },
 
     onError: (e: any) => {
+      console.log(e)
       toast({
         variant: "destructive",
-        title: "",
-        description: e,
+        title: `${e}`,
+        description: "error",
       })
     },
   });
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
-    const emailAddress = localStorage.getItem("emailAddress") as string
+    // const emailAddress = localStorage.getItem("emailAddress") as string
     // const emailAddress = "user.user@gmail.com";
     console.log(values);
 
-    const updatedValue = { emailAddress, merchantId, ...values };
+    // const updatedValue = { emailAddress, merchantId, ...values, token };
+    const updatedValue = { merchantId, ...values, token };
+    // console.log(updatedValue);
     updateMerchantBusinessDataMutation.mutate(updatedValue as any);
   };
+
 
 
   return (
     <Form {...businessInfoForm} >
       <form
         onSubmit={businessInfoForm.handleSubmit(onSubmit)}
-        className="space-y-0 mt-0 border-gray-10 w-full"
+        className="space-y-4  relative border-gray-10 w-full"
       >
         <FormField
           name="businessName"
@@ -213,7 +216,7 @@ export default function BusinessInformationForm(props: any) {
                 <FormControl>
                   <Input
                     placeholder="Enter businesss mobile number"
-                    {...field} 
+                    {...field}
                     max={13}
                     onInput={(event) => numberFormat(event)}
                   />
@@ -301,7 +304,7 @@ export default function BusinessInformationForm(props: any) {
             </FormItem>
           )}
         />
-          <FormField
+        <FormField
           control={businessInfoForm.control}
           name="businessAddress"
           render={({ field }) => (
@@ -364,11 +367,11 @@ export default function BusinessInformationForm(props: any) {
                 />
               </FormControl>
               {
-                 // @ts-expect-error
-              data?.businessCertificateFile &&
-                    <p style={{fontSize:"13px"}}>Current certificate uploaded: {
-                     // @ts-expect-error
-                    data.businessCertificateFile}</p>}
+                // @ts-expect-error
+                data?.businessCertificateFile &&
+                <p style={{ fontSize: "13px" }}>Current certificate uploaded: {
+                  // @ts-expect-error
+                  data.businessCertificateFile}</p>}
               <FormMessage />
             </FormItem>
           )}
@@ -381,18 +384,20 @@ export default function BusinessInformationForm(props: any) {
               <FormDescription>Business logo (optional)</FormDescription>
               <FormControl>
                 <Input
-                  placeholder="Drag file here to upload document or choose file"
-                  {...field}
                   type="file"
+                  placeholder="Drag file here to upload document or choose file"
+                  // {...field}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
               </FormControl>
               {data?.businessLogo &&
-                    <p style={{fontSize:"13px"}}>Current logo uploaded: {data.businessLogo}</p>}
+                <p style={{ fontSize: "13px" }}>Current logo uploaded: {data.businessLogo}</p>}
               <FormMessage />
             </FormItem>
           )}
         />
-      
+
 
         {/* <FormField
           name="businessCertificate"
@@ -411,6 +416,7 @@ export default function BusinessInformationForm(props: any) {
             </FormItem>
           )}
         /> */}
+    
 
         <div className="flex items-center  justify-center my-20">
           <Button

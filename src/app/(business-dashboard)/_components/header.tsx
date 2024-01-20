@@ -17,7 +17,7 @@ export function Header() {
   const [mStatus, setMStaus] = useState(false)
   const userDetail = useHydrateStore(useUserStore, (state) => state.user);
 
-  if (data?.businessInfoSet && data?.personalInfoSet && data?.accountInfoSet) {
+  if(data?.merchantStatus =="COMPLETED" ){ 
     setMStaus(true)
   }
   // if(userDetail)

@@ -203,7 +203,7 @@ export default function RunSettlementsForm({ handleModalPOSpopup }: any) {
                                         <Calendar
                                             mode="single"
                                             selected={field.value}
-                                            onSelect={field.onChange}
+                                            onSelect={field.onChange as any}
                                             disabled={(date) => date < new Date("1900-01-01")}
                                             initialFocus
                                         />

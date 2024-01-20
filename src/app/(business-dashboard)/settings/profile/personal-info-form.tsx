@@ -143,7 +143,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
 
 
         <FormField
-          disabled
+          
           control={personalForm.control}
           name="firstName"
           render={({ field }) => (
@@ -152,7 +152,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
               <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">First Name</FormLabel>
               <FormControl className="w-full bg-[red]">
                 <Input
-                  // disabled
+                   disabled
                   type="text"
                   className="disabled:opacity-100 border-[#D6D6D6] placeholder:text-black rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2"
                   {...field}
@@ -165,7 +165,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
           )}
         />
         <FormField
-          disabled
+           
           control={personalForm.control}
           name="lastName"
           render={({ field }) => (
@@ -174,7 +174,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
               <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">Last Name</FormLabel>
               <FormControl className="w-full bg-[red]">
                 <Input
-                  // disabled
+                   disabled
                   type="text"
                   className="border-[#D6D6D6] placeholder:text-black disabled:opacity-100 rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2"
                   placeholder={prefill?.lastName}
@@ -216,7 +216,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
         />
 
         <FormField
-          disabled
+          
           control={personalForm.control}
           name="email"
           render={({ field }) => (
@@ -268,7 +268,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
           />
 
           <FormField
-            disabled
+            
             control={personalForm.control}
             name="phone"
             render={({ field }) => (

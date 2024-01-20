@@ -12,15 +12,15 @@ export const getMerchantByMerchantCode = async (merchantCode: string, token: str
     body: JSON.stringify(updateAboutBusiness),
   })
 }
- 
+
 export const updateAboutBusiness = async (
   updateAboutBusiness: API.UpdateAboutBusinessDTO,
   token: string,
-) => {  
+) => {
   let sft = updateAboutBusiness.softwareDeveloper === 'true' ? true : false;
 
- const payload={
-    "businessCategory":  updateAboutBusiness.businessCategory,
+  const payload = {
+    "businessCategory": updateAboutBusiness.businessCategory,
     "businessType": updateAboutBusiness.businessType,
     "merchantId": updateAboutBusiness.merchantId,
     "mobileNumber": updateAboutBusiness.mobileNumber,
@@ -29,18 +29,18 @@ export const updateAboutBusiness = async (
 
   console.log("updateAboutBusiness", updateAboutBusiness);
   console.log("token", token);
-  
- 
+
+
   return await fetch(`${baseUrl}/api/v1/merchant/update-about-business`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-    }, 
-    body: JSON.stringify({...payload, business_name:"Coptco"}),
+    },
+    body: JSON.stringify({ ...payload, business_name: "Coptco" }),
   });
 };
- 
+
 export const updateMerchantLocation = async (updateMerchantLocation: API.UpdateLocationDTO, token: string) => {
   return await fetch(`${baseUrl}/api/v1/merchant/update-merchant-country`, {
     method: "POST",
@@ -100,11 +100,13 @@ export const updateMerchantBusinessData = async (
     businessLogoFile,
     merchantId,
     businessAddress,
-    businessCountry, 
-    businessCertificateFile
-  }: API.UpdateMerchantBusinessDataDTO,
-  token: string,
+    businessCountry,
+    businessCertificateFile,
+    token
+  }: any,
+  // token: string,
 ) => {
+
   let formdata = new FormData();
   formdata.append("businessDescription", businessDescription);
   formdata.append("businessEmail", businessEmail);
@@ -138,11 +140,11 @@ export const updateMerchantBusinessData = async (
       businessLogoFile,
       businessLogoFile.name,
     );
- 
+
   } else {
     formdata.append("businessCertificateFile", new Blob(["", " ", "world"], { type: "text/plain" }))
   }
- 
+
 
   return await fetch(
     `${baseUrl}/api/v1/merchant/update-merchant-business-data`,
@@ -151,8 +153,8 @@ export const updateMerchantBusinessData = async (
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: formdata, 
-  })
+      body: formdata,
+    })
 }
 
 export const updateMerchantBusinessBankAccountData = async (merchantBuinessBankAccountData: API.UpdateMerchantBankAccountDataDTO, token: string) => {

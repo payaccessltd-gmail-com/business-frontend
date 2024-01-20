@@ -55,20 +55,21 @@ export default function ApprovalDescription({}: ApprovalDescriptionProps) {
   if (businessData && businessData.businessType === "INDIVIDUAL") {
     console.log(businessData.personalInfoSet, businessData.businessInfoSet, businessData.accountInfoSet)
 
+    let count = 0;
     let itemV : number = 100/3;
-    if 
-    (businessData.personalInfoSet && businessData.businessInfoSet && businessData.accountInfoSet) {
-     percentageComplete = itemV * 3;    
+     
+    if (businessData.businessInfoSet  ) {
+      ++count;
     } 
-      else if (businessData.businessInfoSet && businessData.accountInfoSet) {
-      percentageComplete = itemV * 2
-    } else if (businessData.businessInfoSet && businessData.accountInfoSet) {
-      percentageComplete = itemV * 2
-    } else if (businessData.personalInfoSet && businessData.businessInfoSet) {
-      percentageComplete = itemV * 2
-    } else if (businessData.personalInfoSet || businessData.businessInfoSet || businessData.accountInfoSet) {
-      percentageComplete = itemV
+     if (businessData.accountInfoSet) {
+      ++count;
+    } 
+     if (businessData.personalInfoSet ) {
+      ++count;
     }
+    console.log("count >> "+ count);
+    
+    percentageComplete = itemV * count;
   }
   //Props.setValue(percentageComplete)
   const enable = () => {
