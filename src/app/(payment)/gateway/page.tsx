@@ -58,7 +58,13 @@ export default function PaymentForm() {
             <ScrollArea>
                 <div className="flex flex-col w-full py-16 items-center pb-[250px]">
                     <div className="flex flex-col items-center gap-6 w-full mb-10 ">
-                        <Image src={defaultLogo} alt="default" />
+                        {/* <Image src={defaultLogo} alt="default" /> */}
+                        {
+                            data?.data?.responseObject?.businessLogo ?
+                                <Image height={58} width={58} src={`http://137.184.47.182:8081/fileuploads/${data?.data?.responseObject?.businessLogo}`} alt="business logo" />
+                                :
+                                <Image height={58} width={58} src={defaultLogo} alt="default" />
+                        }
 
                         <p className="text-center text-[20px] text-[#CA6B1B] font-[600] leading-normal w-full">
                             Invoice No: {invoiceNumber}
@@ -110,6 +116,7 @@ export default function PaymentForm() {
 
 
 
+// businessLogo
 
 
 

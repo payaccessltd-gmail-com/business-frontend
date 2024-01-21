@@ -359,6 +359,8 @@ export default function StandardForm() {
       subject: subject,
       merchantId: merchantId,
       amount: amountValue,
+      discountAmount: Number(values?.discountAmount?.replace(/,/g, '')),
+      taxPercent: Number(values?.taxPercent?.replace(/,/g, '')),
       additionalCustomerEmailAddress: [values?.email2, values?.email3]?.toString(),
       shippingFee: Number(values?.shipping?.replace(/,/g, '')),
       customerEmail: values?.email1,
@@ -376,7 +378,7 @@ export default function StandardForm() {
         }))
       ],
     }
-    console.log("from standard form: ", newValues);
+    // console.log("from standard form: ", newValues);
     standardFormMutation.mutate(newValues as any)
   }
 
