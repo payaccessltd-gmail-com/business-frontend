@@ -14,7 +14,7 @@ export default function SimpleModal({ data }: any) {
             </div>
             <div className="flex flex-row items-start justify-between w-full pt-4 pb-9 border-b border-dashed border-[#999999]">
                 <p className="text-[#115570] text-[20px] leading-normal font-[400] w-[289px] text-start">
-                    Receive payments from your clients using our invoice.
+                    {data?.invoiceNote}
                 </p>
                 <p className="text-[#0C394B] text-[24px] leading-normal font-[600]">
                     {
