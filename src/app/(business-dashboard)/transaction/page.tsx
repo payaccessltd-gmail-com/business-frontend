@@ -162,110 +162,115 @@ const Transaction = () => {
         </div>
 
         {/* //--------------Filter------------------------------------- */}
-
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="outline-[#D3EEF9] border border-[#D3EEF9] border-solid h-[45px] flex flex-row items-center gap-[10px] text-[14px] font-bold text-[#666666] leading-[150%]"
-            >
-              Filter
-              <LuChevronDown className="mt-[2px] text-[24px] text-[#666666]" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[298px] p-[22px]">
-            <form className="flex flex-col w-full">
-              <div className="flex flex-col space-y-1.5 mb-[24px]">
-                <Label htmlFor="status" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
-                  Transaction Status
-                </Label>
-                <Select>
-                  <SelectTrigger
-                    id="status"
-                    className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
-                  >
-                    <SelectValue placeholder="Show all" />
-                  </SelectTrigger>
-                  <SelectContent position="popper" className="p-[6px]">
-                    {transactionFilterNames.map(({ title, value, id }) => {
-                      return (
-                        <SelectItem className="cursor-pointer hover:text-[#48B8E6]" key={id} value={value}>{title}</SelectItem>
-                      )
-                    })}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col items-start mb-[24px]">
-                <label htmlFor="amount" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
-                  Amount
-                </label>
-                <input
-                  placeholder="Amount"
-                  id="amount"
-                  type="amount"
-                  className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
-                  onChange={(event) => formatMoneyAmount(event)}
-                />
-              </div>
-              <div className="flex flex-col items-start gap-[8px] w-full">
-                <label htmlFor="date" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
-                  Time range
-                </label>
-                <div id="date" className="flex flex-row items-center gap-[3px] w-full">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        {date ? (
-                          format(date, "PPP")
-                        ) : (
-                          <span className="text-[#000000] text-[16px] leading-normal font-[400]">Start Date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="flex flex-col w-auto p-2 space-y-2">
-                      <div className="border rounded-md">
-                        <Calendar mode="single" selected={date} onSelect={setDate} />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        {date1 ? (
-                          format(date1, "PPP")
-                        ) : (
-                          <span className="text-[#000000] text-[16px] leading-normal font-[400]">End Date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="flex flex-col w-auto p-2 space-y-2">
-                      <div className="border rounded-md">
-                        <Calendar mode="single" selected={date1} onSelect={setDate1} />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-              <Button className="mt-[27px] self-center rounded-[8px] w-[85%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal">
+        <div className="flex flex-row items-start gap-9">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="outline-[#D3EEF9] border border-[#D3EEF9] border-solid h-[45px] flex flex-row items-center gap-[10px] text-[14px] font-bold text-[#666666] leading-[150%]"
+              >
                 Filter
+                <LuChevronDown className="mt-[2px] text-[24px] text-[#666666]" />
               </Button>
-            </form>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[298px] p-[22px]">
+              <form className="flex flex-col w-full">
+                <div className="flex flex-col space-y-1.5 mb-[24px]">
+                  <Label htmlFor="status" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
+                    Transaction Status
+                  </Label>
+                  <Select>
+                    <SelectTrigger
+                      id="status"
+                      className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
+                    >
+                      <SelectValue placeholder="Show all" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" className="p-[6px]">
+                      {transactionFilterNames.map(({ title, value, id }) => {
+                        return (
+                          <SelectItem className="cursor-pointer hover:text-[#48B8E6]" key={id} value={value}>{title}</SelectItem>
+                        )
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col items-start mb-[24px]">
+                  <label htmlFor="amount" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
+                    Amount
+                  </label>
+                  <input
+                    placeholder="Amount"
+                    id="amount"
+                    type="amount"
+                    className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
+                    onChange={(event) => formatMoneyAmount(event)}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-[8px] w-full">
+                  <label htmlFor="date" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
+                    Time range
+                  </label>
+                  <div id="date" className="flex flex-row items-center gap-[3px] w-full">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          {date ? (
+                            format(date, "PPP")
+                          ) : (
+                            <span className="text-[#000000] text-[16px] leading-normal font-[400]">Start Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="flex flex-col w-auto p-2 space-y-2">
+                        <div className="border rounded-md">
+                          <Calendar mode="single" selected={date} onSelect={setDate} />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          {date1 ? (
+                            format(date1, "PPP")
+                          ) : (
+                            <span className="text-[#000000] text-[16px] leading-normal font-[400]">End Date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="flex flex-col w-auto p-2 space-y-2">
+                        <div className="border rounded-md">
+                          <Calendar mode="single" selected={date1} onSelect={setDate1} />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+                <Button className="mt-[27px] self-center rounded-[8px] w-[85%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal">
+                  Filter
+                </Button>
+              </form>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
+            Download
+          </Button>
+
+        </div>
+
       </div>
       {/* //----------Transaction filters end----------------- */}
 

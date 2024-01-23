@@ -98,7 +98,7 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
         }
     }
 
-    
+
 
 
     // const deleteInvoiceMutation = useMutation({
@@ -284,9 +284,9 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
                                                                     View
                                                                 </p>
                                                         }
-                                                        <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                        {/* <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                             Download
-                                                        </p>
+                                                        </p> */}
                                                         {/*  {transactionStatus === "DELETED" ? "" : <p onClick={() => handleDeletePopup(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                 Delete
                                             </p>}  */}
@@ -325,6 +325,7 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
                             <SelectItem value="6">6</SelectItem>
                             <SelectItem value="8">8</SelectItem>
                             <SelectItem value="10">10</SelectItem>
+                            <SelectItem value={transactionTableData?.totalCount}>All</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

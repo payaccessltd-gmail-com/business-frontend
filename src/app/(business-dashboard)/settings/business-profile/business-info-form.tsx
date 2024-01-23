@@ -145,7 +145,7 @@ export default function BusinessInfoForm() {
         className="p-[40px] w-[60%] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
       >
         <FormField
-        
+          disabled
           control={businessInfoForm.control}
           name="businessName"
           render={({ field }) => (

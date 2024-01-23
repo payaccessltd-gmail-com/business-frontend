@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getMerchantBreakDownGuest } from "api/payment"
 
 
-export default function StandardModal({ data }: any) {
+export default function StandardModal({ data, setTotalAmount }: any) {
 
 
     // console.log("data: ", data)
@@ -68,6 +68,7 @@ export default function StandardModal({ data }: any) {
     useEffect(() => {
         if (breakDown) {
             setGrandTotal(subTotal + tax + (shipping))
+            setTotalAmount(subTotal + tax + (shipping))
         }
     }, [tax, subTotal, shipping])
 
@@ -119,7 +120,7 @@ export default function StandardModal({ data }: any) {
                     <div className='flex flex-col items-start gap-6'>
 
                         <p className="text-[#000000] text-[16px] leading-normal font-[600]">
-                            From 
+                            From
                         </p>
                         <p className="text-[#000000] text-center min-w-[92px] p-[10px] bg-[#BFEFFF33] text-[16px] font-[400] leading-normal">
                             {data ? data?.customerName : "Loading..."}
@@ -155,8 +156,17 @@ export default function StandardModal({ data }: any) {
             {/* ---------------------------------Second Modal------------------ */}
 
 
-            <div className="w-full flex flex-col items-center py-20 px-[24px] self-center bg-white rounded-[10px] border-[#D6D6D6] border">
+            <div className="w-full flex flex-col items-center pt-10 pb-20 px-[24px] self-center bg-white rounded-[10px] border-[#D6D6D6] border">
                 <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#555555] text-[20px] leading-normal font-[600]">
+                        Description
+                    </p>
+                    <p className="text-[#115570] text-[18px] leading-normal font-[400]">
+                        {data?.invoiceNote}
+                    </p>
+
+                </div>
+                <div className="flex flex-row items-center justify-between w-full mt-4">
                     <p className="text-[#555555] text-[20px] leading-normal font-[600]">
                         Invoice Item
                     </p>

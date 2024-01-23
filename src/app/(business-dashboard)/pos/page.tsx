@@ -57,7 +57,7 @@ export default function POS() {
   const [filter, setFilter] = useState<any>()
 
 
-  const GetParameters = { currentPageNumber: page, rowCount: row, token }
+  const GetParameters = { currentPageNumber: page, merchantId, rowCount: row, token }
   const data: any = useQuery(['getTerminalRequest', GetParameters], () => getTerminalRequests(GetParameters));
 
   console.log("terminal request: ", data?.data?.responseObject)

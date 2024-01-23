@@ -241,22 +241,22 @@ export default function SimpleForm() {
 
     const handleDraft = (e: any) => {
         e.preventDefault();
-        if (simpleForm.getValues("dueDate") === undefined) {
-            toast({
-                variant: "destructive",
-                title: "Due Date required",
-                description: "Provide a due date",
-            });
-            return
-        }
+        // if (simpleForm.getValues("dueDate") === undefined) {
+        //     toast({
+        //         variant: "destructive",
+        //         title: "Due Date required",
+        //         description: "Provide a due date",
+        //     });
+        //     return
+        // }
         const values = simpleForm.getValues()
         let newValues = {
             ...values,
-            amount: values?.amount?.toString(),
+            amount: Number(values?.amount?.replace(/,/g, '')),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
             additionalCustomerEmailAddress: [
                 values?.email2,
-                values?.email3,
+                values?.email3
             ]?.toString(),
             customerEmail: values?.email1,
             token: token,
@@ -264,9 +264,8 @@ export default function SimpleForm() {
             merchantId: merchantId,
             invoiceStatus: "DRAFT"
         };
-        console.log(newValues);
+        // console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
-
     }
 
 
@@ -453,9 +452,9 @@ export default function SimpleForm() {
                                     className="hidden"
                                     placeholder="Enter identification number"
                                     // {...field}
-                                    
+
                                     onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
-                  
+
                                 />
                             </FormControl>
                             <FormMessage />

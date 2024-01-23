@@ -17,21 +17,19 @@ import {
 } from "components/ui/form";
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
-
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
 import { useMutation } from "@tanstack/react-query";
 import { loginApi } from "api/login";
-import { useMerchantStore } from "store";
 
 const developerAuthFormSchema = z.object({
-    username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    }),
     password: z.string().min(6, {
         message: "Password must be at least 6 characters",
     }),
 });
 
 export default function DeveloperAuth({ setOpen, setKey }: any) {
+    const userDetail = useHydrateStore(useUserStore, (state) => state.user); //getting merchant name from store
+    // console.log(userDetail)
     const router = useRouter();
     const { toast } = useToast();
 
@@ -45,7 +43,6 @@ export default function DeveloperAuth({ setOpen, setKey }: any) {
     const developerAuthForm = useForm<z.infer<typeof developerAuthFormSchema>>({
         resolver: zodResolver(developerAuthFormSchema),
         defaultValues: {
-            username: "",
             password: "",
         },
     });
@@ -105,7 +102,13 @@ export default function DeveloperAuth({ setOpen, setKey }: any) {
 
     async function onSubmit(values: z.infer<typeof developerAuthFormSchema>) {
         setLoading(true)
-        DeveloperAuthMutation.mutate(values);
+        // console.log(values)
+        const newValues = {
+            username: userDetail?.emailAddress,
+            password: values?.password
+        }
+        // console.log(newValues)
+        DeveloperAuthMutation.mutate(newValues as any);
     }
 
     return (
@@ -121,24 +124,7 @@ export default function DeveloperAuth({ setOpen, setKey }: any) {
                     >
                         Authenticate to Access Keys
                     </p>
-                    <FormField
-                        control={developerAuthForm.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem className="w-full">
-                                <FormLabel className="text-[#777777] ">Email</FormLabel>
 
-                                <FormControl>
-                                    <Input
-                                        className="min-h-[48px]"
-                                        placeholder="Enter your email"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
                     <FormField
                         control={developerAuthForm.control}
                         name="password"

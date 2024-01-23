@@ -21,10 +21,18 @@ export const simpleInvoice = async ({
     "additionalCustomerEmailAddress",
     additionalCustomerEmailAddress,
   );
-  formdata.append("dueDate", dueDate);
+  if (dueDate === undefined) {
+
+  } else {
+    formdata.append("dueDate", dueDate);
+  }
   formdata.append("amount", amount);
   formdata.append("invoiceNote", invoiceNote);
-  formdata.append("businessLogo", businessLogo, businessLogo.name);
+  if (businessLogo) {
+    formdata.append("businessLogo", businessLogo, businessLogo.name);
+  } else {
+    formdata.append("businessLogo", new Blob(["", " ", "world"], { type: "text/plain" }));
+  }
   formdata.append("merchantId", merchantId);
   formdata.append("customerEmail", customerEmail);
   formdata.append("invoiceStatus", invoiceStatus);
