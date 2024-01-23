@@ -516,7 +516,7 @@ export default function GenerateInvoice() {
               </div>
               <div className="flex flex-row items-center justify-between w-full">
                 <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                  Receive payments from your clients using our invoice.
+                  {fillData?.invoiceNote}
                 </p>
                 <p className="text-[#0C394B] text-[20px] leading-[22px] font-[600]">
                   ₦ {fillData?.invoiceType === "STANDARD" ? amountValue?.toLocaleString(undefined, {

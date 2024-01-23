@@ -153,6 +153,7 @@ const POSTable = ({ terminalTableData, row, setRow, setPage, page }: any) => {
                             <SelectItem value="6">6</SelectItem>
                             <SelectItem value="8">8</SelectItem>
                             <SelectItem value="10">10</SelectItem>
+                            <SelectItem value={terminalTableData?.totalCount}>All</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

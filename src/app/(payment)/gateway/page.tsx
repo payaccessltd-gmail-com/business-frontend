@@ -36,6 +36,7 @@ import StandardModal from "./components/standard-modal";
 export default function PaymentForm() {
     const router = useRouter();
     const [toggle, setToggle] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
     const searchParams = useSearchParams();
     const invoiceNumber = searchParams?.get("invoiceNumber");
     const merchantCode = searchParams?.get("merchantCode");
@@ -46,11 +47,12 @@ export default function PaymentForm() {
     const handlePaymentPage = () => {
         if (typeof window) {
             router.push(
-                `/payment?invoiceNumber=${invoiceNumber}&merchantCode=${merchantCode}`
+                `/payment?invoiceNumber=${invoiceNumber}&merchantCode=${merchantCode}&grandAmount=${totalAmount}`
             )
         }
     }
 
+    // console.log()
 
     return (
         <div className="flex flex-col w-full h-full bg-[white]">
@@ -78,7 +80,7 @@ export default function PaymentForm() {
 
                     {
                         data?.data?.responseObject?.invoiceType === "STANDARD" ?
-                            <StandardModal data={data?.data?.responseObject} />
+                            <StandardModal setTotalAmount={setTotalAmount} data={data?.data?.responseObject} />
                             :
                             <SimpleModal data={data?.data?.responseObject} />
                     }
