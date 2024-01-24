@@ -1,6 +1,14 @@
-import React from 'react'
+"use client"
 
-export default function SimpleModal({ data }: any) {
+import React, { useEffect } from 'react'
+
+export default function SimpleModal({ data, setTotalAmount }: any) {
+
+    useEffect(() => {
+        if (data) {
+            setTotalAmount(data?.amount)
+        }
+    }, [data])
     return (
         <div className="2xl:w-[55%] w-[70%] flex flex-col items-center py-20 px-[24px] self-center bg-white rounded-[10px] border-[#D6D6D6] border">
             <div className="flex flex-row items-center justify-between w-full">

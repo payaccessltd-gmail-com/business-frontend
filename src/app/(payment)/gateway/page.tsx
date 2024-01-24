@@ -82,7 +82,7 @@ export default function PaymentForm() {
                         data?.data?.responseObject?.invoiceType === "STANDARD" ?
                             <StandardModal setTotalAmount={setTotalAmount} data={data?.data?.responseObject} />
                             :
-                            <SimpleModal data={data?.data?.responseObject} />
+                            <SimpleModal setTotalAmount={setTotalAmount} data={data?.data?.responseObject} />
                     }
 
 
