@@ -93,7 +93,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
                 }) : '00.00'}`}
               </p>
             </div>
-            <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">
+            {/* <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">
               <div className="flex flex-col items-start gap-2 w-[70%]">
                 <label
                   htmlFor="link"
@@ -116,7 +116,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
               {reciptData.map(({ id, title, value }) => {
                 return <NameValue key={id} title={title} value={value} />;
