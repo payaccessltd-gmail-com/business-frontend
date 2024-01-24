@@ -39,21 +39,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import VerifyModal from "./email-verification-modal/modal";
 
 
-let merchantList: any
-let token = ""
-let subject = ""
-let merchantId: any = ""
+// let merchantList: any
+// let token = ""
+// let subject = ""
+// let merchantId: any = ""
 
 
-if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-) {
-    token = window.localStorage.getItem("token") as any
-    subject = window.localStorage.getItem("subject") as any
-    merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
-    merchantId = merchantList[0].id ? merchantList[0]?.id : null
-}
+// if (
+//     typeof window !== "undefined" &&
+//     typeof window.localStorage !== "undefined"
+// ) {
+//     token = window.localStorage.getItem("token") as any
+//     subject = window.localStorage.getItem("subject") as any
+//     merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+//     merchantId = merchantList[0].id ? merchantList[0]?.id : null
+// }
 
 
 
@@ -75,6 +75,7 @@ function getDateFormatted() {
 export default function CardPayment({ amount, email }: any) {
 
     const [verifyModal, setVerifyModal] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [orderRef1, setOrderRef] = useState("")
     const { toast } = useToast();
     const router = useRouter();
@@ -130,7 +131,9 @@ export default function CardPayment({ amount, email }: any) {
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
 
         // Add hyphens after every four digits
-        const formattedValue = value.replace(/(\d{4})(\d{0,4})(\d{0,4})(\d{0,4})/, '$1-$2-$3-$4');
+        // const formattedValue = value.replace(/(\d{4})(\d{0,4})(\d{0,4})(\d{0,4})/, '$1-$2-$3-$4'); 
+
+        const formattedValue = value.replace(/(\d{4})(\d{0,4})(\d{0,4})(\d{0,4})(\d{0,4})/, '$1-$2-$3-$4-$5');
 
         input.value = formattedValue;
     }
@@ -139,7 +142,7 @@ export default function CardPayment({ amount, email }: any) {
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
         input.value = value;
     }
-    
+
     const formatPin = (event: any) => {
         const input = event.target;
         let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
@@ -152,6 +155,8 @@ export default function CardPayment({ amount, email }: any) {
             const responseData: API.PaymentStatusReponse = (await data.json()) as API.PaymentStatusReponse;
             console.log("response: ", responseData)
             if (responseData?.statusCode === "1") {
+                setLoading(false)
+
                 toast({
                     variant: "destructive",
                     title: "",
@@ -159,6 +164,8 @@ export default function CardPayment({ amount, email }: any) {
                 });
             }
             if (responseData?.statusCode === "00" || "0") {
+                setLoading(false)
+
                 toast({
                     variant: "default",
                     title: "",
@@ -172,6 +179,7 @@ export default function CardPayment({ amount, email }: any) {
             }
         },
         onError: (e) => {
+            setLoading(false)
             console.log(e);
             toast({
                 variant: "destructive",
@@ -182,18 +190,24 @@ export default function CardPayment({ amount, email }: any) {
     });
 
     async function onSubmit(values: z.infer<typeof PasswordSchema>) {
+        setLoading(true)
         // console.log(values);
         let newValues = {
             // orderRef: `${getRandomNumber()}${invoiceNumber}${getDateFormatted()}`,
+            customData: {
+                merchantCode,
+                invoiceNumber
+            },
             orderRef: `${getRandomNumber()}`,
             merchantCode,
             redirectUrl: "http://test.com",
             currencyCode: "NGN",
             amount,
-            terminalCode: "BGH",
+            terminalCode: "6H39FUDB",
             channel: "WEB",
             cardDetails: {
                 pan: values?.cardNumber.split("-").join(""),
+                // pan: "5060990580000217499",
                 expDate: values?.expiringDate.split("/").reverse().join(""),
                 // expDate: "5003",
                 cvv: values?.cvv,
@@ -248,7 +262,7 @@ export default function CardPayment({ amount, email }: any) {
                             <FormItem className="w-full mt-6">
                                 {/* <div className="w-full flex flex-row items-center justify-end gap-4"> */}
                                 <FormLabel className="text-[#2A2A2A] text-[16px] leading-[150%] font-[400]">
-                                    Expiring data
+                                    Expiring date
                                 </FormLabel>
                                 <FormControl className="w-full bg-[red]">
                                     <Input
@@ -318,12 +332,12 @@ export default function CardPayment({ amount, email }: any) {
 
 
                 <Button
-                    // disabled={loading}
+                    disabled={loading}
                     className="mt-[52px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     type="submit"
                 // onClick={(e) => handleModal(e)}
                 >
-                    Pay now
+                    {loading ? "Loading..." : "Pay now"}
                 </Button>
                 {
                     verifyModal ? <VerifyModal setVerifyModal={setVerifyModal} email={email} orderRef={orderRef1} merchantCode={merchantCode} /> : ""

@@ -14,7 +14,7 @@ function page() {
           Business profile
         </Typography>
 
-        <div className="mb-10 flex w-full max-w-[650px] flex-col space-y-2">
+        <div className="mb-5 flex w-full max-w-[650px] flex-col space-y-2">
           <Typography className="font-bold leading-8 font-CenturyGothic text-primary-110">
             Welcome to your dashboard
           </Typography>

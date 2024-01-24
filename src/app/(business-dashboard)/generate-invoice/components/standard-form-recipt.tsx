@@ -51,7 +51,10 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
     {
       id: 1,
       title: "Amount",
-      value: `NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : "00.00"}`,
+      value: `NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      }) : '00.00'}`,
+
     },
     {
       id: 2,
@@ -73,17 +76,20 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
             <MdClose onClick={() => setReceipt(false)} className="absolute top-[45px] right-[66px] text-[20px] text-[#F61212] cursor-pointer" />
             <div className="flex flex-col items-center gap-6 w-full pb-6 border-b border-dashed border-[#999999]">
               
-              <Image src={defaultLogo} alt="default" />
+              {/* <Image src={defaultLogo} alt="default" /> */}
 
-              <p className="text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
-                A request has been sent out to{" "}
-                <span className="text-[16px] text-[#177196] font-[700] leading-normal">{modalData?.customerName || "Undefined"}</span>
+              <p className="mt-10 text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
+                A request will be sent out to{" "}
+                <span className="text-[16px] text-[#177196] font-[700] leading-normal">
+                  {modalData?.customerName || "Undefined"}
+                </span>
               </p>
 
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
- 
-                {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : "00.00"}`}
- 
+                {/* {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`} */}
+                {`NGN ${modalData.grandTotal ? modalData.grandTotal?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) : '00.00'}`}
               </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-start gap-8">
@@ -134,15 +140,19 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Subtotal
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    {`NGN ${modalData.subTotal.toLocaleString()}`}
+                    {`NGN ${modalData.subTotal?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    }) }`}
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#115570] text-[16px] leading-normal font-[400]">
+                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
                     Discount
                   </p>
-                  <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    {`NGN ${modalData.discount.toLocaleString()}`}
+                  <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                    {`- NGN ${modalData.discount?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}`}
                   </p>
  
                 </div>
@@ -154,7 +164,19 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     Tax
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    {`NGN ${modalData?.tax?.toLocaleString()}`}
+                    {`NGN ${modalData.tax?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}`}
+                  </p>
+                </div>
+                <div className="flex flex-row items-center justify-between w-full">
+                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                    Shipping
+                  </p>
+                  <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                    {`NGN ${modalData.shipping?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                    })}`}
                   </p>
  
                 </div>
@@ -169,10 +191,14 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
               </div>
             </div>
             <div className="flex flex-row items-center justify-between w-full mt-6">
-
-              <p className="text-[#555555] text-[16px] leading-normal font-[700]">Grand Total</p>
-              <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">{`NGN ${modalData.grandTotal}`}</p>
- 
+              <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                Grand Total
+              </p>
+              <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                {`NGN ${modalData.grandTotal?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) }`}
+              </p>
             </div>
 
             <div className="flex flex-col items-center w-full gap-3 pt-20">

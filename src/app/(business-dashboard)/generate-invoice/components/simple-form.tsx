@@ -29,6 +29,7 @@ import SimpleRecipt from "./simple-form-recipt";
 import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice";
+import { formatMoneyAmount } from "utils/numberFormater"
 
 let merchantList: any
 let token = ""
@@ -58,7 +59,7 @@ const SimpleSchema = z.object({
     dueDate: z.date({
         required_error: "Due date is required.",
     }),
-    amount: z.number().optional(),
+    amount: z.string().optional(),
     invoiceNote: z.string().optional(),
     // businessLogo: z.instanceof(File).optional(),
     // businessLogo: z.any().optional(),
@@ -94,12 +95,14 @@ export default function SimpleForm() {
         defaultValues: {
             customerName: "",
             email1: "",
-            email2: "",
-            email3: "",
+            email2: "example@gmail.com",
+            email3: "example@gmail.com",
             dueDate: undefined,
-            amount: 0,
+            amount: "",
             invoiceNote: "",
+            // businessLogo: undefined,
             // businessLogo: new File([], ""),
+
         },
     });
     const handleModal = (e: any) => {
@@ -128,6 +131,20 @@ export default function SimpleForm() {
             })
             return
         }
+        if (!simpleForm?.getValues()?.businessLogo) {
+            simpleForm.setError("businessLogo", {
+                type: "manual",
+                message: "Business logo required",
+            })
+            return
+        }
+        if (simpleForm?.getValues()?.amount?.length == 0) {
+            simpleForm.setError("amount", {
+                type: "manual",
+                message: "Amount required",
+            })
+            return
+        }
 
         setReceipt((value) => !value);
     };
@@ -146,18 +163,41 @@ export default function SimpleForm() {
         console.log(newfieldValues?.slice(0, -1))
         setMinusField(newfieldValues?.slice(0, -1));
     };
+
+
+
+    // // ------------------amount input formatter--------------------
+    // const formatMoneyAmount = (event: any) => {
+    //     const input = event.target;
+    //     let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+
+    //     // Add commas for every three digits from the right
+    //     const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    //     input.value = formattedValue;
+    // }
+
+    // // ------------------amount input formatter end--------------------
+
+
+
+
+
+
     const simpleFormMutation = useMutation({
         mutationFn: simpleInvoice,
         onSuccess: async (data) => {
-            const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse;
-            if (responseData?.statusCode === "1") {
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
+            console.log("simple invoice status: ", responseData?.statusCode)
+            if ((responseData?.statusCode === "1") || (responseData?.statusCode === "701")) {
                 toast({
                     variant: "destructive",
                     title: "",
                     description: "Error Creating Invoice",
                 });
             }
-            if (responseData?.statusCode === "0") {
+            else if (responseData?.statusCode === "0" || "ACCEPTED") {
                 toast({
                     variant: "default",
                     title: "",
@@ -182,15 +222,13 @@ export default function SimpleForm() {
     });
 
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
-        console.log(values);
+        // console.log(values);
         let newValues = {
             ...values,
-            amount: values?.amount?.toString(),
+            // amount: values?.amount?.toString(),
+            amount: Number(values?.amount?.replace(/,/g, '')),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
-            additionalCustomerEmailAddress: [
-                values?.email2,
-                values?.email3,
-            ]?.toString(),
+            additionalCustomerEmailAddress: `${values?.email2},${values?.email3}`,
             customerEmail: values?.email1,
             token: token,
             subject: subject,
@@ -203,22 +241,22 @@ export default function SimpleForm() {
 
     const handleDraft = (e: any) => {
         e.preventDefault();
-        if (simpleForm.getValues("dueDate") === undefined) {
-            toast({
-                variant: "destructive",
-                title: "Due Date required",
-                description: "Provide a due date",
-            });
-            return
-        }
+        // if (simpleForm.getValues("dueDate") === undefined) {
+        //     toast({
+        //         variant: "destructive",
+        //         title: "Due Date required",
+        //         description: "Provide a due date",
+        //     });
+        //     return
+        // }
         const values = simpleForm.getValues()
         let newValues = {
             ...values,
-            amount: values?.amount?.toString(),
+            amount: Number(values?.amount?.replace(/,/g, '')),
             dueDate: values?.dueDate?.toISOString().split("T")[0],
             additionalCustomerEmailAddress: [
                 values?.email2,
-                values?.email3,
+                values?.email3
             ]?.toString(),
             customerEmail: values?.email1,
             token: token,
@@ -226,9 +264,8 @@ export default function SimpleForm() {
             merchantId: merchantId,
             invoiceStatus: "DRAFT"
         };
-        console.log(newValues);
+        // console.log(newValues);
         simpleFormMutation.mutate(newValues as any);
-
     }
 
 
@@ -342,7 +379,7 @@ export default function SimpleForm() {
                                     <Calendar
                                         mode="single"
                                         selected={field.value}
-                                        onSelect={field.onChange}
+                                        onSelect={field.onChange as any}
                                         disabled={(date) => date < new Date("1900-01-01")}
                                         initialFocus
                                     />
@@ -358,18 +395,15 @@ export default function SimpleForm() {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormLabel className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                                Amount (optional)
+                                Amount
                             </FormLabel>
                             <FormControl>
                                 <Input
-                                    type="number"
+                                    type="text"
                                     className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                                     placeholder="0.00"
                                     {...field}
-                                    onFocusCapture={(e) => e.target.value === '0' && (e.target.value = '')}
-                                    onChange={(event) =>
-                                        field.onChange(Number(event.target.value))
-                                    }
+                                    onInput={(event) => formatMoneyAmount(event)}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -402,7 +436,7 @@ export default function SimpleForm() {
                     render={({ field }) => (
                         <FormItem className="w-full">
                             <FormDescription className="text-[#0C394B] text-[16px] leading-normal font-[400]">
-                                Business Logo (optional)
+                                Business Logo
                             </FormDescription>
                             <FormLabel className="bg-[white] border-[#115570] rounded-[10px] flex h-[77px] w-full cursor-pointer flex-row items-center justify-center gap-3 border-[2px] border-dotted">
                                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
@@ -418,9 +452,9 @@ export default function SimpleForm() {
                                     className="hidden"
                                     placeholder="Enter identification number"
                                     // {...field}
-                                    onChange={(e) =>
-                                        field.onChange(e.target.files ? e.target.files[0] : null)
-                                    }
+
+                                    onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+
                                 />
                             </FormControl>
                             <FormMessage />

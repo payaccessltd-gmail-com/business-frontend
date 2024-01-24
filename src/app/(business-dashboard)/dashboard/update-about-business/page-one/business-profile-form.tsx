@@ -1,8 +1,11 @@
 "use client"
 
+<<<<<<< HEAD
 // @ts-nocheck
+=======
+>>>>>>> cd185ed1039c9273b09dd73967ed0540bb014a1d
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -11,7 +14,7 @@ import * as zod from "zod"
 // import { Button } from "components/ui/Button/Button"
 import { Button } from "components/ui/button"
 import { Checkbox } from "components/ui/checkbox"
-import { updateAboutBusiness } from "api/merchant-management"
+import { getMerchantByMerchantCode, updateAboutBusiness } from "api/merchant-management"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { Input } from "components/ui/input"
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group"
@@ -19,10 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "c
 
 import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
-import { numberFormat } from "utils/numberFormater"
-// import PatternFormat from "react-number-format"
-import { Label } from "@radix-ui/react-label"
-import { ChangeEvent, useState } from "react"
+import { useState } from "react"
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -30,19 +30,33 @@ import { ChangeEvent, useState } from "react"
 // }
 
 const businessProfileFormSchema = zod.object({
+<<<<<<< HEAD
  
+=======
+  businessCategory: zod.string(),
+  businessType: zod.string(),
+  softwareDeveloper: zod.string(),
+  merchantId: zod.number(),
+   mobileNumber: zod.string(), 
+  policy: zod.boolean().refine(value => value === true, {
+    message: "You must consent to the policy.",
+  }),
+>>>>>>> cd185ed1039c9273b09dd73967ed0540bb014a1d
 })
 
 export default function BusinessProfileUpdate() {
   let token = ""
-  const [mobileNumber, setMobileNumber] = useState('');
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
-
   const router = useRouter()
   const { toast } = useToast()
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
+  //@ts-expect-error
+  const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.user)
+  const { setCurrentMerchantDetails } = useMerchantStore();
+  console.log(currentMerchantDetails, 'jk');
+
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
       merchantId: 0,
@@ -50,12 +64,13 @@ export default function BusinessProfileUpdate() {
     },
     resolver: zodResolver(businessProfileFormSchema),
   })
-  console.log(businessProfileForm.getValues('businessType'), 'useForm');
+
 
   const businessProfileMutation = useMutation({
-    mutationFn: (values: API.UpdateAboutBusinessRequest) => updateAboutBusiness(values, token),
+    mutationFn: (values: API.UpdateAboutBusinessDTO) => updateAboutBusiness(values, token),
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+      console.log("data", data);
 
       if (responseData?.statusCode === "1") {
         toast({
@@ -64,13 +79,37 @@ export default function BusinessProfileUpdate() {
           description: responseData?.message,
         })
       } else if (responseData?.statusCode === "0" && typeof window) {
+
         if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
           router.push("/dashboard/registered-business")
           businessProfileForm.reset()
           return
         }
-        router.push("/dashboard/update-about-business/page-two")
+        //  router.push("/dashboard/update-about-business/page-three")
+
+        // useQuery({
+        //   queryKey: ["merchant-details", currentMerchant?.merchantCode],
+        //   queryFn: () =>
+        //     getMerchantByMerchantCode(currentMerchant?.merchantCode as string, token),
+        //   enabled: currentMerchant?.merchantCode ? true : false,
+        //   onSuccess: async (data) => {
+        //     const res = (await data.json()) as API.GetMerchantByMerchantCodeDTO;
+        //     console.log(res, 'Youz');
+
+        //     if (res.statusCode === "0") {
+        //       setCurrentMerchantDetails(res.responseObject[0]);
+        //       if (businessProfileForm.getValues('businessType') === 'REGISTERED_BUSINESS' || businessProfileForm.getValues('businessType') === 'NGO_BUSINESS') {
+
+        //         router.push("/dashboard/registered-business")
+        //         businessProfileForm.reset()
+        //         return
+        //       }
+        //     }
+        //   },
+        // });
+
         businessProfileForm.reset()
+        router.push("/dashboard/unregistered-business")
 
         toast({
           variant: "default",
@@ -96,25 +135,29 @@ export default function BusinessProfileUpdate() {
   })
 
   function onSubmit(values: zod.infer<typeof businessProfileFormSchema>) {
-    let data: API.UpdateAboutBusinessRequest = {
+
+    // let data: API.UpdateAboutBusinessRequest = {
+    //   ...values,
+
+    // }
+    let data: any = {
       ...values,
-      mobileNumber: mobileNumber
+
     }
+    console.log('data', data);
+
     businessProfileMutation.mutate(data)
   }
 
-  function setPhoneNumber(event: ChangeEvent<HTMLInputElement>): void {
-    let phonrMob = event.target.value;
-    setMobileNumber(phonrMob);
-
-  }
 
   return (
     <main className="flex flex-col items-center justify-center bg-transparent">
       <div className="flex w-[550px] flex-col items-center justify-center  bg-transparent ">
+
         <Form {...businessProfileForm}>
           <form onSubmit={businessProfileForm.handleSubmit(onSubmit)} className="space-y-12 bg-white">
             <div className="space-y-8">
+
               <FormField
                 name="businessCategory"
                 control={businessProfileForm.control}
@@ -123,7 +166,7 @@ export default function BusinessProfileUpdate() {
                     <FormLabel className="text-sm font-normal text-gray-50">Business category</FormLabel>
                     <Select
                       defaultValue={field.value}
-                      onValueChange={(value: any) => {
+                      onValueChange={(value) => {
                         field.onChange(value)
                         businessProfileForm.setValue("merchantId", currentMerchant?.id as number, { shouldDirty: true })
                       }}
@@ -151,17 +194,17 @@ export default function BusinessProfileUpdate() {
                 className="w-full p-3 border mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
                 valueIsNumericString={true}
               /> */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <div>
                   <label className="">Phone Number</label>
                 </div>
-                {/* <PatternFormat
+                <PatternFormat
                   onChange={(event) => setPhoneNumber(event as any)}
                   format="+234 (####) ###-####"
                   className="w-full p-3 border mt-3 mb-5 border-blue-400 rounded-[5px] focus-visible:border-blue-400"
                   isNumericString={true}
-                /> */}
-              </div>
+                />
+              </div> */}
 
               {/* <FormField
                 control={businessProfileForm.control}
@@ -175,7 +218,8 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
+
               <FormField
                 control={businessProfileForm.control}
                 name="mobileNumber"
@@ -188,7 +232,7 @@ export default function BusinessProfileUpdate() {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
               <FormField
                 control={businessProfileForm.control}
@@ -228,7 +272,7 @@ export default function BusinessProfileUpdate() {
 
                         <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="REGISTERED_BUSINESS" />
+                            <RadioGroupItem value="NGO_BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">NGO Business</FormLabel>
@@ -240,7 +284,7 @@ export default function BusinessProfileUpdate() {
 
                         <FormItem className="flex items-baseline space-x-4 space-y-0">
                           <FormControl>
-                            <RadioGroupItem value="BUSINESS" />
+                            <RadioGroupItem value="REGISTERED_BUSINESS" />
                           </FormControl>
                           <div className="space-y-2">
                             <FormLabel className="text-sm font-normal text-gray-80">Registered business</FormLabel>
@@ -309,7 +353,7 @@ export default function BusinessProfileUpdate() {
               />
             </div>
 
-            <Button disabled={businessProfileMutation.isLoading} className="flex self-center w-56 mx-auto font-bold" type="submit">
+            <Button disabled={businessProfileMutation.isLoading} className="flex self-center w-56 mx-auto font-bold" type="submit" size="lg">
               Continue
             </Button>
           </form>

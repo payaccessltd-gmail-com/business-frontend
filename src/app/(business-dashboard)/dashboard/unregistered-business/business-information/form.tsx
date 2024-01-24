@@ -2,9 +2,9 @@
 
 import { DevTool } from "@hookform/devtools"
 import * as zod from "zod"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { HiOutlineCloudUpload } from "react-icons/hi"
 import { useForm } from "react-hook-form"
 
@@ -18,13 +18,18 @@ import { Textarea } from "components/ui/textarea"
 import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
 import { updateMerchantBusinessData } from "api/merchant-management"
+import { getAllState, getCountry } from "api/location"
 
 type BusinessInfoFormProps = {
   prevStep?: () => void
   nextStep?: () => void
 }
 
+
+
 const businessInfoFormSchema = zod.object({
+
+
   merchantId: zod.number(),
   businessName: zod.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -39,7 +44,11 @@ const businessInfoFormSchema = zod.object({
   businessCity: zod.string(),
   businessEmail: zod.string().email(),
   businessWebsite: zod.string(),
+  businessCountry: zod.string(),
+  businessAddress: zod.string(),
   businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
+
+  businessCertificateFile: zod.custom<File>().optional() || zod.string().optional(),
   // businessCertificate: zod.string(),
 
   businessDescription: zod.string().min(2, {
@@ -47,8 +56,10 @@ const businessInfoFormSchema = zod.object({
   }),
 })
 
+
 export default function BusinessInformationForm(props: BusinessInfoFormProps) {
-  let token = ""
+  let token: any = ""
+  const [stateData, setStateData] = useState<any>([]);
 
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
@@ -61,6 +72,16 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
 
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
 
+  const dataCountry: any = useQuery(['getCountry'], () => {
+    return getCountry()
+  });
+
+  const countries: API.CountryResponse = dataCountry?.data;
+
+
+  console.log("dataCountry", countries?.data);
+
+
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {
       ...currentMerchantDetails,
@@ -69,8 +90,13 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     resolver: zodResolver(businessInfoFormSchema),
   })
 
+  function allState(id: number) {
+    let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
+    setStateData(data);
+  }
+
   const updateBusinessInfoMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBusinessDataDTO) => updateMerchantBusinessData(values, token),
+    mutationFn: updateMerchantBusinessData,
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
 
@@ -114,12 +140,19 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     if (typeof values.businessLogoFile === "string") {
       values.businessLogoFile = undefined
     }
-
-    updateBusinessInfoMutation.mutate(values as any)
+    let newValues = { ...values, token }
+    console.log(newValues)
+    // getAllCountry.mutate();
+    updateBusinessInfoMutation.mutate(newValues as any);
   }
 
   const onErrror = (error: any) => {
     console.log(error)
+    toast({
+      variant: "destructive",
+      title: "error",
+      description: `${error}`,
+    })
   }
 
   useEffect(() => {
@@ -203,6 +236,8 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           )}
         />
 
+
+
         <FormField
           name="businessEmail"
           control={businessInfoForm.control}
@@ -249,18 +284,29 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
 
         <div className="flex flex-row items-center gap-4">
           <FormField
-            name="businessCity"
+            name="businessCountry"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter city" {...field} />
-                </FormControl>
+                <FormLabel>Country</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Country" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent   >
+                    <SelectItem value=""></SelectItem>
+                    {countries?.data.map(ctr => <SelectItem onChange={() => allState(ctr.id)} key={ctr.name} className="py-3 " value={ctr.name}>
+                      {ctr.name}
+                    </SelectItem>)}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
+
 
           <FormField
             name="businessState"
@@ -268,13 +314,17 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange}
+                  defaultValue={field.value}
+
+
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="w-full">
+                  <SelectContent className="w-full" onSelect={(target) => { console.log("working"); }} >
                     <SelectItem value="ABUJA">Abuja</SelectItem>
                     <SelectItem value="LAGOS">Lagos</SelectItem>
                     <SelectItem value="Minna">MInna</SelectItem>
@@ -285,6 +335,32 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             )}
           />
         </div>
+        <FormField
+          name="businessCity"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>City</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter city" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name="businessAddress"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Business Address</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Business Address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           name="businessWebsite"
@@ -306,6 +382,43 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormDescription>Business Logo (Optional)</FormDescription>
+              <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
+                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
+                  {field.value?.name ? (
+                    field.value?.name
+                  ) : typeof field.value === "string" ? (
+                    (field.value as any)
+                  ) : (
+                    <>
+                      Drag file here to upload document or <span className="text-[#6B7280]">choose file</span>
+                    </>
+                  )}
+                </Typography>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  ref={field.ref}
+                  name={field.name}
+                  className="hidden"
+                  onBlur={field.onBlur}
+                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  placeholder="Please upload identification document"
+                  onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="businessCertificateFile"
+          control={businessInfoForm.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormDescription>Business Certificate (Optional)</FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">

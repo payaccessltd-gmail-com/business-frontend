@@ -10,7 +10,7 @@ import AccountInformationForm from "./account-information-form";
 import BusinessInformationForm from "./business-information-form";
 type Props = {};
 
-export default function ApprovalDescription({}: Props) {
+export default function ApprovalDescription(props: any) {
   return (
     <div>
       <ReviewDetails />
@@ -22,7 +22,7 @@ export default function ApprovalDescription({}: Props) {
             Review Information
           </Typography>
 
-          <Button className="text-center text-white text-sm font-bold font-['Century Gothic'] self-stretch px-8 py-2.5 bg-sky-400 rounded justify-center items-center inline-flex">
+          <Button onClick={() => props.prevStep()} className="text-center text-white text-sm font-bold font-['Century Gothic'] self-stretch px-8 py-2.5 bg-sky-400 rounded justify-center items-center inline-flex">
             Edit records
           </Button>
         </div>

@@ -56,11 +56,11 @@ export default function LoginForm() {
       const responseData: API.LoginResponse =
         (await data.json()) as API.LoginResponse;
 
-        console.log("LoginRes ", JSON.stringify(responseData)); 
-        
+      // console.log("LoginRes ", JSON.stringify(responseData));
+      setLoading(false)
 
       if (!responseData?.subject && !responseData?.token) {
-        setLoading(false)
+       
         toast({
           variant: "destructive",
           title: "",
@@ -68,15 +68,15 @@ export default function LoginForm() {
           description: `${responseData?.message}`,
         });
       } else if (responseData?.token && responseData?.token) {
-        setLoading(false)
+       
 
-        toast({
-          variant: "default",
-          title: "",
-          description: "Signin successful",
-          className:
-            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-        });
+        // toast({
+        //   variant: "default",
+        //   title: "",
+        //   description: "Signin successful",
+        //   className:
+        //     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        // });
 
         localStorage.setItem("subject", responseData?.subject as string);
         localStorage.setItem(
@@ -165,7 +165,7 @@ export default function LoginForm() {
           className="mt-[42px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </Button>
       </form>
     </Form>

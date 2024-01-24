@@ -37,11 +37,12 @@ export default function PaymentForm() {
   const searchParams = useSearchParams();
   const invoiceNumber = searchParams?.get("invoiceNumber");
   const merchantCode = searchParams?.get("merchantCode");
+  const grandAmount: any = searchParams?.get("grandAmount");
   // console.log(invoiceNumber, merchantCode)
-  const GetParameters = { invoiceNumber, merchantCode }
+  const GetParameters: any = { invoiceNumber, merchantCode }
   const data: any = useQuery(['getMerchantDetailGuest', GetParameters], () => getMerchantDetailGuest(GetParameters));
   // console.log("data: ", data?.data?.responseObject)
-
+  // console.log(typeof grandAmount)
 
   return (
     <div className="flex flex-col w-full h-full bg-[white]">
@@ -55,8 +56,9 @@ export default function PaymentForm() {
               Invoice Number: {invoiceNumber}
             </p>
             <p className="text-[#555555] text-[32px] font-[700] leading-normal mb-[24px]">
-              NGN {data?.data?.responseObject?.amount?.toLocaleString()}
-              {/* {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`} */}
+              {`NGN ${grandAmount ? Number(grandAmount)?.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+              }) : '00.00'}`}
             </p>
             {/* <p className="text-[#CA6B1B] text-[16px] font-[700] leading-6 mb-[24px]">Test</p> */}
             <div className="w-full border-y border-dashed border-[#999999] flex flex-row flex-wrap items-center gap-[8px] justify-center py-[25px] mb-10">

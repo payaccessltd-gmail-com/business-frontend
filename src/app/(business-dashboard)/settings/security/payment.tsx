@@ -13,6 +13,9 @@ import { Button } from "components/ui/button"
 import { Checkbox } from "components/ui/checkbox"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
 import { toast } from "components/ui/use-toast"
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
+import { currencies } from "utils/currency"
+import { useEffect } from "react"
 
 let merchantList: any
 let token = ""
@@ -27,40 +30,52 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 }
 
 const FormSchema = z.object({
-  enableAcceptBankTransfers: z.boolean(),
-  enableAcceptPOSChannel: z.boolean(),
-  enableAcceptCardPayment: z.boolean(),
-  enableAcceptMobileMoneyTransfer: z.boolean(),
-  enableUSSDTransfer: z.boolean(),
-  defaultCurrency: z.string(),
+  enableAcceptBankTransfers: z.boolean().optional(),
+  enableAcceptPOSChannel: z.boolean().optional(),
+  enableAcceptCardPayment: z.boolean().optional(),
+  enableAcceptMobileMoneyTransfer: z.boolean().optional(),
+  enableUSSDTransfer: z.boolean().optional(),
+  defaultCurrency: z.string().optional(),
 })
 
 export default function Payment({ data, security, setSecurity }: any) {
+  const merchantDetailStore = useHydrateStore(useMerchantStore, (state) => state.currentMerchant); //getting merchant name from store
+  console.log(merchantDetailStore)
   console.log(data?.enableAcceptPosChannel)
   console.log(data?.enableUssdTransfer)
-
   const { toast } = useToast()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enableAcceptBankTransfers: data?.enableAcceptBankTransfers,
-      enableAcceptPOSChannel: data?.enableAcceptPosChannel,
-      enableAcceptCardPayment: data?.enableAcceptCardPayment,
-      enableAcceptMobileMoneyTransfer: data?.enableAcceptMobileMoneyTransfer,
-      enableUSSDTransfer: data?.enableUssdTransfer,
+      enableAcceptBankTransfers: data?.enableAcceptBankTransfers || false,
+      enableAcceptPOSChannel: data?.enableAcceptPosChannel || false,
+      enableAcceptCardPayment: data?.enableAcceptCardPayment || false,
+      enableAcceptMobileMoneyTransfer: data?.enableAcceptMobileMoneyTransfer || false,
+      enableUSSDTransfer: data?.enableUssdTransfer || false,
       defaultCurrency: data?.defaultCurrency,
     },
   })
 
+
+  useEffect(() => {
+    form.setValue("defaultCurrency", data?.defaultCurrency || "")
+    form.setValue("enableAcceptBankTransfers", data?.enableAcceptBankTransfers || false)
+    form.setValue("enableAcceptPOSChannel", data?.enableAcceptPosChannel || false)
+    form.setValue("enableAcceptCardPayment", data?.enableAcceptCardPayment || false)
+    form.setValue("enableAcceptMobileMoneyTransfer", data?.enableAcceptMobileMoneyTransfer || false)
+    form.setValue("enableUSSDTransfer", data?.enableUssdTransfer)
+  }, [data])
+
+
   const getParameters = {
     token,
-    merchantCode: merchantList[0]?.merchantCode,
+    merchantCode: merchantDetailStore?.merchantCode,
   }
   // const data: any = useQuery(['getMerchantDetails', getParameters], () => getMerchantDetails(getParameters));
 
   // console.log(data?.customerNotificationByEmail)
 
-  // console.log(data)
+  console.log(data)
 
   const paymentSettingsMutation = useMutation({
     mutationFn: paymentSettings,
@@ -102,6 +117,7 @@ export default function Payment({ data, security, setSecurity }: any) {
     // console.log(newValues);
     paymentSettingsMutation.mutate(newValues as any)
   }
+  // console.log(form.getValues())
 
   return (
     <Form {...form}>
@@ -123,9 +139,14 @@ export default function Payment({ data, security, setSecurity }: any) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent defaultValue={data?.defaultCurrency}>
-                    <SelectItem value="NGN">NGN</SelectItem>
-                    <SelectItem value="+233">+233</SelectItem>
-                    <SelectItem value="+212">+212</SelectItem>
+                    {
+                      currencies.map(({ name }, id) => {
+                        return (
+                          <SelectItem key={id} disabled={name !== "NGN"} value={name}>{name}</SelectItem>
+
+                        )
+                      })
+                    }
                   </SelectContent>
                 </Select>
                 <FormMessage />

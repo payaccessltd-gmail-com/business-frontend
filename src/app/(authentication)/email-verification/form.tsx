@@ -39,6 +39,7 @@ export default function EmailVerificationForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const searchParams = useSearchParams();
   // const callbackUrl = searchParams.get("callbackUrl") || "/get-started";
   const [otp, setOtp] = useState(Array(6).fill(""));
@@ -100,11 +101,10 @@ export default function EmailVerificationForm() {
   const OTPMutation = useMutation({
     mutationFn: activateAccount,
     onSuccess: async (data) => {
-      console.log(123);
-      
+      // console.log(123);
       const responseData: API.VerifyAccountResponse =
         (await data.json()) as API.VerifyAccountResponse;
-
+      setLoading(false)
       if (true) {
         setCountdown(60)
         toast({
@@ -112,7 +112,7 @@ export default function EmailVerificationForm() {
           title: "",
           description: responseData?.message,
         });
-        
+
       }
 
       if (responseData?.statusCode === "0") {
@@ -120,6 +120,8 @@ export default function EmailVerificationForm() {
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         setOtp(Array(6).fill(""));
         setSuccess(1);
@@ -127,6 +129,7 @@ export default function EmailVerificationForm() {
     },
 
     onError: (e) => {
+      setLoading(false)
       console.log(e);
       toast({
         variant: "destructive",
@@ -140,7 +143,7 @@ export default function EmailVerificationForm() {
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
-
+      setLoading1(false)
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
@@ -154,11 +157,14 @@ export default function EmailVerificationForm() {
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
       }
     },
 
     onError: (e) => {
+      setLoading1(false)
       console.log(e);
       toast({
         variant: "destructive",
@@ -170,19 +176,23 @@ export default function EmailVerificationForm() {
 
   const handleSubmit = (event: any) => {
     event?.preventDefault();
+    setLoading(true)
     console.log(otp.join(""));
     let userOTP = {
       emailAddress: email,
       otp: otp.join(""),
       verificationLink: verificationLink,
+      otpSize: 6
     };
     OTPMutation.mutate(userOTP as any);
   };
 
   const handleResend = (event: any) => {
     event?.preventDefault();
+    setLoading1(true)
     const value = {
       emailAddress: email,
+      otpSize: 6
     };
     resendMutation.mutate(value as any);
   };
@@ -263,17 +273,17 @@ export default function EmailVerificationForm() {
           // type="submit"
           onClick={(event) => handleSubmit(event)}
         >
-          Continue
+          {loading ? "Verifying..." : "Continue"}
         </Button>
         {showResendLink ? (
           <p className="text-[#1A1A1A] mb-4 mt-6 text-[14px] text-center font-[400] leading-[145%]">
             Didn’t get the mail?{" "}
             <span className="text-[#1D8EBB] font-[700] leading-normal cursor-pointer" onClick={(event) => handleResend(event)}>
-              Click here to resend.
+              {loading1 ? "resending..." : "Click here to resend."}
             </span>
           </p>
         ) : (
-          <p className="text-[14px] font-[400] leading-[145%] text-[#000000]">
+          <p className="text-[14px] mb-4 mt-6 font-[400] leading-[145%] text-[#000000]">
             Resend code in{' '}
             <span className="text-[14px] font-[700] leading-normal text-[#CA6B1B]">
               {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}sec

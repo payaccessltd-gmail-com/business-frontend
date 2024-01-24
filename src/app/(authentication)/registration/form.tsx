@@ -48,7 +48,7 @@ const RegistrationSchema = z.object({
     })
     .refine((value) => !/123/.test(value), {
       message: 'Password should not contain the sequence "123"',
-    })   
+    })
     .refine((value) => /[A-Z]/.test(value), {
       message: 'Password must contain at least one uppercase character',
     })
@@ -58,9 +58,9 @@ const RegistrationSchema = z.object({
     .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
       message: 'Password must contain at least one special character',
     }),
-    comfirmPassword: z.string(),
+  comfirmPassword: z.string(),
   agreement: z.boolean(),
-}).refine((data)=> data.password === data.comfirmPassword , {message: 'Password do not match', path:["comfirmPassword"]});
+}).refine((data) => data.password === data.comfirmPassword, { message: 'Password do not match', path: ["comfirmPassword"] });
 
 export default function RegistrationForm() {
   const { toast } = useToast();
@@ -85,10 +85,8 @@ export default function RegistrationForm() {
     onSuccess: async (data) => {
       const responseData: API.CreateAccountResponse =
         (await data.json()) as API.CreateAccountResponse;
-
-      if (responseData?.statusCode === "701" || "1") {
-        setLoading(false)
-
+      setLoading(false)
+      if ((responseData?.statusCode === "701") || (responseData?.statusCode === "1")) {
         toast({
           variant: "destructive",
           title: "",
@@ -97,18 +95,19 @@ export default function RegistrationForm() {
       }
 
       if (responseData?.statusCode === "0") {
-        setLoading(false)
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         if (typeof window) {
 
-          var linkArr :any = responseData?.responseObject?.split("/");
+          var linkArr: any = responseData?.responseObject?.split("/");
 
-          console.log(linkArr[3]);          
-          
+          console.log(linkArr[3]);
+
           router.push(
             `/${linkArr[3]}`,
           );
@@ -120,7 +119,6 @@ export default function RegistrationForm() {
 
     onError: (e) => {
       setLoading(false)
-
       console.log(e);
       toast({
         variant: "destructive",
@@ -297,7 +295,7 @@ export default function RegistrationForm() {
           className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
-          Create account
+          {loading ? "Creating..." : "Create account"}
         </Button>
       </form>
     </Form>

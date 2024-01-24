@@ -1,3 +1,4 @@
+import { merchantId } from './../api/baseUrl';
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -5,6 +6,8 @@ type UserStore = {
   user: API.UserDetails | null;
   setUser: (user: API.UserDetails) => void;
 };
+
+
 
 export const useUserStore = create<UserStore>()(
   persist(

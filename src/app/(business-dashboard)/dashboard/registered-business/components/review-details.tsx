@@ -4,7 +4,7 @@ import { Typography } from "components/ui/Typography";
 
 type Props = {};
 
-const ReviewDetails = (props: Props) => {
+const ReviewDetails = (props: any) => {
   return (
     <div className="flex items-center my-30 justify-between w-full h-40 gap-6 p-10 border border-gray-300 rounded-lg bg-sky-100 bg-opacity-20 mb-5">
       <div className="flex flex-col items-start justify-start h-20 gap-2">

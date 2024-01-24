@@ -1,9 +1,8 @@
 import React from "react"
-
 import { Typography } from "components/ui/Typography"
 import StepperForm from "../components/stepper-form"
 
-function page() {
+export default function page() {
   return (
     <div className="h-full pb-5 bg-transparent">
       <div className="mb-10 space-y-2">
@@ -26,4 +25,3 @@ function page() {
   )
 }
 
-export default page

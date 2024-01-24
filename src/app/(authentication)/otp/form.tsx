@@ -18,7 +18,8 @@ import {
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { OTP } from "../../../api/registration";
+import { OTP } from "api/registration";
+import { forgetPassword } from "api/registration";
 
 // export const metadata: Metadata = {
 //   title: "Authentication",
@@ -33,9 +34,10 @@ export default function OTPForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const searchParams = useSearchParams();
   const email = searchParams?.get("email");
-  const forgotPasswordLink = searchParams?.get("forgotPasswordLink");
+  const forgotPasswordLink = searchParams?.get("link");
   const [otp, setOtp] = useState(Array(4).fill(""));
   const [countdownTime, setCountdownTime] = useState(300); // 5 minutes in seconds
   const [countdownActive, setCountdownActive] = useState(true);
@@ -95,8 +97,8 @@ export default function OTPForm() {
     onSuccess: async (data) => {
       const responseData: API.StatusReponse =
         (await data.json()) as API.StatusReponse;
-
-      if (responseData?.statusCode === "1") {
+      setLoading(false)
+      if ((responseData?.statusCode === "1") || (responseData?.statusCode === "701")) {
         toast({
           variant: "destructive",
           title: "",
@@ -120,6 +122,7 @@ export default function OTPForm() {
     },
 
     onError: (e) => {
+      setLoading(false)
       console.log(e);
       toast({
         variant: "destructive",
@@ -129,13 +132,75 @@ export default function OTPForm() {
     },
   });
 
+
+  //--------------------------Resend password mutation-------------------------------
+
+
+  const resendPasswordMutation = useMutation({
+    mutationFn: forgetPassword,
+    onSuccess: async (data) => {
+      const responseData: API.StatusReponse =
+        (await data.json()) as API.StatusReponse;
+      setLoading1(false)
+      if (responseData?.statusCode === "1") {
+        toast({
+          variant: "destructive",
+          title: "",
+          description: responseData?.message,
+        });
+
+      }
+
+      if (responseData?.statusCode === "0") {
+        setCountdownTime(300)
+        toast({
+          variant: "default",
+          title: "",
+          description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        });
+        if (typeof window) {
+
+          router.push(
+            `/otp?email=${email}&link=${responseData?.responseObject}`
+          )
+
+        }
+      }
+    },
+
+    onError: (e) => {
+      console.log(e);
+      setLoading1(false)
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      });
+    },
+  });
+
+  //--------------------------Resend password mutation ends-------------------------------
+
+
+
   // async function onSubmit(values: z.infer<typeof ForgetPasswordSchema>) {
   //   console.log(values);
 
   // }
+  const handleResend = (event: any) => {
+    event?.preventDefault();
+    setLoading1(true)
+    let value = {
+      emailAddress: email
+    }
+    resendPasswordMutation.mutate(value as any)
+  }
 
   const handleSubmit = (event: any) => {
     event?.preventDefault();
+    setLoading(true)
     let OTP = {
       emailAddress: email,
       otp: otp.join(""),
@@ -186,15 +251,15 @@ export default function OTPForm() {
           // type="submit"
           onClick={(event) => handleSubmit(event)}
         >
-          Continue
+          {loading ? "Verifying..." : "Continue"}
         </Button>
         <p className="text-[#1A1A1A] mt-6 text-[14px] text-center font-[400] leading-[145%]">
           Didn’t get the mail?{" "}
           <span
             className="text-[#1D8EBB] font-[700] leading-normal cursor-pointer"
-          // onClick={(event) => handleResend(event)}
+            onClick={(event) => handleResend(event)}
           >
-            click here to resend.
+            {loading1 ? "resending..." : "click here to resend."}
           </span>
         </p>
         <p className="text-[14px] font-[400] leading-[145%] text-[#000000] mt-[24px]">

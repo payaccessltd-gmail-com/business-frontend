@@ -38,7 +38,25 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 const PasswordSchema = z
   .object({
     currentPassword: z.string().min(6, "Password must contain more than 8 characters").max(50, "Password must not be above 50 characters"),
-    newPassword: z.string().min(8, "Password must contain more than 8 characters").max(50, "Password must not be above 50 characters"),
+    newPassword: z
+      .string().refine((value) => value.length >= 8 && value.length <= 50, {
+        message: 'Password must be between 8 and 50 characters',
+      })
+      .refine((value) => /[0-9]/.test(value), {
+        message: 'Password must contain at least one number',
+      })
+      .refine((value) => !/123/.test(value), {
+        message: 'Password should not contain the sequence "123"',
+      })
+      .refine((value) => /[A-Z]/.test(value), {
+        message: 'Password must contain at least one uppercase character',
+      })
+      .refine((value) => /[a-z]/.test(value), {
+        message: 'Password must contain at least one lowercase character',
+      })
+      .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
+        message: 'Password must contain at least one special character',
+      }),
     confirmPassword: z.string().min(8, "Password must contain more than 8 characters").max(50, "Password must not be above 50 characters"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -63,7 +81,7 @@ export default function PasswordForm() {
       confirmPassword: "",
     },
   })
-  const handleModal = (e: any) => {}
+  const handleModal = (e: any) => { }
 
   const passwordFormMutation = useMutation({
     mutationFn: updateUserPassword,
@@ -98,12 +116,12 @@ export default function PasswordForm() {
   })
 
   async function onSubmit(values: z.infer<typeof PasswordSchema>) {
-    console.log(values)
     let newValues = {
       password: passwordForm.getValues("currentPassword"),
       newPassword: passwordForm.getValues("newPassword"),
       token,
     }
+    console.log(newValues)
 
     passwordFormMutation.mutate(newValues as any)
   }
@@ -184,7 +202,7 @@ export default function PasswordForm() {
           // disabled={loading}
           className="mt-[32px] min-h-[48px] font-[700] w-[225px] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
           type="submit"
-          // onClick={(e) => handleModal(e)}
+        // onClick={(e) => handleModal(e)}
         >
           Change Password
         </Button>
