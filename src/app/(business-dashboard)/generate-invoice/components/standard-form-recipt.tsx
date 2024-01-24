@@ -12,10 +12,10 @@ import NameValue from "./name-value-widget"
 import { Button } from "components/ui/button"
 import { useToast } from "components/ui/use-toast"
 
- 
+
 const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft, handleModalDelete }: any) => {
   const { toast } = useToast();
- 
+
   // console.log("from standard: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
@@ -75,25 +75,25 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
           <div className="relative w-[700px] bg-[#FFFFFF] px-[68px] pt-[45px] pb-[119px] flex flex-col items-center">
             <MdClose onClick={() => setReceipt(false)} className="absolute top-[45px] right-[66px] text-[20px] text-[#F61212] cursor-pointer" />
             <div className="flex flex-col items-center gap-6 w-full pb-6 border-b border-dashed border-[#999999]">
-              
+
               {/* <Image src={defaultLogo} alt="default" /> */}
 
-              <p className="mt-10 text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
+              <p className="text-[#555555] text-[32px] font-[700] leading-normal mt-10 ">
+                {/* {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`} */}
+                {`NGN ${modalData.grandTotal ? modalData.grandTotal?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) : '00.00'}`}
+              </p>
+              <p className="text-center text-[16px] text-[#555] font-[400] leading-normal w-full">
                 A request will be sent out to{" "}
                 <span className="text-[16px] text-[#177196] font-[700] leading-normal">
                   {modalData?.customerName || "Undefined"}
                 </span>
               </p>
 
-              <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {/* {`NGN ${modalData?.amountValue ? modalData?.amountValue?.toLocaleString() : '00.00'}`} */}
-                {`NGN ${modalData.grandTotal ? modalData.grandTotal?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                }) : '00.00'}`}
-              </p>
             </div>
             <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-start gap-8">
-              <div className="flex flex-col items-start gap-2 w-[70%]">
+              {/* <div className="flex flex-col items-start gap-2 w-[70%]">
                 <label htmlFor="link" className="text-[16px] text-[#0C394B] font-[700] leading-normal">
                   Invoice Link
                 </label>
@@ -108,7 +108,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                   />
                   <LuCopy onClick={handleCopyToClipboard} className="absolute right-[23px] top-[19.75px] cursor-pointer text-[26px] text-[#49454F]" />
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-row items-start gap-2">
                 <Button onClick={() => setReceipt(false)}
                   variant={"outline"}
@@ -135,14 +135,14 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
             <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
               <div className="flex flex-col items-center w-full gap-4">
                 <div className="flex flex-row items-center justify-between w-full">
- 
+
                   <p className="text-[#555555] text-[16px] leading-normal font-[700]">
                     Subtotal
                   </p>
                   <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
                     {`NGN ${modalData.subTotal?.toLocaleString(undefined, {
                       minimumFractionDigits: 2,
-                    }) }`}
+                    })}`}
                   </p>
                 </div>
                 <div className="flex flex-row items-center justify-between w-full">
@@ -154,12 +154,12 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                       minimumFractionDigits: 2,
                     })}`}
                   </p>
- 
+
                 </div>
               </div>
               <div className="flex flex-col items-center w-full gap-4">
                 <div className="flex flex-row items-center justify-between w-full">
- 
+
                   <p className="text-[#555555] text-[16px] leading-normal font-[700]">
                     Tax
                   </p>
@@ -178,7 +178,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                       minimumFractionDigits: 2,
                     })}`}
                   </p>
- 
+
                 </div>
                 {/* <div className="flex flex-row items-center justify-between w-full">
                   <p className="text-[#115570] text-[16px] leading-normal font-[400]">
@@ -197,7 +197,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
               <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
                 {`NGN ${modalData.grandTotal?.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
-                }) }`}
+                })}`}
               </p>
             </div>
 

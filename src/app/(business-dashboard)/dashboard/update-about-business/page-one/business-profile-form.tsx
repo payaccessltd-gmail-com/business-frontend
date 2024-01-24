@@ -1,9 +1,5 @@
 "use client"
 
-<<<<<<< HEAD
-// @ts-nocheck
-=======
->>>>>>> cd185ed1039c9273b09dd73967ed0540bb014a1d
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import Link from "next/link"
@@ -30,9 +26,6 @@ import { useState } from "react"
 // }
 
 const businessProfileFormSchema = zod.object({
-<<<<<<< HEAD
- 
-=======
   businessCategory: zod.string(),
   businessType: zod.string(),
   softwareDeveloper: zod.string(),
@@ -41,7 +34,6 @@ const businessProfileFormSchema = zod.object({
   policy: zod.boolean().refine(value => value === true, {
     message: "You must consent to the policy.",
   }),
->>>>>>> cd185ed1039c9273b09dd73967ed0540bb014a1d
 })
 
 export default function BusinessProfileUpdate() {
