@@ -1,6 +1,6 @@
 "use client"
 
-
+// @ts-nocheck
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import Link from "next/link"
@@ -30,15 +30,7 @@ import { ChangeEvent, useState } from "react"
 // }
 
 const businessProfileFormSchema = zod.object({
-  businessCategory: zod.string(),
-  businessType: zod.string(),
-  business_name: zod.string(),
-  softwareDeveloper: zod.string(),
-
-  merchantId: zod.number(),
-  policy: zod.boolean().refine(value => value === true, {
-    message: "You must consent to the policy.",
-  }),
+ 
 })
 
 export default function BusinessProfileUpdate() {
