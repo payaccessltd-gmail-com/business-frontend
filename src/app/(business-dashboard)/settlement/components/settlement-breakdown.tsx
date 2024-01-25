@@ -195,6 +195,7 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup }: 
                                 <SelectItem value="6">6</SelectItem>
                                 <SelectItem value="8">8</SelectItem>
                                 <SelectItem value="10">10</SelectItem>
+                                <SelectItem value={settlementsTableData?.totalCount}>All</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

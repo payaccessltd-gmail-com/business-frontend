@@ -60,7 +60,7 @@ export default function GenerateInvoice() {
   const detailData: any = useQuery(['getMerchantSetting', requestData], () => getInvoiceDetails(requestData));
   const breakDownData: any = useQuery(['getInvoiceBreakdown', requestData], () => getInvoiceBreakdown(requestData));
 
-  console.log(detailData?.data?.responseObject)
+  console.log("deatil Data: ", detailData?.data?.responseObject)
   console.log(breakDownData?.data?.responseObject)
   const breakDown: any[] = breakDownData?.data?.responseObject
   const fillData = detailData?.data?.responseObject?.invoiceDetails
@@ -72,7 +72,6 @@ export default function GenerateInvoice() {
 
   // console.log("testing properties: ", fillData?.businessLogo, fillData)
   // console.log("breakDownData: ", breakDown)
-
   let [amountValue, setAmountValue] = useState<any>()
   let [discount, setDiscount] = useState<any>()
   let [subTotal, setSubTotal] = useState<any>()
@@ -517,7 +516,7 @@ export default function GenerateInvoice() {
               </div>
               <div className="flex flex-row items-center justify-between w-full">
                 <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                  Receive payments from your clients using our invoice.
+                  {fillData?.invoiceNote}
                 </p>
                 <p className="text-[#0C394B] text-[20px] leading-[22px] font-[600]">
                   ₦ {fillData?.invoiceType === "STANDARD" ? amountValue?.toLocaleString(undefined, {

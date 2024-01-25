@@ -72,7 +72,7 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
 
     const [deleteId, setDeleteId] = useState<string | undefined | null>("")
     const [deletePopup, setPopup] = useState<boolean>(false)
-    const heading = ["Settlement Date", "Settlement Code", "Currency", "Status"]
+    const heading = ["Settlement Date", "Settlement Code", "Amount", "Status"]
     // const router = useRouter();
     const handlePageNumber = (option: any) => {
         if (option === "next") {
@@ -220,12 +220,14 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
                         {/* "Settlement Date", "Settlement Code", "Currency", "Status" */}
                         <ScrollArea className='w-full h-[400px]'>
                             <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                                {settlementsTableData?.list?.map(({ settlementCode, settlementDate, payAccessCurrency, settlementStatus, id }: any, idx: React.Key | null | undefined) => {
+                                {settlementsTableData?.list?.map(({ settlementCode, settlementAmount, settlementDate, payAccessCurrency, settlementStatus, id }: any, idx: React.Key | null | undefined) => {
                                     return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center justify-between w-full h-[44px]'>
 
                                         <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] '>{`${dateFormatter(settlementDate)}, ${timeFormatter(settlementDate)}`}</p>
                                         <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{settlementCode}</p>
-                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{payAccessCurrency}</p>
+                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>
+                                            {payAccessCurrency === "NGN" ? "₦" : ""} {settlementAmount ? settlementAmount?.toLocaleString(undefined, { minimumFractionDigits: 2, }) : '00.00'}
+                                        </p>
                                         <div className='w-[20%] max-w-[20%] flex flex-row items-center justify-end gap-[20px]'>
                                             <div className='flex flex-col items-center'>
                                                 {settlementStatus === "PENDING" && <p className='cursor-pointer text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#D6A12E] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
@@ -312,6 +314,7 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
                             <SelectItem value="6">6</SelectItem>
                             <SelectItem value="8">8</SelectItem>
                             <SelectItem value="10">10</SelectItem>
+                            <SelectItem value={settlementsTableData?.totalCount}>All</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

@@ -28,8 +28,8 @@ export const createTerminaRequest = async ({
 
 
 
-export const getTerminalRequests = async ({ currentPageNumber, rowCount, token }: any) => {
-    const response = await fetch(`${baseUrl}/api/v1/terminal/get-terminal-requests/${rowCount}/${currentPageNumber}`, {
+export const getTerminalRequests = async ({ currentPageNumber, merchantId, rowCount, token }: any) => {
+    const response = await fetch(`${baseUrl}/api/v1/terminal/get-terminal-requests/${rowCount}/${currentPageNumber}?merchantId=${merchantId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -43,3 +43,20 @@ export const getTerminalRequests = async ({ currentPageNumber, rowCount, token }
     const data = JSON.parse(responseText);
     return data;
 };
+export const getTerminals = async ({ currentPageNumber, merchantId, rowCount, token }: any) => {
+    const response = await fetch(`${baseUrl}/api/v1/terminal/get-terminals/${currentPageNumber}?merchantId=${merchantId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const responseText = await response.text();
+    const data = JSON.parse(responseText);
+    return data;
+};
+
+

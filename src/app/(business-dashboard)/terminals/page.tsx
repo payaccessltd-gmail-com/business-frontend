@@ -10,7 +10,7 @@ import { z } from "zod"
 import TerminalForm from "./components/request-pos";
 import POSTable from "./components/table";
 import { useQuery } from "@tanstack/react-query"
-import { getTerminalRequests } from "api/POS-terminal"
+import { getTerminals } from "api/POS-terminal"
 // export const metadata: Metadata = {
 //   title: "Get Started",
 //   description: "Business page as it should be",
@@ -57,8 +57,8 @@ export default function POS() {
   const [filter, setFilter] = useState<any>()
 
 
-  const GetParameters = { currentPageNumber: page, rowCount: row, token }
-  const data: any = useQuery(['getTerminalRequest', GetParameters], () => getTerminalRequests(GetParameters));
+  const GetParameters = { currentPageNumber: page, merchantId, rowCount: row, token }
+  const data: any = useQuery(['getTerminals', GetParameters], () => getTerminals(GetParameters));
 
   console.log("terminal request: ", data?.data?.responseObject)
 
@@ -75,10 +75,10 @@ export default function POS() {
         <MdContactSupport className="text-[24px] text-[#fff]" /> Support
       </Button>
 
-      <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">POS Terminals</p>
+      <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Terminals</p>
 
 
-      <div className="flex flex-row items-start justify-end w-full">
+      {/* <div className="flex flex-row items-start justify-end w-full">
         {
           data?.data?.responseObject?.list.length ?
             <Button
@@ -88,7 +88,7 @@ export default function POS() {
               Request POS Terminal
             </Button> : ""
         }
-      </div>
+      </div> */}
 
 
       {popup ?

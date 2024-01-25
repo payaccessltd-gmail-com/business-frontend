@@ -1,7 +1,6 @@
 import { BackButton } from "app/_components/back-button";
 import { ScrollArea } from "components/ui/scroll-area";
 import { Typography } from "components/ui/Typography";
-import RegistrationForm from "./business-profile-form";
 
 export default function SelectBusinessProfilePage() {
   return (
@@ -63,7 +62,6 @@ export default function SelectBusinessProfilePage() {
             />
           </svg>
         </div>
-        <RegistrationForm />
       </div>
     </ScrollArea>
   );

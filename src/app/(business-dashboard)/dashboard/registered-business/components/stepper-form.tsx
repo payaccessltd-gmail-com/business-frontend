@@ -44,7 +44,7 @@ function Stepper() {
     [],
   );
 
-  const { state, stepperProps, stepsProps,prevStep, nextStep } = useStepper({
+  const { state, stepperProps, stepsProps, prevStep, nextStep } = useStepper({
     steps,
   });
 
@@ -63,8 +63,8 @@ function Stepper() {
                     className={`flex h-8 w-8 items-center justify-center rounded-full border border-none bg-primary-50 font-CenturyGothic text-base text-white transition-colors ease-in-out group-focus:ring-2
                      group-focus:ring-primary-50 group-focus:ring-offset-2 
                       ${state?.currentStep === index
-                      ? "bg-white text-white ring-2 ring-primary-50 ring-offset-2 group-focus:ring-primary-50 "
-                      : ""
+                        ? "bg-white text-white ring-2 ring-primary-50 ring-offset-2 group-focus:ring-primary-50 "
+                        : ""
                       }`}
                   >
                     {index + 1}
@@ -97,46 +97,46 @@ function Stepper() {
       <div className="bg-white">
         <div className="max-w-[950px] px-4 ">
           {state.currentStep === 0 ? (
-            <div className="flex items-center h-screen">
+            <div className="flex items-center">
               <div className="w-full p-5 border border-gray-300 rounded-lg">
-                  <BusinessRegistrationKYCForm prevStep={prevStep} nextStep={nextStep}/>
+                <BusinessRegistrationKYCForm prevStep={prevStep} nextStep={nextStep} />
               </div>
             </div>
           ) : state.currentStep === 1 ? (
-            <div className="flex items-center h-screen my-32">
+            <div className="flex items-center mb-32">
               <div className="w-full p-5 border border-gray-300 rounded-lg">
-                <BusinessInformationForm prevStep={prevStep} nextStep={nextStep}/>
+                <BusinessInformationForm prevStep={prevStep} nextStep={nextStep} />
               </div>
             </div>
           ) : state.currentStep === 2 ? (
             <div className="flex items-center ">
-              <div className="w-full p-5 border border-gray-300 rounded-lg">                
-              <PersonalInformationForm prevStep={prevStep} nextStep={nextStep}/>
-              </div>
-            </div>
-          )          
-          : state.currentStep === 3 ? (
-            <div className="flex items-center ">
               <div className="w-full p-5 border border-gray-300 rounded-lg">
-                
-              <AccountInformationForm prevStep={prevStep} nextStep={nextStep}/>
+                <PersonalInformationForm prevStep={prevStep} nextStep={nextStep} />
               </div>
             </div>
-          )          
-          : state.currentStep === 4 ? (
-            <div className="flex items-center  ">
-              <div className="w-full p-5 border border-gray-300 rounded-lg">
-              <ApprovalForm prevStep={prevStep} nextStep={nextStep}/>
+          )
+            : state.currentStep === 3 ? (
+              <div className="flex items-center ">
+                <div className="w-full p-5 border border-gray-300 rounded-lg">
+
+                  <AccountInformationForm prevStep={prevStep} nextStep={nextStep} />
+                </div>
               </div>
-            </div>
-          )           
-          :(
-            <></>
-          )}
+            )
+              : state.currentStep === 4 ? (
+                <div className="flex items-center  ">
+                  <div className="w-full p-5 border border-gray-300 rounded-lg">
+                    <ApprovalForm prevStep={prevStep} nextStep={nextStep} />
+                  </div>
+                </div>
+              )
+                : (
+                  <></>
+                )}
         </div>
       </div>
 
-              
+
       <pre style={{ backgroundColor: "#f2f2f2" }}>
         {/* {JSON.stringify(state, null, 2)} */}
         {/* {JSON.stringify(progressProps, null, 2)} */}

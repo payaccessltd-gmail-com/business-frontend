@@ -359,6 +359,8 @@ export default function StandardForm() {
       subject: subject,
       merchantId: merchantId,
       amount: amountValue,
+      discountAmount: Number(values?.discountAmount?.replace(/,/g, '')),
+      taxPercent: Number(values?.taxPercent?.replace(/,/g, '')),
       additionalCustomerEmailAddress: [values?.email2, values?.email3]?.toString(),
       shippingFee: Number(values?.shipping?.replace(/,/g, '')),
       customerEmail: values?.email1,
@@ -376,7 +378,7 @@ export default function StandardForm() {
         }))
       ],
     }
-    console.log("from standard form: ", newValues);
+    // console.log("from standard form: ", newValues);
     standardFormMutation.mutate(newValues as any)
   }
 
@@ -389,17 +391,24 @@ export default function StandardForm() {
       token: token,
       subject: subject,
       merchantId: merchantId,
+      amount: amountValue,
+      discountAmount: Number(values?.discountAmount?.replace(/,/g, '')),
+      taxPercent: Number(values?.taxPercent?.replace(/,/g, '')),
       additionalCustomerEmailAddress: [values?.email2, values?.email3]?.toString(),
-      shippingFee: values.shipping,
+      shippingFee: Number(values?.shipping?.replace(/,/g, '')),
       customerEmail: values?.email1,
       invoiceStatus: "DRAFT",
       invoiceBreakdownList: [
         {
           invoiceItem: values?.invoiceItem,
-          quantity: values?.qty,
-          costPerUnit: values?.costPerUnit,
+          quantity: Number(values?.qty?.replace(/,/g, '')),
+          costPerUnit: Number(values?.costPerUnit?.replace(/,/g, ''))
         },
-        ...invoiceItem
+        ...invoiceItem.map((item) => ({
+          ...item,
+          quantity: Number(item.quantity),
+          costPerUnit: Number(item.costPerUnit.replace(/,/g, '')), // Remove commas and convert to number
+        }))
       ],
     }
     // console.log(newValues);
@@ -817,8 +826,15 @@ export default function StandardForm() {
         <Button disabled={loading} className="hidden" type="submit" ref={modalRef2}>
           Preview
         </Button>
-        <Button disabled={loading} className="hidden" type="submit" onClick={(e) => handleDraftSubmit(e)} ref={modalRef3}>
-          Preview
+        <Button
+          variant={"outline"}
+          disabled={loading}
+          className="mt-[32px] min-h-[48px]  w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
+          type="submit"
+          onClick={(e) => handleDraftSubmit(e)}
+          ref={modalRef3}
+        >
+          Save as Draft
         </Button>
         {/* <Button
 

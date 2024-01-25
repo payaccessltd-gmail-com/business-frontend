@@ -44,7 +44,7 @@ export default function CustomerName({ }: Props) {
         } else {
             setBusinessLink('/dashboard/registered-business')
         }
-    }, [data, checkInfoSet(data)])
+    }, [data, state?.currentMerchantDetails])
     console.log(shouldUpdateBusiness, 'setShouldUpdateBusiness');
 
 

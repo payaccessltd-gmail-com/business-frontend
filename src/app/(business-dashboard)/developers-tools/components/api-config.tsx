@@ -58,7 +58,7 @@ export default function ApiConfiguration({ isKeyOpen, setAuthenticate }: any) {
     const data: any = useQuery(['getMerchantKeys', GetParameters], () => getMerchantKeys(GetParameters));
 
     const prefill = data?.data?.responseObject
-    console.log("devloper api: ", data)
+    // console.log("devloper api: ", data)
 
     const { toast } = useToast();
 
