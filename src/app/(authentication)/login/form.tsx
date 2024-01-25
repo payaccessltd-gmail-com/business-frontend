@@ -65,10 +65,11 @@ export default function LoginForm() {
           variant: "destructive",
           title: "",
           //@ts-ig
-          description: `${responseData?.message}`,
+          description: `${responseData?.responseObject}`,
         });
       } else if (responseData?.token && responseData?.token) {
        
+console.log("responseData >> ", responseData);
 
         toast({
           variant: "default",

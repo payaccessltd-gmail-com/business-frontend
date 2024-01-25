@@ -91,8 +91,10 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   })
 
   function allState(id: number) {
-    let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
-    setStateData(data);
+    console.log("id >> ", id);
+    
+    // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
+    // setStateData(data);
   }
 
   const updateBusinessInfoMutation = useMutation({

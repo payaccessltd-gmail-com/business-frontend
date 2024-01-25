@@ -41,7 +41,7 @@ export default function ApprovalDescription({}: ApprovalDescriptionProps) {
 
   const data: any = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
 
-  const [enableEdit, setEnableEdit] = useState<boolean>()
+  const [enableEdit, setEnableEdit] = useState<boolean>(false)
 
   console.log("personal ", JSON.stringify(data?.data?.responseObject[1]))
   const personalData = data?.data?.responseObject[1]
