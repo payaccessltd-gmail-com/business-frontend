@@ -34,8 +34,6 @@ import { ScrollArea } from "components/ui/scroll-area"
 import { useQuery } from "@tanstack/react-query"
 import { getTransactionDetails } from "api/transaction"
 import { AiOutlineConsoleSql } from "react-icons/ai";
-import { useReactToPrint } from 'react-to-print';
-import PrintTransactionView from "./print-recipt";
 
 
 let merchantList: any
@@ -56,15 +54,11 @@ if (
 
 
 
-export default function TransactionView({ modalData, setModalOpen }: any) {
-    const { toast } = useToast();
-    const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(false)
-    const componentRef = useRef(null);
-    const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
-    });
+export default function PrintTransactionView({ modalData, reciptRef }: any) {
 
+    <style type="text/css" media="print">
+        {"@media print{@page {size: portrait}}"}
+    </style>
     const dateFormatter = (dateString: any) => {
         const dateObject = new Date(dateString);
 
@@ -140,52 +134,12 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
 
 
 
-    // const terminalFormMutation = useMutation({
-    //     mutationFn: createTerminaRequest,
-    //     onSuccess: async (data) => {
-    //         const responseData: API.InvoiceStatusReponse =
-    //             (await data.json()) as API.InvoiceStatusReponse;
-    //         console.log("terminal status code: ", responseData?.statusCode)
-    //         if (responseData?.statusCode === "715" || responseData?.statusCode === "1") {
-    //             setLoading(false)
-    //             toast({
-    //                 variant: "destructive",
-    //                 title: "",
-    //                 description: "Error Creating Invoice",
-    //             });
-    //         }
-    //         else if (responseData?.statusCode === "0" || "ACCEPTED") {
-    //             setLoading(false)
-    //             toast({
-    //                 variant: "default",
-    //                 title: "Success...",
-    //                 description: "Terminal Request Sent",
-    //                 className:
-    //                     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-    //             });
-    //             terminalForm.reset();
-    //             setModalOpen(false)
-    //         }
-    //     },
-    //     onError: (e) => {
-    //         console.log(e);
-    //         setLoading(false)
-    //         toast({
-    //             variant: "destructive",
-    //             title: `${e}`,
-    //             description: "error",
-    //         });
-    //     },
-    // });
-
-
 
 
     return (
-        <div className="bg-[#323536a4] w-full h-full flex flex-col items-center pt-[10vh] fixed top-0 left-0 z-[10]">
-            <ScrollArea className="bg-white lg:w-[45%] w-[60%] h-[85vh] rounded-[14px] pb-10">
+        <div ref={reciptRef} className="w-full pt-5 flex flex-col items-center">
+            <div className="bg-white w-[70%] rounded-[14px] pb-10">
                 <div className="w-full flex flex-col items-center bg-white rounded-[14px] px-14 pb-[80px] pt-10 relative">
-                    <MdClose onClick={() => setModalOpen(false)} className="text-[22px] absolute top-6 right-6 cursor-pointer" />
                     <div className="flex flex-col items-center gap-3 mb-[43px]">
                         <div className="mb-[10px] w-16 h-14 rounded-[11px] bg-[#FFF6EF] flex flex-col items-center justify-center">
                             <LuFolder className="text-[24px] text-[#F38020]" />
@@ -263,36 +217,12 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
 
                         </div>
                     </div>
-                    <Button
-                        disabled={loading}
-                        className="mt-[32px] min-h-[48px] rounded-[8px] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                    >
-                        {loading ? "Loading..." : "Share Receipt"}
-                    </Button>
-                    <Button
-                        onClick={() => handlePrint()}
-                        disabled={loading}
-                        variant={"outline"}
-                        className="mt-[16px] min-h-[48px] rounded-[8px] text-[#23AAE1] border-[#23AAE1] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                    >
-                        {loading ? "Loading..." : "Download Receipt"}
-                    </Button>
-                    <Button
-                        disabled={loading}
-                        variant={"ghost"}
-                        className="mt-[16px] rounded-[8px] min-h-[48px] text-[#23AAE1] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                    >
-                        {loading ? "Loading..." : "Report a problem"}
-                    </Button>
-
-                    <div className="hidden">
-                        <PrintTransactionView reciptRef={componentRef} modalData={modalData} />
-                    </div>
                 </div>
-            </ScrollArea>
-
-
+            </div>
         </div>
+
+
+
 
     );
 }

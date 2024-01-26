@@ -60,7 +60,7 @@ export default function POS() {
   const GetParameters = { currentPageNumber: page, merchantId, rowCount: row, token }
   const data: any = useQuery(['getTerminals', GetParameters], () => getTerminals(GetParameters));
 
-  console.log("terminal request: ", data?.data?.responseObject)
+  console.log("terminals: ", data?.data?.responseObject)
 
   const handleModalPOSpopup = () => {
     console.log("testing");

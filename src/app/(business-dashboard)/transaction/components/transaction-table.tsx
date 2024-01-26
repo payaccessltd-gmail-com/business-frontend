@@ -65,7 +65,7 @@ if (
 }
 
 
-export default function TransactionTable({ setModalData, setModalOpen, transactionTableData, row, setRow, setPage, page }: any) {
+export default function TransactionTable({ setModalData, setModalOpen, transactionTableData, row, setRow, setPage, page, Transactionref }: any) {
 
     const { toast } = useToast();
 
@@ -205,7 +205,7 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
 
 
     return (
-        <div className='flex flex-col items-center relative bg-white'>
+        <div ref={Transactionref} className='flex flex-col items-center relative bg-white'>
             <ScrollArea className="2xl:w-full w-[75vw] rounded-[8px]">
                 <div className="w-full flex flex-col 2xl:items-center items-start">
                     <div className="2xl:w-full w-[1600px]">
