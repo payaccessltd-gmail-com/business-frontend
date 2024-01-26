@@ -143,7 +143,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
 
 
         <FormField
-          disabled
+          // disabled
           control={personalForm.control}
           name="firstName"
           render={({ field }) => (
@@ -165,7 +165,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
           )}
         />
         <FormField
-          disabled
+          // disabled
           control={personalForm.control}
           name="lastName"
           render={({ field }) => (
@@ -188,7 +188,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
         />
 
         <FormField
-          disabled
+          // disabled
           control={personalForm.control}
           name="gender"
           render={({ field }) => (
@@ -217,7 +217,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
         />
 
         <FormField
-          disabled
+          // disabled
           control={personalForm.control}
           name="email"
           render={({ field }) => (
@@ -241,7 +241,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
 
         <div className="flex flex-row items-center w-full gap-[10px] my-6">
           <FormField
-            disabled
+            // disabled
             control={personalForm.control}
             name="code"
             render={({ field }) => (
@@ -270,7 +270,7 @@ export default function PersonalForm({ setVerifyModal, setEmail, email }: any) {
           />
 
           <FormField
-            disabled
+            // disabled
             control={personalForm.control}
             name="phone"
             render={({ field }) => (
