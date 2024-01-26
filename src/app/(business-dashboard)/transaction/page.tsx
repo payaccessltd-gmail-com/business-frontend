@@ -309,7 +309,6 @@ const Transaction = () => {
 
       <div className="hidden">
         <PrintTransactionTable Transactionref={componentRef} transactionTableData={data?.data?.responseObject} />
-
       </div>
 
 
