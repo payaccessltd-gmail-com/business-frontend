@@ -14,10 +14,8 @@
 import { Metadata } from "next"
 import * as React from "react"
 import { Button } from "components/ui/button"
-import { MdContactSupport } from "react-icons/md"
 import EmptyState from "./components/EmptyState"
 import { zodResolver } from "@hookform/resolvers/zod"
-
 import { LuChevronDown } from "react-icons/lu"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { CalendarIcon } from "@radix-ui/react-icons"
@@ -56,8 +54,6 @@ const dropOptions: any[] = [
   { name: "Channel 1", value: "Channel 1" },
   { name: "Channel 2", value: "Channel 2" }
 ]
-const supportOption = ["Contact us", "Share feedback", "Resolve a complain"]
-
 
 
 const FormSchema = z.object({
@@ -107,27 +103,6 @@ const Settlement = () => {
 
   return (
     <div className="relative flex flex-col w-full h-full">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            className="fixed z-50 right-[72px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
-          >
-            <MdContactSupport className="text-[24px] text-[#fff]" />
-            Support
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end' className="w-[206px] p-[15px]">
-          <div className='w-full flex flex-col items-center gap-2'>
-            {
-              supportOption.map((value, id) => {
-                return <p key={id} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                  {value}
-                </p>
-              })
-            }
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
 
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Settlement</p>
 

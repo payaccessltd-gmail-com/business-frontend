@@ -88,7 +88,7 @@ const Transaction = () => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-  const supportData: any = ["Contact us", "Share feedback", "Resolve a complain"]
+
 
 
   console.log(componentRef?.current)
@@ -117,27 +117,6 @@ const Transaction = () => {
 
   return (
     <div className="relative flex flex-col w-full h-full">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            className="fixed z-50 left-[250px] bottom-[10px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
-          >
-            <MdContactSupport className="text-[24px] text-[#fff]" />
-            Support
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end' className="w-[206px] p-[15px]">
-          <div className='w-full flex flex-col items-center gap-2'>
-            {
-              supportData.map((value: any, id: any) => {
-                return <p key={id} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                  {value}
-                </p>
-              })
-            }
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
 
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Transactions</p>
 
