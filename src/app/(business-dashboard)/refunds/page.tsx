@@ -13,10 +13,8 @@
 
 import * as React from "react"
 import { Button } from "components/ui/button"
-import { MdContactSupport } from "react-icons/md"
 import EmptyState from "./components/EmptyState"
 import { zodResolver } from "@hookform/resolvers/zod"
-
 import { LuChevronDown } from "react-icons/lu"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { CalendarIcon } from "@radix-ui/react-icons"
@@ -35,7 +33,8 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import RefundTable from "./components/refund-table"
-import { getAllTransaction } from "api/transaction"
+import { listTransactionTickets } from "api/dispute"
+import RefundView from "./components/refund-view"
 
 const channel = [
   { label: "Processing", value: "1" },
@@ -79,16 +78,16 @@ const Refund = () => {
   const [date1, setDate1] = useState<Date>()
   const [row, setRow] = useState<string>("5")
   const [page, setPage] = useState<string>("0")
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalData, setModalData] = useState<any>()
 
   const GetParameters = { currentPageNumber: page, request: {}, merchantId: merchantId, rowPerPage: row, token }
-  const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllTransaction(GetParameters))
+  const data: any = useQuery(["listTransactionTickets", GetParameters], () => listTransactionTickets(GetParameters))
 
 
   return (
     <div className="relative flex flex-col w-full h-full">
-      <Button className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
-        <MdContactSupport className="text-[24px] text-[#fff]" /> Support{" "}
-      </Button>
+
 
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Refund</p>
 
@@ -289,10 +288,16 @@ const Refund = () => {
           </div>
         </form>
       </Form>
+      {
+        modalOpen ?
+          <RefundView setModalOpen={setModalOpen} modalData={modalData} />
+          :
+          ""
+      }
 
       {data?.data?.responseObject?.list.length ? (
         <div className="w-full mt-[35px] self-center">
-          <RefundTable setPage={setPage} page={page} row={row} setRow={setRow} invoiceTableData={data?.data?.responseObject} />
+          <RefundTable setModalData={setModalData} setModalOpen={setModalOpen} setPage={setPage} page={page} row={row} setRow={setRow} invoiceTableData={data?.data?.responseObject} />
         </div>
       ) : (
         <div className="w-[602px] mt-[132px] self-center">
