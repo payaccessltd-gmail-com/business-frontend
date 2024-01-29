@@ -122,7 +122,7 @@ export const updateMerchantBusinessData = async (
     formdata.append("merchantId", merchantId.toString())
   }
 
-  if (businessLogoFile) {
+  if (businessCertificateFile) {
     formdata.append(
       "businessCertificateFile",
       businessCertificateFile,

@@ -19,6 +19,7 @@ import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
 import { updateMerchantBusinessData } from "api/merchant-management"
 import { getAllState, getCountry } from "api/location"
+import { businessInfoFormSchema } from "Schema"
 
 type BusinessInfoFormProps = {
   prevStep?: () => void
@@ -26,35 +27,6 @@ type BusinessInfoFormProps = {
 }
 
 
-
-const businessInfoFormSchema = zod.object({
-
-
-  merchantId: zod.number(),
-  businessName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  primaryMobile: zod.string().min(1, {
-    message: "feld required",
-  }),
-  supportContact: zod.string().min(1, {
-    message: "feld required",
-  }),
-  businessState: zod.string(),
-  businessCity: zod.string(),
-  businessEmail: zod.string().email(),
-  businessWebsite: zod.string(),
-  businessCountry: zod.string(),
-  businessAddress: zod.string(),
-  businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
-
-  businessCertificateFile: zod.custom<File>().optional() || zod.string().optional(),
-  // businessCertificate: zod.string(),
-
-  businessDescription: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-})
 
 
 export default function BusinessInformationForm(props: BusinessInfoFormProps) {
@@ -90,12 +62,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     resolver: zodResolver(businessInfoFormSchema),
   })
 
-  function allState(id: number) {
-    console.log("id >> ", id);
-    
-    // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
-    // setStateData(data);
-  }
+
 
   const updateBusinessInfoMutation = useMutation({
     mutationFn: updateMerchantBusinessData,
@@ -189,6 +156,14 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
       businessInfoForm.setValue("merchantId", Number(currentMerchant?.id))
     }
   }, [currentMerchant?.id, currentMerchantDetails])
+
+  
+const  allState = (e)=>  {
+  console.log("id >> ", e);
+  
+  // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
+  // setStateData(data);
+}
 
   return (
     <Form {...businessInfoForm}>
@@ -291,15 +266,15 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Country</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} defaultValue={field.value}   >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent   >
+                  <SelectContent    >
                     <SelectItem value=""></SelectItem>
-                    {countries?.data.map(ctr => <SelectItem onChange={() => allState(ctr.id)} key={ctr.name} className="py-3 " value={ctr.name}>
+                    {countries?.data.map(ctr => <SelectItem  key={ctr.name} className="py-3 " value={ctr.name}>
                       {ctr.name}
                     </SelectItem>)}
                   </SelectContent>
@@ -326,7 +301,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="w-full" onSelect={(target) => { console.log("working"); }} >
+                  <SelectContent className="w-full"  >
                     <SelectItem value="ABUJA">Abuja</SelectItem>
                     <SelectItem value="LAGOS">Lagos</SelectItem>
                     <SelectItem value="Minna">MInna</SelectItem>

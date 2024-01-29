@@ -302,7 +302,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             <FormItem>
               <FormLabel className="text-[#555555]">Identification Number</FormLabel>
               <FormControl>
-                <Input {...field} onInput={(event) => numberFormat(event)} max="11" placeholder="Enter identification number" />
+                <Input {...field}  max="15" placeholder="Enter identification number" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -352,7 +352,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Business Logo (Optional)</FormDescription>
+              <FormDescription>Attach Document <small>(size 1MB)</small></FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">

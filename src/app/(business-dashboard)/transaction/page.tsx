@@ -265,10 +265,12 @@ const Transaction = () => {
               </form>
             </DropdownMenuContent>
           </DropdownMenu>
+          {data?.data?.responseObject?.list.length ? 
           <Button className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
             Download
           </Button>
-
+          :<></>
+}
         </div>
 
       </div>

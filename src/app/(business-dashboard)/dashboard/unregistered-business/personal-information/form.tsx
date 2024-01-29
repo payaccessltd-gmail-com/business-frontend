@@ -46,7 +46,7 @@ const personalInfoFormSchema = zod.object({
     zod.literal("INTL_PASSPORT"),
     zod.literal("VOTERS_CARD"),
   ]),
-  identificationDocumentPath: zod.custom<File>().optional() || zod.string().optional(),
+  identificationDocumentPath: zod.custom<File>() || zod.string(),
 })
 
 export default function PersonalInformationForm(props: PersonalInfoFormProps) {
@@ -160,8 +160,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               <FormMessage />
             </FormItem>
           )}
-        />
-
+        /> 
         <div className="flex flex-row gap-4">
           <FormField
             name="firstName"
@@ -184,7 +183,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter last name" {...field} disabled={true} />
+                  <Input placeholder="Enter last name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -199,7 +198,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             <FormItem className="w-full">
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Enter last name" {...field} />
+                <Input type="email" placeholder="Enter last name" {...field}  disabled={true} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -352,7 +351,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Business Logo (Optional)</FormDescription>
+              <FormDescription>Attach Document </FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
