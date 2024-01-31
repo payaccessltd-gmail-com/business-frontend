@@ -53,7 +53,7 @@ if (
 
 
 
-const POSTable = ({ terminalTableData, row, setRow, setPage, page }: any) => {
+const POSTable = ({ terminalTableData, setModalData, setModalOpen, row, setRow, setPage, page }: any) => {
 
     console.log("rowperpage: ", row)
     console.log("page: ", page)
@@ -124,7 +124,10 @@ const POSTable = ({ terminalTableData, row, setRow, setPage, page }: any) => {
         return timeString;
 
     }
-
+    const handleModalOpen = (terminalCode: any) => {
+        setModalData({ terminalCode })
+        setModalOpen(true)
+    }
     // console.log("terminalTableData", terminalTableData)
 
     return (
@@ -200,9 +203,9 @@ const POSTable = ({ terminalTableData, row, setRow, setPage, page }: any) => {
                                                     <DropdownMenuContent align='end' className="w-[206px] p-[15px]">
                                                         <div className='w-full flex flex-col items-center gap-2'>
                                                             <p
-                                                                // onClick={() => handleView(id)} 
+                                                                onClick={() => handleModalOpen(terminalCode)}
                                                                 className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                                                                View
+                                                                View Transactions
                                                             </p>
 
 

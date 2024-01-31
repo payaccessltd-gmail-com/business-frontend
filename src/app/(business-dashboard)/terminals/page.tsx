@@ -11,6 +11,7 @@ import TerminalForm from "./components/request-pos";
 import POSTable from "./components/table";
 import { useQuery } from "@tanstack/react-query"
 import { getTerminals } from "api/POS-terminal"
+import ViewTransactions from "./components/view-transactions";
 // export const metadata: Metadata = {
 //   title: "Get Started",
 //   description: "Business page as it should be",
@@ -55,6 +56,8 @@ export default function POS() {
   const [startDate, setStartDate] = useState<Date>()
   const [endDate, setEndDate] = useState<Date>()
   const [filter, setFilter] = useState<any>()
+  const [isModalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalData, setModalData] = useState<any>()
 
 
   const GetParameters = { currentPageNumber: page, merchantId, rowCount: row, token }
@@ -71,7 +74,7 @@ export default function POS() {
 
   return (
     <div className="relative w-full h-full flex flex-col">
-    
+
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Terminals</p>
 
 
@@ -86,6 +89,7 @@ export default function POS() {
             </Button> : ""
         }
       </div> */}
+      {isModalOpen ? <ViewTransactions modalData={modalData} handleModalPOSpopup={setModalOpen} /> : ""}
 
 
       {popup ?
@@ -95,7 +99,7 @@ export default function POS() {
       {
         data?.data?.responseObject?.list.length ?
           <div className="w-full mt-[35px] self-center">
-            <POSTable setPage={setPage} page={page} row={row} setRow={setRow} terminalTableData={data?.data?.responseObject} />
+            <POSTable setModalData={setModalData} setModalOpen={setModalOpen} setPage={setPage} page={page} row={row} setRow={setRow} terminalTableData={data?.data?.responseObject} />
           </div> :
           <div className="w-[602px] mt-[132px] self-center">
             <EmptyState handleModalPOSpopup={handleModalPOSpopup} />

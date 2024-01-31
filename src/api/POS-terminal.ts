@@ -60,3 +60,22 @@ export const getTerminals = async ({ currentPageNumber, merchantId, rowCount, to
 };
 
 
+export const getTerminalsTransactions = async ({ pageNumber, rowCount, token, terminalCode }: any) => {
+
+    const response = await fetch(`${baseUrl}/api/v1/transactions/get-transactions/${rowCount}/${pageNumber}`, {
+        method: "POST",
+        body: JSON.stringify(terminalCode),
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const responseText = await response.text();
+    const data = JSON.parse(responseText);
+    return data;
+};
+
+

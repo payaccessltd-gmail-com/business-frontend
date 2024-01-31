@@ -263,27 +263,27 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
 
                         </div>
                     </div>
-                    <Button
+                    {/* <Button
                         disabled={loading}
                         className="mt-[32px] min-h-[48px] rounded-[8px] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     >
                         {loading ? "Loading..." : "Share Receipt"}
-                    </Button>
+                    </Button> */}
                     <Button
                         onClick={() => handlePrint()}
                         disabled={loading}
-                        variant={"outline"}
-                        className="mt-[16px] min-h-[48px] rounded-[8px] text-[#23AAE1] border-[#23AAE1] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+                        // variant={"outline"}
+                        className="mt-[32px] min-h-[48px] rounded-[8px] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     >
                         {loading ? "Loading..." : "Download Receipt"}
                     </Button>
-                    <Button
+                    {/* <Button
                         disabled={loading}
                         variant={"ghost"}
                         className="mt-[16px] rounded-[8px] min-h-[48px] text-[#23AAE1] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     >
                         {loading ? "Loading..." : "Report a problem"}
-                    </Button>
+                    </Button> */}
 
                     <div className="hidden">
                         <PrintTransactionView reciptRef={componentRef} modalData={modalData} />

@@ -65,7 +65,7 @@ if (
 }
 
 
-export default function TransactionTable({ setModalData, setModalOpen, transactionTableData, row, setRow, setPage, page, Transactionref }: any) {
+export default function TransactionTable({ setModalData, setModalOpen, transactionTableData, row, setRow, setPage, page, Transactionref, setComplain, setComplainData }: any) {
 
     const { toast } = useToast();
 
@@ -200,10 +200,17 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
         setModalData(orderRef)
         setModalOpen((value: any) => !value)
     }
+    const handleComplainModal = (orderRef: any, disputeAmount: any, merchantId: any) => {
+        setComplainData({
+            disputeAmount,
+            orderRef,
+            merchantId,
+        })
+        setComplain((value: any) => !value)
+    }
 
 
-
-
+  
     return (
         <div ref={Transactionref} className='flex flex-col items-center relative bg-white'>
             <ScrollArea className="2xl:w-full w-[75vw] rounded-[8px]">
@@ -219,7 +226,7 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
                         </div>
                         <ScrollArea className='w-full h-[400px]'>
                             <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                                {transactionTableData?.list?.map(({ id, channel, amount, merchantCode, transactionStatus, updatedAt, serviceType, payAccessCurrency, merchantName, orderRef }: any, idx: React.Key | null | undefined) => {
+                                {transactionTableData?.list?.map(({ id, channel, amount, merchantCode, transactionStatus, updatedAt, serviceType, payAccessCurrency, merchantName, orderRef, merchantId }: any, idx: React.Key | null | undefined) => {
                                     return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
 
                                         <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{merchantCode}</p>
@@ -290,7 +297,7 @@ export default function TransactionTable({ setModalData, setModalOpen, transacti
                                                         {/*  {transactionStatus === "DELETED" ? "" : <p onClick={() => handleDeletePopup(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                 Delete
                                             </p>}  */}
-                                                        {transactionStatus === "DELETED" ? "" : <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                        {transactionStatus === "DELETED" ? "" : <p onClick={() => handleComplainModal(orderRef, amount, merchantId)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                             Raise complain / Ticket
                                                         </p>}
                                                     </div>
