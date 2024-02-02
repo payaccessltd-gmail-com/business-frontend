@@ -62,7 +62,7 @@ if (
 
 
 
-export default function SettlementBreakdown({ modalData, handleModalPOSpopup }: any) {
+export default function SettlementBreakdown({ modalData, handleModalPOSpopup, auxiliaryData }: any) {
     const { toast } = useToast();
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false)
@@ -75,13 +75,13 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup }: 
 
 
 
-    const GetParameters = { pageNumber: page, modalData, rowCount: row, token }
+    const GetParameters = { pageNumber: page, settlementId: modalData?.id, rowCount: row, token }
     const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllSettlementsBreakdown(GetParameters))
     console.log("get settlemnts breakdown: ", data?.data?.responseObject)
 
     let settlementsTableData = data?.data?.responseObject
 
-    const heading = ["Merchant code", "settlementId", "Business name", "Settlement amount"]//================table heading creator========================
+    const heading = ["Merchant code", "Business name", "Currency", "Amount"]//================table heading creator========================
     // const router = useRouter();
     const handlePageNumber = (option: any) => {
         if (option === "next") {
@@ -138,13 +138,21 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup }: 
 
     }
 
+  
 
+    // console.log("auxiliary: ", modalData)
 
 
 
     return (
         <div className="bg-[#323536a4] w-full h-full flex flex-col items-center pt-[10vh] fixed top-0 left-0 z-10">
-            <div className="relative flex flex-col items-center w-[80%] bg-white rounded-lg px-6 pb-10 pt-16">
+            <div className="relative flex flex-col items-center w-[80%] h-[80vh] bg-white rounded-lg px-6 pb-10 pt-16">
+                <p className="text-[#177196] text-[40px] font-[700] leading-normal my-[10px]">Settlment Breakdown</p>
+                <p className="text-[#666666] text-[16px] font-[700] leading-normal mb-[10px]">Settlment Code: {modalData?.settlementCode}</p>
+                <p className="text-[#666666] text-[16px] font-[700] leading-normal mb-[16px]">Settlment Date: {`${dateFormatter(modalData?.settlementDate)}, ${modalData?.settlementDate?.split("-")[0]}`}</p>
+
+
+
                 <MdClose onClick={() => handleModalPOSpopup(false)} className="text-[22px] cursor-pointer absolute top-6 right-7" />
                 <ScrollArea className="xl:w-full w-[75vw] rounded-[8px]">
                     <div className="w-full flex flex-col xl:items-center items-start">
@@ -164,9 +172,10 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup }: 
                                         return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center justify-between w-full h-[44px]'>
 
                                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{merchantCode}</p>
-                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{settlementId}</p>
+                                            {/* <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{settlementId}</p> */}
                                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{businessName}</p>
-                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{payAccessCurrency === "NGN" ? "₦" : ""}{" "}{settlementAmount}</p>
+                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{payAccessCurrency}</p>
+                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] '>{settlementAmount}</p>
 
                                         </div>
                                     })}

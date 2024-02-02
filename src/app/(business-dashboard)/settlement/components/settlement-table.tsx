@@ -196,12 +196,26 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
 
     }
 
-    const handleModalState = (id: any) => {
-        setModalData(id)
+    const formatCode = (inputStr: string) => {
+        let formattedStr = "";
+        for (let i = 0; i < inputStr.length; i++) {
+            if (i > 0 && i % 4 === 0) {
+                formattedStr += "-";
+            }
+            formattedStr += inputStr[i];
+            if (i % 4 === 3 && i !== inputStr.length - 1) {
+                formattedStr += "-";
+            }
+        }
+        return formattedStr;
+    }
+
+    const handleModalState = (id: any, settlementCode: any, settlementDate: any) => {
+        setModalData({ id, settlementCode, settlementDate })
         setTablePopup((value: any) => !value)
     }
 
-
+    // console.log("settlementData: ", settlementsTableData)
 
 
     return (
@@ -212,7 +226,11 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
                         <div className='flex flex-row items-center justify-between rounded-[8px] p-[10px] h-[58px] w-full bg-[#0C394B] mb-[24px]'>
                             {
                                 heading.map((value, id) => {
-                                    return <p key={id} className='text-[#FFFFFF] text-[16px] font-[600] leading-[20px] text-center w-[20%] font-raleway'>{value}</p>
+                                    if (value === "Status") {
+                                        return <p key={id} className='text-[#FFFFFF] text-[16px] font-[600] leading-[20px] text-center w-[20%] font-raleway'>{value}</p>
+                                    } else {
+                                        return <p key={id} className='text-[#FFFFFF] text-[16px] font-[600] leading-[20px] text-end w-[20%] font-raleway'>{value}</p>
+                                    }
                                 })
 
                             }
@@ -223,9 +241,9 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
                                 {settlementsTableData?.list?.map(({ settlementCode, settlementAmount, settlementDate, payAccessCurrency, settlementStatus, id }: any, idx: React.Key | null | undefined) => {
                                     return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center justify-between w-full h-[44px]'>
 
-                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] '>{`${dateFormatter(settlementDate)}, ${timeFormatter(settlementDate)}`}</p>
-                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{settlementCode}</p>
-                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>
+                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-end w-[20%] '>{`${dateFormatter(settlementDate)}, ${settlementDate?.split("-")[0]}`}</p>
+                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-end w-[20%]'>{formatCode(settlementCode)}</p>
+                                        <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-end w-[20%] font-raleway'>
                                             {payAccessCurrency === "NGN" ? "₦" : ""} {settlementAmount ? settlementAmount?.toLocaleString(undefined, { minimumFractionDigits: 2, }) : '00.00'}
                                         </p>
                                         <div className='w-[20%] max-w-[20%] flex flex-row items-center justify-end gap-[20px]'>
@@ -269,7 +287,7 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
                                                                 ?
                                                                 ""
                                                                 :
-                                                                <p onClick={() => handleModalState(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                                <p onClick={() => handleModalState(id, settlementCode, settlementDate)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                                     View
                                                                 </p>
                                                         }
