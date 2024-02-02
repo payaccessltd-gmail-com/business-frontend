@@ -47,7 +47,7 @@ export const getAllSettlementsBreakdown = async ({ pageNumber, rowCount, token, 
     // console.log("searchQuery" + JSON.stringify(request))
     //  merchantId = '1'
 
-    const response = await fetch(`${baseUrl}/api/v1/settlement/get-settlement-breakdown-list/${rowCount}/${pageNumber}?settlementId:${settlementId}`, {
+    const response = await fetch(`${baseUrl}/api/v1/settlement/get-settlement-breakdown-list/${rowCount}/${pageNumber}?settlementId=${settlementId}`, {
         method: "GET",
         // body: JSON.stringify(request),
         headers: {

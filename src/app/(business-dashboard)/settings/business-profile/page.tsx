@@ -13,6 +13,7 @@ import { useHydrateStore, useUserStore } from "store"
 
 
 
+
 export default function page() {
 
   const userDetail = useHydrateStore(useUserStore, (state) => state.user);
@@ -23,6 +24,7 @@ export default function page() {
 
   return (
     <div className="flex flex-col items-start w-full pl-8">
+    
       <div className="flex flex-row items-center justify-between w-full gap-1 pr-8">
         <p className="text-[#115570] text-[20px] leading-[125%] font-[600]">
           {`Business profile for ${userDetail?.primaryBusinessName}`}
