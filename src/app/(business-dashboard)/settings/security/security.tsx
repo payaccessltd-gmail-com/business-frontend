@@ -44,6 +44,12 @@ export default function Security({ data, security, setSecurity }: any) {
 
   const [option1value, setOption1] = useState<any>(data2?.data?.responseObject?.twoFactorAuthForLogin || false)
   const [option2value, setOption2] = useState<any>(data?.twoFactorAuthForPaymentAndTransfer || false)
+  const [mStatus, setMStaus] = useState<boolean>(false)
+
+  console.log("merchant deatil store: ", merchantDetailStore)
+  // if (merchantDetailStore?.merchantStatus == "COMPLETED") {
+  //   setMStaus(true)
+  // }
 
   // console.log(data2?.data?.responseObject?.twoFactorAuthForLogin)
   // console.log(data2?.data?.responseObject, "data2 security")

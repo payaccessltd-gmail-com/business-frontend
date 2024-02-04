@@ -24,6 +24,12 @@ import { getMerchantDetails } from "api/settings"
 import { updateBusinessInfo } from "api/settings"
 import { countryList } from "utils/countrylist"
 import { useHydrateStore, useUserStore, useMerchantStore } from "store"
+import { formatMoneyAmount, formatPercentValue, formatQuantity } from "utils/numberFormater"
+import { FaBullseye } from "react-icons/fa"
+import Image from "next/image";
+import ImageModal from "./components/image-modal"
+
+
 
 
 let merchantList: any
@@ -43,13 +49,13 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 
 const BusinessInfoSchema = z.object({
   businessName: z.string().optional(),
-  businessDescription: z.string(),
-  businessEmail: z.string().email(),
-  phone: z.string(),
-  code: z.string(),
-  country: z.string(),
-  businessState: z.string(),
-  businessWebsite: z.string(),
+  businessDescription: z.string().optional(),
+  businessEmail: z.string().email().optional(),
+  phone: z.string().optional(),
+  code: z.string().optional(),
+  country: z.string().optional(),
+  businessState: z.string().optional(),
+  businessWebsite: z.string().optional(),
   businessLogoFile: z.custom<File>().optional(),
 })
 export default function BusinessInfoForm() {
@@ -62,6 +68,7 @@ export default function BusinessInfoForm() {
   const [popup, setPopup] = useState(false)
   const [modalData, setModalData] = useState<any>("")
   const [loading, setLoading] = useState(false);
+  const [imgModal, setImgModal] = useState<boolean>(false);
   const [inputField, setInputField] = useState<any[]>([{ label: "Customer Email" }])
   const getParameters = {
     token,
@@ -75,16 +82,16 @@ export default function BusinessInfoForm() {
   // console.log(prefill?.primaryMobile?.split(")")[1])
   let businessInfoForm = useForm<z.infer<typeof BusinessInfoSchema>>({
     resolver: zodResolver(BusinessInfoSchema),
-    defaultValues: {
-      businessName: "",
-      businessDescription: "",
-      businessEmail: "",
-      phone: "",
-      code: undefined,
-      country: undefined,
-      businessState: undefined,
-      businessWebsite: "",
-    },
+    // defaultValues: {
+    //   businessName: "",
+    //   businessDescription: "",
+    //   businessEmail: "",
+    //   phone: "",
+    //   code: undefined,
+    //   country: undefined,
+    //   businessState: undefined,
+    //   businessWebsite: "",
+    // },
   })
   const handleModal = (e: any) => { }
 
@@ -96,8 +103,8 @@ export default function BusinessInfoForm() {
         setLoading(false)
         toast({
           variant: "destructive",
-          title: "",
-          description: "Error Updating Info",
+          title: "Error Updating Info",
+          description: responseData?.message,
         })
       }
       if (responseData?.statusCode === "0") {
@@ -122,8 +129,23 @@ export default function BusinessInfoForm() {
   })
 
   async function onSubmit(values: z.infer<typeof BusinessInfoSchema>) {
-    console.log(123)
+    let size: any = businessInfoForm?.getValues("businessLogoFile")?.size
+    if (size > 307200) {
+      businessInfoForm?.setError("businessLogoFile", {
+        type: "manual",
+        message: `requred file size should be lesser than 300kb`,
+      })
+    }
     setLoading(true)
+    if (!businessInfoForm?.getValues()?.code) {
+      toast({
+        variant: "destructive",
+        title: `Phone Code:`,
+        description: "Select a phone code",
+      })
+      setLoading(false)
+      return
+    }
     let newValues = {
       ...values,
       token: token,
@@ -138,6 +160,8 @@ export default function BusinessInfoForm() {
   //     modalRef.current.click()
   // }
 
+  // console.log("business logo", businessInfoForm?.getValues("businessLogoFile"))
+
   return (
     <Form {...businessInfoForm}>
       <form
@@ -145,7 +169,7 @@ export default function BusinessInfoForm() {
         className="p-[40px] w-[60%] rounded-[24px] flex flex-col items-end bg-white shadow-[0px_4px_8px_0px_rgba(50,50,71,0.06)]"
       >
         <FormField
-          // disabled
+          disabled
           control={businessInfoForm.control}
           name="businessName"
           render={({ field }) => (
@@ -177,7 +201,7 @@ export default function BusinessInfoForm() {
               <FormControl>
                 <Textarea
                   placeholder={prefill?.businessDescription}
-                  className="resize-none border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                  className="placeholder:text-black disabled:opacity-100 resize-none border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                   {...field}
                 />
               </FormControl>
@@ -197,7 +221,7 @@ export default function BusinessInfoForm() {
               <FormControl className="w-full bg-[red]">
                 <Input
                   type="email"
-                  className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                  className="placeholder:text-black disabled:opacity-100 before:border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                   placeholder={prefill?.businessEmail}
                   {...field}
                 />
@@ -225,7 +249,7 @@ export default function BusinessInfoForm() {
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="rounded-[6px] min-h-[46px] bg-[#F2FAFD] border-none w-full">
-                        <SelectValue defaultValue={field.value} placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1] || "+234"}`} />
+                        <SelectValue className="placeholder:text-black disabled:opacity-100" defaultValue={field.value} placeholder={`${prefill?.primaryMobile?.split(")")[0].split("(")[1] || "+234"}`} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent defaultValue={"+234"}>
@@ -252,9 +276,10 @@ export default function BusinessInfoForm() {
                       type="tel"
                       pattern="[0-9]*"
                       title="Input is only number"
-                      className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                      className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                       placeholder={prefill?.primaryMobile?.split(")")[1]}
                       {...field}
+                      onInput={(event) => formatQuantity(event)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -298,7 +323,7 @@ export default function BusinessInfoForm() {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2">
-                    <SelectValue defaultValue={field.value} placeholder={prefill?.businessState} />
+                    <SelectValue className="placeholder:text-black disabled:opacity-100" defaultValue={field.value} placeholder={prefill?.businessState} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -324,7 +349,7 @@ export default function BusinessInfoForm() {
               <FormControl className="w-full bg-[red]">
                 <Input
                   type="text"
-                  className="border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
+                  className="placeholder:text-black disabled:opacity-100 border-[#D6D6D6] rounded-[6px] min-h-[46px] shadow-none bg-white w-full p-2 "
                   placeholder={prefill?.businessWebsite}
                   {...field}
                 />
@@ -341,10 +366,21 @@ export default function BusinessInfoForm() {
           render={({ field }) => (
             <FormItem className="w-full mt-6">
               <FormDescription className="text-[#2A2A2A] text-[16px] leading-[150%] font-[600]">Business Logo</FormDescription>
+              {prefill?.businessLogo ?
+                <div onClick={() => setImgModal(true)} className="h-[48px] w-[48px] flex flex-col items-center justify-center self-start overflow-hidden cursor-pointer border border-[#0000008e] rounded-sm">
+                  <Image height={58} width={58} src={`http://137.184.47.182:8081/fileuploads/${prefill?.businessLogo}`} alt="business logo" />
+                </div>
+                :
+                ""}
               <FormLabel className="bg-[white] border-[#115570] rounded-[10px] flex h-[77px] w-full cursor-pointer flex-row items-center justify-center gap-3 border-[2px] border-dotted">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
-                <p className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">Choose File</p>
+                <p className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF]">
+                  {/* {prefill?.businessLogo && !businessInfoForm?.getValues("businessLogoFile") ? prefill?.businessLogo : (businessInfoForm?.getValues("businessLogoFile") ? businessInfoForm?.getValues("businessLogoFile")?.name : "Choose File")} */}
+                  Choose File
+                </p>
               </FormLabel>
+
+
               <FormControl>
                 <Input
                   accept=".jpg, .jpeg, .png, .svg, .gif"
@@ -359,15 +395,21 @@ export default function BusinessInfoForm() {
             </FormItem>
           )}
         />
+
         <Button
           disabled={loading}
           className="my-[32px] min-h-[48px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4] self-center"
           type="submit"
         // onClick={(e) => console.log(loading)}
         >
-          Save Changes
+          {loading ? "Saving..." : "Save Changes"}
         </Button>
+        {imgModal ? <ImageModal imgModal={imgModal} setImgModal={setImgModal} data={prefill?.businessLogo} /> : ""}
       </form>
     </Form>
   )
 }
+
+
+
+// "http://137.184.47.182:8081/fileuploads"
