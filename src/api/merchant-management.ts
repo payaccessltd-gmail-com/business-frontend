@@ -142,7 +142,7 @@ export const updateMerchantBusinessData = async (
     );
 
   } else {
-    formdata.append("businessCertificateFile", new Blob(["", " ", "world"], { type: "text/plain" }))
+    formdata.append("businessLogoFile", new Blob(["", " ", "world"], { type: "text/plain" }))
   }
 
 

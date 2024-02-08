@@ -6,8 +6,10 @@ import { Button } from "components/ui/button"
 import { MdContactSupport } from "react-icons/md"
 import EmptyState from "./components/EmptyState"
 import { zodResolver } from "@hookform/resolvers/zod"
-
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import { LuChevronDown } from "react-icons/lu"
+import { MdPrint } from "react-icons/md"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
@@ -36,6 +38,7 @@ import TransactionTable from "./components/transaction-table"
 import { getAllTransaction } from "api/transaction"
 import { formatMoneyAmount } from "utils/numberFormater"
 import TransactionView from "./components/transaction-view"
+import PrintTransactionTable from "./components/print-transactions"
 
 
 
@@ -81,7 +84,14 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 
 const Transaction = () => {
 
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
+
+
+  console.log(componentRef?.current)
   var request: API.TSearchRequest = {
     // endDate: "",
     // orderRef: "",
@@ -107,9 +117,6 @@ const Transaction = () => {
 
   return (
     <div className="relative flex flex-col w-full h-full">
-      <Button className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
-        <MdContactSupport className="text-[24px] text-[#fff]" /> Support{" "}
-      </Button>
 
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Transactions</p>
 
@@ -162,7 +169,7 @@ const Transaction = () => {
         </div>
 
         {/* //--------------Filter------------------------------------- */}
-        <div className="flex flex-row items-start gap-9">
+        <div className="flex flex-row items-start gap-7">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -265,16 +272,30 @@ const Transaction = () => {
               </form>
             </DropdownMenuContent>
           </DropdownMenu>
-          {data?.data?.responseObject?.list.length ? 
+
+          {/* {data?.data?.responseObject?.list.length ? 
           <Button className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
             Download
+          </Button> */}
+          <Button
+            onClick={() => handlePrint()}
+            className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[5px] bg-[#48B8E6] font-bold text-white leading-normal"
+          >
+            {/* Download */}
+            Print
+            <MdPrint className="text-[20px]" /> 
           </Button>
           :<></>
-}
+
         </div>
 
       </div>
       {/* //----------Transaction filters end----------------- */}
+
+      <div className="hidden">
+        <PrintTransactionTable Transactionref={componentRef} transactionTableData={data?.data?.responseObject} />
+      </div>
+
 
       {isModalOpen ? <TransactionView modalData={modalData} setModalOpen={setModalOpen} /> : ""}
 

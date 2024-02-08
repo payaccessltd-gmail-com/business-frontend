@@ -2,7 +2,6 @@
 
 import { Button } from "components/ui/button"
 import { useEffect, useState } from "react"
-import { MdContactSupport } from "react-icons/md"
 import { LuChevronDown } from "react-icons/lu"
 import { IoSearchSharp } from "react-icons/io5"
 import {
@@ -191,13 +190,8 @@ export default function Invoice() {
 
 
   return (<div className="relative w-full h-full flex flex-col">
-    <Button
-      className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
-    >
-      <MdContactSupport className="text-[24px] text-[#fff]" />
-      Support
-    </Button>
-    <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[40px]">Invoice</p>
+
+    <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Invoice</p>
     <div className="flex flex-row items-center justify-between">
       <div className="flex flex-row items-center gap-[18px]">
         <DropdownMenu>

@@ -155,7 +155,7 @@ export default function BusinessRegistrationKYCForm(props: any) {
           personalInfoForm.handleSubmit(onSubmit)}
         className="space-y-4 border-gray-10 w-full"
       >
-        <p>File size should not be more than 1MB</p>
+        <p className=" text-red-600">File size should not be more than 1MB</p>
         <FormField
           name="governmentApprovedDocument"
           control={personalInfoForm.control}

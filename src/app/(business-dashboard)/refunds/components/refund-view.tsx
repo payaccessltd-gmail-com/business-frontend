@@ -25,17 +25,17 @@ import {
 import { Input } from "components/ui/input";
 import { useToast } from "components/ui/use-toast";
 import { MdClose } from "react-icons/md";
-import { LuFolder } from "react-icons/lu";
+import { VscCommentUnresolved } from "react-icons/vsc";
 import { cn } from "lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { createTerminaRequest } from "api/POS-terminal";
 import { formatQuantity } from "utils/numberFormater"
 import { ScrollArea } from "components/ui/scroll-area"
 import { useQuery } from "@tanstack/react-query"
-import { getTransactionDetails } from "api/transaction"
+import { getDisputeDetails } from "api/dispute"
 import { AiOutlineConsoleSql } from "react-icons/ai";
 import { useReactToPrint } from 'react-to-print';
-import PrintTransactionView from "./print-recipt";
+// import PrintTransactionView from "./print-recipt";
 
 
 let merchantList: any
@@ -56,7 +56,7 @@ if (
 
 
 
-export default function TransactionView({ modalData, setModalOpen }: any) {
+export default function RefundView({ modalData, setModalOpen }: any) {
     const { toast } = useToast();
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false)
@@ -101,38 +101,38 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
     }
     // ${ dateFormatter(fillData?.updatedAt) }, 
 
-    const GetParameters = { orderRef: modalData, merchantCode: merchantList[0]?.merchantCode, token }
-    const data: any = useQuery(["getAllInvoice", GetParameters], () => getTransactionDetails(GetParameters))
+    const GetParameters = { merchantId: modalData?.merchantId, ticketNumber: modalData?.ticketNumber, token }
+    const data: any = useQuery(["getDisputeDetails", GetParameters], () => getDisputeDetails(GetParameters))
 
-    console.log("view data: ", data?.data?.responseObject);
+    // console.log("dispute detail view data: ", data?.data?.responseObject);
     let fillData = data?.data?.responseObject
 
     const reciptValue: any[] = [
         {
             id: "0",
-            title: "Narration",
-            value: "Transaction"
+            title: "Ticket Number",
+            value: fillData?.transactionTicket?.ticketNumber
         },
         {
             id: "1",
             title: "Date / Time",
-            // value: 
-            value: (fillData?.updatedAt ? dateFormatter(fillData?.updatedAt) : "") + `, ${fillData?.updatedAt.split("-")[0]}, ${timeFormatter(fillData?.updatedAt)}`
+            // value: "tunde"
+            value: (fillData?.transactionTicket?.createdAt ? dateFormatter(fillData?.transactionTicket?.createdAt) : "") + `, ${fillData?.transactionTicket?.createdAt.split("-")[0]} / ${timeFormatter(fillData?.transactionTicket?.createdAt)}`
         },
         {
             id: "2",
-            title: "Transaction reference",
-            value: fillData?.transactionRef
+            title: "Dispute Message",
+            value: fillData?.transactionTicket?.ticketMessage
         },
         {
             id: "3",
-            title: "Transaction Type",
-            value: fillData?.serviceType?.toLowerCase().split("_").join(" ")
+            title: "Ticket Category",
+            value: fillData?.transactionTicket?.ticketCategory
         },
         {
             id: "4",
             title: "Marchant ID",
-            value: String(fillData?.merchantId).padStart(8, '0')
+            value: String(fillData?.transactionTicket?.merchantId).padStart(8, '0')
 
         },
     ]
@@ -188,16 +188,19 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
                     <MdClose onClick={() => setModalOpen(false)} className="text-[22px] absolute top-6 right-6 cursor-pointer" />
                     <div className="flex flex-col items-center gap-3 mb-[43px]">
                         <div className="mb-[10px] w-16 h-14 rounded-[11px] bg-[#FFF6EF] flex flex-col items-center justify-center">
-                            <LuFolder className="text-[24px] text-[#F38020]" />
+                            <VscCommentUnresolved className="text-[24px] text-[#F38020]" />
                         </div>
                         <p className="text-[#0C394B] text-[18px] font-[700] leading-normal">
-                            {`${fillData?.payAccessCurrency === "NGN" ? "₦" : ""} ${fillData?.amount ? fillData?.amount?.toLocaleString(undefined, {
+                            Dispute Amount
+                        </p>
+                        <p className="text-[#0C394B] text-[18px] font-[700] leading-normal">
+                            {`${fillData?.transaction?.payAccessCurrency === "NGN" ? "₦" : ""} ${fillData?.transactionTicket ? fillData?.transactionTicket?.disputeAmount?.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                             }) : '00.00'}`}
                         </p>
-                        <p className="text-[#0C394B] text-[14px] font-[600] leading-normal">
+                        {/* <p className="text-[#0C394B] text-[14px] font-[600] leading-normal">
                             To
-                        </p>
+                        </p> */}
                         <p className="text-[#0C394B] text-[18px] font-[400] leading-normal">
                             {fillData?.merchantName}
                         </p>
@@ -210,18 +213,19 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
                             </p>
                             <div className="flex flex-col items-end gap-2">
                                 <p className="text-[#0C394B] text-[14px] font-[400] leading-5">
-                                    <span className="text-[16px] font-[600]">{`${fillData?.channel} Transaction`}</span>, {fillData?.merchantName} Current Account
+                                    {fillData?.transaction?.merchantName}
+                                    {/* <span className="text-[16px] font-[600]">{`${fillData?.channel} Transaction`}</span>, {fillData?.merchantName} Current Account */}
                                 </p>
-                                <p className="text-[#0C394B] text-[14px] font-[400] leading-normal">
+                                {/* <p className="text-[#0C394B] text-[14px] font-[400] leading-normal">
                                     0101902055
-                                </p>
+                                </p> */}
                             </div>
                         </div>
 
                         {
                             reciptValue.map(({ id, title, value }) => {
                                 return (
-                                    <div key={id} className="py-3 border-b border-solid border-[#E5E7EB] flex flex-row items-center justify-between w-full">
+                                    <div key={id} className="py-3 border-b border-solid border-[#E5E7EB] flex flex-row items-center gap-3 justify-between w-full">
                                         <p className="text-[#9CA3AF] text-[16px] font-[500] leading-5">
                                             {title}
                                         </p>
@@ -236,24 +240,24 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
 
                         <div className="py-3 border-b border-solid border-[#E5E7EB] flex flex-row items-center justify-between w-full">
                             <p className="text-[#9CA3AF] text-[16px] font-[500] leading-5">
-                                Status
+                                Ticket Status
                             </p>
                             {
-                                fillData?.transactionStatus === "SUCCESS" ?
+                                fillData?.transactionTicket?.ticketStatus === "CLOSED" ?
                                     <p className="text-[#16A34A] text-[14px] font-[500] leading-5">
-                                        Successful
+                                        Closed
                                     </p> :
                                     ""
                             }
                             {
-                                fillData?.transactionStatus === "PENDING" ?
+                                fillData?.transactionTicket?.ticketStatus === "OPEN" ?
                                     <p className="text-[#D6A12E] text-[14px] font-[500] leading-5">
-                                        Pending
+                                        Opened
                                     </p> :
                                     ""
                             }
                             {
-                                fillData?.transactionStatus === "AWAITING_OTP_VALIDATION" ?
+                                fillData?.transactionTicket?.ticketStatus === "AWAITING_OTP_VALIDATION" ?
                                     <p className="text-[#C61010] text-[14px] font-[500] leading-5">
                                         Processing
                                     </p> :
@@ -263,7 +267,7 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
 
                         </div>
                     </div>
-                    <Button
+                    {/* <Button
                         disabled={loading}
                         className="mt-[32px] min-h-[48px] rounded-[8px] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     >
@@ -283,10 +287,10 @@ export default function TransactionView({ modalData, setModalOpen }: any) {
                         className="mt-[16px] rounded-[8px] min-h-[48px] text-[#23AAE1] font-[700] w-[80%] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                     >
                         {loading ? "Loading..." : "Report a problem"}
-                    </Button>
+                    </Button> */}
 
                     <div className="hidden">
-                        <PrintTransactionView reciptRef={componentRef} modalData={modalData} />
+                        {/* <PrintTransactionView reciptRef={componentRef} modalData={modalData} /> */}
                     </div>
                 </div>
             </ScrollArea>

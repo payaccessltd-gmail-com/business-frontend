@@ -27,18 +27,18 @@ const items = [
   },
   {
     id: "payment-gateway-1",
-    label: "Payment gateway",
-    description: "to collect payment",
+    label: "Invocing",
+    description: "Raise Invioce for customer to payment for services/goods ",
   },
   {
     id: "payment-gateway-2",
-    label: "Payment gateway",
-    description: "to collect payment",
+    label: "E-Commerce Platform",
+    description: "For sales collection on E-Commerce site",
   },
   {
     id: "payment-gateway-3",
-    label: "Payment gateway",
-    description: "to collect payment",
+    label: "School Collection ",
+    description: "For collection students fees and other payments",
   },
 ] as const;
 

@@ -20,7 +20,7 @@ export const businessInfoFormSchema = zod.object({
     businessWebsite: zod.string(),
     businessCountry: zod.string(),
     businessAddress: zod.string(),
-    businessLogoFile: zod.custom<File>().optional() || zod.string().optional(),
+    businessLogoFile: zod.custom<File>() || zod.string(),
   
     businessCertificateFile: zod.custom<File>().optional() || zod.string().optional(),
     // businessCertificate: zod.string(),

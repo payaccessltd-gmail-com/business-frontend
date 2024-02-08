@@ -9,6 +9,8 @@ import { sidebarData } from "./_components/sidebar-data";
 import { useState } from "react";
 import { Suspense } from "react";
 import Preloader from "./loading";
+import Support from "./_components/support";
+import RaiseTicketForm from "./_components/raise-ticket-form";
 
 export default function DashboardLayout({
   children,
@@ -31,9 +33,7 @@ export default function DashboardLayout({
     router.push("/login");
   }
   const [isOpen, setOpen] = useState<boolean>(true)
-
-
-
+  const [isTicketOpen, setTicket] = useState<boolean>(false)
 
 
   return (
@@ -47,6 +47,12 @@ export default function DashboardLayout({
           <main className="h-[calc(100vh-84px)] overflow-visible bg-sky-50 bg-opacity-30 px-12 py-4">
             <Suspense fallback={<Preloader />}>
               {children}
+              <Support setTicket={setTicket} />
+              {
+                isTicketOpen ?
+                  <RaiseTicketForm handleModalPOSpopup={setTicket} />
+                  : ""
+              }
             </Suspense>
           </main>
         </ScrollArea>

@@ -1,4 +1,4 @@
-"user server"
+"user client"
 
 import { baseUrl } from "./baseUrl";
 

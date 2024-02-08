@@ -48,8 +48,12 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     return getCountry()
   });
 
-  const countries: API.CountryResponse = dataCountry?.data;
+//   const dataState: any = useQuery(['getCountry',1], () => {
+//     return getAllState(1)
+//   });
+// console.log("dataState > ",dataState?.data);
 
+  const countries: API.CountryResponse = dataCountry?.data;
 
   console.log("dataCountry", countries?.data);
 
@@ -106,9 +110,9 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   })
 
   const onSubmit = (values: zod.infer<typeof businessInfoFormSchema>) => {
-    if (typeof values.businessLogoFile === "string") {
-      values.businessLogoFile = undefined
-    }
+    // if (typeof values.businessLogoFile === "string") {
+    //   values.businessLogoFile = undefined
+    // }
     let newValues = { ...values, token }
     console.log(newValues)
     // getAllCountry.mutate();
@@ -158,12 +162,12 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   }, [currentMerchant?.id, currentMerchantDetails])
 
   
-const  allState = (e)=>  {
-  console.log("id >> ", e);
+// const  allState = (e)=>  {
+//   console.log("id >> ", e);
   
-  // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
-  // setStateData(data);
-}
+//   // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
+//   // setStateData(data);
+// }
 
   return (
     <Form {...businessInfoForm}>
@@ -222,7 +226,7 @@ const  allState = (e)=>  {
             <FormItem>
               <FormLabel>Business email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter business email" {...field} />
+                <Input placeholder="Enter business email" {...field} disabled={true} />
               </FormControl>
               <FormMessage />
             </FormItem>
