@@ -135,6 +135,7 @@ export default function BusinessInfoForm() {
         type: "manual",
         message: `requred file size should be lesser than 300kb`,
       })
+      return
     }
     setLoading(true)
     if (!businessInfoForm?.getValues()?.code) {

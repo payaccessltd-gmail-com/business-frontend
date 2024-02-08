@@ -30,6 +30,7 @@ import ReviewPopup from "./review-popup";
 import { useMutation } from "@tanstack/react-query";
 import { simpleInvoice } from "../../../../api/invoice";
 import { formatMoneyAmount } from "utils/numberFormater"
+import { deleteInvoice } from "api/invoice";
 
 let merchantList: any
 let token = ""
@@ -65,7 +66,7 @@ const SimpleSchema = z.object({
     // businessLogo: z.any().optional(),
     businessLogo: z.custom<File>().optional()
 });
-export default function SimpleForm() {
+export default function SimpleForm({ preFillData }: any) {
     const { toast } = useToast();
     const router = useRouter();
     const [receipt, setReceipt] = useState(false);
@@ -90,18 +91,35 @@ export default function SimpleForm() {
 
     }, [minusField])
 
+
+    // ------------------amount input formatter--------------------
+    const amountFormatterDefault = (value: any) => {
+        let formating = value?.toString()?.replace(/\D/g, ''); // Remove non-numeric characters
+
+        // Add commas for every three digits from the right
+        const formattedValue: string = formating.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        return formattedValue;
+    }
+
+    // ------------------amount input formatter end--------------------
+
+
+
+
+
     let simpleForm = useForm<z.infer<typeof SimpleSchema>>({
         resolver: zodResolver(SimpleSchema),
         defaultValues: {
-            customerName: "",
-            email1: "",
-            email2: "example@gmail.com",
-            email3: "example@gmail.com",
-            dueDate: undefined,
-            amount: "",
-            invoiceNote: "",
+            customerName: preFillData?.customerName,
+            email1: preFillData?.customerEmail,
+            email2: preFillData?.additionalCustomerEmailAddress.split(",")[0],
+            email3: preFillData?.additionalCustomerEmailAddress.split(",")[1],
+            dueDate: preFillData?.dueDate ? (new Date(preFillData?.dueDate)) : undefined,
+            amount: amountFormatterDefault(preFillData?.amount),
+            invoiceNote: preFillData?.invoiceNote,
             // businessLogo: undefined,
-            // businessLogo: new File([], ""),
+            // businessLogo: new File([], preFillData?.businessLogo),
 
         },
     });
@@ -190,7 +208,48 @@ export default function SimpleForm() {
 
 
 
+    const deleteInvoiceMutation = useMutation({
+        mutationFn: deleteInvoice,
+        onSuccess: async (data: any) => {
+            const responseData: API.InvoiceStatusReponse =
+                (await data.json()) as API.InvoiceStatusReponse;
 
+            if (responseData?.statusCode === "1") {
+                // toast({
+                //     variant: "destructive",
+                //     title: "",
+                //     description: "Error Deleting Invoice",
+                // });
+                console.log("Error deleting invoice")
+
+            }
+
+            if (responseData?.statusCode === "0") {
+                // toast({
+                //     variant: "default",
+                //     title: "",
+                //     description: "Invoice Deleted",
+                //     className:
+                //         "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+                // });
+                console.log("deleted successfully")
+
+
+                if (typeof window) {
+                    router.push(`/invoice`);
+                }
+            }
+        },
+
+        onError: (e) => {
+            console.log(e);
+            // toast({
+            //     variant: "destructive",
+            //     title: `${e}`,
+            //     description: "error",
+            // });
+        },
+    });
 
 
     const simpleFormMutation = useMutation({
@@ -231,8 +290,6 @@ export default function SimpleForm() {
     });
 
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
-
-
         // console.log(values);
         let newValues = {
             ...values,
@@ -247,46 +304,19 @@ export default function SimpleForm() {
             invoiceStatus: "PENDING"
         };
         console.log(newValues);
+        //--------------delete mutation
+        deleteInvoiceMutation.mutate({
+            token,
+            merchantId,
+            invoiceId: preFillData?.id
+        } as any);
+        //--------------Edit draft mutation
+
         simpleFormMutation.mutate(newValues as any);
     }
 
-    const handleDraft = (e: any) => {
-        e.preventDefault();
-        // if (simpleForm.getValues("dueDate") === undefined) {
-        //     toast({
-        //         variant: "destructive",
-        //         title: "Due Date required",
-        //         description: "Provide a due date",
-        //     });
-        //     return
-        // }
-        let size: any = simpleForm?.getValues("businessLogo")?.size
-        if (size > 307200) {
-            simpleForm?.setError("businessLogo", {
-                type: "manual",
-                message: `requred file size should be lesser than 300kb`,
-            })
-            return
-        }
-        const values = simpleForm.getValues()
-        let newValues = {
-            ...values,
-            amount: Number(values?.amount?.replace(/,/g, '')),
-            dueDate: values?.dueDate?.toISOString().split("T")[0],
-            additionalCustomerEmailAddress: [
-                values?.email2,
-                values?.email3
-            ]?.toString(),
-            customerEmail: values?.email1,
-            token: token,
-            subject: subject,
-            merchantId: merchantId,
-            invoiceStatus: "DRAFT"
-        };
-        // console.log(newValues);
-        simpleFormMutation.mutate(newValues as any);
-    }
 
+    // console.log("prefillData: ", preFillData?.id)
 
     const modalRef = useRef<any>();
     const modalRef4 = useRef<any>();
@@ -296,6 +326,10 @@ export default function SimpleForm() {
     const handleModalDraftSubmit = () => {
         modalRef4.current.click()
     }
+
+    // console.log("fetched image: ", new File([], `http://137.184.47.182:8081/fileuploads/${data?.businessLogo}`))
+    // console.log("simple form image format: ", simpleForm.getValues("businessLogo"))
+    // console.log("due date: ", simpleForm.getValues("dueDate"))
 
 
     return (
@@ -488,7 +522,7 @@ export default function SimpleForm() {
                 >
                     Preview
                 </Button>
-                <Button
+                {/* <Button
                     variant={"outline"}
                     // disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
@@ -496,7 +530,7 @@ export default function SimpleForm() {
                     onClick={(e) => handleDraft(e)}
                 >
                     Save as Draft
-                </Button>
+                </Button> */}
                 <Button
                     variant={"outline"}
                     className="hidden"
@@ -505,7 +539,7 @@ export default function SimpleForm() {
                 >
 
                 </Button>
-                <Button
+                {/* <Button
                     variant={"outline"}
                     className="hidden"
                     type="submit"
@@ -513,7 +547,7 @@ export default function SimpleForm() {
                     ref={modalRef4}
                 >
 
-                </Button>
+                </Button> */}
             </form>
             {receipt ? (
                 <SimpleRecipt

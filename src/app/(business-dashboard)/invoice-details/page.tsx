@@ -334,6 +334,13 @@ export default function GenerateInvoice() {
 
   }
 
+  const handleDraftEdit = (id: any) => {
+    if (typeof window) {
+      route.push(
+        `/edit-invoice?id=${id}`
+      )
+    }
+  }
 
 
   return (
@@ -385,13 +392,15 @@ export default function GenerateInvoice() {
             </div>
             <div className="flex flex-col items-end gap-6">
               <div className="flex flex-row items-center gap-2">
-                {fillData?.invoiceStatus === "DRAFT" ? <Button
-                  variant={"outline"}
-                  className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                >
-                  <FiEdit className="text-[20px] text-[#555555]" />
-                  Edit
-                </Button> : ""}
+                {fillData?.invoiceStatus === "DRAFT" ?
+                  <Button
+                    onClick={() => handleDraftEdit(invoiceIdValue)}
+                    variant={"outline"}
+                    className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+                  >
+                    <FiEdit className="text-[20px] text-[#555555]" />
+                    Edit
+                  </Button> : ""}
                 {/* {fillData?.invoiceStatus === "PENDING" || fillData?.invoiceStatus === "NOTPAID" ? <Button
                   onClick={() => setPaidPopup(true)}
                   variant={"outline"}
