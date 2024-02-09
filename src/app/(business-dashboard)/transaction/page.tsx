@@ -130,7 +130,7 @@ const Transaction = () => {
           {/* //--------------Channels------------------------------------- */}
 
           <Select
-            onValueChange={(value) => setRow(value)}
+            // onValueChange={(value) => setRow(value)}
             value={row}
           >
             <SelectTrigger className="w-fit rounded-[8px] flex flex-row items-center justify-center gap-[10px] bg-[#D6F5FF33] border-[#EAF9FF] font-[400] text-[16px] text-[#02425C] leading-[136.5%]">
