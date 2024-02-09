@@ -155,6 +155,7 @@ export default function BusinessRegistrationKYCForm(props: any) {
           personalInfoForm.handleSubmit(onSubmit)}
         className="space-y-4 border-gray-10 w-full"
       >
+        <p className=" text-red-600">File size should not be more than 1MB</p>
         <FormField
           name="governmentApprovedDocument"
           control={personalInfoForm.control}
@@ -182,7 +183,7 @@ export default function BusinessRegistrationKYCForm(props: any) {
                     name={field.name}
                     className="hidden"
                     onBlur={field.onBlur}
-                    accept=".jpg, .jpeg, .png, .svg, .gif"
+                    accept=".jpg, .jpeg, .png, .svg, .gif, .pdf"
                     placeholder="Please upload identification document"
                     onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                   />
@@ -224,7 +225,7 @@ export default function BusinessRegistrationKYCForm(props: any) {
                   name={field.name}
                   className="hidden"
                   onBlur={field.onBlur}
-                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  accept=".jpg, .jpeg, .png, .svg, .gif, .pdf"
                   placeholder="Please upload identification document"
                   onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
@@ -266,7 +267,7 @@ export default function BusinessRegistrationKYCForm(props: any) {
                   name={field.name}
                   className="hidden"
                   onBlur={field.onBlur}
-                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  accept=".jpg, .jpeg, .png, .svg, .gif, .pdf"
                   placeholder="Please upload identification document"
                   onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />
@@ -309,7 +310,7 @@ export default function BusinessRegistrationKYCForm(props: any) {
                   name={field.name}
                   className="hidden"
                   onBlur={field.onBlur}
-                  accept=".jpg, .jpeg, .png, .svg, .gif"
+                  accept=".jpg, .jpeg, .png, .svg, .gif, .pdf"
                   placeholder="Please upload identification document"
                   onChange={(e) => field.onChange(e.target.files ? e.target.files[0] : (null as any))}
                 />

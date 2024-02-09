@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { CategoricalChartState } from "recharts/types/chart/generateCategoricalChart";
+// import { CategoricalChartState } from "recharts/types/chart/generateCategoricalChart";
 
 import { Typography } from "components/ui/Typography";
 import CardContainer from "./card-container";
+import { CategoricalChartState } from "recharts/types/chart/types";
 
 const data = [
   { name: "Group A", value: 800 },

@@ -1,6 +1,8 @@
+import BusinessInfoForm from "app/(business-dashboard)/settings/business-profile/business-info-form";
 import { BackButton } from "app/_components/back-button";
 import { ScrollArea } from "components/ui/scroll-area";
 import { Typography } from "components/ui/Typography";
+import BusinessProfileUpdate from "./business-profile-form";
 
 export default function SelectBusinessProfilePage() {
   return (
@@ -29,8 +31,7 @@ export default function SelectBusinessProfilePage() {
             <Typography className="text-sm font-normal text-gray-40" level="p">
               You can add another account letter own too.
             </Typography>
-          </div>
-
+          </div> 
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="86"
@@ -62,7 +63,11 @@ export default function SelectBusinessProfilePage() {
             />
           </svg>
         </div>
+
+        <BusinessProfileUpdate/>
       </div>
+
+      
     </ScrollArea>
   );
 }

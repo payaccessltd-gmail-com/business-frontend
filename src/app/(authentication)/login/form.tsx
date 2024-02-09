@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import * as z from "zod"; 
 import { Button } from "components/ui/button";
 import {
   Form,
@@ -21,6 +21,8 @@ import { useToast } from "components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { loginApi } from "api/login";
 import { useMerchantStore } from "store";
+import { FromError } from "components/form-error";
+import { FormSuccess } from "components/form-success";
 
 const loginFormSchema = z.object({
   username: z.string().min(2, {
@@ -31,15 +33,21 @@ const loginFormSchema = z.object({
   }),
 });
 
+
+
+
 export default function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
-
+const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const { setCurrentMerchant, setMerchants } = useMerchantStore();
 
   const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState<string>();
+  const [success, setSuccess] = useState<string>();
 
   const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
@@ -50,34 +58,24 @@ export default function LoginForm() {
     },
   });
 
+    function  hiheNotification(){
+      setError(''); setSuccess('')
+    }
+
   const loginMutation = useMutation({
     mutationFn: loginApi,
     onSuccess: async (data) => {
       const responseData: API.LoginResponse =
         (await data.json()) as API.LoginResponse;
-
-      // console.log("LoginRes ", JSON.stringify(responseData));
+ 
       setLoading(false)
 
       if (!responseData?.subject && !responseData?.token) {
        
-        toast({
-          variant: "destructive",
-          title: "",
-          //@ts-ig
-          description: `${responseData?.message}`,
-        });
+        setError(responseData?.responseObject )
+      
       } else if (responseData?.token && responseData?.token) {
-       
-
-        // toast({
-        //   variant: "default",
-        //   title: "",
-        //   description: "Signin successful",
-        //   className:
-        //     "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
-        // });
-
+        
         localStorage.setItem("subject", responseData?.subject as string);
         localStorage.setItem(
           "merchantList",
@@ -90,21 +88,22 @@ export default function LoginForm() {
           setMerchants(responseData?.merchantList as API.MerchantList);
           setCurrentMerchant(responseData.merchantList?.[0] as API.Merchant);
         }
+        setSuccess(responseData?.message)
         loginForm.reset();
       } else {
         setLoading(false)
-
-        toast({
-          variant: "destructive",
-          title: "",
-          description: `${responseData?.message}`,
-        });
+        setError(responseData?.message)
+        // toast({
+        //   variant: "destructive",
+        //   title: "",
+        //   description: `${responseData?.message}`,
+        // });
       }
     },
 
     onError: (e) => {
       setLoading(false)
-
+     setError("Your request could not be processed at the moment. Please try again later.");
       toast({
         variant: "destructive",
         title: `${e}`,
@@ -115,6 +114,8 @@ export default function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setLoading(true)
+    setError("");
+    setSuccess("");
     loginMutation.mutate(values);
   }
 
@@ -135,7 +136,7 @@ export default function LoginForm() {
                 <Input
                   className="min-h-[48px]"
                   placeholder="Enter your email"
-                  {...field}
+                  {...field}  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -149,10 +150,10 @@ export default function LoginForm() {
             <FormItem className="mt-[25px] w-full">
               <FormLabel className="text-[#777777]">Enter password</FormLabel>
               <FormControl>
-                <Input
+                <Input onFocus={hiheNotification}
                   className="min-h-[48px]"
                   placeholder="Password"
-                  {...field}
+                  {...field}  disabled={loading}
                   type="password"
                 />
               </FormControl>
@@ -160,9 +161,13 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
+        
+        <FromError message={error} />
+        
+        <FormSuccess message={success} />
         <Button
           disabled={loading}
-          className="mt-[42px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          className="mt-[20px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
           {loading ? "Loading..." : "Login"}

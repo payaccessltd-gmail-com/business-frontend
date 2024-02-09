@@ -275,14 +275,20 @@ const Transaction = () => {
               </form>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* {data?.data?.responseObject?.list.length ? 
+          <Button className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
+            Download
+          </Button> */}
           <Button
             onClick={() => handlePrint()}
             className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[5px] bg-[#48B8E6] font-bold text-white leading-normal"
           >
             {/* Download */}
             Print
-            <MdPrint className="text-[20px]" />
+            <MdPrint className="text-[20px]" /> 
           </Button>
+          :<></>
 
         </div>
 
