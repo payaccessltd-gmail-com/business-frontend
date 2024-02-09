@@ -5,9 +5,9 @@ import { Button } from "components/ui/button";
 import ReviewDetails from "./review-details";
 
 import InformationFrame from "./information-frame";
-import PersonalInformationForm from "./personal-information-form";
-import AccountInformationForm from "./account-information-form";
-import BusinessInformationForm from "./business-information-form";
+import PersonalInformationForm from "./personal-information-form"; 
+import BusinessInformationForm from "../../unregistered-business/business-information/form";
+import AccountInformationForm from "../../unregistered-business/account-information/form";
 type Props = {};
 
 export default function ApprovalDescription(props: any) {

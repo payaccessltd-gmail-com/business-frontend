@@ -130,7 +130,7 @@ const Transaction = () => {
           {/* //--------------Channels------------------------------------- */}
 
           <Select
-            onValueChange={(value) => setRow(value)}
+            // onValueChange={(value) => setRow(value)}
             value={row}
           >
             <SelectTrigger className="w-fit rounded-[8px] flex flex-row items-center justify-center gap-[10px] bg-[#D6F5FF33] border-[#EAF9FF] font-[400] text-[16px] text-[#02425C] leading-[136.5%]">
@@ -275,14 +275,20 @@ const Transaction = () => {
               </form>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* {data?.data?.responseObject?.list.length ? 
+          <Button className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal">
+            Download
+          </Button> */}
           <Button
             onClick={() => handlePrint()}
             className="rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[5px] bg-[#48B8E6] font-bold text-white leading-normal"
           >
             {/* Download */}
             Print
-            <MdPrint className="text-[20px]" />
+            <MdPrint className="text-[20px]" /> 
           </Button>
+          :<></>
 
         </div>
 

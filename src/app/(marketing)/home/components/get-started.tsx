@@ -7,6 +7,8 @@ import { Typography } from "components/ui/Typography";
 import GetStartedBg from "../../../../assets/img/home-getstarted/get-started.png";
 import Hero from "../../../../assets/img/home-getstarted/hero.png";
 import TextImg from "../../../../assets/img/home-getstarted/text.png";
+import { LoginButton } from "components/auth/LoginButton";
+import { GetStartedButton } from "components/auth/GetStartButton";
 
 const GetStarted = () => {
   return (
@@ -26,12 +28,14 @@ const GetStarted = () => {
           transactions. or question you have regarding payment transactions, and
           I'll be glad to assist you.
         </Typography>
-        <Button
-          asChild
-          className="h-[54px] max-[1100px]:w-full w-[192px] rounded-[8px] font-DMSans text-[16px] font-[700] leading-[18px] text-[#ffffff] shadow-none"
-        >
-          <Link href={"/registration"}>Get Started</Link>
-        </Button>
+        <GetStartedButton >
+          <Button
+            asChild
+            className="h-[54px] max-[1100px]:w-full w-[192px] rounded-[8px] font-DMSans text-[16px] font-[700] leading-[18px] text-[#ffffff] shadow-none"
+          >
+          Get Started
+          </Button>
+        </GetStartedButton>
       </div>
       <Image
         className="z-10 max-[1100px]:mt-[75px] max-[1100px]:self-center relative xl:absolute bottom-0 2xl:right-0 right-[60px] h-auto max-w-[100%]"

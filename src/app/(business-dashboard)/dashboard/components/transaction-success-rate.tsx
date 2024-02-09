@@ -5,6 +5,7 @@ import { CategoricalChartState } from "recharts/types/chart/generateCategoricalC
 
 import { Typography } from "components/ui/Typography";
 import CardContainer from "./card-container";
+// import { CategoricalChartState } from "recharts/types/chart/types";
 
 const data = [
   { name: "Group A", value: 800 },
