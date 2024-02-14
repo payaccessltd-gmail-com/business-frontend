@@ -241,7 +241,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                                 Delete
                                             </p>}
                                             {/* {invoiceStatus === "DELETED" ? "" : <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                                                Revoke
+                                                Revokell
                                             </p>} */}
                                         </div>
                                     </DropdownMenuContent>
