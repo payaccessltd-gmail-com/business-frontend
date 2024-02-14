@@ -18,6 +18,7 @@ import {
 import { toast } from "components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
 import { getMerchantDetails } from "api/settings";
 
 
@@ -61,17 +62,17 @@ const FormSchema = z.object({
 });
 
 export default function StepThreeForm() {
-
- const router = useRouter();
-
+  const merchantDetailStore = useHydrateStore(useMerchantStore, (state) => state.currentMerchant); //getting merchant name from store
+  const router = useRouter();
+  // console.log(merchantDetailStore?.merchantCode)
   const getParameters = {
     token,
-    merchantCode: merchantList[0]?.merchantCode,
-  }  
+    merchantCode: merchantDetailStore?.merchantCode,
+  }
   const data: any = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
 
 
- // console.log("personal ", JSON.stringify(data?.data?.responseObject[0]?.businessType))
+  // console.log("personal ", JSON.stringify(data?.data?.responseObject[0]?.businessType))
   const businessType = data?.data?.responseObject[0]?.businessType
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -80,14 +81,14 @@ export default function StepThreeForm() {
       items: [],
     },
   });
- 
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if(businessType == undefined) {
-      if(businessType === "INDIVIDUAL")
-      router.push("/dashboard/unregistered-business")
-    else {
-      router.push("/dashboard/registered-business")
-    }
+    if (businessType == undefined) {
+      if (businessType === "INDIVIDUAL")
+        router.push("/dashboard/unregistered-business")
+      else {
+        router.push("/dashboard/registered-business")
+      }
     }
 
     // toast({
@@ -127,20 +128,19 @@ export default function StepThreeForm() {
                               return checked
                                 ? field.onChange([...field.value, item.id])
                                 : field.onChange(
-                                    field.value?.filter(
-                                      (value) => value !== item.id,
-                                    ),
-                                  );
+                                  field.value?.filter(
+                                    (value) => value !== item.id,
+                                  ),
+                                );
                             }}
                           />
                         </FormControl>
 
                         <FormLabel
-                          className={`flex px-6 py-6 rounded-lg space-x-2 hover:cursor-pointer ${
-                            field.value?.includes(item.id)
-                              ? "bg-primary-10"
-                              : "bg-[#F5FCFF] "
-                          }`}
+                          className={`flex px-6 py-6 rounded-lg space-x-2 hover:cursor-pointer ${field.value?.includes(item.id)
+                            ? "bg-primary-10"
+                            : "bg-[#F5FCFF] "
+                            }`}
                         >
                           <span className="p-2">
                             <svg

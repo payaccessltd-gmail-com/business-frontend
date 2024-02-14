@@ -154,6 +154,16 @@ export default function StandardForm() {
     },
   })
 
+
+  // -------------function to test for valid email---------------------
+  const isValidEmail = (email: any) => {
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Test the email against the regular expression
+    return emailRegex.test(email);
+  };
+
   const handleModal = (e: any) => {
     e.preventDefault()
     standardForm.clearErrors()
@@ -163,6 +173,7 @@ export default function StandardForm() {
         type: "manual",
         message: "Customer name required",
       })
+      standardForm.setFocus("customerName")
       return
     }
     if (standardForm?.getValues()?.email1?.length == 0) {
@@ -170,13 +181,26 @@ export default function StandardForm() {
         type: "manual",
         message: "Email required",
       })
+      standardForm.setFocus("email1")
       return
     }
+
+    if (!isValidEmail(standardForm?.getValues()?.email1)) {
+      standardForm.setError("email1", {
+        type: "manual",
+        message: "Email not valid",
+      })
+      standardForm.setFocus("email1")
+      return
+    }
+
+
     if (!standardForm?.getValues()?.dueDate) {
       standardForm.setError("dueDate", {
         type: "manual",
         message: "Due date required",
       })
+      standardForm.setFocus("dueDate")
       return
     }
     setReceipt((value) => !value)
@@ -263,6 +287,7 @@ export default function StandardForm() {
     onSuccess: async (data) => {
       const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
       console.log("standard invoice status code: ", responseData?.statusCode)
+      setLoading(false)
       if (responseData?.statusCode === "701") {
         toast({
           variant: "destructive",
@@ -286,6 +311,7 @@ export default function StandardForm() {
     },
 
     onError: (e) => {
+      setLoading(false)
       console.log(e)
       toast({
         variant: "destructive",
@@ -352,6 +378,7 @@ export default function StandardForm() {
 
 
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
+    setLoading(true)
     let newValues = {
       ...values,
       dueDate: values?.dueDate?.toISOString().split("T")[0],
@@ -383,6 +410,7 @@ export default function StandardForm() {
   }
 
   const handleDraftSubmit = (e: any) => {
+    setLoading(true)
     e.preventDefault()
     let values = standardForm.getValues()
     let newValues = {
@@ -816,7 +844,7 @@ export default function StandardForm() {
         </div>
 
         <Button
-          disabled={loading}
+          // disabled={loading}
           className="mt-[32px] min-h-[48px] font-[700] w-[335px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
           onClick={(e) => handleModal(e)}
@@ -834,7 +862,7 @@ export default function StandardForm() {
           onClick={(e) => handleDraftSubmit(e)}
           ref={modalRef3}
         >
-          Save as Draft
+          {loading ? "Saving..." : "Save as Draft"}
         </Button>
         {/* <Button
 
@@ -854,6 +882,7 @@ export default function StandardForm() {
           modalData={{ ...modalData, grandTotal, tax, subTotal, discount, amountValue }}
           handleModalSubmitDraft={handleModalSubmitDraft}
           handleModalDelete={handleModalDelete}
+          loading={loading}
         />
       ) : (
         ""
@@ -863,7 +892,9 @@ export default function StandardForm() {
         <ReviewPopup value={`NGN ${grandTotal?.toLocaleString()}`}
           setPopup={setPopup}
           handleSubmit={handleModalSubmit}
-          modalData={modalData} />
+          modalData={modalData}
+          loading={loading}
+        />
       ) : (
         ""
       )}

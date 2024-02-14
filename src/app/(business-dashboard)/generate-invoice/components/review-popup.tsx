@@ -12,7 +12,7 @@ import NameValue from "./name-value-widget";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
+const ReviewPopup = ({ value, setPopup, handleSubmit, modalData, loading }: any) => {
   const { toast } = useToast();
 
   // console.log("popup: ", modalData)
@@ -29,16 +29,16 @@ const ReviewPopup = ({ value, setPopup, handleSubmit, modalData }: any) => {
               Review
             </p>
             <p className="w-[312px] mt-2 text-[#667085] text-[14px] leading-[20px] font-[400] text-center">
-              {`You are about to request ${
-                value === "open" ? "an open-invoice" : value
-              } form ${modalData?.email1}`}
+              {`You are about to request ${value === "open" ? "an open-invoice" : value
+                } form ${modalData?.email1}`}
             </p>
             <div className="flex flex-col items-center w-full gap-3 mt-8">
               <Button
+                disabled={loading}
                 onClick={() => handleSubmit()}
                 className="min-h-[44px] font-[700] w-full hover:bg-[#1D8EBB] hover:opacity-[0.4]"
               >
-                Send Invoice
+                {loading ? "Sending..." : "Send Invoice"}
               </Button>
               <Button
                 variant={"outline"}
