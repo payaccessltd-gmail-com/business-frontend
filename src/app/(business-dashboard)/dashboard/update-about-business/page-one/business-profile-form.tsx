@@ -20,6 +20,7 @@ import { useToast } from "components/ui/use-toast"
 import { useHydrateStore, useMerchantStore } from "store"
 import { useState } from "react"
 import { values } from "lodash"
+import { getUtils } from "api/utility"
 
 // export const metadata: Metadata = {
 //   title: "Business",
@@ -50,6 +51,13 @@ export default function BusinessProfileUpdate() {
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.user)
   const { setCurrentMerchantDetails } = useMerchantStore();
 console.log(currentMerchantDetails,'jk');
+
+
+  const data:any = useQuery(['getUtils'],  getUtils)
+
+ console.log("util ", data?.data?.responseObject[15].BusinessCategory);
+
+const busCategory = data?.data?.responseObject[15].BusinessCategory;
 
   const businessProfileForm = useForm<zod.infer<typeof businessProfileFormSchema>>({
     defaultValues: {
@@ -127,9 +135,16 @@ console.log(currentMerchantDetails,'jk');
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem className="py-3 " value="TRANSPORTATION">
+                        {/* <SelectItem className="py-3 " value="TRANSPORTATION">
                           Transportation
-                        </SelectItem>
+                        </SelectItem> */}
+
+                        <SelectItem value=""></SelectItem>
+                    {busCategory?.map((name: any)=> <SelectItem  key={name} className="py-3 " value={name}>
+                      {name}
+                    </SelectItem>)}
+
+
                       </SelectContent>
                     </Select>
                     <FormMessage />
