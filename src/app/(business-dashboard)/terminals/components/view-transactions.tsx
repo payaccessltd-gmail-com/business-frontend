@@ -42,7 +42,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createTerminaRequest } from "api/POS-terminal";
 import { formatQuantity } from "utils/numberFormater"
 import { useQuery } from "@tanstack/react-query"
-import { getAllSettlementsBreakdown } from "api/settlements"
+import { getTerminalsTransactions } from "api/POS-terminal"
 
 let merchantList: any
 let token = ""
@@ -62,7 +62,7 @@ if (
 
 
 
-export default function SettlementBreakdown({ modalData, handleModalPOSpopup, auxiliaryData }: any) {
+export default function ViewTransactions({ modalData, handleModalPOSpopup }: any) {
     const { toast } = useToast();
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false)
@@ -75,13 +75,12 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup, au
 
 
 
-    const GetParameters = { pageNumber: page, settlementId: modalData?.id, rowCount: row, token }
-    const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllSettlementsBreakdown(GetParameters))
-    console.log("get settlemnts breakdown: ", data?.data?.responseObject)
-
+    const GetParameters = { pageNumber: page, terminalCode: modalData, rowCount: row, token }
+    const data: any = useQuery(["getTerminalsTransactions", GetParameters], () => getTerminalsTransactions(GetParameters))
+    console.log("get terminals transactions: ", data?.data?.responseObject)
     let settlementsTableData = data?.data?.responseObject
 
-    const heading = ["Merchant code", "Business name", "Currency", "Amount"]//================table heading creator========================
+    const heading = ["Merchant code", "Merchant Name", "Channel", "Service Type", "Order Ref", "Amount", "Date", "Status"]//================table heading creator========================
     // const router = useRouter();
     const handlePageNumber = (option: any) => {
         if (option === "next") {
@@ -138,25 +137,17 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup, au
 
     }
 
-  
 
-    // console.log("auxiliary: ", modalData)
 
 
 
     return (
         <div className="bg-[#323536a4] w-full h-full flex flex-col items-center pt-[10vh] fixed top-0 left-0 z-10">
-            <div className="relative flex flex-col items-center w-[80%] h-[80vh] bg-white rounded-lg px-6 pb-10 pt-16">
-                <p className="text-[#177196] text-[40px] font-[700] leading-normal my-[10px]">Settlment Breakdown</p>
-                <p className="text-[#666666] text-[16px] font-[700] leading-normal mb-[10px]">Settlment Code: {modalData?.settlementCode}</p>
-                <p className="text-[#666666] text-[16px] font-[700] leading-normal mb-[16px]">Settlment Date: {`${dateFormatter(modalData?.settlementDate)}, ${modalData?.settlementDate?.split("-")[0]}`}</p>
-
-
-
+            <div className="relative flex flex-col items-center w-[80%] bg-white rounded-lg px-6 pb-10 pt-16">
                 <MdClose onClick={() => handleModalPOSpopup(false)} className="text-[22px] cursor-pointer absolute top-6 right-7" />
-                <ScrollArea className="xl:w-full w-[75vw] rounded-[8px]">
-                    <div className="w-full flex flex-col xl:items-center items-start">
-                        <div className="xl:w-full w-[960px]">
+                <ScrollArea className="2xl:w-full w-[75vw] rounded-[8px]">
+                    <div className="w-full flex flex-col 2xl:items-center items-start">
+                        <div className="2xl:w-full w-[1600px]">
                             <div className='flex flex-row items-center justify-between rounded-[8px] p-[10px] h-[58px] w-full bg-[#0C394B] mb-[24px]'>
                                 {
                                     heading.map((value, id) => {
@@ -166,18 +157,45 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup, au
                                 }
                             </div>
 
+
                             <ScrollArea className='w-full h-[400px]'>
                                 <div className='flex flex-col items-center gap-6 w-full mb-6'>
-                                    {settlementsTableData?.list?.map(({ merchantCode, settlementId, businessName, payAccessCurrency, settlementAmount }: any, idx: React.Key | null | undefined) => {
-                                        return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center justify-between w-full h-[44px]'>
+                                    {settlementsTableData?.list?.map(({ merchantCode, merchantName, channel, serviceType, orderRef, payAccessCurrency, amount, updatedAt, transactionStatus }: any, idx: React.Key | null | undefined) => {
+                                        return (
+                                            <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center justify-between w-full h-[44px]'>
 
-                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{merchantCode}</p>
-                                            {/* <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{settlementId}</p> */}
-                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{businessName}</p>
-                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{payAccessCurrency}</p>
-                                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] '>{settlementAmount}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{merchantCode}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{merchantName}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{channel}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{serviceType}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{orderRef}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{payAccessCurrency === "NGN" ? "₦" : ""}{" "}{amount}</p>
+                                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{`${dateFormatter(updatedAt)}, ${timeFormatter(updatedAt)}`}</p>
+                                                <div className='flex flex-col items-center w-[20%]'>
+                                                    {transactionStatus === "PENDING" && <p className='cursor-pointer text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#D6A12E] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
+                                                        {"Pending"}
+                                                        <IoMdCheckmark className="text-[16px]" />
+                                                    </p>}
+                                                    {transactionStatus === "PENDING_CONFIRMATION" && <p className='cursor-pointer text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#D6A12E] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
+                                                        {"Pending"}
+                                                        <IoMdCheckmark className="text-[16px]" />
+                                                    </p>}
+                                                    {transactionStatus === "SUCCESS" && <p className='cursor-pointer text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#1F932D] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
+                                                        {"Success"}
+                                                        <IoMdCheckmark className="text-[16px]" />
+                                                    </p>}
+                                                    {transactionStatus === "AWAITING_OTP_VALIDATION" && <p className='cursor-pointer text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#C61010] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
+                                                        {"Processing"}
+                                                        <IoMdCheckmark className="text-[16px]" />
+                                                    </p>}
+                                                    {transactionStatus === "DELETED" && <p className='cursor-pointer text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#C61010] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
+                                                        {"Deleted"}
+                                                        <IoMdCheckmark className="text-[16px]" />
+                                                    </p>}
+                                                </div>
 
-                                        </div>
+                                            </div>
+                                        )
                                     })}
                                 </div>
                             </ScrollArea>

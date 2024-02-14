@@ -39,6 +39,7 @@ import { getAllTransaction } from "api/transaction"
 import { formatMoneyAmount } from "utils/numberFormater"
 import TransactionView from "./components/transaction-view"
 import PrintTransactionTable from "./components/print-transactions"
+import RaiseComplainForm from "./components/raise-complain"
 
 
 
@@ -109,6 +110,8 @@ const Transaction = () => {
   const [page, setPage] = useState<string>("0")
   const [isModalOpen, setModalOpen] = useState<boolean>(false)
   const [modalData, setModalData] = useState("")
+  const [complainData, setComplainData] = useState()
+  const [isComplainOpen, setComplain] = useState<boolean>(false)
 
   const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, request: {}, token }
   const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllTransaction(GetParameters))
@@ -127,7 +130,7 @@ const Transaction = () => {
           {/* //--------------Channels------------------------------------- */}
 
           <Select
-            onValueChange={(value) => setRow(value)}
+            // onValueChange={(value) => setRow(value)}
             value={row}
           >
             <SelectTrigger className="w-fit rounded-[8px] flex flex-row items-center justify-center gap-[10px] bg-[#D6F5FF33] border-[#EAF9FF] font-[400] text-[16px] text-[#02425C] leading-[136.5%]">
@@ -292,6 +295,8 @@ const Transaction = () => {
       </div>
       {/* //----------Transaction filters end----------------- */}
 
+      {isComplainOpen ? <RaiseComplainForm complainData={complainData} handleModalPOSpopup={setComplain} /> : ""}
+
       <div className="hidden">
         <PrintTransactionTable Transactionref={componentRef} transactionTableData={data?.data?.responseObject} />
       </div>
@@ -301,7 +306,7 @@ const Transaction = () => {
 
       {data?.data?.responseObject?.list.length ? (
         <div className="w-full mt-[35px] self-center">
-          <TransactionTable setModalOpen={setModalOpen} setModalData={setModalData} setPage={setPage} page={page} row={row} setRow={setRow} transactionTableData={data?.data?.responseObject} />
+          <TransactionTable setModalOpen={setModalOpen} setComplain={setComplain} setComplainData={setComplainData} setModalData={setModalData} setPage={setPage} page={page} row={row} setRow={setRow} transactionTableData={data?.data?.responseObject} />
         </div>
       ) : (
         <div className="w-[602px] mt-[132px] self-center">

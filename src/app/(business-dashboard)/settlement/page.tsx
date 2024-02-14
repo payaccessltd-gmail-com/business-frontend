@@ -94,7 +94,7 @@ const Settlement = () => {
   const [page, setPage] = useState<string>("0")
   const [popup, setPopup] = useState(false);
   const [tablepopup, setTablePopup] = useState(false);
-  const [modalData, setModalData] = useState(false);
+  const [modalData, setModalData] = useState<any>();
 
 
   const GetParameters = { pageNumber: page, rowCount: row, token }
@@ -285,7 +285,7 @@ const Settlement = () => {
     </div>
   )
 }
-
+// "jsljdlk"
 export default Settlement
 
 
