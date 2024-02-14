@@ -56,11 +56,14 @@ if (
 
 
 export default function Invoice() {
+  const GetIntialRowParameter = { currentPageNumber: 0, merchantId: merchantId, rowPerPage: 1, emptyObject: {}, token }
+  const getRowValue: any = useQuery(['getAllInvoice', GetIntialRowParameter], () => getAllInvoice(GetIntialRowParameter as any));
+  console.log("Data to get row numbers: ", getRowValue?.data?.responseObject?.totalCount)
 
   // const [data, setData] = useState<any>(null)
   const [date, setDate] = useState<Date>()
   const [date1, setDate1] = useState<Date>()
-  const [row, setRow] = useState<string>("5")
+  const [row, setRow] = useState<string>(getRowValue?.data?.responseObject?.totalCount?.toString() || "500")
   const [page, setPage] = useState<string>("0")
   const [search, setSearch] = useState<string>("")
   const [invoiceStatus, setInvoiceStatus] = useState<string>("")
@@ -188,6 +191,12 @@ export default function Invoice() {
 
   };
 
+  const handleEnterSearch = (event: any) => {
+    if (event.key === 'Enter') {
+      handleSearch()
+    }
+  }
+
 
   return (<div className="relative w-full h-full flex flex-col">
 
@@ -282,7 +291,7 @@ export default function Invoice() {
         </DropdownMenu>
 
         <div className="p-1 rounded-[8px] border border-solid border-[#D6F5FFD9] bg-[#F3FCFF] w-[450px] h-[45px] relative">
-          <input value={search} onChange={(e => setSearch(e.target.value))} type="text" placeholder="Search Invoice ID, customer email or name" className="placeholder:text-[#49454F] placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent" />
+          <input value={search} onKeyPress={(event: any) => handleEnterSearch(event)} onChange={(e => setSearch(e.target.value))} type="text" placeholder="Search Invoice ID, customer email or name" className="placeholder:text-[#49454F] placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent" />
           <IoSearchSharp onClick={handleSearch} className="absolute right-[23px] top-[8.75px] cursor-pointer text-[26px] text-[#49454F]" />
         </div>
       </div>

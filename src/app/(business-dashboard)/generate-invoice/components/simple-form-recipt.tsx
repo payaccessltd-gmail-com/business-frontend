@@ -13,7 +13,7 @@ import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
 
-const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit }: any) => {
+const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit, loading }: any) => {
   const { toast } = useToast();
   // console.log("modalData: ", modalData)
   const handleCopyToClipboard = () => {
@@ -139,11 +139,12 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
                   Send Invoice
                 </Button>
                 <Button
+                  disabled={loading}
                   onClick={() => handleModalDraftSubmit()}
                   variant={"outline"}
                   className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                 >
-                  Save as Draft
+                  {loading ? "Saving..." : "Save as Draft"}
                 </Button>
               </div>
             </div>

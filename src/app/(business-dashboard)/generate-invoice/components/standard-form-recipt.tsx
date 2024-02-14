@@ -13,7 +13,7 @@ import { Button } from "components/ui/button"
 import { useToast } from "components/ui/use-toast"
 
 
-const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft, handleModalDelete }: any) => {
+const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft, handleModalDelete, loading }: any) => {
   const { toast } = useToast();
 
   // console.log("from standard: ", modalData)
@@ -206,11 +206,12 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                 Send Invoice
               </Button>
               <Button
+                disabled={loading}
                 onClick={() => handleModalSubmitDraft()}
                 variant={"outline"}
                 className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
               >
-                Save as Draft
+                {loading ? "Saving..." : "Save as Draft"}
               </Button>
             </div>
           </div>

@@ -73,7 +73,7 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup, au
     const [page, setPage] = useState<any>("0")
     const [popup, setPopup] = useState(false);
 
-
+    console.log("settlments breakdown Id: ", modalData?.id)
 
     const GetParameters = { pageNumber: page, settlementId: modalData?.id, rowCount: row, token }
     const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllSettlementsBreakdown(GetParameters))
@@ -138,7 +138,7 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup, au
 
     }
 
-  
+
 
     // console.log("auxiliary: ", modalData)
 
