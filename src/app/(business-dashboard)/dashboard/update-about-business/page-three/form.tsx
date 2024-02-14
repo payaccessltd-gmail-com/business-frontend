@@ -17,6 +17,8 @@ import {
 } from "components/ui/form";
 import { toast } from "components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getMerchantDetails } from "api/settings";
 
 
 const items = [
@@ -41,7 +43,17 @@ const items = [
     description: "For collection students fees and other payments",
   },
 ] as const;
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
 
+if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
 const FormSchema = z.object({
   items: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
@@ -49,15 +61,35 @@ const FormSchema = z.object({
 });
 
 export default function StepThreeForm() {
+
+ const router = useRouter();
+
+  const getParameters = {
+    token,
+    merchantCode: merchantList[0]?.merchantCode,
+  }  
+  const data: any = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
+
+
+ // console.log("personal ", JSON.stringify(data?.data?.responseObject[0]?.businessType))
+  const businessType = data?.data?.responseObject[0]?.businessType
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       items: [],
     },
   });
-  const router = useRouter();
+ 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    router.push("/dashboard/unregistered-business")
+    if(businessType == undefined) {
+      if(businessType === "INDIVIDUAL")
+      router.push("/dashboard/unregistered-business")
+    else {
+      router.push("/dashboard/registered-business")
+    }
+    }
+
     // toast({
     //   title: "You submitted the following values:",
     //   description: (
