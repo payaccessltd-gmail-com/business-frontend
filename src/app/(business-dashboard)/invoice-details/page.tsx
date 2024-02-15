@@ -92,11 +92,17 @@ export default function GenerateInvoice() {
       setAmountValue(calculateTotalAmount())
     }
   }, [breakDown])
+
+
+
+  console.log("fill Data invoice details: ", fillData)
+
+
   useEffect(() => {
     if (breakDown) {
-      setDiscount((discountPercent / 100) * amountValue)
+      setDiscount(fillData?.discountType === "VALUE" ? discountPercent : ((discountPercent / 100) * amountValue))
     }
-  }, [amountValue, discountPercent])
+  }, [amountValue, discountPercent, fillData])
 
   useEffect(() => {
 
