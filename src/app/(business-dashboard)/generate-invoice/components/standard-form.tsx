@@ -26,7 +26,7 @@ import StandardRecipt from "./standard-form-recipt"
 import ReviewPopup from "./review-popup"
 import { useMutation } from "@tanstack/react-query"
 import { standardInvoice } from "../../../../api/invoice"
-import { formatMoneyAmount, formatPercentValue, formatQuantity } from "utils/numberFormater"
+import { formatMoneyAmount, formatPercentValue, formatQuantity, numberWithDecimalFormat } from "utils/numberFormater"
 
 
 
@@ -105,6 +105,8 @@ export default function StandardForm() {
   //   ]
   // )
 
+
+
   useEffect(() => {
     if (minusField === undefined || minusField.length < 1) {
       console.log("blocked at use effect");
@@ -153,6 +155,11 @@ export default function StandardForm() {
       shipping: "",
     },
   })
+
+  useEffect(() => {
+    console.log("...changing discountType")
+  }, [standardForm.getValues("discountType")])
+
 
 
   // -------------function to test for valid email---------------------
@@ -367,7 +374,8 @@ export default function StandardForm() {
 
   const firstAmountValue = Number(standardForm.getValues("qty")?.replace(/,/g, '')) * Number(standardForm.getValues("costPerUnit")?.replace(/,/g, ''))
   const amountValue = firstAmountValue + calculateTotalAmount()
-  const discount = ((Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0) / 100) * amountValue
+  // const discount = ((Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0) / 100) * amountValue
+  const discount = standardForm.getValues("discountType") === "PERCENTAGE" ? (((Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0) / 100) * amountValue) : (Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0)
   const subTotal = amountValue - discount
   const tax = subTotal * ((Number(standardForm.getValues("taxPercent")?.replace(/,/g, '')) || 0) / 100)
   const grandTotal = subTotal + tax + (Number(standardForm.getValues("shipping")?.replace(/,/g, '')) || 0)
@@ -756,7 +764,7 @@ export default function StandardForm() {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="PERCENTAGE">Percentage</SelectItem>
-                        <SelectItem value="VALUE1">Value</SelectItem>
+                        <SelectItem value="VALUE">Value</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -779,7 +787,7 @@ export default function StandardForm() {
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0.00"
                         {...field}
-                        onInput={(event) => formatPercentValue(event)}
+                        onInput={(event) => standardForm.getValues("discountType") === "PERCENTAGE" ? formatPercentValue(event) : numberWithDecimalFormat(event)}
                       />
                     </FormControl>
                     <FormMessage />
