@@ -13,7 +13,7 @@ import { Button } from "components/ui/button"
 import { useToast } from "components/ui/use-toast"
 
 
-const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft, handleModalDelete }: any) => {
+const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalSubmitDraft, handleModalDelete, loading }: any) => {
   const { toast } = useToast();
 
   // console.log("from standard: ", modalData)
@@ -57,6 +57,14 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
 
     },
     {
+      id: 1,
+      title: "Discount",
+      value: `- NGN ${modalData.discount?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      })}`,
+
+    },
+    {
       id: 2,
       title: "Status",
       value: "Pending",
@@ -67,6 +75,10 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
     //   value: "TTT989900002377",
     // },
   ]
+
+
+
+
 
   return (
     <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
@@ -145,7 +157,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     })}`}
                   </p>
                 </div>
-                <div className="flex flex-row items-center justify-between w-full">
+                {/* <div className="flex flex-row items-center justify-between w-full">
                   <p className="text-[#555555] text-[16px] leading-normal font-[700]">
                     Discount
                   </p>
@@ -155,7 +167,7 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                     })}`}
                   </p>
 
-                </div>
+                </div> */}
               </div>
               <div className="flex flex-col items-center w-full gap-4">
                 <div className="flex flex-row items-center justify-between w-full">
@@ -206,11 +218,12 @@ const StandardRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalS
                 Send Invoice
               </Button>
               <Button
+                disabled={loading}
                 onClick={() => handleModalSubmitDraft()}
                 variant={"outline"}
                 className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
               >
-                Save as Draft
+                {loading ? "Saving..." : "Save as Draft"}
               </Button>
             </div>
           </div>

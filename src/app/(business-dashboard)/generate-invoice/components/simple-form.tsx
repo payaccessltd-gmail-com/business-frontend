@@ -71,7 +71,7 @@ export default function SimpleForm() {
     const [receipt, setReceipt] = useState(false);
     const [popup, setPopup] = useState(false);
     const [modalData, setModalData] = useState<any>("");
-    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [inputField, setInputField] = useState<any[] | undefined>([
         { label: "Customer Email" },
     ]);
@@ -105,6 +105,20 @@ export default function SimpleForm() {
 
         },
     });
+
+
+    // -------------function to test for valid email---------------------
+    const isValidEmail = (email: any) => {
+        // Regular expression for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Test the email against the regular expression
+        return emailRegex.test(email);
+    };
+
+
+    console.log("testing valid email: ", isValidEmail(simpleForm?.getValues()?.email1))
+
     const handleModal = (e: any) => {
         e.preventDefault();
         simpleForm.clearErrors()
@@ -115,6 +129,7 @@ export default function SimpleForm() {
                 type: "manual",
                 message: "Customer name required",
             })
+            simpleForm.setFocus("customerName")
             return
         }
         if (simpleForm?.getValues()?.email1?.length == 0) {
@@ -122,6 +137,15 @@ export default function SimpleForm() {
                 type: "manual",
                 message: "Email required",
             })
+            simpleForm.setFocus("email1")
+            return
+        }
+        if (!isValidEmail(simpleForm?.getValues()?.email1)) {
+            simpleForm.setError("email1", {
+                type: "manual",
+                message: "Email not valid",
+            })
+            simpleForm.setFocus("email1")
             return
         }
         if (!simpleForm?.getValues()?.dueDate) {
@@ -129,6 +153,7 @@ export default function SimpleForm() {
                 type: "manual",
                 message: "Due date required",
             })
+            simpleForm.setFocus("dueDate")
             return
         }
         if (!simpleForm?.getValues()?.businessLogo) {
@@ -136,6 +161,7 @@ export default function SimpleForm() {
                 type: "manual",
                 message: "Business logo required",
             })
+            simpleForm.setFocus("businessLogo")
             return
         }
         let size: any = simpleForm?.getValues("businessLogo")?.size
@@ -144,6 +170,7 @@ export default function SimpleForm() {
                 type: "manual",
                 message: `requred file size should be lesser than 300kb`,
             })
+            simpleForm.setFocus("businessLogo")
             return
         }
 
@@ -152,6 +179,7 @@ export default function SimpleForm() {
                 type: "manual",
                 message: "Amount required",
             })
+            simpleForm.setFocus("amount")
             return
         }
 
@@ -199,6 +227,7 @@ export default function SimpleForm() {
             const responseData: API.InvoiceStatusReponse =
                 (await data.json()) as API.InvoiceStatusReponse;
             console.log("simple invoice status: ", responseData?.statusCode)
+            setLoading(false)
             if ((responseData?.statusCode === "1") || (responseData?.statusCode === "701")) {
                 toast({
                     variant: "destructive",
@@ -221,6 +250,7 @@ export default function SimpleForm() {
             }
         },
         onError: (e) => {
+            setLoading(false)
             console.log(e);
             toast({
                 variant: "destructive",
@@ -231,8 +261,7 @@ export default function SimpleForm() {
     });
 
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
-
-
+        setLoading(true)
         // console.log(values);
         let newValues = {
             ...values,
@@ -251,6 +280,7 @@ export default function SimpleForm() {
     }
 
     const handleDraft = (e: any) => {
+        setLoading(true)
         e.preventDefault();
         // if (simpleForm.getValues("dueDate") === undefined) {
         //     toast({
@@ -490,12 +520,12 @@ export default function SimpleForm() {
                 </Button>
                 <Button
                     variant={"outline"}
-                    // disabled={loading}
+                    disabled={loading}
                     className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                     type="submit"
                     onClick={(e) => handleDraft(e)}
                 >
-                    Save as Draft
+                    {loading ? "Saving..." : "Save as Draft"}
                 </Button>
                 <Button
                     variant={"outline"}
@@ -522,6 +552,7 @@ export default function SimpleForm() {
                     setPopup={setPopup}
                     modalData={modalData}
                     handleModalDraftSubmit={handleModalDraftSubmit}
+                    loading={loading}
                 />
             ) : (
                 null
@@ -533,7 +564,7 @@ export default function SimpleForm() {
                         setPopup={setPopup}
                         handleSubmit={handleModalSubmit}
                         modalData={modalData}
-
+                        loading={loading}
                     />
                     :
                     null

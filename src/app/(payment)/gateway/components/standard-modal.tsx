@@ -48,11 +48,25 @@ export default function StandardModal({ data, setTotalAmount }: any) {
             setAmountValue(calculateTotalAmount())
         }
     }, [breakDown])
+
+
+
+
+
+    // useEffect(() => {
+    //     if (breakDown) {
+    //         setDiscount((discountPercent / 100) * amountValue)
+    //     }
+    // }, [amountValue, discountPercent])
+
     useEffect(() => {
         if (breakDown) {
-            setDiscount((discountPercent / 100) * amountValue)
+            setDiscount(data?.discountType === "VALUE" ? discountPercent : ((discountPercent / 100) * amountValue))
         }
-    }, [amountValue, discountPercent])
+    }, [amountValue, discountPercent, data])
+
+
+
 
     useEffect(() => {
 

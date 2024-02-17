@@ -6,6 +6,30 @@ export const numberFormat = (event: any) => {
     input.value = value;
 }
 
+
+export const numberWithDecimalFormat = (event: any) => {
+    const input = event.target;
+    let value = input.value;
+
+    // Remove non-numeric characters except for decimal points
+    value = value.replace(/[^\d.]/g, '');
+
+    // Ensure the decimal part has at most 2 decimal places and allow only one decimal point
+    const decimalIndex = value.indexOf('.');
+    if (decimalIndex !== -1) {
+        const integerPart = value.slice(0, decimalIndex);
+        const decimalPart = value.slice(decimalIndex + 1).replace(/\./g, ''); // Remove extra decimal points
+        value = `${integerPart}.${decimalPart.slice(0, 2)}`;
+    }
+
+    const numericValue = parseFloat(value);
+    value = isNaN(numericValue) ? '' : value;
+
+    // Update the input value
+    input.value = value;
+}
+
+
 export const phoneNumberFormat = (event: any) => {
     const input = event.target
     let value = input.value.replace(/\D/g, "") // Remove non-numeric characters

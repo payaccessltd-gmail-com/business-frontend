@@ -241,7 +241,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                                 Delete
                                             </p>}
                                             {/* {invoiceStatus === "DELETED" ? "" : <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                                                Revoke
+                                                Revokell
                                             </p>} */}
                                         </div>
                                     </DropdownMenuContent>
@@ -257,7 +257,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
             <div className='w-full h-10 mb-6 flex flex-row items-center gap-12 justify-end bg-white pr-[20px]'>
 
                 <div className='flex flex-row items-center w-[155px]'>
-                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row}`}</span>
+                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row === "500" ? "All" : row}`}</span>
                     <Select
                         onValueChange={(value) => setRow(value)}
                         value={row}
