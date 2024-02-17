@@ -226,7 +226,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             <FormItem>
               <FormLabel>Business email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter business email" {...field} disabled={true} />
+                <Input placeholder="Enter business email" {...field}  />
               </FormControl>
               <FormMessage />
             </FormItem>
