@@ -84,7 +84,7 @@ export default function BusinessInformation({data, setCountry}: Props) {
                   City
                 </div>
                 <div className="w-20 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                  {data.businessCity}
+                  {data?.businessCity}
                 </div>
               </div>
             </div>

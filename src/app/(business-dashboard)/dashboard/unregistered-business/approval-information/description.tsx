@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 import { Typography } from "components/ui/Typography"
 import { Button } from "components/ui/button"
-
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query"
 
 import ReviewDetails from "./review-details"
@@ -41,8 +41,9 @@ export default function ApprovalDescription({}: ApprovalDescriptionProps) {
 
   const data: any = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
 
-  const [enableEdit, setEnableEdit] = useState<boolean>(false)
+  const [enableEdit, setEnableEdit] = useState<boolean>(true)
 
+  const route = useRouter();
   console.log("personal ", JSON.stringify(data?.data?.responseObject[1]))
   const personalData = data?.data?.responseObject[1]
 
@@ -73,10 +74,11 @@ export default function ApprovalDescription({}: ApprovalDescriptionProps) {
   }
   //Props.setValue(percentageComplete)
   const enable = () => {
-    console.log(enableEdit)
-    if (enableEdit) setEnableEdit(false)
-    else setEnableEdit(true)
-    return enableEdit
+    route.push('/dashboard')
+    // console.log(enableEdit)
+    // if (enableEdit) setEnableEdit(false)
+    // else setEnableEdit(true)
+    // return enableEdit
   }
   return (
     <div className="space-y-4">
@@ -90,10 +92,10 @@ export default function ApprovalDescription({}: ApprovalDescriptionProps) {
           </Typography>
 
           <Button
-            onClick={() => enable()}
+            onClick={() => enable()} disabled={percentageComplete !== 100}
             className="text-center text-white text-sm font-bold font-['Century Gothic'] self-stretch px-8 py-2.5 bg-sky-400 rounded justify-center items-center inline-flex"
           >
-            Edit records
+            Done
           </Button>
         </div>
         <div className="self-stretch h-px border border-gray-200"></div>

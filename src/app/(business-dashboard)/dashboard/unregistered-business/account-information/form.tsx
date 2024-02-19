@@ -1,10 +1,9 @@
-
 "use client"
 import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
-import * as zod from "zod" 
+import * as zod from "zod"
 
 // import { updateBusinessBankData } from "api/registration";
 import { Button } from "components/ui/button"
@@ -15,11 +14,14 @@ import { updateMerchantBusinessBankAccountData } from "api/merchant-management"
 import { useHydrateStore, useMerchantStore, useUserStore } from "store"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
 import { numberFormat } from "utils/numberFormater"
+import { getMerchantDetails } from "api/settings"
 
 type AccountInfoFormProps = {
   prevStep?: () => void
   nextStep?: () => void
 }
+
+let data: any = {}
 
 const accInfoFormSchema = zod.object({
   merchantId: zod.number(),
@@ -35,21 +37,44 @@ const accInfoFormSchema = zod.object({
     message: "Last name must be at least 2 characters.",
   }),
 })
-
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
+if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
 export default function AccountInformationForm(props: AccountInfoFormProps) {
-  let token = ""
-
-  if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
-    token = localStorage.getItem("token") as string
+  const getParameters = {
+    token,
+    merchantCode: merchantList[0]?.merchantCode,
   }
+  if (data == undefined) {
+    data = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
+
+    console.log("personal ", JSON.stringify(data?.data?.responseObject[0]))
+  }
+
+  // if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+  //   token = localStorage.getItem("token") as string
+  // }
   const { toast } = useToast()
   const currentMerchant = useHydrateStore(useMerchantStore, (state) => state.currentMerchant)
+
+  const merchantDetails = data?.data?.responseObject[0]
 
   const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
     defaultValues: {},
     resolver: zodResolver(accInfoFormSchema),
   })
+  const handleChange = (event: any) => {
+    const result = event.target.value.replace(/\D/g, "")
 
+    setValue(result)
+  }
   const updateMerchantBusinessBankAccountMutation = useMutation({
     mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) => updateMerchantBusinessBankAccountData(values, token),
     onSuccess: async (data) => {
@@ -89,23 +114,31 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
     },
   })
 
-  const [value, setValue] = useState('');
 
-  const handleChange = (event:any) => {
-    const result = event.target.value.replace(/\D/g, '');
-
-    setValue(result);
-  };
-
-  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-    updateMerchantBusinessBankAccountMutation.mutate(values as any)
+  useEffect(() => {
+    if(merchantDetails){
+    const { businessBvn, businessBankName, businessAccountNumber, businessAccountName } = merchantDetails as API.MerchantDetails
+    return acctInfoForm.reset({
+      businessBvn,
+      businessBankName,
+      businessAccountNumber,
+      businessAccountName,
+    } as any)
   }
+  })
 
   useEffect(() => {
     if (currentMerchant?.id) {
       acctInfoForm.setValue("merchantId", currentMerchant?.id)
-    }
+    }   
   }, [currentMerchant?.id])
+
+  const [value, setValue] = useState("")
+
+  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
+    updateMerchantBusinessBankAccountMutation.mutate(values as any)
+  }
+ // console.log("currentMerchant > ", currentMerchant?.businessName)
 
   return (
     <Form {...acctInfoForm}>
@@ -133,13 +166,14 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
             <FormItem>
               <FormLabel>BVN</FormLabel>
               <FormControl>
- 
-                <Input                    
-                title="Input is only number"                  
-                pattern="[0-9]*"  
-                maxLength={11}    onInput={(event) => numberFormat(event)}
-                placeholder="Enter BVN" {...field} />
-           
+                <Input
+                  title="Input is only number"
+                  pattern="[0-9]*"
+                  maxLength={11}
+                  onInput={(event) => numberFormat(event)}
+                  placeholder="Enter BVN"
+                  {...field}
+                />
               </FormControl>
 
               <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
@@ -178,8 +212,7 @@ export default function AccountInformationForm(props: AccountInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>Account Number</FormLabel>
                 <FormControl>
-                  <Input    onInput={(event) => numberFormat(event)} pattern="[0-9]*" 
-                  maxLength={11} placeholder="Enter account number" {...field} />
+                  <Input onInput={(event) => numberFormat(event)} pattern="[0-9]*" maxLength={11} placeholder="Enter account number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

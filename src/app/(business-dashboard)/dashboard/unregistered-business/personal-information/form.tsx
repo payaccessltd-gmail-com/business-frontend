@@ -169,7 +169,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>First name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter first name" {...field} />
+                  <Input placeholder="Enter first name" {...field}  disabled={true} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -183,7 +183,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter last name" {...field} />
+                  <Input placeholder="Enter last name" {...field} disabled={true} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -345,13 +345,14 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             </FormItem>
           )}
         /> */}
+              {/* <FormLabel className="text-[#555555]">Identification Number</FormLabel> */}
 
         <FormField
           name="identificationDocumentPath"
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Attach Document </FormDescription>
+              <FormLabel>Attach Document <p className="text-[#ee5d5d]">(File size should not exceed 1MB)</p> </FormLabel>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
