@@ -17,7 +17,7 @@ export default function PersonalInformation({data}: Props) {
                 First Name
               </div>
               <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-            {data.firstName}
+            {data?.firstName}
               </div>
             </div>
 
@@ -26,7 +26,7 @@ export default function PersonalInformation({data}: Props) {
                 Last Name
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                {data.lastName}
+                {data?.lastName}
               </div>
             </div>
 
@@ -35,7 +35,7 @@ export default function PersonalInformation({data}: Props) {
                 Contact Phone Number
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                {data.mobileNumber}
+                {data?.mobileNumber}
               </div>
             </div>
           </div>
@@ -50,7 +50,7 @@ export default function PersonalInformation({data}: Props) {
                 Gender/Sex
               </div>
               <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-              {data.gender}
+              {data?.gender}
               </div>
             </div>
 
@@ -59,7 +59,8 @@ export default function PersonalInformation({data}: Props) {
               Date of Brith
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-              {format(parseISO(data.dateOfBirth), 'LLLL d, yyyy')}
+              { data?.dateOfBirth }
+              {/* format(parseISO(data?.dateOfBirth), 'LLLL d, yyyy')} */}
               </div>
             </div>
 
@@ -68,7 +69,7 @@ export default function PersonalInformation({data}: Props) {
                 Email Address
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                {data.emailAddress}
+                {data?.emailAddress}
               </div>
             </div>
           </div>
@@ -83,7 +84,7 @@ export default function PersonalInformation({data}: Props) {
                 Document Type
               </div>
               <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-              {data.identificationDocument.replace("_", " ")}
+              {data?.identificationDocument.replace("_", " ")}
               </div>
             </div>
 
@@ -92,7 +93,7 @@ export default function PersonalInformation({data}: Props) {
               Document ID
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-              {data.identificationNumber}
+              {data?.identificationNumber}
               </div>
             </div>
 
@@ -101,7 +102,7 @@ export default function PersonalInformation({data}: Props) {
                 Upload
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                {data.identificationDocumentPath}
+                {data?.identificationDocumentPath}
               </div>
             </div>
           </div>

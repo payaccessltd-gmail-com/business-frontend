@@ -17,9 +17,10 @@ export const getCountry = async () =>{
 }
 
 export const getAllState = async (countryId: number) =>{    
-    const response = await fetch(`${locationUrl}GetStatesByCountryId/${countryId}`, {
+    const response = await fetch(`http://dstatoka-001-site7.htempurl.com/GetStatesByCountryId/${countryId}`, {
         method: "GET",
         headers: {
+            "Content-Type": "application/json",
             //Authorization: `Bearer ${token}`,
         }
     });
@@ -28,5 +29,7 @@ export const getAllState = async (countryId: number) =>{
     }
     const responseText = await response.text();
     const data = JSON.parse(responseText);
+console.log("getting states >>  ", data);
+
     return data;
 }

@@ -17,7 +17,7 @@ export default function AccountInformation({data}: Props) {
                 BVN
               </div>
               <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                {data.businessBvn}
+                {data?.businessBvn}
               </div>
             </div>
 
@@ -26,7 +26,7 @@ export default function AccountInformation({data}: Props) {
                 Bank Name
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                {data.businessBankName}
+                {data?.businessBankName}
               </div>
             </div>
 
@@ -35,7 +35,7 @@ export default function AccountInformation({data}: Props) {
                 Account Name
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                {data.businessAccountName}
+                {data?.businessAccountName}
               </div>
             </div>
 
@@ -44,7 +44,7 @@ export default function AccountInformation({data}: Props) {
                 Account Number
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                {data.businessAccountNumber}
+                {data?.businessAccountNumber}
               </div>
             </div>
           </div>
