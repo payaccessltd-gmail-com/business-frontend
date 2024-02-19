@@ -8,7 +8,7 @@ import { Typography } from "components/ui/Typography";
 import { BackButton } from "app/_components/back-button";
 
 export const metadata: Metadata = {
-  title: "Registeration",
+  title: "Registration",
   description: "Register",
 };
 

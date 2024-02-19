@@ -47,17 +47,18 @@ if (
     merchantId = merchantList[0].id ? merchantList[0]?.id : null
 }
 
-export default function ApiConfiguration() {
+export default function ApiConfiguration({ isKeyOpen, setAuthenticate }: any) {
     const router = useRouter();
     const pathName = usePathname()
     const [secretKey1, setSecretKey] = useState<string | undefined>("")
     const [publicKey1, setPublicKey] = useState<string | undefined>("")
     // const [loading, setLoading] = useState<boolean>(false)
-
+    console.log(merchantId)
     const GetParameters = { merchantId, token }
     const data: any = useQuery(['getMerchantKeys', GetParameters], () => getMerchantKeys(GetParameters));
 
     const prefill = data?.data?.responseObject
+    // console.log("devloper api: ", data)
 
     const { toast } = useToast();
 
@@ -178,7 +179,7 @@ export default function ApiConfiguration() {
             merchantId,
             apiMode: "TEST"
         }
-        // console.log(requestData)
+        console.log(requestData)
         apiConfigMutation.mutate(requestData);
     }
 
@@ -210,17 +211,21 @@ export default function ApiConfiguration() {
                             <FormControl className="w-full">
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input
-                                        type="password"
+                                        type={isKeyOpen ? "text" : "password"}
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
                                         placeholder="Copy Link"
                                         {...field}
                                         value={data?.data?.responseObject?.secretKey}
                                     />
-                                    <LuCopy
+                                    {isKeyOpen ? <LuCopy
                                         id="secretKey"
                                         onClick={(e) => handleCopyToClipboard(e)}
                                         className="absolute right-[23px] top-[14.75px] cursor-pointer text-[16px] text-[#49454F]"
-                                    />
+                                    /> : ""}
+                                    {!isKeyOpen ? <LuCopy
+                                        onClick={() => setAuthenticate(true)}
+                                        className="absolute right-[23px] top-[14.75px] cursor-pointer text-[16px] text-[#49454F]"
+                                    /> : ""}
                                 </div>
                             </FormControl>
                             <FormMessage />
@@ -242,17 +247,22 @@ export default function ApiConfiguration() {
                                 <div className="w-full p-1 rounded-[8px] border border-solid border-[#A1CBDE] h-[46px] relative">
                                     <input
                                         {...field}
-                                        type="password"
+                                        type={isKeyOpen ? "text" : "password"}
                                         placeholder="Copy Link"
                                         className="placeholder:text-[#555555] placeholder:text-[16px] placeholder:leading-normal placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent"
                                         value={data?.data?.responseObject?.publicKey}
 
                                     />
-                                    <LuCopy
+                                  
+                                    {isKeyOpen ? <LuCopy
                                         id="publicKey"
                                         onClick={(e) => handleCopyToClipboard(e)}
                                         className="absolute right-[23px] top-[14.75px] cursor-pointer text-[16px] text-[#49454F]"
-                                    />
+                                    /> : ""}
+                                    {!isKeyOpen ? <LuCopy
+                                        onClick={() => setAuthenticate(true)}
+                                        className="absolute right-[23px] top-[14.75px] cursor-pointer text-[16px] text-[#49454F]"
+                                    /> : ""}
                                 </div>
 
                             </FormControl>

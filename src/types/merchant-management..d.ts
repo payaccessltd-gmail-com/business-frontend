@@ -5,6 +5,15 @@ declare namespace API {
     softwareDeveloper: string;
     mobileNumber: string;
     merchantId: number;
+
+  };
+
+  type UpdateAboutBusinessRequest = {
+    businessCategory: string;
+    businessType: string;
+    softwareDeveloper: string;
+    mobileNumber: string;
+    merchantId: number;
   };
 
   type UpdateLocationDTO = {
@@ -17,10 +26,10 @@ declare namespace API {
     gender: "MALE" | "FEMALE";
     dateOfBirth: Date;
     identificationDocument:
-      | "DRIVERS_LICENCE"
-      | "NATIONAL_ID"
-      | "INTL_PASSPORT"
-      | "VOTERS_CARD";
+    | "DRIVERS_LICENCE"
+    | "NATIONAL_ID"
+    | "INTL_PASSPORT"
+    | "VOTERS_CARD";
     identificationNumber: string;
     merchantId: number;
     identificationDocumentPath?: File | undefined;
@@ -36,13 +45,16 @@ declare namespace API {
     businessWebsite: string;
     businessLogoFile: File;
     merchantId: number;
+    businessCountry: string,
+    businessCertificateFile: File
+    businessAddress: string
   };
 
   type UpdateMerchantBankAccountDataDTO = {
     merchantId: number;
-    businessBvn: string;
+    businessBvn: number;
     businessBankName: string;
-    businessAccountNumber: string;
+    businessAccountNumber: number;
     businessAccountName: string;
   };
 

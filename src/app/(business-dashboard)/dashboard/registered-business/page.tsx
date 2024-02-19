@@ -6,7 +6,7 @@ import StepperForm from "./components/stepper-form";
 function page() {
   return (
     <div className="pb-5">
-      <div className="mb-10 space-y-2">
+      <div className="mb-5 ">
         <Typography
           level="h3"
           className="font-CenturyGothic font-bold text-[40] text-gray-80"
@@ -14,7 +14,7 @@ function page() {
           Business profile
         </Typography>
 
-        <div className="mb-10 flex w-full max-w-[650px] flex-col space-y-2">
+        <div className="mb-5 flex w-full max-w-[650px] flex-col space-y-2">
           <Typography className="font-bold leading-8 font-CenturyGothic text-primary-110">
             Welcome to your dashboard
           </Typography>

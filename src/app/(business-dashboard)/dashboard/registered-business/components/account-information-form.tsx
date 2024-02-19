@@ -1,185 +1,229 @@
-"use client";
+// "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import * as zod from "zod";
+// // @ts-nocheck
 
-import { updateMerchantBusinessBankAccountData } from "api/merchant-management";
-import { Button } from "components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import { Input } from "components/ui/input";
+// import { zodResolver } from "@hookform/resolvers/zod"
+// import { useMutation } from "@tanstack/react-query"
+// import { useForm } from "react-hook-form"
+// import * as zod from "zod"
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "components/ui/select";
+// import { updateMerchantBusinessBankAccountData } from "api/merchant-management"
+// import { Button } from "components/ui/button"
+// import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
+// import { Input } from "components/ui/input"
 
-const accInfoFormSchema = zod.object({
-  merchantId: zod.number(),
-  emailAddress: zod.string().email(),
-  businessBvn: zod.string(),
-  businessBankName: zod.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  businessAccountNumber: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "components/ui/select"
+// import { useHydrateStore, useMerchantStore } from "store"
+// import { useRouter } from "next/router"
+// import { useToast } from "components/ui/use-toast"
+// import { useEffect } from "react"
 
-  businessAccountName: zod.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-});
+// const accInfoFormSchema = zod.object({
+//   // merchantId: zod.number(),
+//   // emailAddress: zod.string().email(),
+//   businessBvn: zod.string(),
+//   businessBankName: zod.string().min(2, {
+//     message: "First name must be at least 2 characters.",
+//   }),
+//   businessAccountNumber: zod.string().min(2, {
+//     message: "Last name must be at least 2 characters.",
+//   }),
 
-export default function AccountInformationForm() {
-  let token = "";
-  const acctInfoForm = useForm<zod.infer<typeof accInfoFormSchema>>({
-    defaultValues: {},
-    resolver: zodResolver(accInfoFormSchema),
-  });
+//   businessAccountName: zod.string().min(2, {
+//     message: "Last name must be at least 2 characters.",
+//   }),
+// })
 
-  if (
-    typeof window !== "undefined" &&
-    typeof window.localStorage !== "undefined"
-  ) {
-    token = localStorage.getItem("token") as string;
-  }
+// export default function AccountInformationForm(props: any) {
+//   // const router = useRouter()
+//   const { toast } = useToast()
+//   let token = ""
+//   const data = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
+//   const acctInfoForm = useForm({
+//     defaultValues: {
+//       businessBvn:data?.businessBvn || "",
+//       businessBankName: "",
+//       businessAccountName: "",
+//       businessAccountNumber: "",
 
-  const updateBusinessBankDataMutation = useMutation({
-    mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) =>
-      updateMerchantBusinessBankAccountData(values, token),
-    onSuccess: (data, variables, context) => {
-      console.log({ data, variables, context });
-    },
+//     },
+//     resolver: zodResolver(accInfoFormSchema),
+//   })
+ 
 
-    onError: (error, variables, context) => {
-      console.log({ error, variables, context });
-    },
-    onMutate: () => {
-      return null;
-    },
-  });
+//   console.log(data,'d');
+  
 
-  const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
-    updateBusinessBankDataMutation.mutate(values);
-  };
+//   const merchantId = useHydrateStore(useMerchantStore, (state) => state.currentMerchant.id)
 
-  return (
-    <Form {...acctInfoForm}>
-      <form
-        onSubmit={acctInfoForm.handleSubmit(onSubmit)}
-        className="flex flex-col space-y-8"
-      >
-        <FormField
-          name="merchantId"
-          control={acctInfoForm.control}
-          render={({ field }) => (
-            <FormItem className="hidden">
-              <FormLabel>BVN</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter BVN" {...field} />
-              </FormControl>
+//   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+//     token = localStorage.getItem("token") as string
+//   }
 
-              <FormDescription>
-                To get your BVN dial *565*0# on your registered mobile number.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+//   const updateBusinessBankDataMutation = useMutation({
+//     mutationFn: (values: API.UpdateMerchantBankAccountDataDTO) => updateMerchantBusinessBankAccountData(values, token),
+//     onSuccess: async (data) => {
+//       const res: { statusCode: string; message: string } =
+//         (await data.json()) as {
+//           statusCode: string;
+//           message: string;
+//         };
 
-        <FormField
-          name="businessBvn"
-          control={acctInfoForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>BVN</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter BVN" {...field} />
-              </FormControl>
+//       if (res.statusCode === "0") {
 
-              <FormDescription>
-                To get your BVN dial *565*0# on your registered mobile number.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <div className="flex w-full flex-row gap-[44px]">
-          <FormField
-            name="businessBankName"
-            control={acctInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Bank name</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Enter bank" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="gtbank">GTBank</SelectItem>
-                    <SelectItem value="firstbank">First Bank</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+//         props.nextStep && props.nextStep()
 
-          <FormField
-            name="businessAccountNumber"
-            control={acctInfoForm.control}
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Account Number</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter account number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+//         toast({
+//           variant: "default",
+//           title: "",
+//           description: res?.message,
+//         })
+//       }
+//       if (res.statusCode === "403") {
+//         toast({
+//           variant: "destructive",
+//           title: res.statusCode,
+//           description: res.message,
+//         });
+//       }
+//     },
+//     onError: (e: any) => {
+//       toast({
+//         variant: "destructive",
+//         title: "",
+//         description: e,
+//       })
+//     },
+//     onMutate: () => {
+//       return null
+//     },
+//   })
 
-        <FormField
-          name="businessAccountName"
-          control={acctInfoForm.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Account name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter account name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+//   const onSubmit = (values: zod.infer<typeof accInfoFormSchema>) => {
+//     updateBusinessBankDataMutation.mutate({ merchantId, ...values } as any)
+//     console.log(values, 'values');
 
-        <Button
-          className="h-[48px] w-[70%] self-center"
-          type="submit"
-          size="default"
-        >
-          Save
-        </Button>
-      </form>
-    </Form>
-  );
-}
+//   }
+
+//   useEffect(() => {
+//     if (data) {
+//       const fieldsToUpdate = {
+//         businessBvn: data.businessBvn,
+//         businessBankName: data.businessBankName,
+//         businessAccountName: data.businessAccountName,
+//         businessAccountNumber: data.businessAccountNumber,
+//         // Add more fields as needed
+//       };
+//       Object.entries(fieldsToUpdate).forEach(([fieldName, value]) => {
+
+//         // @ts-expect-error
+//         acctInfoForm.setValue(fieldName, value);
+//       });
+//     }
+//   }, [data, acctInfoForm]);
+  
+
+//   return (
+
+//     <Form {...acctInfoForm}>
+//       <form onSubmit={acctInfoForm.handleSubmit(onSubmit)} className="space-y-2 border-gray-10 w-full">
+//         {/* <FormField
+//           name="merchantId"
+//           control={acctInfoForm.control}
+//           render={({ field }) => (
+//             <FormItem className="hidden">
+//               <FormLabel>BVN</FormLabel>
+//               <FormControl>
+//                 <Input placeholder="Enter BVN" {...field} />
+//               </FormControl>
+
+//               <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
+//               <FormMessage />
+//             </FormItem>
+//           )}
+//         /> */}
+
+//         <FormField
+//           name="businessBvn"
+//           control={acctInfoForm.control}
+//           render={({ field }) => (
+//             <FormItem>
+//               <FormLabel>BVN</FormLabel>
+//               <FormControl>
+//                 <Input placeholder="Enter BVN" {...field} />
+//               </FormControl>
+
+//               <FormDescription>To get your BVN dial *565*0# on your registered mobile number.</FormDescription>
+//               <FormMessage />
+//             </FormItem>
+//           )}
+//         />
+
+//         <div className="flex w-full flex-row gap-[44px]">
+//           <FormField
+//             name="businessBankName"
+//             control={acctInfoForm.control}
+//             render={({ field }) => (
+//               <FormItem className="w-full">
+//                 <FormLabel>Bank name</FormLabel>
+//                 <Select onValueChange={field.onChange} defaultValue={field.value}>
+//                   <FormControl>
+//                     <SelectTrigger>
+//                       <SelectValue placeholder="Enter bank" />
+//                     </SelectTrigger>
+//                   </FormControl>
+//                   <SelectContent>
+//                     <SelectItem value="gtbank">GTBank</SelectItem>
+//                     <SelectItem value="firstbank">First Bank</SelectItem>
+//                   </SelectContent>
+//                 </Select>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+
+//           <FormField
+//             name="businessAccountNumber"
+//             control={acctInfoForm.control}
+//             render={({ field }) => (
+//               <FormItem className="w-full">
+//                 <FormLabel>Account Number</FormLabel>
+//                 <FormControl>
+//                   <Input placeholder="Enter account number" {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//         </div>
+
+//         <FormField
+//           name="businessAccountName"
+//           control={acctInfoForm.control}
+//           render={({ field }) => (
+//             <FormItem>
+//               <FormLabel>Account name</FormLabel>
+//               <FormControl>
+//                 <Input placeholder="Enter account name" {...field} />
+//               </FormControl>
+//               <FormMessage />
+//             </FormItem>
+//           )}
+//         />
+
+//         <div className="flex items-center  justify-center my-20">
+//           <Button
+//             // disabled={updateMerchantBioDataMutation.isLoading}
+//             className="h-[48px] w-[50%]"
+//             type="submit"
+//             size="default"
+//           >
+//             Save and Continue
+//           </Button>
+//         </div>
+//       </form>
+//     </Form>
+
+//   )
+// }

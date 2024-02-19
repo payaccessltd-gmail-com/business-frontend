@@ -9,7 +9,7 @@ import AccountInformationForm from "../unregistered-business/account-information
 import BusinessInformationForm from "../unregistered-business/business-information/form"
 import PersonalInformationForm from "../unregistered-business/personal-information/form"
 
-function Stepper() {
+export default function Stepper() {
   const steps = useMemo(
     () => [
       {
@@ -30,7 +30,7 @@ function Stepper() {
       {
         label: "Step 4",
         title: "Approval",
-        description: "Review and approval of your KYC documents",
+        description: "Review and Submit Your KYC Documents",
       },
     ],
     []
@@ -49,9 +49,8 @@ function Stepper() {
               <a className="flex flex-col space-y-4 cursor-pointer group focus:outline-0" {...step}>
                 <div className="flex flex-row items-center space-x-4">
                   <span
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-none bg-primary-50 font-CenturyGothic text-base text-white transition-colors ease-in-out group-focus:ring-2 group-focus:ring-primary-50 group-focus:ring-offset-2  ${
-                      state?.currentStep === index ? "bg-white text-white ring-2 ring-primary-50 ring-offset-2 group-focus:ring-primary-50 " : ""
-                    }`}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-none bg-primary-50 font-CenturyGothic text-base text-white transition-colors ease-in-out group-focus:ring-2 group-focus:ring-primary-50 group-focus:ring-offset-2  ${state?.currentStep === index ? "bg-white text-white ring-2 ring-primary-50 ring-offset-2 group-focus:ring-primary-50 " : ""
+                      }`}
                   >
                     {index + 1}
                   </span>
@@ -88,4 +87,4 @@ function Stepper() {
   )
 }
 
-export default Stepper
+
