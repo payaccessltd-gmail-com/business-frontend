@@ -26,7 +26,7 @@ import StandardRecipt from "./standard-form-recipt"
 import ReviewPopup from "./review-popup"
 import { useMutation } from "@tanstack/react-query"
 import { standardInvoice } from "../../../../api/invoice"
-import { formatMoneyAmount, formatPercentValue, formatQuantity } from "utils/numberFormater"
+import { formatMoneyAmount, formatPercentValue, formatQuantity, numberWithDecimalFormat } from "utils/numberFormater"
 import { deleteInvoice } from "api/invoice";
 
 
@@ -305,6 +305,7 @@ export default function StandardForm({ preFillData }: any) {
     onSuccess: async (data) => {
       const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
       console.log("standard invoice status code: ", responseData?.statusCode)
+      setLoading(false)
       if (responseData?.statusCode === "701") {
         toast({
           variant: "destructive",
@@ -328,6 +329,7 @@ export default function StandardForm({ preFillData }: any) {
     },
 
     onError: (e) => {
+      setLoading(false)
       console.log(e)
       toast({
         variant: "destructive",
@@ -381,12 +383,15 @@ export default function StandardForm({ preFillData }: any) {
   };
 
 
+
+  console.log("from edit standard form: ", standardForm.getValues("shipping"))
+
   const firstAmountValue = Number(standardForm.getValues("qty")?.replace(/,/g, '')) * Number(standardForm.getValues("costPerUnit")?.replace(/,/g, ''))
   const amountValue = firstAmountValue + calculateTotalAmount()
-  const discount = ((Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0) / 100) * amountValue
+  const discount = standardForm.getValues("discountType") === "PERCENTAGE" ? (((Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0) / 100) * amountValue) : (Number(standardForm.getValues("discountAmount")?.replace(/,/g, '')) || 0)
   const subTotal = amountValue - discount
   const tax = subTotal * ((Number(standardForm.getValues("taxPercent")?.replace(/,/g, '')) || 0) / 100)
-  const grandTotal = subTotal + tax + (Number(standardForm.getValues("shipping")?.replace(/,/g, '')) || 0)
+  const grandTotal = subTotal + tax + (Number(standardForm.getValues("shipping")?.toString()?.replace(/,/g, '')) || 0)
   //----------------Calculations Ends-------------------
 
 
@@ -394,6 +399,7 @@ export default function StandardForm({ preFillData }: any) {
 
 
   async function onSubmit(values: z.infer<typeof StandardSchema>) {
+    setLoading(true)
     let newValues = {
       ...values,
       dueDate: values?.dueDate?.toISOString().split("T")[0],
@@ -747,7 +753,7 @@ export default function StandardForm({ preFillData }: any) {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="PERCENTAGE">Percentage</SelectItem>
-                        <SelectItem value="VALUE1">Value</SelectItem>
+                        <SelectItem value="VALUE">Value</SelectItem>
                       </SelectContent>
                     </Select>
 
@@ -770,7 +776,7 @@ export default function StandardForm({ preFillData }: any) {
                         className="border-[#A1CBDE] min-h-[48px] bg-transparent"
                         placeholder="0.00"
                         {...field}
-                        onInput={(event) => formatPercentValue(event)}
+                        onInput={(event) => standardForm.getValues("discountType") === "PERCENTAGE" ? formatPercentValue(event) : numberWithDecimalFormat(event)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -882,7 +888,9 @@ export default function StandardForm({ preFillData }: any) {
         <ReviewPopup value={`NGN ${grandTotal?.toLocaleString()}`}
           setPopup={setPopup}
           handleSubmit={handleModalSubmit}
-          modalData={modalData} />
+          modalData={modalData}
+          loading={loading}
+        />
       ) : (
         ""
       )}

@@ -166,11 +166,11 @@ export default function Invoice() {
       const filteredResults = data?.data?.responseObject?.list.filter((item: any) => {
         const { customerName, customerEmail, id } = item;
         const searchLower = search.toLowerCase();
-
         return (
-          customerName.toLowerCase().includes(searchLower) ||
-          customerEmail.toLowerCase().includes(searchLower) ||
-          id.toString().includes(searchLower)
+          customerName.toLowerCase() === searchLower ||
+          customerEmail.toLowerCase() === searchLower ||
+          id.toString() === searchLower ||
+          `pay${String(id).padStart(8, '0')}` === searchLower
         );
       });
       setSearchResults({ list: filteredResults, totalCount: filteredResults?.length } as any)
@@ -178,11 +178,11 @@ export default function Invoice() {
       const filteredResults = filter?.list?.filter((item: any) => {
         const { customerName, customerEmail, id } = item;
         const searchLower = search.toLowerCase();
-
         return (
-          customerName.toLowerCase().includes(searchLower) ||
-          customerEmail.toLowerCase().includes(searchLower) ||
-          id.toString().includes(searchLower)
+          customerName.toLowerCase() === searchLower ||
+          customerEmail.toLowerCase() === searchLower ||
+          id.toString() === searchLower ||
+          `pay${String(id).padStart(8, '0')}` === searchLower
         );
       });
       setSearchResults({ list: filteredResults, totalCount: filteredResults?.length } as any)
@@ -202,7 +202,7 @@ export default function Invoice() {
 
     <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Invoice</p>
     <div className="flex flex-row items-center justify-between">
-      <div className="flex flex-row items-center gap-[18px]">
+      <div className="flex flex-row items-center w-[75%] gap-[18px]">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="outline-[#D3EEF9] border border-[#D3EEF9] border-solid h-[45px] flex flex-row items-center gap-[10px] text-[14px] font-bold text-[#666666] leading-[150%]">
@@ -290,8 +290,8 @@ export default function Invoice() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="p-1 rounded-[8px] border border-solid border-[#D6F5FFD9] bg-[#F3FCFF] w-[450px] h-[45px] relative">
-          <input value={search} onKeyPress={(event: any) => handleEnterSearch(event)} onChange={(e => setSearch(e.target.value))} type="text" placeholder="Search Invoice ID, customer email or name" className="placeholder:text-[#49454F] placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent" />
+        <div className="p-1 rounded-[8px] border border-solid border-[#D6F5FFD9] bg-[#F3FCFF] w-[60%] h-[45px] relative">
+          <input value={search} onKeyPress={(event: any) => handleEnterSearch(event)} onChange={(e => setSearch(e.target.value))} type="text" placeholder="Search Invoice ID or No, customer email or name" className="placeholder:text-[#49454F] placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent" />
           <IoSearchSharp onClick={handleSearch} className="absolute right-[23px] top-[8.75px] cursor-pointer text-[26px] text-[#49454F]" />
         </div>
       </div>

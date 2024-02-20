@@ -11,7 +11,7 @@ import { MdClose } from "react-icons/md";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
-export default function ReminderPopup({ value, setReminder, handleReminder, modalData, paidId }: any) {
+export default function ReminderPopup({ value, setReminder, handleReminder, modalData, paidId, loading }: any) {
     return (
         <div className="z-10 w-full h-full fixed top-0 left-0 flex flex-col items-center bg-[#828B8E85]">
             <ScrollArea className="w-full h-full">
@@ -28,7 +28,7 @@ export default function ReminderPopup({ value, setReminder, handleReminder, moda
                         </p>
                         <div className="flex flex-col items-center w-full gap-3 mt-8">
                             <Button onClick={() => handleReminder()} className="min-h-[44px] font-[700] w-full hover:bg-[#48B8E6] bg-[#48B8E6] hover:opacity-[0.4]">
-                                Send Reminder
+                                {loading ? "Sending..." : "Send Reminder"}
                             </Button>
                             <Button
                                 variant={"outline"}

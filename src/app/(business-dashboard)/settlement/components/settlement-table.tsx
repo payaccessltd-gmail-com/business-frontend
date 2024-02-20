@@ -170,7 +170,7 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
             day: 'numeric',
         }).format(dateObject);
 
-        console.log(formattedDate);
+        // console.log(formattedDate);
         return formattedDate;
 
     }
@@ -222,7 +222,7 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
         <div className='flex flex-col items-center relative bg-white'>
             <ScrollArea className="xl:w-full w-[75vw] rounded-[8px]">
                 <div className="w-full flex flex-col xl:items-center items-start">
-                    <div className="xl:w-full w-[960px]">
+                    <div className="xl:w-full w-[1000px]">
                         <div className='flex flex-row items-center justify-between rounded-[8px] p-[10px] h-[58px] w-full bg-[#0C394B] mb-[24px]'>
                             {
                                 heading.map((value, id) => {
@@ -315,10 +315,10 @@ export default function SettlementsTable({ setTablePopup, setModalData, setModal
                 <ScrollBar orientation="horizontal" />
             </ScrollArea >
 
-            <div className='w-full h-10 mb-6 flex flex-row items-center gap-12 justify-end bg-white pr-[20px]'>
+            <div className='w-full h-10 mb-6 flex flex-row items-center gap-12 justify-end bg-white pr-[20px] mt-5'>
 
                 <div className='flex flex-row items-center w-[155px]'>
-                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row}`}</span>
+                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row === "500" ? "All" : row}`}</span>
                     <Select
                         onValueChange={(value) => setRow(value)}
                         value={row}

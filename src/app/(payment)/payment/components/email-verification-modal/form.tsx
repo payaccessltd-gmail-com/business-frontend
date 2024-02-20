@@ -85,7 +85,7 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
     onSuccess: async (data) => {
       const responseData: API.VerifyAccountResponse =
         (await data.json()) as API.VerifyAccountResponse;
-
+      setLoading(false)
       if (responseData?.statusCode === "1") {
         toast({
           variant: "destructive",
@@ -116,6 +116,7 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
     },
 
     onError: (e) => {
+      setLoading(false)
       console.log(e);
       toast({
         variant: "destructive",
@@ -158,6 +159,7 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
   // });
 
   const handleSubmit = (event: any) => {
+    setLoading(true)
     event?.preventDefault();
     console.log(otp.join(""));
     let userOTP = {
@@ -256,7 +258,7 @@ export default function EmailVerificationForm({ email, setVerifyModal, orderRef,
           // type="submit"
           onClick={(event) => handleSubmit(event)}
         >
-          Continue
+          {loading ? "Authenticating..." : "Continue"}
         </Button>
         <p className="text-[#1A1A1A] mb-4 mt-6 text-[14px] text-center font-[400] leading-[145%]">
           Didn't get the OTP? Dial *723*0# on your phone (MTN,Etisalat,Airtel) Glo,use *805*0#.

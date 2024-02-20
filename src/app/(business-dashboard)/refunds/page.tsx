@@ -89,7 +89,8 @@ const Refund = () => {
     <div className="relative flex flex-col w-full h-full">
 
 
-      <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Refund</p>
+      <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Disputes</p>
+      {/* <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Refund</p> */}
 
       <Form {...form}>
         <form className="flex flex-col w-full">

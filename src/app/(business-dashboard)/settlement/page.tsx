@@ -1,14 +1,3 @@
-// import { Metadata } from "next";
-
-// export const metadata: Metadata = {
-//   title: "Get Started",
-//   description: "Business page as it should be",
-// };
-
-// export default function Settlement() {
-//   return <main>coming soon</main>;
-// }
-
 "use client"
 
 import { Metadata } from "next"
@@ -47,6 +36,8 @@ import { getAllSettlements } from "api/settlements"
 import { formatMoneyAmount } from "utils/numberFormater"
 import RunSettlementsForm from "./components/run-settlements"
 import SettlementBreakdown from "./components/settlement-breakdown"
+import { ScrollArea } from "components/ui/scroll-area"
+import { useToast } from "components/ui/use-toast"
 
 
 const dropOptions: any[] = [
@@ -83,23 +74,81 @@ if (typeof window !== "undefined" && typeof window.localStorage !== "undefined")
 //   })
 
 const Settlement = () => {
+
+  const { toast } = useToast()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
 
+
+  const GetParameters1 = { pageNumber: 0, rowCount: 1, token }
+  const data1: any = useQuery(["getAllSettlements", GetParameters1], () => getAllSettlements(GetParameters1))
+
+
   const [date, setDate] = useState<Date>()
   const [date1, setDate1] = useState<Date>()
   const [date2, setDate2] = useState<Date>()
-  const [row, setRow] = useState<string>("5")
+  const [row, setRow] = useState<string>(data1?.data?.responseObject?.totalCount?.toString() || "500")
   const [page, setPage] = useState<string>("0")
   const [popup, setPopup] = useState(false);
   const [tablepopup, setTablePopup] = useState(false);
   const [modalData, setModalData] = useState<any>();
+  const [filter, setFilter] = useState<any>(null)
+  const [filter1, setFilter1] = useState<any>(null)
+  const [status, setStatus] = useState<string>()
+  const [loading, setLoading] = useState<boolean>(false)
 
 
   const GetParameters = { pageNumber: page, rowCount: row, token }
-  const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllSettlements(GetParameters))
-  console.log("get settlemnts: ", data?.data?.responseObject)
+  const data: any = useQuery(["getAllSettlements", GetParameters], () => getAllSettlements(GetParameters))
+  // console.log("get settlemnts: ", data?.data?.responseObject)
+
+  React.useEffect(() => {
+    setFilter(filter1)
+    // console.log(filter1)
+  }, [filter1])
+
+
+  const handleFilter = async (e: any) => {
+    setLoading(true)
+    e.preventDefault()
+    try {
+      const filterData: any = await getAllSettlements({ ...GetParameters, settlementStartDate: date?.toISOString().split("T")[0], settlementStatus: status })
+      setFilter1(filterData?.responseObject)
+      console.log(filterData?.responseObject)
+      if (filterData?.responseObject?.totalCount === 0) {
+        toast({
+          variant: "default",
+          title: "Filter Message",
+          description: "No match found",
+          className: "bg-[#F2FBFF] border-[#23AAE1] text-[#23AAE1] text-[14px] font-[400]",
+        })
+      } else {
+        toast({
+          variant: "default",
+          title: "Success...",
+          description: "Filter Set",
+          className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        })
+      }
+      setLoading(false)
+      setStatus(undefined)
+      setDate(undefined)
+    } catch (error: any) {
+      console.log(error)
+      setStatus(undefined)
+      setDate(undefined)
+      setLoading(false)
+      toast({
+        variant: "destructive",
+        title: `${error}`,
+        description: "error",
+      })
+    }
+    // console.log("date: ", date?.toISOString().split("T")[0])
+    // console.log("status: ", status)
+  }
 
   return (
     <div className="relative flex flex-col w-full h-full">
@@ -107,46 +156,6 @@ const Settlement = () => {
       <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Settlement</p>
 
       <div className="flex flex-row items-start justify-between w-full">
-        <div className="flex flex-row items-start gap-9">
-
-          <Select
-            onValueChange={(value) => setRow(value)}
-            value={row}
-          >
-            <SelectTrigger className="w-fit rounded-[8px] flex flex-row items-center justify-center gap-[10px] bg-[#D6F5FF33] border-[#EAF9FF] font-[400] text-[16px] text-[#02425C] leading-[136.5%]">
-              All Channels
-            </SelectTrigger>
-            <SelectContent>
-              {
-                dropOptions.map(({ name, value }, id) => {
-                  return <SelectItem value={value} key={id} className={`hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]`}>
-                    {name}
-                  </SelectItem>
-                })
-              }
-            </SelectContent>
-          </Select>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn("bg-[#D6F5FF33] border-[#EAF9FF] w-fit flex flex-row items-center gap-3 pl-3 text-left font-normal", !date2 && "text-muted-foreground")}
-              >
-                {date2 ? format(date2, "PPP") : <span>Pick a date</span>}
-                <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date2}
-                onSelect={setDate2}
-                // disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
 
         <div className="flex flex-row items-start gap-8">
 
@@ -160,29 +169,33 @@ const Settlement = () => {
                 <LuChevronDown className="mt-[2px] text-[24px] text-[#666666]" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[298px] p-[22px]">
-              <form className="flex flex-col w-full">
-                <div className="flex flex-col space-y-1.5 mb-[24px]">
-                  <Label htmlFor="status" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
-                    Transaction Status
-                  </Label>
-                  <Select>
-                    <SelectTrigger
-                      id="status"
-                      className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
+            <DropdownMenuContent align="start" className="w-[298px] pl-[16px] pr-[6px] py-[22px]">
+              <ScrollArea className="h-[28vh] pr-[22px]">
+                <form className="flex flex-col w-full">
+                  <div className="flex flex-col space-y-1.5 mb-[12px]">
+                    <Label htmlFor="status" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
+                      Settlement Status
+                    </Label>
+                    <Select
+                      onValueChange={setStatus}
+                      value={status}
                     >
-                      <SelectValue placeholder="Show all" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" className="p-[6px]">
-                      <SelectItem value="Draft">Draft</SelectItem>
-                      <SelectItem value="Paid">Paid</SelectItem>
-                      <SelectItem value="Not paid">Not paid</SelectItem>
-                      <SelectItem value="Revoke">Revoke</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <SelectTrigger
+                        id="status"
+                        className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
+                      >
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent position="popper" className="p-[6px]">
+                        <SelectItem value="COMPLETED">Completed</SelectItem>
+                        <SelectItem value="PENDING">Pending</SelectItem>
+                        <SelectItem value="Not paid">Not paid</SelectItem>
+                        <SelectItem value="Revoke">Revoke</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="flex flex-col items-start mb-[24px]">
+                  {/* <div className="flex flex-col items-start mb-[24px]">
                   <label htmlFor="amount" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
                     Amount
                   </label>
@@ -193,15 +206,16 @@ const Settlement = () => {
                     className="px-4 py-2 outline-[#A1CBDE] w-full rounded-[8px] mt-[8px] border border-[#A1CBDE] border-solid h-[45px]"
                     onChange={(event) => formatMoneyAmount(event)}
                   />
-                </div>
-                <div className="flex flex-col items-start gap-[8px] w-full">
-                  <label htmlFor="date" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
-                    Time range
-                  </label>
-                  <div id="date" className="flex flex-row items-center gap-[3px] w-full">
+                </div> */}
+                  <div className="flex flex-col items-start gap-[8px] w-full">
+                    <label htmlFor="startDate" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
+                      Settlement Date
+                    </label>
+
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
+                          id="startDate"
                           variant={"outline"}
                           className={cn(
                             "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
@@ -221,9 +235,20 @@ const Settlement = () => {
                         </div>
                       </PopoverContent>
                     </Popover>
+
+                  </div>
+
+
+                  {/* 
+
+                  <div className="flex flex-col items-start gap-[8px] w-full">
+                    <label htmlFor="endDate" className="text-[16px] font-[400px] text-[#0C394B] leading-normal">
+                      End Date
+                    </label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
+                          id="endDate"
                           variant={"outline"}
                           className={cn(
                             "px-4 py-2 outline-[#A1CBDE] rounded-[8px] border border-[#A1CBDE] border-solid h-[45px] w-full justify-start text-left font-normal",
@@ -243,12 +268,19 @@ const Settlement = () => {
                         </div>
                       </PopoverContent>
                     </Popover>
-                  </div>
-                </div>
-                <Button className="mt-[27px] self-center rounded-[8px] w-[85%] h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal">
-                  Filter
-                </Button>
-              </form>
+                  </div> */}
+
+
+                  <Button
+                    disabled={loading}
+                    onClick={(e: any) => handleFilter(e)}
+                    className="mt-[27px] self-center rounded-[8px] w-full h-[48px] bg-[#48B8E6] text-[14px] font-bold text-white leading-normal"
+                  >
+                    {loading ? "Filtering..." : "Filter"}
+                  </Button>
+                </form>
+              </ScrollArea>
+
             </DropdownMenuContent>
           </DropdownMenu>
           {/* {data?.data?.responseObject?.list.length ?
@@ -275,7 +307,7 @@ const Settlement = () => {
 
       {data?.data?.responseObject?.list.length ? (
         <div className="w-full mt-[35px] self-center">
-          <SettlementsTable setModalData={setModalData} setTablePopup={setTablePopup} setPage={setPage} page={page} row={row} setRow={setRow} settlementsTableData={data?.data?.responseObject} />
+          <SettlementsTable setModalData={setModalData} setTablePopup={setTablePopup} setPage={setPage} page={page} row={row} setRow={setRow} settlementsTableData={(filter && filter?.totalCount !== 0) ? (filter) : (data?.data?.responseObject)} />
         </div>
       ) : (
         <div className="w-[602px] mt-[132px] self-center">

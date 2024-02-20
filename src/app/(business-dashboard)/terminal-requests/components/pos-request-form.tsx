@@ -62,7 +62,7 @@ const POSRequestForm = ({ handleModalPOSpopup }: any) => {
     onSuccess: async (data) => {
       const responseData: API.Reponse = (await data.json()) as API.Reponse
 
-      if(responseData?.statusCode === "403"){
+      if (responseData?.statusCode === "403") {
         localStorage.clear()
         router.push("/login");
       }
@@ -71,7 +71,7 @@ const POSRequestForm = ({ handleModalPOSpopup }: any) => {
         toast({
           variant: "default",
           title: "",
-          description: "Invoice Created",
+          description: "Terminal Request Successful",
           className: "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         })
         posForm.reset()
@@ -98,7 +98,7 @@ const POSRequestForm = ({ handleModalPOSpopup }: any) => {
       ...value,
       merchantId: merchantId,
       terminalBrand: terminal,
-      terminalType: "POS"      
+      terminalType: "POS"
     }
     posFormMutation.mutate(data)
   }

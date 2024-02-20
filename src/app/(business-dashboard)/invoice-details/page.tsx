@@ -45,6 +45,7 @@ export default function GenerateInvoice() {
   const [deletePopup, setPopup] = useState<boolean>(false)
   const [paidPopup, setPaidPopup] = useState<boolean>(false)
   const [reminder, setReminder] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const searchParams = useSearchParams();
   const invoiceIdValue = searchParams?.get("id");
@@ -295,7 +296,7 @@ export default function GenerateInvoice() {
     onSuccess: async (data: any) => {
       const responseData: API.InvoiceStatusReponse =
         (await data.json()) as API.InvoiceStatusReponse;
-
+      setLoading(false)
       if (responseData?.statusCode === "1") {
         setReminder(false)
         toast({
@@ -320,6 +321,7 @@ export default function GenerateInvoice() {
 
     onError: (e) => {
       setReminder(false)
+      setLoading(false)
       console.log(e);
       toast({
         variant: "destructive",
@@ -330,6 +332,7 @@ export default function GenerateInvoice() {
   });
 
   const handleReminder = () => {
+    setLoading(true)
     const requestData = {
       token,
       merchantId,
@@ -602,7 +605,7 @@ export default function GenerateInvoice() {
       </ScrollArea>
       {deletePopup ? <DeletePopup setPopup={setPopup} handleDelete={handleDelete} /> : ""}
       {paidPopup ? <MarkAsPaidPopup setPaidPopup={setPaidPopup} handlePaid={handlePaid} /> : ""}
-      {reminder ? <ReminderPopup value={fillData?.customerEmail} setReminder={setReminder} handleReminder={handleReminder} /> : ""}
+      {reminder ? <ReminderPopup loading={loading} value={fillData?.customerEmail} setReminder={setReminder} handleReminder={handleReminder} /> : ""}
     </div>
   );
 }

@@ -43,6 +43,7 @@ import { createTerminaRequest } from "api/POS-terminal";
 import { formatQuantity } from "utils/numberFormater"
 import { useQuery } from "@tanstack/react-query"
 import { getAllSettlementsBreakdown } from "api/settlements"
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
 
 let merchantList: any
 let token = ""
@@ -72,12 +73,15 @@ export default function SettlementBreakdown({ modalData, handleModalPOSpopup, au
     const [row, setRow] = useState<any>("5")
     const [page, setPage] = useState<any>("0")
     const [popup, setPopup] = useState(false);
+    const merchantDetailStore = useHydrateStore(useMerchantStore, (state) => state.currentMerchant); //getting merchant name from store
+    // console.log("settlments breakdown Id: ", modalData?.id)
+    
+    const GetParameters = { pageNumber: page, merchantCode: merchantDetailStore?.merchantCode, settlementId: modalData?.id, rowCount: row, token }
 
-    console.log("settlments breakdown Id: ", modalData?.id)
+    // console.log("GetParameters: ", GetParameters)
 
-    const GetParameters = { pageNumber: page, settlementId: modalData?.id, rowCount: row, token }
     const data: any = useQuery(["getAllInvoice", GetParameters], () => getAllSettlementsBreakdown(GetParameters))
-    console.log("get settlemnts breakdown: ", data?.data?.responseObject)
+    // console.log("get settlemnts breakdown: ", data?.data?.responseObject)
 
     let settlementsTableData = data?.data?.responseObject
 

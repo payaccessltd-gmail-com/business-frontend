@@ -93,8 +93,8 @@ export default function TerminalForm({ handleModalPOSpopup, setIsDataUpdated }: 
                 setLoading(false)
                 toast({
                     variant: "destructive",
-                    title: "",
-                    description: "Error Creating Invoice",
+                    title: "Error...",
+                    description: "Error Sending Request",
                 });
             }
             else if (responseData?.statusCode === "0" || "ACCEPTED") {
@@ -149,7 +149,7 @@ export default function TerminalForm({ handleModalPOSpopup, setIsDataUpdated }: 
                             className="absolute top-0 right-0 text-[24px] text-[#F61212] cursor-pointer"
                         />
                         <p className="text-[#5C5F61] text-[16px] leading-none font-[700]">Request POS Terminal</p>
-                        <p className="text-[#5C5F61] text-[16px] leading-none font-[400]">Complete and enter the following form below  </p>
+                        <p className="text-[#5C5F61] text-[16px] leading-none font-[400]">Fill the required information below.  </p>
                     </div>
                     <FormField
                         control={terminalForm.control}
