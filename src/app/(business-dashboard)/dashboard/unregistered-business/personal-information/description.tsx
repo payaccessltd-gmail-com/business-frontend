@@ -1,19 +1,23 @@
+import { parseISO,format } from "date-fns";
+import {  parse } from "path";
 import React from "react";
 
-type Props = {};
+type Props = {
+  data: any
+};
 
-export default function PersonalInformation({}: Props) {
+export default function PersonalInformation({data}: Props) {
   return (
     <div>
       <div className="flex flex-col items-start justify-start w-full gap-6">
-        <div className="inline-flex items-start justify-start w-full gap-6">
+        <div className="inline-flex items-start justify-start w-full gap-6 mb-6">
           <div className="flex items-start justify-between w-full gap-24 ">
             <div className="flex-col justify-start items-start gap-0.5 inline-fle">
               <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
                 First Name
               </div>
               <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                Goodness
+            {data?.firstName}
               </div>
             </div>
 
@@ -22,7 +26,7 @@ export default function PersonalInformation({}: Props) {
                 Last Name
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                Oluwatobi
+                {data?.lastName}
               </div>
             </div>
 
@@ -31,13 +35,81 @@ export default function PersonalInformation({}: Props) {
                 Contact Phone Number
               </div>
               <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                (+234) 802 345 0003
+                {data?.mobileNumber}
               </div>
             </div>
           </div>
+
+
         </div>
 
-        <div className="inline-flex items-start justify-between gap-6 ">
+        <div className="inline-flex items-start justify-start w-full gap-6 mb-6">
+          <div className="flex items-start justify-between w-full gap-24 ">
+            <div className="flex-col justify-start items-start gap-0.5 inline-fle">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+                Gender/Sex
+              </div>
+              <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
+              {data?.gender}
+              </div>
+            </div>
+
+            <div className="flex-col justify-start items-start gap-0.5 inline-flex">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+              Date of Brith
+              </div>
+              <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
+              { data?.dateOfBirth }
+              {/* format(parseISO(data?.dateOfBirth), 'LLLL d, yyyy')} */}
+              </div>
+            </div>
+
+            <div className="flex-col justify-start items-start gap-0.5 inline-flex">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+                Email Address
+              </div>
+              <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
+                {data?.emailAddress}
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <div className="inline-flex items-start justify-start w-full gap-6 mb-6">
+          <div className="flex items-start justify-between w-full gap-24 ">
+            <div className="flex-col justify-start items-start gap-0.5 inline-fle">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+                Document Type
+              </div>
+              <div className="h-7 text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
+              {data?.identificationDocument.replace("_", " ")}
+              </div>
+            </div>
+
+            <div className="flex-col justify-start items-start gap-0.5 inline-flex">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+              Document ID
+              </div>
+              <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
+              {data?.identificationNumber}
+              </div>
+            </div>
+
+            <div className="flex-col justify-start items-start gap-0.5 inline-flex">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+                Upload
+              </div>
+              <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
+                {data?.identificationDocumentPath}
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        {/* <div className="inline-flex items-start justify-start w-full gap-6 mb-6 ">
           <div className="flex items-start justify-between ">
             <div className="flex items-start justify-start pr-7 gap-80">
               <div className="self-stretch flex-col justify-start items-start gap-0.5 inline-flex">
@@ -45,10 +117,19 @@ export default function PersonalInformation({}: Props) {
                   Gender
                 </div>
                 <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
-                  Female
+                  {data.gender}
                 </div>
               </div>
-              <div className="self-stretch flex-col justify-start items-start gap-0.5 inline-flex">
+              
+            <div className="flex-col justify-start items-start gap-0.5 inline-flex">
+              <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
+              Date of Brith
+              </div>
+              <div className="text-gray-700 text-base font-bold font-['Century Gothic'] leading-snug">
+              {format(parseISO(data.dateOfBirth), 'LLLL d, yyyy')}
+              </div>
+            </div>
+              <div className="self-stretch flex-col justify-start items-start gap-0.5 px-6 inline-flex">
                 <div className="text-slate-500 text-xs font-normal font-['Century Gothic']">
                   Date of Brith
                 </div>
@@ -56,34 +137,13 @@ export default function PersonalInformation({}: Props) {
                   23/04/1999
                 </div>
               </div>
+              
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
-      <div className="flex flex-col items-start self-stretch justify-start gap-2 h-28">
-        <div className="w-20 h-6 text-slate-500 text-sm font-normal font-['Century Gothic']">
-          Uploads
-        </div>
-        <div className="inline-flex items-start justify-start h-20 gap-36">
-          <div className="inline-flex flex-col items-start justify-start gap-2">
-            <div className="inline-flex items-center justify-center gap-2 w-60">
-              <div className="w-6 h-6 px-0.5 py-0.5 justify-center items-center flex">
-                <div className="relative flex flex-col items-start justify-start w-5 h-5" />
-              </div>
-              <div className="w-52 text-gray-700 text-base font-bold font-['Century Gothic'] leading-none">
-                img_001.png
-              </div>
-            </div>
-            <div className="inline-flex items-start justify-start gap-2 w-60">
-              <div className="relative w-6 h-6" />
-              <div className="w-16 text-gray-700 text-base font-bold font-['Century Gothic'] leading-normal">
-                ID.PDF
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 }

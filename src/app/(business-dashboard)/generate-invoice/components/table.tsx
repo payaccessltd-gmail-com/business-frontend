@@ -63,7 +63,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
     const { toast } = useToast();
     const [deleteId, setDeleteId] = useState<string | undefined | null>("")
     const [deletePopup, setPopup] = useState<boolean>(false)
-    const heading = ["Amount", "Customer Name", "Invoice No.", "Status", "Date"]
+    const heading = ["Invoice No.", "Date", "Customer Name", "Amount", "Status", "option"]
     const router = useRouter();
     const handlePageNumber = (option: any) => {
         if (option === "next") {
@@ -156,7 +156,20 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
             <div className='flex flex-row items-center justify-between rounded-[8px] p-[10px] h-[58px] w-full bg-[#0C394B] mb-[24px]'>
                 {
                     heading.map((value, id) => {
-                        return <p key={id} className='text-[#FFFFFF] text-[16px] font-[600] leading-[20px] text-center w-[20%] font-raleway'>{value}</p>
+                        if (value === "option") {
+                            return (
+
+                                <p key={id} className='text-[#FFFFFF] text-[16px] font-[600] leading-[20px] text-center w-[5%] font-raleway'>
+
+                                </p>
+                            )
+                        } else {
+                            return (
+                                <p key={id} className='text-[#FFFFFF] text-[16px] font-[600] leading-[20px] text-center w-[20%] font-raleway'>
+                                    {value}
+                                </p>
+                            )
+                        }
                     })
 
                 }
@@ -166,10 +179,27 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                 <div className='flex flex-col items-center gap-6 w-full mb-6'>
                     {invoiceTableData?.list?.map(({ id, amount, customerName, InvoiceNo, invoiceStatus, dueDate }: any, idx: React.Key | null | undefined) => {
                         return <div key={idx} className='p-[10px] border-b border-b-[#BAE5F44F] flex flex-row items-center w-full h-[44px]'>
-                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] w-[20%] font-raleway'>{`₦ ${amount}`}</p>
-                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{customerName}</p>
                             <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>{`PAY${String(id).padStart(8, '0')}`}</p>
-                            <div className='w-[20%] flex flex-col items-center'>
+                            {!dueDate ?
+                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>
+                                    N/A
+                                </p>
+                                :
+                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] w-[20%] text-center font-raleway'>
+                                    {dueDate}
+                                </p>
+                            }
+                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>
+                                {customerName ? customerName : "N/A"}
+                            </p>
+
+                            <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center w-[20%] font-raleway'>
+                                {`₦ ${amount?.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                })}`}
+                            </p>
+
+                            <div className='flex flex-col items-center w-[20%]'>
                                 {invoiceStatus === "PENDING" && <p className='text-[#FFFFFF] text-[14px] font-[500] leading-[20px] w-fit text-center bg-[#D6A12E] rounded-[24px] px-[10px] py-[2px] gap-[2px] flex flex-row items-center'>
                                     {"Pending"}
                                     <IoMdCheckmark className="text-[16px]" />
@@ -191,8 +221,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                     <IoMdCheckmark className="text-[16px]" />
                                 </p>}
                             </div>
-                            <div className='w-[20%] flex flex-row items-center justify-end gap-[20px]'>
-                                <p className='text-[#666666] text-[14px] font-[600] leading-[22px] text-center font-raleway'>{dueDate}</p>
+                            <div className='w-[5%] flex flex-row items-center justify-start gap-[20px]'>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className='outline-none border-none'>
@@ -211,9 +240,9 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                                             {invoiceStatus === "DELETED" ? "" : <p onClick={() => handleDeletePopup(id)} className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
                                                 Delete
                                             </p>}
-                                            {invoiceStatus === "DELETED" ? "" : <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
-                                                Revoke
-                                            </p>}
+                                            {/* {invoiceStatus === "DELETED" ? "" : <p className='hover:text-[#F38020] cursor-pointer text-[#777777] text-[14px] font-[700] leading-normal text-start w-full p-[10px]'>
+                                                Revokell
+                                            </p>} */}
                                         </div>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
@@ -228,7 +257,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
             <div className='w-full h-10 mb-6 flex flex-row items-center gap-12 justify-end bg-white pr-[20px]'>
 
                 <div className='flex flex-row items-center w-[155px]'>
-                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row}`}</span>
+                    <span className='text-[#072F40] text-[12px] font-[300] leading-[16px] w-full flex flex-row items-center'>{`Rows per page: ${row === "500" ? "All" : row}`}</span>
                     <Select
                         onValueChange={(value) => setRow(value)}
                         value={row}
@@ -241,6 +270,7 @@ const InvoiceTable = ({ invoiceTableData, row, setRow, setPage, page }: any) => 
                             <SelectItem value="6">6</SelectItem>
                             <SelectItem value="8">8</SelectItem>
                             <SelectItem value="10">10</SelectItem>
+                            <SelectItem value={invoiceTableData?.totalCount}>All</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

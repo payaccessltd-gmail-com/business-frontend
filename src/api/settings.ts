@@ -131,7 +131,11 @@ export const updateBusinessInfo = async ({
     formdata.append("primaryMobile", primaryMobile);
     formdata.append("country", country);
     formdata.append("businessState", businessState);
-    formdata.append("businessLogoFile", businessLogoFile, businessLogoFile.name);
+    if (businessLogoFile) {
+        formdata.append("businessLogoFile", businessLogoFile, businessLogoFile.name);
+    } else {
+
+    }
     formdata.append("merchantId", merchantId);
     formdata.append("businessWebsite", businessWebsite);
 

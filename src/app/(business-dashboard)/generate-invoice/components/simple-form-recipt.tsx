@@ -13,9 +13,9 @@ import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 
 
-const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit }: any) => {
+const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDraftSubmit, loading }: any) => {
   const { toast } = useToast();
-  console.log("modalData: ", modalData)
+  // console.log("modalData: ", modalData)
   const handleCopyToClipboard = () => {
     // Create a temporary input element
     const tempInput = document.createElement("input");
@@ -81,17 +81,19 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
               }
               <div className="flex flex-col items-center w-full">
                 <p className="text-[16px] text-[#555] font-[400] leading-normal">
-                  A request has been sent out to
+                  A request will be sent out to
                 </p>
                 <p className="text-[20px] text-[#177196] font-[700] leading-normal">
                   {modalData?.customerName || "Undefined"}
                 </p>
               </div>
               <p className="text-[#555555] text-[32px] font-[700] leading-normal">
-                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString() : '00.00'}`}
+                {`NGN ${modalData?.amount ? modalData?.amount?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                }) : '00.00'}`}
               </p>
             </div>
-            <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">
+            {/* <div className="w-full border-b border-dashed border-[#999999] py-8 flex flex-col items-center">
               <div className="flex flex-col items-start gap-2 w-[70%]">
                 <label
                   htmlFor="link"
@@ -114,7 +116,7 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
               {reciptData.map(({ id, title, value }) => {
                 return <NameValue key={id} title={title} value={value} />;
@@ -137,11 +139,12 @@ const SimpleRecipt = ({ receipt, setReceipt, setPopup, modalData, handleModalDra
                   Send Invoice
                 </Button>
                 <Button
+                  disabled={loading}
                   onClick={() => handleModalDraftSubmit()}
                   variant={"outline"}
                   className="min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4] text-[#48B8E6] text-[14px] leading-normal font-[700]"
                 >
-                  Save as Draft
+                  {loading ? "Saving..." : "Save as Draft"}
                 </Button>
               </div>
             </div>

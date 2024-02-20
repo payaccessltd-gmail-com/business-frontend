@@ -38,7 +38,7 @@ export default function AuthenticationPage() {
           className="text-center mb-4 text-[32px] leading-[40px] font-black inline-block bg-transparent"
           level="h1"
         >
-          Forget Password
+          Forgot Password
         </Typography>
         <Typography
           className="mb-8 inline-block text-[14px] text-center font-[400] leading-[145%] text-[#115570]"

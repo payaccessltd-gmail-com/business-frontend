@@ -40,20 +40,27 @@ const RegistrationSchema = z.object({
     .string()
     .min(2, "business name must contain more than 2 characters"),
   password: z
-    .string().refine((value) => value.length >= 6 && value.length <= 40, {
-      message: 'Password must be between 6 and 40 characters',
+    .string().refine((value) => value.length >= 8 && value.length <= 50, {
+      message: 'Password must be between 8 and 50 characters',
     })
     .refine((value) => /[0-9]/.test(value), {
       message: 'Password must contain at least one number',
     })
-    .refine((value) => /[a-zA-Z]/.test(value), {
-      message: 'Password must contain at least one alphabet character',
+    .refine((value) => !/123/.test(value), {
+      message: 'Password should not contain the sequence "123"',
+    })
+    .refine((value) => /[A-Z]/.test(value), {
+      message: 'Password must contain at least one uppercase character',
+    })
+    .refine((value) => /[a-z]/.test(value), {
+      message: 'Password must contain at least one lowercase character',
     })
     .refine((value) => /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(value), {
       message: 'Password must contain at least one special character',
     }),
+  comfirmPassword: z.string(),
   agreement: z.boolean(),
-});
+}).refine((data) => data.password === data.comfirmPassword, { message: 'Password do not match', path: ["comfirmPassword"] });
 
 export default function RegistrationForm() {
   const { toast } = useToast();
@@ -78,10 +85,8 @@ export default function RegistrationForm() {
     onSuccess: async (data) => {
       const responseData: API.CreateAccountResponse =
         (await data.json()) as API.CreateAccountResponse;
-
-      if (responseData?.statusCode === "1") {
-        setLoading(false)
-
+      setLoading(false)
+      if ((responseData?.statusCode === "701") || (responseData?.statusCode === "1")) {
         toast({
           variant: "destructive",
           title: "",
@@ -90,19 +95,21 @@ export default function RegistrationForm() {
       }
 
       if (responseData?.statusCode === "0") {
-        setLoading(false)
         toast({
           variant: "default",
           title: "",
           description: responseData?.message,
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
         });
         if (typeof window) {
+
+          var linkArr: any = responseData?.responseObject?.split("/");
+
+          console.log(linkArr[3]);
+
           router.push(
-            `/email-verification?email=${registrationForm.getValues(
-              "emailAddress",
-            )}&verification-link=${responseData?.responseObject
-              ?.split("/")
-              .pop()}`,
+            `/${linkArr[3]}`,
           );
         }
 
@@ -112,7 +119,6 @@ export default function RegistrationForm() {
 
     onError: (e) => {
       setLoading(false)
-
       console.log(e);
       toast({
         variant: "destructive",
@@ -236,6 +242,25 @@ export default function RegistrationForm() {
 
         <FormField
           control={registrationForm.control}
+          name="comfirmPassword"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel className="text-[#777777]">Confirm password</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  icon="show"
+                  className="min-h-[48px]"
+                  placeholder="confirm Password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={registrationForm.control}
           name="agreement"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -270,7 +295,7 @@ export default function RegistrationForm() {
           className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
           type="submit"
         >
-          Create account
+          {loading ? "Creating..." : "Create account"}
         </Button>
       </form>
     </Form>

@@ -63,9 +63,11 @@ export default function FilterForm() {
 
   return (
     <Form {...filterForm}>
-      <form onSubmit={filterForm.handleSubmit(onSubmit)} className="flex flex-col space-y-6 border-gray-10 pr-[15px]">
+      <form onSubmit={filterForm.handleSubmit(onSubmit)} className="flex flex-col space-y-6 border-gray-10 rounded-r pr-[15px]">
         <div className="flex flex-col items-end gap-2">
-          <FormField
+
+  
+            <FormField
             control={filterForm.control}
             name="startDate"
             render={({ field }) => (
@@ -185,7 +187,7 @@ export default function FilterForm() {
             </FormItem>
           )}
         />
-
+{/* 
         <FormField
           name="receiptNumber"
           control={filterForm.control}
@@ -211,7 +213,7 @@ export default function FilterForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <div className="flex w-full flex-row items-center justify-center gap-3">
           <Button

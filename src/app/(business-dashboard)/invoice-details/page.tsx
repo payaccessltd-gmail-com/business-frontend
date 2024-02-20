@@ -11,12 +11,13 @@ import logo from "assets/img/invoice/default.png"
 import { useToast } from "components/ui/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query"
-import { deleteInvoice, markAsPaid } from "api/invoice";
+import { deleteInvoice, markAsPaid, sendReminder } from "api/invoice";
 import { useMutation } from "@tanstack/react-query";
 import { getInvoiceDetails, getInvoiceBreakdown } from "api/invoice";
 import { baseImgUrl } from "api/baseUrl"
 import DeletePopup from "./components/delete-popup";
 import MarkAsPaidPopup from "./components/mark-as-paid";
+import ReminderPopup from "./components/send-reminder-popup";
 
 
 
@@ -43,6 +44,8 @@ export default function GenerateInvoice() {
   const [deleteId, setDeleteId] = useState<string | undefined | null>("")
   const [deletePopup, setPopup] = useState<boolean>(false)
   const [paidPopup, setPaidPopup] = useState<boolean>(false)
+  const [reminder, setReminder] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const searchParams = useSearchParams();
   const invoiceIdValue = searchParams?.get("id");
@@ -58,17 +61,18 @@ export default function GenerateInvoice() {
   const detailData: any = useQuery(['getMerchantSetting', requestData], () => getInvoiceDetails(requestData));
   const breakDownData: any = useQuery(['getInvoiceBreakdown', requestData], () => getInvoiceBreakdown(requestData));
 
-  console.log(detailData?.data?.responseObject)
+  console.log("deatil Data: ", detailData?.data?.responseObject)
   console.log(breakDownData?.data?.responseObject)
-  const breakDown = breakDownData?.data?.responseObject
-  const fillData = detailData?.data?.responseObject
+  const breakDown: any[] = breakDownData?.data?.responseObject
+  const fillData = detailData?.data?.responseObject?.invoiceDetails
   const sendDate = new Date(fillData?.createdAt).toDateString().split(" ");
   const dueDate = new Date(fillData?.dueDate).toDateString().split(" ");
-  const shipping = detailData?.data?.responseObject?.shippingFee
-  const taxPercent = detailData?.data?.responseObject?.taxAmount
-  const discountPercent = detailData?.data?.responseObject?.discount
+  const shipping = detailData?.data?.responseObject?.invoiceDetails?.shippingFee
+  const taxPercent = detailData?.data?.responseObject?.invoiceDetails?.taxAmount
+  const discountPercent = detailData?.data?.responseObject?.invoiceDetails?.discount
 
-
+  // console.log("testing properties: ", fillData?.businessLogo, fillData)
+  // console.log("breakDownData: ", breakDown)
   let [amountValue, setAmountValue] = useState<any>()
   let [discount, setDiscount] = useState<any>()
   let [subTotal, setSubTotal] = useState<any>()
@@ -77,37 +81,50 @@ export default function GenerateInvoice() {
 
   useEffect(() => {
     if (breakDown) {
-      setAmountValue((breakDown[0]?.quantity * breakDown[0]?.costPerUnit) +
-        (breakDown[1]?.quantity * breakDown[1]?.costPerUnit) +
-        (breakDown[2]?.quantity * breakDown[2]?.costPerUnit))
-
+      const calculateTotalAmount = () => {
+        let totalAmount = 0;
+        breakDown?.forEach(({ quantity, costPerUnit }) => {
+          // console.log(quantity, costPerUnit)
+          const itemAmount = quantity * costPerUnit;
+          totalAmount += itemAmount;
+        });
+        return totalAmount;
+      }
+      setAmountValue(calculateTotalAmount())
     }
   }, [breakDown])
-  useEffect(() => {
-    if (breakDown) {
-      setDiscount(((discountPercent) / 100) * amountValue)
-    }
-  }, [amountValue])
+
+
+
+  console.log("fill Data invoice details: ", fillData)
+
 
   useEffect(() => {
+    if (breakDown) {
+      setDiscount(fillData?.discountType === "VALUE" ? discountPercent : ((discountPercent / 100) * amountValue))
+    }
+  }, [amountValue, discountPercent, fillData])
+
+  useEffect(() => {
+
     if (breakDown) {
       setSubTotal(amountValue - discount)
     }
-  }, [discount])
+  }, [discount, amountValue])
   useEffect(() => {
     if (breakDown) {
       setTax(subTotal * ((taxPercent) / 100))
     }
-  }, [subTotal])
+  }, [subTotal, taxPercent])
   useEffect(() => {
     if (breakDown) {
-      setGrandTotal(subTotal - tax + (shipping))
+      setGrandTotal(subTotal + tax + (shipping))
     }
-  }, [tax])
+  }, [tax, subTotal, shipping])
 
 
 
-  // console.log(tax, discount)
+  // console.log(shipping)
 
 
   const { toast } = useToast();
@@ -268,11 +285,71 @@ export default function GenerateInvoice() {
       merchantId,
       invoiceId: fillData?.id?.toString()
     }
-    // console.log(typeof requestData.invoiceId)
-    markAsPaidMutation.mutate(requestData as any);
+    console.log(typeof requestData.invoiceId)
+    // markAsPaidMutation.mutate(requestData as any);
 
   }
 
+
+  const reminderMutation = useMutation({
+    mutationFn: sendReminder,
+    onSuccess: async (data: any) => {
+      const responseData: API.InvoiceStatusReponse =
+        (await data.json()) as API.InvoiceStatusReponse;
+      setLoading(false)
+      if (responseData?.statusCode === "1") {
+        setReminder(false)
+        toast({
+          variant: "destructive",
+          title: "",
+          description: "Error Sending Reminder",
+        });
+      }
+
+      if (responseData?.statusCode === "0") {
+        setReminder(false)
+        toast({
+          variant: "default",
+          title: "Reminder Sent",
+          description: "Reminder Sent Successfully",
+          className:
+            "bg-[#BEF2B9] border-[#519E47] text-[#197624] text-[14px] font-[400]",
+        });
+
+      }
+    },
+
+    onError: (e) => {
+      setReminder(false)
+      setLoading(false)
+      console.log(e);
+      toast({
+        variant: "destructive",
+        title: `${e}`,
+        description: "error",
+      });
+    },
+  });
+
+  const handleReminder = () => {
+    setLoading(true)
+    const requestData = {
+      token,
+      merchantId,
+      invoiceId: fillData?.id?.toString()
+    }
+    // console.log(typeof requestData.invoiceId)
+    reminderMutation.mutate(requestData as any);
+
+  }
+
+  const handleDraftEdit = (id: any) => {
+    if (typeof window) {
+      route.push(
+        `/edit-invoice?id=${id}`
+      )
+    }
+  }
 
 
   return (
@@ -324,21 +401,23 @@ export default function GenerateInvoice() {
             </div>
             <div className="flex flex-col items-end gap-6">
               <div className="flex flex-row items-center gap-2">
-                {fillData?.invoiceStatus === "DRAFT" ? <Button
-                  variant={"outline"}
-                  className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
-                >
-                  <FiEdit className="text-[20px] text-[#555555]" />
-                  Edit
-                </Button> : ""}
-                {fillData?.invoiceStatus === "PENDING" || fillData?.invoiceStatus === "NOTPAID" ? <Button
+                {fillData?.invoiceStatus === "DRAFT" ?
+                  <Button
+                    onClick={() => handleDraftEdit(invoiceIdValue)}
+                    variant={"outline"}
+                    className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+                  >
+                    <FiEdit className="text-[20px] text-[#555555]" />
+                    Edit
+                  </Button> : ""}
+                {/* {fillData?.invoiceStatus === "PENDING" || fillData?.invoiceStatus === "NOTPAID" ? <Button
                   onClick={() => setPaidPopup(true)}
                   variant={"outline"}
                   className="min-h-[36px] gap-2 flex items-center font-[700] text-[#555555] bg-[#F6FDFF] border-[#D3EEF9] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
                 >
                   <LuTrendingDown className="text-[20px] text-[#555555]" />
                   Mark as paid
-                </Button> : ""}
+                </Button> : ""} */}
                 <Button
                   onClick={() => setPopup(true)}
                   variant={"outline"}
@@ -409,18 +488,31 @@ export default function GenerateInvoice() {
               </div>
             </div>
             <div className="w-full bg-[#F2FBFE] rounded-[7px] px-4 py-5 flex flex-col items-start">
-              <p className="text-[#0C394B] text-[20px] font-[700] leading-normal mb-2">Reminder</p>
-              <p className="text-[#0C394B] text-[16px] font-[400] leading-normal mb-6">A mail has been sent to you
+              <p className="text-[#0C394B] text-[20px] font-[700] leading-normal mb-2">
+                {fillData?.invoiceStatus === "PAID" ? "Paid" : ""}
+                {fillData?.invoiceStatus === "PENDING" ? "Reminder" : ""}
+                {fillData?.invoiceStatus === "DRAFT" ? "Draft" : ""}
+              </p>
+              <p className="text-[#0C394B] text-[16px] font-[400] leading-normal mb-6">
+                {fillData?.invoiceStatus === "PAID" ? "Invoice has been paid" : ""}
+                {fillData?.invoiceStatus === "DRAFT" ? "Complete invoice to get paid" : ""}
+                {fillData?.invoiceStatus === "PENDING" ? "Send a reminder to " : ""}
+
                 <span className="text-[#0C394B] text-[16px] font-[700] leading-normal">
-                  {" "}{fillData?.customerEmail}{" "}
+                  {" "}{fillData?.invoiceStatus === "PENDING" ? fillData?.customerEmail : ""}{" "}
                 </span>
                 {/* 20min ago. */}
               </p>
-              <Button
-                className="min-h-[48px] font-[700] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
-              >
-                Send another reminder
-              </Button>
+              {
+                fillData?.invoiceStatus === "PENDING" ?
+                  <Button
+                    onClick={() => setReminder(true)}
+                    className="min-h-[48px] font-[700] hover:bg-[#1D8EBB] hover:opacity-[0.4] self-end"
+                  >
+                    Send another reminder
+                  </Button> : ""
+              }
+
             </div>
           </div>
 
@@ -430,7 +522,7 @@ export default function GenerateInvoice() {
 
 
 
-            {/* ////--------------------payment description end------------ */}
+
             <div className="flex flex-col items-center w-full gap-4 border-b border-dashed border-[#999999] pb-6">
               <div className="flex flex-row items-center justify-between w-full">
                 <p className="text-[#555555] text-[16px] leading-normal font-[700]">
@@ -442,66 +534,78 @@ export default function GenerateInvoice() {
               </div>
               <div className="flex flex-row items-center justify-between w-full">
                 <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                  Receive payments from your clients using our invoice.
+                  {fillData?.invoiceNote}
                 </p>
                 <p className="text-[#0C394B] text-[20px] leading-[22px] font-[600]">
-                  ₦ {amountValue ? amountValue : "undefined"}
+                  ₦ {fillData?.invoiceType === "STANDARD" ? amountValue?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  }) : fillData?.amount?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
               </div>
             </div>
+            {/* ////--------------------payment description end------------ */}
+
+
             {/* ////--------------------subtotal and task------------ */}
-            <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
-              <div className="flex flex-col items-center w-full gap-4">
-                <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
-                    Subtotal
-                  </p>
-                  <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                    NGN {subTotal ? subTotal : "undefined"}
-                  </p>
+            {fillData?.invoiceType === "STANDARD" ?
+              <div className="w-full border-b border-dashed border-[#999999] pt-8 pb-6 flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center w-full gap-4">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                      Subtotal
+                    </p>
+                    <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                      NGN {subTotal?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                  </div>
+
                 </div>
-                {/* <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                    Discount
-                  </p>
-                  <p className="text-[#115570] text-[20px] leading-normal font-[400]">
-                    -NGN 50.00
-                  </p>
-                </div> */}
+                <div className="flex flex-col items-center w-full gap-4">
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                      Tax
+                    </p>
+                    <p className="text-[#D92D20] text-[20px] leading-normal font-[700]">
+                      -NGN {tax?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <p className="text-[#115570] text-[16px] leading-normal font-[400]">
+                      Discount
+                    </p>
+                    <p className="text-[#25AF36] text-[20px] leading-normal font-[400]">
+                      +NGN {discount?.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col items-center w-full gap-4">
-                <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#555555] text-[16px] leading-normal font-[700]">
-                    Tax
-                  </p>
-                  <p className="text-[#D92D20] text-[20px] leading-normal font-[700]">
-                    -NGN {tax}
-                  </p>
-                </div>
-                <div className="flex flex-row items-center justify-between w-full">
-                  <p className="text-[#115570] text-[16px] leading-normal font-[400]">
-                    Discount
-                  </p>
-                  <p className="text-[#25AF36] text-[20px] leading-normal font-[400]">
-                    +NGN {discount}
-                  </p>
-                </div>
+              : ""}
+            {fillData?.invoiceType === "STANDARD" ?
+              <div className="flex flex-row items-center justify-between w-full mt-6">
+                <p className="text-[#555555] text-[16px] leading-normal font-[700]">
+                  Grand Total
+                </p>
+                <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
+                  NGN {grandTotal?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                  })}
+                </p>
               </div>
-            </div>
-            {/* ////--------------------subtotal and task ending------------ */}
-            <div className="flex flex-row items-center justify-between w-full mt-6">
-              <p className="text-[#555555] text-[16px] leading-normal font-[700]">
-                Grand Total
-              </p>
-              <p className="text-[#0C394B] text-[20px] leading-normal font-[700]">
-                NGN {grandTotal ? grandTotal : "undefined"}
-              </p>
-            </div>
+              : ""}
           </div>
         </div>
       </ScrollArea>
       {deletePopup ? <DeletePopup setPopup={setPopup} handleDelete={handleDelete} /> : ""}
       {paidPopup ? <MarkAsPaidPopup setPaidPopup={setPaidPopup} handlePaid={handlePaid} /> : ""}
+      {reminder ? <ReminderPopup loading={loading} value={fillData?.customerEmail} setReminder={setReminder} handleReminder={handleReminder} /> : ""}
     </div>
   );
 }

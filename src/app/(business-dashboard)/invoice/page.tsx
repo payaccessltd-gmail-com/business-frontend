@@ -2,7 +2,6 @@
 
 import { Button } from "components/ui/button"
 import { useEffect, useState } from "react"
-import { MdContactSupport } from "react-icons/md"
 import { LuChevronDown } from "react-icons/lu"
 import { IoSearchSharp } from "react-icons/io5"
 import {
@@ -34,7 +33,7 @@ import {
 import { useToast } from "components/ui/use-toast";
 import EmptyState from "./components/empty-state"
 import InvoiceTable from "../generate-invoice/components/table"
-import { getAllInvoice } from "../../../api/invoice"
+import { getAllInvoice } from "api/invoice"
 import { useQuery } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query";
 import { filterInvoices } from "api/invoice";
@@ -57,11 +56,14 @@ if (
 
 
 export default function Invoice() {
+  const GetIntialRowParameter = { currentPageNumber: 0, merchantId: merchantId, rowPerPage: 1, emptyObject: {}, token }
+  const getRowValue: any = useQuery(['getAllInvoice', GetIntialRowParameter], () => getAllInvoice(GetIntialRowParameter as any));
+  console.log("Data to get row numbers: ", getRowValue?.data?.responseObject?.totalCount)
 
   // const [data, setData] = useState<any>(null)
   const [date, setDate] = useState<Date>()
   const [date1, setDate1] = useState<Date>()
-  const [row, setRow] = useState<string>("5")
+  const [row, setRow] = useState<string>(getRowValue?.data?.responseObject?.totalCount?.toString() || "500")
   const [page, setPage] = useState<string>("0")
   const [search, setSearch] = useState<string>("")
   const [invoiceStatus, setInvoiceStatus] = useState<string>("")
@@ -71,11 +73,12 @@ export default function Invoice() {
   const { toast } = useToast();
   const [filter, setFilter] = useState<any>()
   // const [tableDataResponse, setTable] = useState<any>()
-  const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, token }
+  const GetParameters = { currentPageNumber: page, merchantId: merchantId, rowPerPage: row, emptyObject: {}, token }
   const data: any = useQuery(['getAllInvoice', GetParameters], () => getAllInvoice(GetParameters));
 
   const [searchResults, setSearchResults] = useState<any>(() => filter ? filter : data?.data?.responseObject);
 
+  console.log(data)
   useEffect(() => {
     setSearchResults(() => filter ? filter : data?.data?.responseObject)
   }, [data?.data?.responseObject, filter])
@@ -163,11 +166,11 @@ export default function Invoice() {
       const filteredResults = data?.data?.responseObject?.list.filter((item: any) => {
         const { customerName, customerEmail, id } = item;
         const searchLower = search.toLowerCase();
-
         return (
-          customerName.toLowerCase().includes(searchLower) ||
-          customerEmail.toLowerCase().includes(searchLower) ||
-          id.toString().includes(searchLower)
+          customerName.toLowerCase() === searchLower ||
+          customerEmail.toLowerCase() === searchLower ||
+          id.toString() === searchLower ||
+          `pay${String(id).padStart(8, '0')}` === searchLower
         );
       });
       setSearchResults({ list: filteredResults, totalCount: filteredResults?.length } as any)
@@ -175,11 +178,11 @@ export default function Invoice() {
       const filteredResults = filter?.list?.filter((item: any) => {
         const { customerName, customerEmail, id } = item;
         const searchLower = search.toLowerCase();
-
         return (
-          customerName.toLowerCase().includes(searchLower) ||
-          customerEmail.toLowerCase().includes(searchLower) ||
-          id.toString().includes(searchLower)
+          customerName.toLowerCase() === searchLower ||
+          customerEmail.toLowerCase() === searchLower ||
+          id.toString() === searchLower ||
+          `pay${String(id).padStart(8, '0')}` === searchLower
         );
       });
       setSearchResults({ list: filteredResults, totalCount: filteredResults?.length } as any)
@@ -188,17 +191,18 @@ export default function Invoice() {
 
   };
 
+  const handleEnterSearch = (event: any) => {
+    if (event.key === 'Enter') {
+      handleSearch()
+    }
+  }
+
 
   return (<div className="relative w-full h-full flex flex-col">
-    <Button
-      className="fixed z-[1px] right-[42px] bottom-[46px] rounded-[8px] w-[120px] flex flex-row items-center justify-center gap-[9px] bg-[#48B8E6] font-bold text-white leading-normal"
-    >
-      <MdContactSupport className="text-[24px] text-[#fff]" />
-      Support
-    </Button>
-    <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[40px]">Invoice</p>
+
+    <p className="text-[#177196] text-[40px] font-[700] leading-normal mb-[20px]">Invoice</p>
     <div className="flex flex-row items-center justify-between">
-      <div className="flex flex-row items-center gap-[18px]">
+      <div className="flex flex-row items-center w-[75%] gap-[18px]">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="outline-[#D3EEF9] border border-[#D3EEF9] border-solid h-[45px] flex flex-row items-center gap-[10px] text-[14px] font-bold text-[#666666] leading-[150%]">
@@ -223,7 +227,7 @@ export default function Invoice() {
                     <SelectItem value="PAID">Paid</SelectItem>
                     <SelectItem value="NOTPAID">Not paid</SelectItem>
                     <SelectItem value="REVOKE">Revoke</SelectItem>
-                    <SelectItem value="DELETED">Deleted</SelectItem>
+                    <SelectItem value="PENDING">Pending</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -286,8 +290,8 @@ export default function Invoice() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="p-1 rounded-[8px] border border-solid border-[#D6F5FFD9] bg-[#F3FCFF] w-[450px] h-[45px] relative">
-          <input value={search} onChange={(e => setSearch(e.target.value))} type="text" placeholder="Search Invoice ID, customer email or name" className="placeholder:text-[#49454F] placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent" />
+        <div className="p-1 rounded-[8px] border border-solid border-[#D6F5FFD9] bg-[#F3FCFF] w-[60%] h-[45px] relative">
+          <input value={search} onKeyPress={(event: any) => handleEnterSearch(event)} onChange={(e => setSearch(e.target.value))} type="text" placeholder="Search Invoice ID or No, customer email or name" className="placeholder:text-[#49454F] placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-[400]  pl-[17px] pr-[69px] w-full h-full outline-none border-none bg-transparent" />
           <IoSearchSharp onClick={handleSearch} className="absolute right-[23px] top-[8.75px] cursor-pointer text-[26px] text-[#49454F]" />
         </div>
       </div>

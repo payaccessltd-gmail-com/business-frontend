@@ -1,7 +1,8 @@
+import BusinessInfoForm from "app/(business-dashboard)/settings/business-profile/business-info-form";
 import { BackButton } from "app/_components/back-button";
 import { ScrollArea } from "components/ui/scroll-area";
 import { Typography } from "components/ui/Typography";
-import RegistrationForm from "./business-profile-form";
+import BusinessProfileUpdate from "./business-profile-form";
 
 export default function SelectBusinessProfilePage() {
   return (
@@ -24,14 +25,13 @@ export default function SelectBusinessProfilePage() {
               className="text-xl font-bold text-center font-CenturyGothic text-gray-50"
               level="p"
             >
-              What type of business account do you own, and will like to open?
+              What type of business account do you own?
             </Typography>
 
-            <Typography className="text-sm font-normal text-gray-40" level="p">
-              You can add another account letter own too.
+            <Typography className="text-md font-normal text-gray-40" level="p">
+              You have the option to include another business at a later time.
             </Typography>
-          </div>
-
+          </div> 
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="86"
@@ -63,8 +63,11 @@ export default function SelectBusinessProfilePage() {
             />
           </svg>
         </div>
-        <RegistrationForm />
+
+        <BusinessProfileUpdate/>
       </div>
+
+      
     </ScrollArea>
   );
 }

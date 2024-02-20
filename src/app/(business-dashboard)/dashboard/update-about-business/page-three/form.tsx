@@ -16,6 +16,11 @@ import {
   FormMessage,
 } from "components/ui/form";
 import { toast } from "components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useHydrateStore, useUserStore, useMerchantStore } from "store"
+import { getMerchantDetails } from "api/settings";
+
 
 const items = [
   {
@@ -25,21 +30,31 @@ const items = [
   },
   {
     id: "payment-gateway-1",
-    label: "Payment gateway",
-    description: "to collect payment",
+    label: "Invocing",
+    description: "Raise Invioce for customer to payment for services/goods ",
   },
   {
     id: "payment-gateway-2",
-    label: "Payment gateway",
-    description: "to collect payment",
+    label: "E-Commerce Platform",
+    description: "For sales collection on E-Commerce site",
   },
   {
     id: "payment-gateway-3",
-    label: "Payment gateway",
-    description: "to collect payment",
+    label: "School Collection ",
+    description: "For collection students fees and other payments",
   },
 ] as const;
+let merchantList: any
+let token = ""
+let subject = ""
+let merchantId: any = ""
 
+if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
+  token = window.localStorage.getItem("token") as any
+  subject = window.localStorage.getItem("subject") as any
+  merchantList = JSON.parse(window.localStorage.getItem("merchantList") as any)
+  merchantId = merchantList[0].id ? merchantList[0]?.id : null
+}
 const FormSchema = z.object({
   items: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
@@ -47,6 +62,19 @@ const FormSchema = z.object({
 });
 
 export default function StepThreeForm() {
+  const merchantDetailStore = useHydrateStore(useMerchantStore, (state) => state.currentMerchant); //getting merchant name from store
+  const router = useRouter();
+  // console.log(merchantDetailStore?.merchantCode)
+  const getParameters = {
+    token,
+    merchantCode: merchantDetailStore?.merchantCode,
+  }
+  const data: any = useQuery(["getMerchantDetails", getParameters], () => getMerchantDetails(getParameters))
+
+
+  // console.log("personal ", JSON.stringify(data?.data?.responseObject[0]?.businessType))
+  const businessType = data?.data?.responseObject[0]?.businessType
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,14 +83,22 @@ export default function StepThreeForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    if (businessType == undefined) {
+      if (businessType === "INDIVIDUAL")
+        router.push("/dashboard/unregistered-business")
+      else {
+        router.push("/dashboard/registered-business")
+      }
+    }
+
+    // toast({
+    //   title: "You submitted the following values:",
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
   }
 
   return (
@@ -92,20 +128,19 @@ export default function StepThreeForm() {
                               return checked
                                 ? field.onChange([...field.value, item.id])
                                 : field.onChange(
-                                    field.value?.filter(
-                                      (value) => value !== item.id,
-                                    ),
-                                  );
+                                  field.value?.filter(
+                                    (value) => value !== item.id,
+                                  ),
+                                );
                             }}
                           />
                         </FormControl>
 
                         <FormLabel
-                          className={`flex px-6 py-6 rounded-lg space-x-2 hover:cursor-pointer ${
-                            field.value?.includes(item.id)
-                              ? "bg-primary-10"
-                              : "bg-[#F5FCFF] "
-                          }`}
+                          className={`flex px-6 py-6 rounded-lg space-x-2 hover:cursor-pointer ${field.value?.includes(item.id)
+                            ? "bg-primary-10"
+                            : "bg-[#F5FCFF] "
+                            }`}
                         >
                           <span className="p-2">
                             <svg
