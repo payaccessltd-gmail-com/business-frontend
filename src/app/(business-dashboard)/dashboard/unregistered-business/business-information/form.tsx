@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { HiOutlineCloudUpload } from "react-icons/hi"
 import { useForm } from "react-hook-form"
 
+import { useRouter } from "next/navigation"
 // import {} from "api/registration";
 import { Button } from "components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "components/ui/form"
@@ -20,23 +21,29 @@ import { useHydrateStore, useMerchantStore } from "store"
 import { updateMerchantBusinessData } from "api/merchant-management"
 import { getAllState, getCountry } from "api/location"
 import { businessInfoFormSchema } from "Schema"
+import { logout } from "api/utility"
 
 type BusinessInfoFormProps = {
   prevStep?: () => void
   nextStep?: () => void
 }
 
-
-
+function getStates() {
+  const dataState: any = useQuery(["getAllState", 1], () => {
+    return getAllState(1)
+  })
+  console.log("dataState > ", dataState?.data)
+}
 
 export default function BusinessInformationForm(props: BusinessInfoFormProps) {
   let token: any = ""
-  const [stateData, setStateData] = useState<any>([]);
+  const [stateData, setStateData] = useState<any>([])
 
   if (typeof window !== "undefined" && typeof window.localStorage !== "undefined") {
     token = localStorage.getItem("token") as string
   }
 
+  const router = useRouter()
   // hideData = true;
   const { toast } = useToast()
 
@@ -44,19 +51,21 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
 
   const currentMerchantDetails = useHydrateStore(useMerchantStore, (state) => state.currentMerchantDetails)
 
-  const dataCountry: any = useQuery(['getCountry'], () => {
+  const dataCountry: any = useQuery(["getCountry"], () => {
     return getCountry()
-  });
+  })
 
-//   const dataState: any = useQuery(['getCountry',1], () => {
-//     return getAllState(1)
-//   });
-// console.log("dataState > ",dataState?.data);
+  const countryId = 1
 
-  const countries: API.CountryResponse = dataCountry?.data;
+  const dataState: any = useQuery(["getAllState", countryId], () => {
+    return getAllState(countryId)
+  })
 
-  console.log("dataCountry", countries?.data);
+  const states = dataState?.data?.data
 
+  const countries: API.CountryResponse = dataCountry?.data
+
+  // console.log("dataCountry", countries?.data);
 
   const businessInfoForm = useForm<zod.infer<typeof businessInfoFormSchema>>({
     defaultValues: {
@@ -66,12 +75,21 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     resolver: zodResolver(businessInfoFormSchema),
   })
 
-
-
   const updateBusinessInfoMutation = useMutation({
     mutationFn: updateMerchantBusinessData,
     onSuccess: async (data) => {
       const responseData: API.StatusReponse = (await data.json()) as API.StatusReponse
+
+
+      logout(responseData?.statusCode )
+      // if (responseData?.statusCode === "715") {
+      //   console.log("testing logout", responseData?.statusCode)
+
+      //   localStorage.clear()
+      //   router.push("/login")
+      //   // logout();
+      //   return
+      // }
 
       if (responseData?.statusCode === "1") {
         toast({
@@ -116,7 +134,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     let newValues = { ...values, token }
     console.log(newValues)
     // getAllCountry.mutate();
-    updateBusinessInfoMutation.mutate(newValues as any);
+    updateBusinessInfoMutation.mutate(newValues as any)
   }
 
   const onErrror = (error: any) => {
@@ -161,13 +179,12 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
     }
   }, [currentMerchant?.id, currentMerchantDetails])
 
-  
-// const  allState = (e)=>  {
-//   console.log("id >> ", e);
-  
-//   // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
-//   // setStateData(data);
-// }
+  // const  allState = (e)=>  {
+  //   console.log("id >> ", e);
+
+  //   // let data = useQuery(['getMerchantDetails', id], () => getAllState(id));
+  //   // setStateData(data);
+  // }
 
   return (
     <Form {...businessInfoForm}>
@@ -217,8 +234,6 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           )}
         />
 
-
-
         <FormField
           name="businessEmail"
           control={businessInfoForm.control}
@@ -226,7 +241,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             <FormItem>
               <FormLabel>Business email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter business email" {...field} disabled={true} />
+                <Input placeholder="Enter business email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -253,7 +268,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Support</FormLabel>
+                <FormLabel>Support (mobile/E-mail)</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter support number/email" {...field} />
                 </FormControl>
@@ -270,17 +285,19 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Country</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}   >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent    >
+                  <SelectContent>
                     <SelectItem value=""></SelectItem>
-                    {countries?.data.map(ctr => <SelectItem  key={ctr.name} className="py-3 " value={ctr.name}>
-                      {ctr.name}
-                    </SelectItem>)}
+                    {countries?.data.map((ctr) => (
+                      <SelectItem key={ctr.name} className="py-3 " value={ctr.name}>
+                        {ctr.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -288,27 +305,25 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
             )}
           />
 
-
           <FormField
             name="businessState"
             control={businessInfoForm.control}
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>State</FormLabel>
-                <Select onValueChange={field.onChange}
-                  defaultValue={field.value}
-
-
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select state" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="w-full"  >
-                    <SelectItem value="ABUJA">Abuja</SelectItem>
-                    <SelectItem value="LAGOS">Lagos</SelectItem>
-                    <SelectItem value="Minna">MInna</SelectItem>
+                  <SelectContent className="w-full">
+                    <SelectItem value=""></SelectItem>
+                    {states?.map((st:any) => (
+                      <SelectItem key={st.name} className="py-3 " value={st.name}>
+                        {st.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -362,7 +377,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Business Logo (Optional)</FormDescription>
+              <FormDescription>Business Logo (Optional) <p className="text-[#ee5d5d]">(File size should not exceed 1MB)</p> </FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
@@ -399,7 +414,7 @@ export default function BusinessInformationForm(props: BusinessInfoFormProps) {
           control={businessInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Business Certificate (Optional)</FormDescription>
+              <FormDescription>Business Certificate (Optional) <p className="text-[#ee5d5d]">(File size should not exceed 1MB)</p> </FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
                 <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">

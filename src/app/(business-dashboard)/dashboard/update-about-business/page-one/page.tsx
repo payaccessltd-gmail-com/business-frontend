@@ -25,11 +25,11 @@ export default function SelectBusinessProfilePage() {
               className="text-xl font-bold text-center font-CenturyGothic text-gray-50"
               level="p"
             >
-              What type of business account do you own, and will like to open?
+              What type of business account do you own?
             </Typography>
 
-            <Typography className="text-sm font-normal text-gray-40" level="p">
-              You can add another account letter own too.
+            <Typography className="text-md font-normal text-gray-40" level="p">
+              You have the option to include another business at a later time.
             </Typography>
           </div> 
           <svg

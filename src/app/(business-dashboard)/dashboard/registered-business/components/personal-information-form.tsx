@@ -170,7 +170,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
               <FormItem className="w-full">
                 <FormLabel>First name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter first name" {...field} />
+                  <Input placeholder="Enter first name" {...field}  disabled={true}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -199,7 +199,7 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
             <FormItem className="w-full">
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Enter last name" {...field} />
+                <Input type="email" placeholder="Enter last name" {...field} disabled={true} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -352,9 +352,9 @@ export default function PersonalInformationForm(props: PersonalInfoFormProps) {
           control={personalInfoForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormDescription>Attach Document <small>(size 1MB)</small></FormDescription>
+              <FormDescription>Attach Document <p className="text-[#f75a5a]">(size 1MB)</p></FormDescription>
               <FormLabel className="flex h-[67px] w-full cursor-pointer flex-row items-center justify-center gap-3 rounded-[5px] border-[1px] border-dotted border-[#777777]">
-                <HiOutlineCloudUpload className="text-[20px] text-[#9CA3AF]" />
+                <HiOutlineCloudUpload className="text-[20px] text-[#af9c9c]" />
                 <Typography className="text-center text-[14px] font-normal leading-5 text-[#9CA3AF] ">
                   {field.value?.name ? (
                     field.value?.name
