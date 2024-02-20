@@ -25,10 +25,13 @@ export const runSettlements = async ({
 };
 
 
-export const getAllSettlements = async ({ pageNumber, rowCount, token }: any) => {
+
+
+
+export const getAllSettlements = async ({ pageNumber, settlementStatus = "", settlementStartDate = "", rowCount, token }: any) => {
     // console.log("searchQuery" + JSON.stringify(request))
     //  merchantId = '1'
-    const response = await fetch(`${baseUrl}/api/v1/settlement/get-settlement-list/${rowCount}/${pageNumber}`, {
+    const response = await fetch(`${baseUrl}/api/v1/settlement/get-settlement-list/${rowCount}/${pageNumber}?settlementStartDate=${settlementStartDate}&settlementStatus=${settlementStatus}`, {
         method: "GET",
         // body: JSON.stringify(request),
         headers: {
@@ -43,11 +46,11 @@ export const getAllSettlements = async ({ pageNumber, rowCount, token }: any) =>
     const data = JSON.parse(responseText);
     return data;
 };
-export const getAllSettlementsBreakdown = async ({ pageNumber, rowCount, token, settlementId }: any) => {
+export const getAllSettlementsBreakdown = async ({ pageNumber, rowCount, token, settlementId, merchantCode }: any) => {
     // console.log("searchQuery" + JSON.stringify(request))
     //  merchantId = '1'
 
-    const response = await fetch(`${baseUrl}/api/v1/settlement/get-settlement-breakdown-list/${rowCount}/${pageNumber}?settlementId=${settlementId}`, {
+    const response = await fetch(`${baseUrl}/api/v1/settlement/get-settlement-breakdown-list/${rowCount}/${pageNumber}?merchantCode=${merchantCode}&settlementId=${settlementId}`, {
         method: "GET",
         // body: JSON.stringify(request),
         headers: {

@@ -72,7 +72,7 @@ export default function SimpleForm({ preFillData }: any) {
     const [receipt, setReceipt] = useState(false);
     const [popup, setPopup] = useState(false);
     const [modalData, setModalData] = useState<any>("");
-    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [inputField, setInputField] = useState<any[] | undefined>([
         { label: "Customer Email" },
     ]);
@@ -258,6 +258,7 @@ export default function SimpleForm({ preFillData }: any) {
             const responseData: API.InvoiceStatusReponse =
                 (await data.json()) as API.InvoiceStatusReponse;
             console.log("simple invoice status: ", responseData?.statusCode)
+            setLoading(false)
             if ((responseData?.statusCode === "1") || (responseData?.statusCode === "701")) {
                 toast({
                     variant: "destructive",
@@ -281,6 +282,7 @@ export default function SimpleForm({ preFillData }: any) {
         },
         onError: (e) => {
             console.log(e);
+            setLoading(false)
             toast({
                 variant: "destructive",
                 title: `${e}`,
@@ -291,6 +293,7 @@ export default function SimpleForm({ preFillData }: any) {
 
     async function onSubmit(values: z.infer<typeof SimpleSchema>) {
         // console.log(values);
+        setLoading(true)
         let newValues = {
             ...values,
             // amount: values?.amount?.toString(),
@@ -567,7 +570,7 @@ export default function SimpleForm({ preFillData }: any) {
                         setPopup={setPopup}
                         handleSubmit={handleModalSubmit}
                         modalData={modalData}
-
+                        loading={loading}
                     />
                     :
                     null

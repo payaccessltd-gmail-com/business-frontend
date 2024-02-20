@@ -156,9 +156,9 @@ export default function StandardForm() {
     },
   })
 
-  useEffect(() => {
-    console.log("...changing discountType")
-  }, [standardForm.getValues("discountType")])
+  // useEffect(() => {
+  //   console.log("...changing discountType")
+  // }, [standardForm.getValues("discountType")])
 
 
 
@@ -295,7 +295,7 @@ export default function StandardForm() {
       const responseData: API.InvoiceStatusReponse = (await data.json()) as API.InvoiceStatusReponse
       console.log("standard invoice status code: ", responseData?.statusCode)
       setLoading(false)
-      if (responseData?.statusCode === "701") {
+      if ((responseData?.statusCode === "701" || responseData?.statusCode === "1")) {
         toast({
           variant: "destructive",
           title: "",
