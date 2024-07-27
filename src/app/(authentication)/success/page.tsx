@@ -18,7 +18,7 @@ export default function SuccessPopOver() {
         </p>
         <Button
           // disabled={loading}
-          className="text-[#FFFFFF] text-[16px] text-center font-[600] leading-[150%] min-h-[48px] hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          className="text-[#FFFFFF] text-[16px] text-center font-[600] leading-[150%] min-h-[48px]"
           type="submit"
           asChild
         >

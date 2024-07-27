@@ -1,27 +1,27 @@
-import nav1 from "../../../assets/img/nav/nav1.png";
-import nav2 from "../../../assets/img/nav/nav2.png";
-import nav3 from "../../../assets/img/nav/nav3.png";
-import nav4 from "../../../assets/img/nav/nav4.png";
-import universal from "../../../assets/img/nav/universal.png";
+import nav1 from "../../../assets/img/nav/card.png"
+import nav2 from "../../../assets/img/nav/withdrawal.png"
+import nav3 from "../../../assets/img/nav/POS.png"
+import nav4 from "../../../assets/img/nav/marchant_id.png"
+import universal from "../../../assets/img/nav/universal.png"
 
 interface SolutionItem {
-  id?: number;
-  img?: any;
-  title?: string;
-  text?: string;
+  id?: number
+  img?: any
+  title?: string
+  text?: string
 }
 
 interface SolutionData {
-  enterprise: SolutionItem[];
-  sme: SolutionItem[];
+  enterprise: SolutionItem[]
+  sme: SolutionItem[]
 }
 
 type DevelopersData = {
-  id?: number;
-  img?: any;
-  title?: string;
-  text?: string;
-};
+  id?: number
+  img?: any
+  title?: string
+  text?: string
+}
 
 export const solutionData: SolutionData = {
   enterprise: [
@@ -70,7 +70,7 @@ export const solutionData: SolutionData = {
       text: "Sell online without a website Create a payment link with just a few clicks.",
     },
   ],
-};
+}
 export const developersData: DevelopersData[] = [
   {
     id: 0,
@@ -84,7 +84,7 @@ export const developersData: DevelopersData[] = [
     title: "API reference",
     text: "Sell online without a website Create a payment link with just a few clicks.",
   },
-];
+]
 export const companysData: DevelopersData[] = [
   {
     id: 0,
@@ -104,4 +104,4 @@ export const companysData: DevelopersData[] = [
     title: "Press and media resources",
     text: "Sell online without a website Create a payment link with just a few clicks.",
   },
-];
+]
