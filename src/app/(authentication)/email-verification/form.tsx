@@ -269,7 +269,7 @@ export default function EmailVerificationForm() {
         />
         <Button
           disabled={loading}
-          className="mt-[32px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          className="mt-[32px] min-h-[48px] w-1/2"
           // type="submit"
           onClick={(event) => handleSubmit(event)}
         >
@@ -278,7 +278,7 @@ export default function EmailVerificationForm() {
         {showResendLink ? (
           <p className="text-[#1A1A1A] mb-4 mt-6 text-[14px] text-center font-[400] leading-[145%]">
             Didn’t get the mail?{" "}
-            <span className="text-[#1D8EBB] font-[700] leading-normal cursor-pointer" onClick={(event) => handleResend(event)}>
+            <span className="font-[700] leading-normal cursor-pointer" onClick={(event) => handleResend(event)}>
               {loading1 ? "resending..." : "Click here to resend."}
             </span>
           </p>

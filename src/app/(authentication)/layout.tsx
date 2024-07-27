@@ -1,18 +1,18 @@
-import { Metadata } from "next";
-import { Suspense } from "react";
-import Preloader from "./loading";
+import { Metadata } from "next"
+import { Suspense } from "react"
+import Preloader from "./loading"
 
 export const metadata: Metadata = {
   title: "Registration",
   description: "Registration where all the business are being registered",
-};
+}
 
 export default function RegistrationLayout({
   // Layouts must accept a children prop.
   // This will be populated with nested layouts or pages
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <div className="relative h-screen">
@@ -92,10 +92,7 @@ export default function RegistrationLayout({
           </filter>
         </defs>
       </svg> */}
-      <Suspense fallback={<Preloader />}>
-        {children}
-      </Suspense>
-
+      <Suspense fallback={<Preloader />}>{children}</Suspense>
     </div>
-  );
+  )
 }

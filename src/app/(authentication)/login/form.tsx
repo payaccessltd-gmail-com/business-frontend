@@ -167,7 +167,7 @@ const [isPending, startTransition] = useTransition();
         <FormSuccess message={success} />
         <Button
           disabled={loading}
-          className="mt-[20px] min-h-[48px] w-1/2 hover:bg-[#1D8EBB] hover:opacity-[0.4]"
+          className="mt-[20px] min-h-[48px] w-1/2"
           type="submit"
         >
           {loading ? "Loading..." : "Login"}

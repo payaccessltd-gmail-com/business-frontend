@@ -20,14 +20,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        border: "hsla(var(--border))",
+        input: "hsla(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "hsla(var(--background))",
+        foreground: "hsla(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsla(var(--primary))",
+          foreground: "hsla(var(--primary-foreground))",
           10: "#D3EEF9",
           20: "#B6E3F5",
           30: "#91D4F0",
@@ -41,8 +41,8 @@ module.exports = {
           110: "#07222D",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "hsla(var(--secondary))",
+          foreground: "hsla(var(--secondary-foreground))",
           10: "#FDE6D2",
           20: "#FBD5B5",
           30: "#F9BF8F",
